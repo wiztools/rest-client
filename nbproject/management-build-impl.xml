@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*** GENERATED FROM project.xml - DO NOT EDIT  ***
+***         EDIT ../build.xml INSTEAD         ***
+
+For the purpose of easier reading the script
+is divided into following sections:
+
+  - initialization
+  - management
+
+-->
+<project name="RESTClient-management-impl" default="run-management" basedir=".." xmlns:j2seproject="http://www.netbeans.org/ns/j2se-project/3" xmlns:j2seproject2="http://www.netbeans.org/ns/j2se-project/3" xmlns:j2seproject1="http://www.netbeans.org/ns/j2se-project/1">
+    <target name="default" depends="run-management" description="Build the project and enable management."/>
+    <!-- 
+    ======================
+    INITIALIZATION SECTION 
+    ======================
+    -->
+    <target name="-mgt-pre-init">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="-mgt-init-private" depends="-mgt-pre-init">
+        <property file="nbproject/private/private.properties"/>
+    </target>
+    <target name="-mgt-init-user" depends="-mgt-pre-init,-mgt-init-private">
+        <property file="${user.properties.file}"/>
+        <!-- The two properties below are usually overridden -->
+        <!-- by the active platform. Just a fallback. -->
+        <property name="default.javac.source" value="1.4"/>
+        <property name="default.javac.target" value="1.4"/>
+    </target>
+    <target name="-mgt-init-project" depends="-mgt-pre-init,-mgt-init-private,-mgt-init-user">
+        <property file="nbproject/project.properties"/>
+    </target>
+    <target name="-mgt-do-init" depends="-mgt-pre-init,-mgt-init-private,-mgt-init-user,-mgt-init-project,-mgt-init-macrodef-property">
+        <available file="${manifest.file}" property="manifest.available"/>
+        <condition property="manifest.available+main.class">
+            <and>
+                <isset property="manifest.available"/>
+                <isset property="main.class"/>
+                <not>
+                    <equals arg1="${main.class}" arg2="" trim="true"/>
+                </not>
+            </and>
+        </condition>
+        <available property="have.tests" file="${test.src.dir}"/>
+        <condition property="netbeans.home+have.tests">
+            <and>
+                <isset property="netbeans.home"/>
+                <isset property="have.tests"/>
+            </and>
+        </condition>
+        <condition property="no.javadoc.preview">
+            <isfalse value="${javadoc.preview}"/>
+        </condition>
+        <property name="run.jvmargs" value=""/>
+        <property name="javac.compilerargs" value=""/>
+        <property name="work.dir" value="${basedir}"/>
+        <condition property="no.deps">
+            <and>
+                <istrue value="${no.dependencies}"/>
+            </and>
+        </condition>
+    </target>
+    <target name="-mgt-post-init">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="-mgt-init-check" depends="-mgt-pre-init,-mgt-init-private,-mgt-init-user,-mgt-init-project,-mgt-do-init">
+        <fail unless="src.dir">Must set src.dir</fail>
+        <fail unless="test.src.dir">Must set test.src.dir</fail>
+        <fail unless="build.dir">Must set build.dir</fail>
+        <fail unless="dist.dir">Must set dist.dir</fail>
+        <fail unless="build.classes.dir">Must set build.classes.dir</fail>
+        <fail unless="dist.javadoc.dir">Must set dist.javadoc.dir</fail>
+        <fail unless="build.test.classes.dir">Must set build.test.classes.dir</fail>
+        <fail unless="build.test.results.dir">Must set build.test.results.dir</fail>
+        <fail unless="build.classes.excludes">Must set build.classes.excludes</fail>
+        <fail unless="dist.jar">Must set dist.jar</fail>
+    </target>
+    <target name="-mgt-init-macrodef-property">
+        <macrodef name="property" uri="http://www.netbeans.org/ns/j2se-project/1">
+            <attribute name="name"/>
+            <attribute name="value"/>
+            <sequential>
+                <property name="@{name}" value="${@{value}}"/>
+            </sequential>
+        </macrodef>
+    </target>
+    <target name="init" depends="-mgt-pre-init,-mgt-init-private,-mgt-init-user,-mgt-init-project,-mgt-do-init,-mgt-post-init,-mgt-init-check,-mgt-init-macrodef-property"/>
+    <!--
+    ==================
+    MANAGEMENT SECTION
+    ==================
+    -->
+    <target name="-mgt-init-platform">
+        <condition property="platform.home" value="${jdk.home}">
+            <isfalse value="${platform.home}"/>
+        </condition>
+        <condition property="platform.java" value="${jdk.home}/bin/java">
+            <isfalse value="${platform.java}"/>
+        </condition>
+    </target>
+    <target name="-init-macrodef-management">
+        <macrodef name="management">
+            <attribute name="classname" default="${main.class}"/>
+            <element name="customize" optional="true"/>
+            <sequential>
+                <java fork="true" classname="@{classname}" dir="${work.dir}" jvm="${platform.java}">
+                    <jvmarg line="${management.jvmargs} ${run.jvmargs}"/>
+                    <classpath>
+                        <path path="${run.classpath}"/>
+                    </classpath>
+                    <syspropertyset>
+                        <propertyref prefix="run-sys-prop."/>
+                        <mapper type="glob" from="run-sys-prop.*" to="*"/>
+                    </syspropertyset>
+                    <customize/>
+                </java>
+            </sequential>
+        </macrodef>
+    </target>
+    <target name="-connect-jconsole" depends="init,-mgt-init-platform">
+        <echo message="jconsole ${jconsole.settings.vmoptions} -interval=${jconsole.settings.polling} ${jconsole.settings.notile} ${jconsole.managed.process.url}"/>
+        <java fork="true" classname="sun.tools.jconsole.JConsole" jvm="${platform.java}">
+            <jvmarg line="${jconsole.settings.vmoptions}"/>
+            <arg line="-interval=${jconsole.settings.polling} ${jconsole.settings.notile} ${jconsole.managed.process.url}"/>
+            <classpath>
+                <path path="${run.classpath}:${platform.home}/lib/jconsole.jar:${platform.home}/lib/tools.jar"/>
+            </classpath>
+        </java>
+    </target>
+    <target name="run-management" if="netbeans.home" depends="init,compile,-mgt-init-platform,-init-macrodef-management" description="Enable local mgt for a project in the IDE.">
+        <echo message="${connecting.jconsole.msg} ${jconsole.managed.process.url}"/>
+        <management>
+            <customize>
+                <arg line="${application.args}"/>
+            </customize>
+        </management>
+    </target>
+    <target name="run-lcl-mgt-single" if="netbeans.home" depends="init,compile-single" description="Manage a selected class in the IDE.">
+        <fail unless="manage.class">Must select one file in the IDE or set manage.class</fail>
+        <!--
+                    TODO
+                -->
+    </target>
+    <!--
+    ========================
+    MANAGEMENT DEBUG SECTION
+    ========================
+    -->
+    <target name="-init-debug-args">
+        <exec executable="${platform.java}" outputproperty="version-output">
+            <arg value="-version"/>
+        </exec>
+        <condition property="have-jdk-older-than-1.4">
+            <or>
+                <contains string="${version-output}" substring="java version &quot;1.0"/>
+                <contains string="${version-output}" substring="java version &quot;1.1"/>
+                <contains string="${version-output}" substring="java version &quot;1.2"/>
+                <contains string="${version-output}" substring="java version &quot;1.3"/>
+            </or>
+        </condition>
+        <condition property="debug-args-line" value="-Xdebug -Xnoagent -Djava.compiler=none" else="-Xdebug">
+            <istrue value="${have-jdk-older-than-1.4}"/>
+        </condition>
+    </target>
+    <target name="-init-macrodef-management-debug" depends="-init-debug-args">
+        <macrodef name="debug-management">
+            <attribute name="classname" default="${main.class}"/>
+            <attribute name="classpath" default="${debug.classpath}"/>
+            <attribute name="args" default="${application.args}"/>
+            <sequential>
+                <java fork="true" classname="@{classname}" dir="${work.dir}" jvm="${platform.java}">
+                    <jvmarg line="${debug-args-line}"/>
+                    <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+                    <jvmarg line="${management.jvmargs} ${run.jvmargs}"/>
+                    <classpath>
+                        <path path="@{classpath}"/>
+                    </classpath>
+                    <syspropertyset>
+                        <propertyref prefix="run-sys-prop."/>
+                        <mapper type="glob" from="run-sys-prop.*" to="*"/>
+                    </syspropertyset>
+                    <arg line="@{args}"/>
+                </java>
+            </sequential>
+        </macrodef>
+    </target>
+    <target name="-debug-start-debugger" if="netbeans.home" depends="init">
+        <j2seproject1:nbjpdastart name="${debug.class}"/>
+    </target>
+    <target name="-debug-start-managed-debuggee" depends="init,compile,-mgt-init-platform,-init-macrodef-management-debug">
+        <debug-management/>
+    </target>
+    <target name="debug-management" if="netbeans.home" depends="init,compile,-debug-start-debugger,-debug-start-managed-debuggee" description="Debug project in IDE with Local mgt enabled."/>
+</project>
