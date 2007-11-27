@@ -4,6 +4,7 @@
 
 package org.wiztools.restclient;
 
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
@@ -13,7 +14,6 @@ import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,25 +26,9 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.StatusLine;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthPolicy;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.HeadMethod;
-import org.apache.commons.httpclient.methods.OptionsMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.TraceMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 
 /**
  * The application's main frame.
@@ -53,7 +37,10 @@ public class RESTClientView extends FrameView {
     
     private RequestHeaderTableModel reqHeaderTableModel;
     private JMenuItem jmi_req_delete;
-    JPopupMenu popupMenu = new JPopupMenu();
+    private JPopupMenu popupMenu = new JPopupMenu();
+    private RESTClientView view;
+    private Component glassPanel;
+    private final Component glassPanelBlank = new JPanel();
 
     public RESTClientView(SingleFrameApplication app) {
         super(app);
@@ -69,6 +56,8 @@ public class RESTClientView extends FrameView {
         popupMenu.add(jmi_req_delete);
         
         initComponents();
+        
+        this.view = this;
         
         jt_req_headers.addMouseListener(new MouseAdapter() {
             @Override
@@ -800,53 +789,48 @@ public class RESTClientView extends FrameView {
             return;
         }
         
+        RequestBean request = new RequestBean();
         boolean authEnabled = jcb_auth_enable.isSelected();
-        
-        HttpClient client = new HttpClient();
+        request.setIsAuthEnabled(authEnabled);
         
         if(authEnabled){
-            // Set to default preemptive mode
-            client.getParams().setAuthenticationPreemptive(true);
-            
-            // Type of authentication
-            List authPrefs = new ArrayList(1);
             if(jrb_auth_basic.isSelected()){
-                authPrefs.add(AuthPolicy.BASIC);
+                request.setAuthMethod("BASIC");
             }
             else if(jrb_auth_digest.isSelected()){
-                authPrefs.add(AuthPolicy.DIGEST);
+                request.setAuthMethod("DIGEST");
             }
-            client.getParams().setParameter(AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
             
             // Pass the credentials
             String uid = jtf_auth_uid.getText();
-            String pwd = new String(jpf_auth_pwd.getPassword());
-            Credentials creds = new UsernamePasswordCredentials(uid, pwd);
-            client.getState().setCredentials(new AuthScope("myhost", 80, AuthScope.ANY_REALM), creds);
+            char[] pwd = jpf_auth_pwd.getPassword();
+            
+            request.setAuthUsername(uid);
+            request.setAuthPassword(pwd);
         }
         
-        HttpMethod method = null;
         String url = (String)jcb_url.getSelectedItem();
+        request.setUrl(url);
         if(jrb_get.isSelected()){
-            method = new GetMethod(url);
+            request.setMethod("GET");
         }
         else if(jrb_head.isSelected()){
-            method = new HeadMethod(url);
+            request.setMethod("HEAD");
         }
         else if(jrb_post.isSelected()){
-            method = new PostMethod(url);
+            request.setMethod("POST");
         }
         else if(jrb_put.isSelected()){
-            method = new PutMethod(url);
+            request.setMethod("PUT");
         }
         else if(jrb_delete.isSelected()){
-            method = new DeleteMethod(url);
+            request.setMethod("DELETE");
         }
         else if(jrb_options.isSelected()){
-            method = new OptionsMethod(url);
+            request.setMethod("OPTIONS");
         }
         else if(jrb_trace.isSelected()){
-            method = new TraceMethod(url);
+            request.setMethod("TRACE");
         }
         
         // Get request headers
@@ -855,39 +839,15 @@ public class RESTClientView extends FrameView {
             for(int i=0; i<data.length; i++){
                 String key = (String)data[i][0];
                 String value = (String)data[i][1];
-                Header header = new Header(key, value);
-                method.addRequestHeader(header);
+                request.addHeader(key, value);
             }
         }
-        
-        client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
-                    new DefaultHttpMethodRetryHandler());
-        
-        try{
-            int statusCode = client.executeMethod(method);
-            ResponseBean response = new ResponseBean();
-            final StatusLine statusLine = method.getStatusLine();
-            response.setStatusLine(method.getStatusLine().toString());
-            
-            final Header[] responseHeaders = method.getResponseHeaders();
-            for(Header header: responseHeaders){
-                response.addHeader(header.getName(), header.getValue());
-            }
-            
-            final byte[] responseBody = method.getResponseBody();
-            if(responseBody != null){
-                response.setResponseBody(new String(responseBody));
-            }
-            
-            ui_update_response(response);
-        }
-        catch(IOException ex){
-            
-        }
-        method.releaseConnection();
+
+        new HTTPRequestThread(request, view).start();
     }//GEN-LAST:event_jb_requestActionPerformed
 
-    private void ui_update_response(final ResponseBean response){
+    // This is accessed by the Thread. Don't make it private.
+    void ui_update_response(final ResponseBean response){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 jtf_res_status.setText(response.getStatusLine());
@@ -900,6 +860,27 @@ public class RESTClientView extends FrameView {
                 }
                 ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_headers.getModel();
                 model.setHeader(response.getHeaders());
+            }
+        });
+    }
+    
+    // This is accessed by the Thread. Don't make it private.
+    void freeze(){
+        SwingUtilities.invokeLater(new Runnable(){
+            public void run(){
+                JFrame jf = view.getFrame();
+                glassPanel = jf.getGlassPane();
+                glassPanelBlank.setVisible(true);
+                jf.setGlassPane(glassPanelBlank);
+            }
+        });
+    }
+    
+    // This is accessed by the Thread. Don't make it private.
+    void unfreeze(){
+        SwingUtilities.invokeLater(new Runnable(){
+            public void run(){
+                view.getFrame().setGlassPane(glassPanel);
             }
         });
     }

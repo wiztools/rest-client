@@ -17,10 +17,19 @@ public class RequestBean {
     private String url;
     private String method;
     private boolean isAuthEnabled;
+    private String authMethod;
     private String authHost;
     private String authRealm;
     private String authUsername;
     private char[] authPassword;
+    
+    public String getAuthMethod() {
+        return authMethod;
+    }
+
+    public void setAuthMethod(String authMethod) {
+        this.authMethod = authMethod;
+    }
 
     public String getAuthHost() {
         return authHost;
