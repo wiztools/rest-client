@@ -13,11 +13,11 @@ import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.Timer;
@@ -81,6 +81,10 @@ public class RESTClientView extends FrameView {
                 showPopup(e);
             }
             private void showPopup(MouseEvent e) {
+                if(jt_req_headers.getSelectedRowCount() == 0){
+                    // No table row selected
+                    return;
+                }
                 if (e.isPopupTrigger()) {
                     popupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
@@ -325,7 +329,7 @@ public class RESTClientView extends FrameView {
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(182, Short.MAX_VALUE))
+                .addContainerGap(199, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -490,7 +494,7 @@ public class RESTClientView extends FrameView {
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 17, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 34, Short.MAX_VALUE)
                 .add(jPanel7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -545,7 +549,7 @@ public class RESTClientView extends FrameView {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel10Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
+                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
                     .add(jPanel10Layout.createSequentialGroup()
                         .add(jLabel3)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -554,7 +558,7 @@ public class RESTClientView extends FrameView {
                         .add(jLabel4)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jtf_req_value, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 119, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 17, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 34, Short.MAX_VALUE)
                         .add(jb_req_add)))
                 .addContainerGap())
         );
@@ -602,7 +606,7 @@ public class RESTClientView extends FrameView {
                 .addContainerGap()
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jtf_res_status, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                .add(jtf_res_status, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
@@ -623,7 +627,7 @@ public class RESTClientView extends FrameView {
                 .addContainerGap()
                 .add(jPanel9, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -648,7 +652,7 @@ public class RESTClientView extends FrameView {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -673,16 +677,16 @@ public class RESTClientView extends FrameView {
             .add(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
                     .add(mainPanelLayout.createSequentialGroup()
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jcb_url, 0, 394, Short.MAX_VALUE))
+                        .add(jcb_url, 0, 411, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, mainPanelLayout.createSequentialGroup()
                         .add(jb_request, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 268, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jb_clear, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))
-                    .add(jTabbedPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE))
+                        .add(jb_clear, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE))
+                    .add(jTabbedPane2))
                 .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
@@ -737,11 +741,11 @@ public class RESTClientView extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(statusPanelSeparator, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
+            .add(statusPanelSeparator, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
             .add(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(statusMessageLabel)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 273, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 290, Short.MAX_VALUE)
                 .add(progressBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(statusAnimationLabel)
@@ -767,9 +771,13 @@ public class RESTClientView extends FrameView {
     private void jmi_req_deleteActionPerformed(java.awt.event.ActionEvent evt){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
-                int row = jt_req_headers.getSelectedRow();
-                if(row > -1){
-                    reqHeaderTableModel.deleteRow(row);
+                int selectionCount = jt_req_headers.getSelectedRowCount();
+                if(selectionCount > 0){
+                    int[] rows = jt_req_headers.getSelectedRows();
+                    Arrays.sort(rows);
+                    for(int i=rows.length-1; i>=0; i--){
+                        reqHeaderTableModel.deleteRow(rows[i]);
+                    }
                 }
             }
         });
@@ -967,6 +975,20 @@ public class RESTClientView extends FrameView {
     }//GEN-LAST:event_jcb_urlActionPerformed
 
     private void jb_req_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jb_req_addActionPerformed
+        List<String> errors = validateReqHeaders();
+        if(errors != null){
+            StringBuffer sb = new StringBuffer();
+            sb.append("<html><ul>");
+            for(String error: errors){
+                sb.append("<li>").append(error).append("</li>");
+            }
+            sb.append("</ul></html>");
+            JOptionPane.showMessageDialog(RESTClientApp.getApplication().getMainFrame(),
+                sb.toString(),
+                "Validation error",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 String key = jtf_req_key.getText();
@@ -1005,6 +1027,21 @@ public class RESTClientView extends FrameView {
             if(isStrEmpty(new String(jpf_auth_pwd.getPassword()))){
                 errors.add("Password is empty.");
             }
+        }
+        return errors;
+    }
+    
+    private List<String> validateReqHeaders(){
+        List<String> errors = null;
+        String key = jtf_req_key.getText();
+        String value = jtf_req_value.getText();
+        if(isStrEmpty(key)){
+            errors = errors==null?new ArrayList<String>():errors;
+            errors.add("Header Key is empty.");
+        }
+        if(isStrEmpty(value)){
+            errors = errors==null?new ArrayList<String>():errors;
+            errors.add("Header Value is empty.");
         }
         return errors;
     }

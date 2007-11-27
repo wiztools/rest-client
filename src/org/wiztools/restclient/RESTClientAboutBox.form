@@ -82,7 +82,7 @@
     <Component class="javax.swing.JButton" name="closeButton">
       <Properties>
         <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-          <action class="org.wiztools.restclient.RESTClientAboutBox" id="closeAboutBox"/>
+          <action class="org.wiztools.restclient.RESTClientAboutBox" id="closeAboutBox" methodName=""/>
         </Property>
       </Properties>
     </Component>
