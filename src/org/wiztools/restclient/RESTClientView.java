@@ -865,28 +865,21 @@ public class RESTClientView extends FrameView {
         
         try{
             int statusCode = client.executeMethod(method);
+            ResponseBean response = new ResponseBean();
             final StatusLine statusLine = method.getStatusLine();
-            SwingUtilities.invokeLater(new Runnable(){
-                public void run(){
-                    jtf_res_status.setText(statusLine.toString());
-                }
-            });
+            response.setStatusLine(method.getStatusLine().toString());
             
             final Header[] responseHeaders = method.getResponseHeaders();
-            final byte[] responseBody = method.getResponseBody();
-            SwingUtilities.invokeLater(new Runnable(){
-                public void run(){
-                    if(responseBody != null){
-                        jtp_response.setText(new String(responseBody));
-                    }
-                    else{
-                        jtp_response.setText("");
-                    }
-                    ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_headers.getModel();
-                    model.setHeader(responseHeaders);
-                }
+            for(Header header: responseHeaders){
+                response.addHeader(header.getName(), header.getValue());
             }
-            );
+            
+            final byte[] responseBody = method.getResponseBody();
+            if(responseBody != null){
+                response.setResponseBody(new String(responseBody));
+            }
+            
+            ui_update_response(response);
         }
         catch(IOException ex){
             
@@ -894,6 +887,23 @@ public class RESTClientView extends FrameView {
         method.releaseConnection();
     }//GEN-LAST:event_jb_requestActionPerformed
 
+    private void ui_update_response(final ResponseBean response){
+        SwingUtilities.invokeLater(new Runnable(){
+            public void run(){
+                jtf_res_status.setText(response.getStatusLine());
+                String responseBody = response.getResponseBody();
+                if(responseBody != null){
+                    jtp_response.setText(responseBody);
+                }
+                else{
+                    jtp_response.setText("");
+                }
+                ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_headers.getModel();
+                model.setHeader(response.getHeaders());
+            }
+        });
+    }
+    
     private void jb_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jb_clearActionPerformed
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){

@@ -9,8 +9,8 @@
 
 package org.wiztools.restclient;
 
+import java.util.Map;
 import javax.swing.table.AbstractTableModel;
-import org.apache.commons.httpclient.Header;
 
 /**
  *
@@ -18,10 +18,16 @@ import org.apache.commons.httpclient.Header;
  */
 public class ResponseHeaderTableModel extends AbstractTableModel {
     
-    private Header[] headers;
+    private String[][] headers;
     
-    public void setHeader(Header[] headers){
-        this.headers = headers;
+    public void setHeader(Map<String, String> mapHeaders){
+        headers = new String[mapHeaders.size()][2];
+        int i = 0;
+        for(String key: mapHeaders.keySet()){
+            headers[i][0] = key;
+            headers[i][1] = mapHeaders.get(key);
+            i++;
+        }
         fireTableDataChanged();
     }
     
@@ -50,10 +56,10 @@ public class ResponseHeaderTableModel extends AbstractTableModel {
     public Object getValueAt(int row, int column) {
         // 0 means key
         if(column == 0){
-            return headers[row].getName();
+            return headers[row][0];
         }
         else{
-            return headers[row].getValue();
+            return headers[row][1];
         }
     }
 
