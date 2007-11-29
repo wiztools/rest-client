@@ -219,6 +219,8 @@ public class RESTClientView extends FrameView {
 
         mainPanel.setName("mainPanel"); // NOI18N
 
+        jLabel1.setDisplayedMnemonic('u');
+        jLabel1.setLabelFor(jcb_url);
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(org.wiztools.restclient.RESTClientApp.class).getContext().getResourceMap(RESTClientView.class);
         jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
