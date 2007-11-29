@@ -71,8 +71,10 @@ public class HTTPRequestThread extends Thread {
             String pwd = new String(request.getAuthPassword());
             Credentials creds = new UsernamePasswordCredentials(uid, pwd);
             
-            String host = request.getAuthHost()==null?AuthScope.ANY_HOST:request.getAuthHost();
-            String realm = request.getAuthRealm()==null?AuthScope.ANY_REALM:request.getAuthRealm();
+            String host = Util.isStrEmpty(request.getAuthHost()) ?
+                AuthScope.ANY_HOST: request.getAuthHost();
+            String realm = Util.isStrEmpty(request.getAuthRealm()) ?
+                AuthScope.ANY_REALM: request.getAuthRealm();
             client.getState().setCredentials(new AuthScope(host, 80, realm), creds);
         }
         

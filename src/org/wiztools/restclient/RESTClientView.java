@@ -58,9 +58,9 @@ public class RESTClientView extends FrameView {
         
         initComponents();
         
-        errorDialog = new ErrorDialog(RESTClientApp.getApplication().getMainFrame(), true);
-        
         this.view = this;
+        
+        errorDialog = new ErrorDialog(RESTClientApp.getApplication().getMainFrame(), true);
         
         jt_req_headers.addMouseListener(new MouseAdapter() {
             @Override
@@ -137,7 +137,7 @@ public class RESTClientView extends FrameView {
             }
         });
     }
-
+    
     @Action
     public void showAboutBox(ActionEvent e) {
         if (aboutBox == null) {
