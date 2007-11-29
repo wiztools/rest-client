@@ -6,6 +6,7 @@
 package org.wiztools.restclient;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,6 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.StatusLine;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
@@ -70,7 +70,10 @@ public class HTTPRequestThread extends Thread {
             String uid = request.getAuthUsername();
             String pwd = new String(request.getAuthPassword());
             Credentials creds = new UsernamePasswordCredentials(uid, pwd);
-            client.getState().setCredentials(new AuthScope("myhost", 80, AuthScope.ANY_REALM), creds);
+            
+            String host = request.getAuthHost()==null?AuthScope.ANY_HOST:request.getAuthHost();
+            String realm = request.getAuthRealm()==null?AuthScope.ANY_REALM:request.getAuthRealm();
+            client.getState().setCredentials(new AuthScope(host, 80, realm), creds);
         }
         
         HttpMethod method = null;
@@ -120,18 +123,19 @@ public class HTTPRequestThread extends Thread {
                 response.addHeader(header.getName(), header.getValue());
             }
             
-            final byte[] responseBody = method.getResponseBody();
+            InputStream is = method.getResponseBodyAsStream();
+            String responseBody = Util.inputStream2String(is);
             if(responseBody != null){
-                response.setResponseBody(new String(responseBody));
+                response.setResponseBody(responseBody);
             }
             
             view.ui_update_response(response);
         }
         catch(HttpException ex){
-            
+            view.showErrorDialog(Util.getStackTrace(ex));
         }
         catch(IOException ex){
-            
+            view.showErrorDialog(Util.getStackTrace(ex));
         }
         
         method.releaseConnection();

@@ -41,6 +41,7 @@ public class RESTClientView extends FrameView {
     private RESTClientView view;
     private Component glassPanel;
     private final Component glassPanelBlank = new JPanel();
+    private final ErrorDialog errorDialog;
 
     public RESTClientView(SingleFrameApplication app) {
         super(app);
@@ -56,6 +57,8 @@ public class RESTClientView extends FrameView {
         popupMenu.add(jmi_req_delete);
         
         initComponents();
+        
+        errorDialog = new ErrorDialog(RESTClientApp.getApplication().getMainFrame(), true);
         
         this.view = this;
         
@@ -843,6 +846,7 @@ public class RESTClientView extends FrameView {
             }
         }
 
+        clear();
         new HTTPRequestThread(request, view).start();
     }//GEN-LAST:event_jb_requestActionPerformed
 
@@ -889,7 +893,7 @@ public class RESTClientView extends FrameView {
         });
     }
     
-    private void jb_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jb_clearActionPerformed
+    private void clear(){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 jtf_res_status.setText("");
@@ -898,6 +902,10 @@ public class RESTClientView extends FrameView {
                 model.setHeader(null);
             }
         });
+    }
+    
+    private void jb_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jb_clearActionPerformed
+        clear();
     }//GEN-LAST:event_jb_clearActionPerformed
 
     private void authToggle(final boolean boo){
@@ -1004,7 +1012,7 @@ public class RESTClientView extends FrameView {
         Object o = null;
         String str = null;
         str = (String)jcb_url.getSelectedItem();
-        if(isStrEmpty(str)){
+        if(Util.isStrEmpty(str)){
             errors.add("URL field is empty.");
         }
         else{
@@ -1016,13 +1024,13 @@ public class RESTClientView extends FrameView {
             }
         }
         if(jcb_auth_enable.isSelected()){
-            if(isStrEmpty(jtf_auth_host.getText())){
+            if(Util.isStrEmpty(jtf_auth_host.getText())){
                 errors.add("Host is empty.");
             }
-            if(isStrEmpty(jtf_auth_uid.getText())){
+            if(Util.isStrEmpty(jtf_auth_uid.getText())){
                 errors.add("Username is empty.");
             }
-            if(isStrEmpty(new String(jpf_auth_pwd.getPassword()))){
+            if(Util.isStrEmpty(new String(jpf_auth_pwd.getPassword()))){
                 errors.add("Password is empty.");
             }
         }
@@ -1033,22 +1041,19 @@ public class RESTClientView extends FrameView {
         List<String> errors = null;
         String key = jtf_req_key.getText();
         String value = jtf_req_value.getText();
-        if(isStrEmpty(key)){
+        if(Util.isStrEmpty(key)){
             errors = errors==null?new ArrayList<String>():errors;
             errors.add("Header Key is empty.");
         }
-        if(isStrEmpty(value)){
+        if(Util.isStrEmpty(value)){
             errors = errors==null?new ArrayList<String>():errors;
             errors.add("Header Value is empty.");
         }
         return errors;
     }
     
-    private boolean isStrEmpty(final String str){
-        if(str == null || "".equals(str.trim())){
-            return true;
-        }
-        return false;
+    void showErrorDialog(final String error){
+        errorDialog.showErrorText(error);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

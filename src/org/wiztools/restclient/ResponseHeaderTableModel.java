@@ -21,6 +21,9 @@ public class ResponseHeaderTableModel extends AbstractTableModel {
     private String[][] headers;
     
     public void setHeader(Map<String, String> mapHeaders){
+        if(mapHeaders == null){
+            return;
+        }
         headers = new String[mapHeaders.size()][2];
         int i = 0;
         for(String key: mapHeaders.keySet()){
