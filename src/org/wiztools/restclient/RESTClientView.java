@@ -727,6 +727,7 @@ public class RESTClientView extends FrameView {
         statusAnimationLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         statusAnimationLabel.setName("statusAnimationLabel"); // NOI18N
 
+        progressBar.setIndeterminate(true);
         progressBar.setName("progressBar"); // NOI18N
 
         org.jdesktop.layout.GroupLayout statusPanelLayout = new org.jdesktop.layout.GroupLayout(statusPanel);
@@ -876,7 +877,7 @@ public class RESTClientView extends FrameView {
                 glassPanel = jf.getGlassPane();
                 glassPanelBlank.setVisible(true);
                 jf.setGlassPane(glassPanelBlank);
-                progressBar.setIndeterminate(true);
+                progressBar.setVisible(true);
                 jb_request.setEnabled(false);
             }
         });
@@ -887,7 +888,7 @@ public class RESTClientView extends FrameView {
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 view.getFrame().setGlassPane(glassPanel);
-                progressBar.setIndeterminate(false);
+                progressBar.setVisible(false);
                 jb_request.setEnabled(true);
             }
         });

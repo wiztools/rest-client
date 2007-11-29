@@ -22,14 +22,16 @@ public class ResponseHeaderTableModel extends AbstractTableModel {
     
     public void setHeader(Map<String, String> mapHeaders){
         if(mapHeaders == null){
-            return;
+            headers = new String[0][0];
         }
-        headers = new String[mapHeaders.size()][2];
-        int i = 0;
-        for(String key: mapHeaders.keySet()){
-            headers[i][0] = key;
-            headers[i][1] = mapHeaders.get(key);
-            i++;
+        else{
+            headers = new String[mapHeaders.size()][2];
+            int i = 0;
+            for(String key: mapHeaders.keySet()){
+                headers[i][0] = key;
+                headers[i][1] = mapHeaders.get(key);
+                i++;
+            }
         }
         fireTableDataChanged();
     }

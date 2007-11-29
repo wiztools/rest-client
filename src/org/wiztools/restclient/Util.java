@@ -32,6 +32,9 @@ public class Util {
     }
 
     public static String inputStream2String(final InputStream in) throws IOException {
+        if(in == null){
+            return "";
+        }
         StringBuffer out = new StringBuffer();
         byte[] b = new byte[4096];
         for (int n; (n = in.read(b)) != -1;) {

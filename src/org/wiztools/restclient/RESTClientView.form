@@ -917,6 +917,7 @@
         </Component>
         <Component class="javax.swing.JProgressBar" name="progressBar">
           <Properties>
+            <Property name="indeterminate" type="boolean" value="true"/>
             <Property name="name" type="java.lang.String" value="progressBar" noResource="true"/>
           </Properties>
         </Component>
