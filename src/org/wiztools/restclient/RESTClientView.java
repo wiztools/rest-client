@@ -1027,9 +1027,6 @@ public class RESTClientView extends FrameView {
             }
         }
         if(jcb_auth_enable.isSelected()){
-            if(Util.isStrEmpty(jtf_auth_host.getText())){
-                errors.add("Host is empty.");
-            }
             if(Util.isStrEmpty(jtf_auth_uid.getText())){
                 errors.add("Username is empty.");
             }
