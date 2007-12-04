@@ -104,13 +104,14 @@ public class HTTPRequestThread extends Thread {
         }
         
         // Get request headers
-        // Object[][] data = reqHeaderTableModel.getData();
         Map<String, String> data = request.getHeaders();
         for(String key: data.keySet()){
             String value = data.get(key);
             Header header = new Header(key, value);
             method.addRequestHeader(header);
         }
+        
+        //method.
         
         client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
                     new DefaultHttpMethodRetryHandler());
