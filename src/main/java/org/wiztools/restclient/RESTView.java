@@ -66,7 +66,7 @@ public class RESTView extends JPanel {
     private JComboBox jcb_url = new JComboBox();
     
     private JButton jb_request = new JButton(" Request ");
-    private JButton jb_clear = new JButton(" Clear ");
+    private JButton jb_clear = new JButton(" Clear Response ");
     
     private JTextField jtf_res_status = new JTextField();
     
@@ -75,18 +75,18 @@ public class RESTView extends JPanel {
     
     private JTable jt_res_headers = new JTable();
     private JTable jt_req_headers = new JTable();
-    private JTable jt_req_parms = new JTable();
+    private JTable jt_req_params = new JTable();
+    private JTable jt_req_body = new JTable();
     
     private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();
 
     // Authentication resources
-    private JCheckBox jcb_auth_enable = new JCheckBox("Enable?");
-    private JRadioButton jrb_auth_basic = new JRadioButton("BASIC");
-    private JRadioButton jrb_auth_digest = new JRadioButton("DIGEST");
+    private JCheckBox jcb_auth_basic = new JCheckBox("BASIC");
+    private JCheckBox jcb_auth_digest = new JCheckBox("DIGEST");
     private JLabel jl_auth_host = new JLabel("Host: ");
     private JLabel jl_auth_realm = new JLabel("Realm: ");
-    private JLabel jl_auth_username = new JLabel("Username: ");
-    private JLabel jl_auth_password = new JLabel("Password: ");
+    private JLabel jl_auth_username = new JLabel("<html>Username: <font color=red>*</font></html>");
+    private JLabel jl_auth_password = new JLabel("<html>Password: <font color=red>*</font></html>");
     private final int auth_text_size = 20;
     private JTextField jtf_auth_host = new JTextField(auth_text_size);
     private JTextField jtf_auth_realm = new JTextField(auth_text_size);
@@ -239,11 +239,11 @@ public class RESTView extends JPanel {
         // Mnemonic
         jrb_req_get.setMnemonic('g');
         jrb_req_post.setMnemonic('p');
-        //jrb_req_put.setMnemonic('u');
+        jrb_req_put.setMnemonic('t');
         jrb_req_delete.setMnemonic('d');
         jrb_req_head.setMnemonic('h');
         jrb_req_options.setMnemonic('o');
-        jrb_req_trace.setMnemonic('t');
+        jrb_req_trace.setMnemonic('e');
         
         JPanel jp_method_encp = new JPanel();
         jp_method_encp.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -265,10 +265,11 @@ public class RESTView extends JPanel {
         jtp.addTab("Headers", jp_headers);
         
         JPanel jp_parameters = get2ColumnTablePanel(
-                new String[]{"Key", "Value"}, jt_req_parms);
+                new String[]{"Key", "Value"}, jt_req_params);
         jtp.addTab("Parameters", jp_parameters);
         
-        JPanel jp_body = new JPanel();
+        JPanel jp_body = get2ColumnTablePanel(
+                new String[]{"Key", "Value"}, jt_req_body);
         jtp.addTab("Body", jp_body);
         
         JPanel jp_auth = new JPanel();
@@ -277,31 +278,30 @@ public class RESTView extends JPanel {
         jp_auth_west.setLayout(new BorderLayout());
         JPanel jp_auth_west_north = new JPanel();
         jp_auth_west_north.setBorder(new MatteBorder(1, 1, 1, 1, Color.red));
-        jcb_auth_enable.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                jrb_auth_enableActionPerformed(event);
-            }
-        });
-        jp_auth_west_north.add(jcb_auth_enable);
+        jp_auth_west_north.add(new JLabel("Authentication")); // @@@@@@@@@@@@@
         jp_auth_west.add(jp_auth_west_north, BorderLayout.NORTH);
         JPanel jp_auth_west_center = new JPanel();
         jp_auth_west_center.setBorder(new TitledBorder("Auth Type"));
         jp_auth_west_center.setLayout(new GridLayout(2,1));
-        ButtonGroup bg_auth = new ButtonGroup();
-        jrb_auth_basic.setSelected(true);
-        jrb_auth_basic.setEnabled(false);
-        jrb_auth_digest.setEnabled(false);
-        bg_auth.add(jrb_auth_basic);
-        bg_auth.add(jrb_auth_digest);
-        jp_auth_west_center.add(jrb_auth_basic);
-        jp_auth_west_center.add(jrb_auth_digest);
+        jcb_auth_basic.setSelected(false);
+        //jcb_auth_basic.setEnabled();
+        //jcb_auth_digest.setEnabled(false);
+        ActionListener action = new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                auth_enableActionPerformed(event);
+            }
+        };
+        jcb_auth_basic.addActionListener(action);
+        jcb_auth_digest.addActionListener(action);
+        jp_auth_west_center.add(jcb_auth_basic);
+        jp_auth_west_center.add(jcb_auth_digest);
         jp_auth_west.add(jp_auth_west_center, BorderLayout.CENTER);
         jp_auth.add(jp_auth_west, BorderLayout.WEST);
         JPanel jp_auth_center = new JPanel();
         jp_auth_center.setBorder(new TitledBorder("Details"));
         jp_auth_center.setLayout(new BorderLayout());
         JPanel jp_auth_center_west = new JPanel();
-        jp_auth_center_west.setLayout(new GridLayout(4, 1));
+        jp_auth_center_west.setLayout(new GridLayout(4, 1, 5, 5));
         jl_auth_host.setEnabled(false);
         jl_auth_realm.setEnabled(false);
         jl_auth_username.setEnabled(false);
@@ -312,7 +312,7 @@ public class RESTView extends JPanel {
         jp_auth_center_west.add(jl_auth_password);
         jp_auth_center.add(jp_auth_center_west, BorderLayout.WEST);
         JPanel jp_auth_center_center = new JPanel();
-        jp_auth_center_center.setLayout(new GridLayout(4, 1));
+        jp_auth_center_center.setLayout(new GridLayout(4, 1, 5, 5));
         jtf_auth_host.setEnabled(false);
         jtf_auth_realm.setEnabled(false);
         jtf_auth_username.setEnabled(false);
@@ -402,7 +402,7 @@ public class RESTView extends JPanel {
         jp.add(initJTPRequest(), BorderLayout.NORTH);
         
         JPanel jp_buttons = new JPanel();
-        jp_buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
+        jp_buttons.setLayout(new BorderLayout(5, 5));
         jb_request.setMnemonic('r');
         jb_request.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -415,9 +415,13 @@ public class RESTView extends JPanel {
                 clear();
             }
         });
-        jp_buttons.add(jb_request);
-        jp_buttons.add(jb_clear);
-        jp.add(jp_buttons, BorderLayout.CENTER);
+        jp_buttons.add(jb_request, BorderLayout.CENTER);
+        jp_buttons.add(jb_clear, BorderLayout.EAST);
+        JPanel jp_buttons_encp = new JPanel();
+        jp_buttons_encp.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        jp_buttons_encp.setLayout(new GridLayout(1, 1));
+        jp_buttons_encp.add(jp_buttons);
+        jp.add(jp_buttons_encp, BorderLayout.CENTER);
         
         jp.add(initJTPResponse(), BorderLayout.SOUTH);
         JPanel jp_encp = new JPanel();
@@ -478,17 +482,18 @@ public class RESTView extends JPanel {
         }
         
         RequestBean request = new RequestBean();
-        boolean authEnabled = jcb_auth_enable.isSelected();
-        request.setIsAuthEnabled(authEnabled);
+        boolean authEnabled = false;
+        
+        if(jcb_auth_basic.isSelected()){
+            request.addAuthMethod("BASIC");
+            authEnabled = true;
+        }
+        if(jcb_auth_digest.isSelected()){
+            request.addAuthMethod("DIGEST");
+            authEnabled = true;
+        }
         
         if(authEnabled){
-            if(jrb_auth_basic.isSelected()){
-                request.setAuthMethod("BASIC");
-            }
-            else if(jrb_auth_digest.isSelected()){
-                request.setAuthMethod("DIGEST");
-            }
-            
             // Pass the credentials
             String uid = jtf_auth_username.getText();
             char[] pwd = jpf_auth_password.getPassword();
@@ -522,14 +527,37 @@ public class RESTView extends JPanel {
         }
         
         // Get request headers
-        Object[][] data = ((TwoColumnTableModel)jt_req_headers.getModel()).getData();
-        if(data.length > 0){
-            for(int i=0; i<data.length; i++){
-                String key = (String)data[i][0];
-                String value = (String)data[i][1];
+        Object[][] header_data = ((TwoColumnTableModel)jt_req_headers.getModel()).getData();
+        if(header_data.length > 0){
+            for(int i=0; i<header_data.length; i++){
+                String key = (String)header_data[i][0];
+                String value = (String)header_data[i][1];
                 request.addHeader(key, value);
             }
         }
+        
+        // POST method specific
+        if(jrb_req_post.isSelected()){
+            // Get request parameters
+            Object[][]  param_data = ((TwoColumnTableModel)jt_req_params.getModel()).getData();
+            if(param_data.length > 0){
+                for(int i=0; i<param_data.length; i++){
+                    String key = (String)param_data[i][0];
+                    String value = (String)param_data[i][1];
+                    request.addParameter(key, value);
+                }
+            }
+            // Get request body
+            Object[][] body_data = ((TwoColumnTableModel)jt_req_body.getModel()).getData();
+            if(body_data.length > 0){
+                for(int i=0; i<body_data.length; i++){
+                    String key = (String)body_data[i][0];
+                    String value = (String)body_data[i][1];
+                    request.addBody(key, value);
+                }
+            }
+        }
+        
 
         clear();
         new HTTPRequestThread(request, view).start();
@@ -551,6 +579,7 @@ public class RESTView extends JPanel {
                 }
                 ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
                 model.setHeader(response.getHeaders());
+                jb_request.requestFocus();
                 // frame.pack();
             }
         });
@@ -631,8 +660,8 @@ public class RESTView extends JPanel {
         }
     }
     
-    private void jrb_auth_enableActionPerformed(final ActionEvent event){
-        if(jcb_auth_enable.isSelected()){
+    private void auth_enableActionPerformed(final ActionEvent event){
+        if(jcb_auth_basic.isSelected() || jcb_auth_digest.isSelected()){
             authToggle(true);
         }
         else{
@@ -643,8 +672,6 @@ public class RESTView extends JPanel {
     private void authToggle(final boolean boo){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
-                jrb_auth_basic.setEnabled(boo);
-                jrb_auth_digest.setEnabled(boo);
                 jtf_auth_host.setEnabled(boo);
                 jtf_auth_realm.setEnabled(boo);
                 jtf_auth_username.setEnabled(boo);
@@ -679,7 +706,7 @@ public class RESTView extends JPanel {
                 errors.add("URL is malformed.");
             }
         }
-        if(jcb_auth_enable.isSelected()){
+        if(jcb_auth_basic.isSelected() || jcb_auth_digest.isSelected()){
             if(Util.isStrEmpty(jtf_auth_username.getText())){
                 errors.add("Username is empty.");
             }

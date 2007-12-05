@@ -13,7 +13,7 @@ import java.util.Map;
  *
  * @author schandran
  */
-public class ResponseBean {
+public final class ResponseBean {
 
     private String statusLine;
     private Map<String, String> headers;

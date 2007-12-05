@@ -16,6 +16,7 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
@@ -27,6 +28,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.TraceMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.httpclient.util.ParameterParser;
 
 /**
  *
@@ -47,7 +49,7 @@ public class HTTPRequestThread extends Thread {
     public void run(){
         view.freeze();
         
-        boolean authEnabled = request.isIsAuthEnabled();
+        boolean authEnabled = request.getAuthMethods().size()>0?true:false;
         
         HttpClient client = new HttpClient();
         
@@ -57,12 +59,14 @@ public class HTTPRequestThread extends Thread {
             
             // Type of authentication
             List authPrefs = new ArrayList(1);
-            String authMethod = request.getAuthMethod();
-            if("BASIC".equals(authMethod)){
-                authPrefs.add(AuthPolicy.BASIC);
-            }
-            else if("DIGEST".equals(authMethod)){
-                authPrefs.add(AuthPolicy.DIGEST);
+            List<String> authMethods = request.getAuthMethods();
+            for(String authMethod: authMethods){
+                if("BASIC".equals(authMethod)){
+                    authPrefs.add(AuthPolicy.BASIC);
+                }
+                else if("DIGEST".equals(authMethod)){
+                    authPrefs.add(AuthPolicy.DIGEST);
+                }
             }
             client.getParams().setParameter(AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
             
@@ -104,14 +108,38 @@ public class HTTPRequestThread extends Thread {
         }
         
         // Get request headers
-        Map<String, String> data = request.getHeaders();
-        for(String key: data.keySet()){
-            String value = data.get(key);
+        Map<String, String> header_data = request.getHeaders();
+        for(String key: header_data.keySet()){
+            String value = header_data.get(key);
             Header header = new Header(key, value);
             method.addRequestHeader(header);
         }
         
-        //method.
+        // POST method specific logic
+        if(method instanceof PostMethod){
+            PostMethod postMethod = (PostMethod)method;
+            // Get request parameters
+            Map<String, String> param_data = request.getParameters();
+            if(param_data.size() > 0){
+                for(String key: param_data.keySet()){
+                    String value = param_data.get(key);
+                    NameValuePair pair = new NameValuePair(key, value);
+                    postMethod.addParameter(pair);
+                }
+            }
+            // Get request body
+            Map<String, String> body = request.getBody();
+            if(body.size() > 0){
+                NameValuePair[] pairs = new NameValuePair[body.size()];
+                int i = 0;
+                for(String key: body.keySet()){
+                    String value = body.get(key);
+                    pairs[i] = new NameValuePair(key, value);
+                    i++;
+                }
+                postMethod.setRequestBody(pairs);
+            }
+        }
         
         client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
                     new DefaultHttpMethodRetryHandler());

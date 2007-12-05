@@ -5,6 +5,7 @@
 
 package org.wiztools.restclient;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
@@ -19,9 +20,14 @@ public class Main {
      */
     public static void main(String[] args) {
         JFrame jf = new JFrame("WizTools.org RESTClient");
+        ImageIcon icon = 
+                new ImageIcon(Main.class.getClassLoader()
+                .getResource("org/wiztools/restclient/WizLogo.jpg"));
+        jf.setIconImage(icon.getImage());
         jf.setContentPane(new RESTView(jf));
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jf.pack();
+        jf.setResizable(false);
         jf.setVisible(true);
     }
 

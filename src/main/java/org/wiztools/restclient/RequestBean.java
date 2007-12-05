@@ -5,30 +5,51 @@
 
 package org.wiztools.restclient;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  *
  * @author schandran
  */
-public class RequestBean {
+public final class RequestBean {
+    
     private String url;
     private String method;
-    private boolean isAuthEnabled;
-    private String authMethod;
+    private List<String> authMethods;
     private String authHost;
     private String authRealm;
     private String authUsername;
     private char[] authPassword;
+    private Map<String, String> headers;
+    private Map<String, String> parameters;
+    private Map<String, String> body;
+
+    public Map<String, String> getBody() {
+        return Collections.unmodifiableMap(body);
+    }
     
-    public String getAuthMethod() {
-        return authMethod;
+    public void addBody(final String key, final String value){
+        body.put(key, value);
     }
 
-    public void setAuthMethod(String authMethod) {
-        this.authMethod = authMethod;
+    public Map<String, String> getParameters() {
+        return Collections.unmodifiableMap(parameters);
+    }
+    
+    public void addParameter(final String key, final String value){
+        parameters.put(key, value);
+    }
+    
+    public List<String> getAuthMethods() {
+        return Collections.unmodifiableList(authMethods);
+    }
+
+    public void addAuthMethod(final String authMethod) {
+        this.authMethods.add(authMethod);
     }
 
     public String getAuthHost() {
@@ -62,7 +83,6 @@ public class RequestBean {
     public void setAuthUsername(String authUsername) {
         this.authUsername = authUsername;
     }
-    private Map<String, String> headers;
 
     public Map<String, String> getHeaders() {
         return Collections.unmodifiableMap(headers);
@@ -74,14 +94,6 @@ public class RequestBean {
     
     public void addHeader(final String key, final String value){
         this.headers.put(key, value);
-    }
-
-    public boolean isIsAuthEnabled() {
-        return isAuthEnabled;
-    }
-
-    public void setIsAuthEnabled(boolean isAuthEnabled) {
-        this.isAuthEnabled = isAuthEnabled;
     }
 
     public String getMethod() {
@@ -102,5 +114,8 @@ public class RequestBean {
     
     public RequestBean(){
         headers = new LinkedHashMap();
+        parameters = new LinkedHashMap();
+        body = new LinkedHashMap();
+        authMethods = new ArrayList<String>();
     }
 }
