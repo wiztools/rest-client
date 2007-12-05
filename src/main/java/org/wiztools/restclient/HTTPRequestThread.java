@@ -29,7 +29,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.TraceMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.httpclient.util.ParameterParser;
 
 /**
  *
@@ -144,6 +143,14 @@ public class HTTPRequestThread extends Thread {
                 }
                 postMethod.setRequestBody(pairs);
             }
+            // Create and set RequestEntity
+            /*try{
+                RequestEntity entity = new StringRequestEntity("Subhash", "text/plain", "UTF-8");
+                postMethod.setRequestEntity(entity);
+            }
+            catch(UnsupportedEncodingException ex){
+                ex.printStackTrace();
+            }*/
         }
         
         client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
