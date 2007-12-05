@@ -5,6 +5,7 @@
 
 package org.wiztools.restclient;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 public final class RequestBean {
     
-    private String url;
+    private URL url;
     private String method;
     private List<String> authMethods;
     private String authHost;
@@ -104,11 +105,11 @@ public final class RequestBean {
         this.method = method;
     }
 
-    public String getUrl() {
+    public URL getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(URL url) {
         this.url = url;
     }
     

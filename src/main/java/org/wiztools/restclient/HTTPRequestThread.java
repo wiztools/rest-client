@@ -7,6 +7,7 @@ package org.wiztools.restclient;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,16 +50,16 @@ public class HTTPRequestThread extends Thread {
     public void run(){
         view.freeze();
         
-        boolean authEnabled = request.getAuthMethods().size()>0?true:false;
+        URL url = request.getUrl();
+        String urlStr = url.toString();
         
         HttpClient client = new HttpClient();
         
+        boolean authEnabled = request.getAuthMethods().size()>0?true:false;
+        
         if(authEnabled){
-            // Set to default preemptive mode
-            client.getParams().setAuthenticationPreemptive(true);
-            
             // Type of authentication
-            List authPrefs = new ArrayList(1);
+            List authPrefs = new ArrayList(2);
             List<String> authMethods = request.getAuthMethods();
             for(String authMethod: authMethods){
                 if("BASIC".equals(authMethod)){
@@ -79,32 +80,36 @@ public class HTTPRequestThread extends Thread {
                 AuthScope.ANY_HOST: request.getAuthHost();
             String realm = Util.isStrEmpty(request.getAuthRealm()) ?
                 AuthScope.ANY_REALM: request.getAuthRealm();
-            client.getState().setCredentials(new AuthScope(host, 80, realm), creds);
+            int port = url.getPort();
+            client.getState().setCredentials(new AuthScope(host, port, realm), creds);
+            
+            // Set to default preemptive mode
+            client.getParams().setAuthenticationPreemptive(true);
         }
         
         HttpMethod method = null;
-        String url = (String)request.getUrl();
+        
         String httpMethod = request.getMethod();
         if("GET".equals(httpMethod)){
-            method = new GetMethod(url);
+            method = new GetMethod(urlStr);
         }
         else if("HEAD".equals(httpMethod)){
-            method = new HeadMethod(url);
+            method = new HeadMethod(urlStr);
         }
         else if("POST".equals(httpMethod)){
-            method = new PostMethod(url);
+            method = new PostMethod(urlStr);
         }
         else if("PUT".equals(httpMethod)){
-            method = new PutMethod(url);
+            method = new PutMethod(urlStr);
         }
         else if("DELETE".equals(httpMethod)){
-            method = new DeleteMethod(url);
+            method = new DeleteMethod(urlStr);
         }
         else if("OPTIONS".equals(httpMethod)){
-            method = new OptionsMethod(url);
+            method = new OptionsMethod(urlStr);
         }
         else if("TRACE".equals(httpMethod)){
-            method = new TraceMethod(url);
+            method = new TraceMethod(urlStr);
         }
         
         // Get request headers

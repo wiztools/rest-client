@@ -503,7 +503,12 @@ public class RESTView extends JPanel {
         }
         
         String url = (String)jcb_url.getSelectedItem();
-        request.setUrl(url);
+        try{
+            request.setUrl(new URL(url));
+        }
+        catch(MalformedURLException ex){
+            assert true: "Should not come here as validation logic checks this.";
+        }
         if(jrb_req_get.isSelected()){
             request.setMethod("GET");
         }
