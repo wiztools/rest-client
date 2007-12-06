@@ -27,14 +27,14 @@ public final class RequestBean {
     private char[] authPassword;
     private Map<String, String> headers;
     private Map<String, String> parameters;
-    private Map<String, String> body;
+    private ReqEntityBean body;
 
-    public Map<String, String> getBody() {
-        return Collections.unmodifiableMap(body);
+    public ReqEntityBean getBody() {
+        return body;
     }
     
-    public void addBody(final String key, final String value){
-        body.put(key, value);
+    public void setBody(final ReqEntityBean body){
+        this.body = body;
     }
 
     public Map<String, String> getParameters() {
@@ -116,7 +116,6 @@ public final class RequestBean {
     public RequestBean(){
         headers = new LinkedHashMap();
         parameters = new LinkedHashMap();
-        body = new LinkedHashMap();
         authMethods = new ArrayList<String>();
     }
 }

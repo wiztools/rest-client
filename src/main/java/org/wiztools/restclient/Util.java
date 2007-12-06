@@ -4,6 +4,10 @@
  */
 package org.wiztools.restclient;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -63,5 +67,23 @@ public class Util {
         }
         sb.deleteCharAt(sb.length()-1);
         return sb.toString();
+    }
+    
+    public static String getStringFromFile(File f) throws FileNotFoundException, IOException{
+        BufferedReader br = null;
+        try{
+            br = new BufferedReader(new FileReader(f));
+            String line = null;
+            StringBuffer sb = new StringBuffer();
+            while((line = br.readLine())!=null){
+                sb.append(line).append('\n');
+            }
+            return sb.toString();
+        }
+        finally{
+            if(br != null){
+                br.close();
+            }
+        }
     }
 }

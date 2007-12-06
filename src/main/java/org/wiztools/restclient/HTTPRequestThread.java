@@ -7,6 +7,7 @@ package org.wiztools.restclient;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +18,18 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.OptionsMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.methods.TraceMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
@@ -120,37 +123,24 @@ public class HTTPRequestThread extends Thread {
         }
         
         // POST method specific logic
-        if(method instanceof PostMethod){
-            PostMethod postMethod = (PostMethod)method;
-            // Get request parameters
-            Map<String, String> param_data = request.getParameters();
-            if(param_data.size() > 0){
-                for(String key: param_data.keySet()){
-                    String value = param_data.get(key);
-                    NameValuePair pair = new NameValuePair(key, value);
-                    postMethod.addParameter(pair);
-                }
-            }
-            // Get request body
-            Map<String, String> body = request.getBody();
-            if(body.size() > 0){
-                NameValuePair[] pairs = new NameValuePair[body.size()];
-                int i = 0;
-                for(String key: body.keySet()){
-                    String value = body.get(key);
-                    pairs[i] = new NameValuePair(key, value);
-                    i++;
-                }
-                postMethod.setRequestBody(pairs);
-            }
+        if(method instanceof EntityEnclosingMethod){
+
+            EntityEnclosingMethod eeMethod = (EntityEnclosingMethod)method;
+            
             // Create and set RequestEntity
-            /*try{
-                RequestEntity entity = new StringRequestEntity("Subhash", "text/plain", "UTF-8");
-                postMethod.setRequestEntity(entity);
+            ReqEntityBean bean = request.getBody();
+            if(bean != null){
+                try{
+
+                    RequestEntity entity = new StringRequestEntity(
+                            bean.getBody(), bean.getContentType(), bean.getCharSet());
+                    eeMethod.setRequestEntity(entity);
+                }
+                catch(UnsupportedEncodingException ex){
+                    view.showErrorDialog(Util.getStackTrace(ex));
+                    return;
+                }
             }
-            catch(UnsupportedEncodingException ex){
-                ex.printStackTrace();
-            }*/
         }
         
         client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 

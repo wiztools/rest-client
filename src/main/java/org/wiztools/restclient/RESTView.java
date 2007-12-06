@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ import javax.swing.border.TitledBorder;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -50,6 +53,8 @@ import javax.swing.border.MatteBorder;
  * @author Subhash
  */
 public class RESTView extends JPanel {
+    
+    private JFileChooser jfc = new JFileChooser();
     
     private JRadioButton jrb_req_get = new JRadioButton("GET");
     private JRadioButton jrb_req_post = new JRadioButton("POST");
@@ -286,6 +291,11 @@ public class RESTView extends JPanel {
             }
         });
         jp_body_north.add(jb_body_content_type);
+        jb_body_file.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                jb_body_fileActionPerformed(event);
+            }
+        });
         jp_body_north.add(jb_body_file);
         jp_body_north.add(jb_body_params);
         jp_body.add(jp_body_north, BorderLayout.NORTH);
@@ -569,25 +579,17 @@ public class RESTView extends JPanel {
             }
         }
         
-        // POST method specific
-        if(jrb_req_post.isSelected()){
-            // Get request parameters
-            Object[][]  param_data = ((TwoColumnTableModel)jt_req_params.getModel()).getData();
-            if(param_data.length > 0){
-                for(int i=0; i<param_data.length; i++){
-                    String key = (String)param_data[i][0];
-                    String value = (String)param_data[i][1];
-                    request.addParameter(key, value);
-                }
-            }
+        // EntityEnclosing method specific
+        if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
             // Get request body
-            Object[][] body_data = ((TwoColumnTableModel)jt_req_body.getModel()).getData();
-            if(body_data.length > 0){
-                for(int i=0; i<body_data.length; i++){
-                    String key = (String)body_data[i][0];
-                    String value = (String)body_data[i][1];
-                    request.addBody(key, value);
-                }
+            String req_body = jta_req_body.getText();
+            if(!Util.isStrEmpty(req_body)){
+                String req_content_type = jd_body_content_type.getContentType();
+                String req_char_set = jd_body_content_type.getCharSet();
+                ReqEntityBean body = new ReqEntityBean(req_body,
+                        req_content_type,
+                        req_char_set);
+                request.setBody(body);
             }
         }
         
@@ -719,6 +721,54 @@ public class RESTView extends JPanel {
         });
     }
     
+    private void jb_body_fileActionPerformed(ActionEvent event){
+        if(!canSetReqBodyText()){
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                int returnVal = jfc.showOpenDialog(frame);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File f = jfc.getSelectedFile();
+                    if(!f.canRead()){
+                        JOptionPane.showMessageDialog(frame,
+                                "File not readable: " + f.getAbsolutePath(),
+                                "IO Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    // Get text from file and set
+                    try{
+                        String body = Util.getStringFromFile(f);
+                        jta_req_body.setText(body);
+                    }
+                    catch(IOException ex){
+                        JOptionPane.showMessageDialog(frame,
+                                "IO Error: " + ex.getMessage(),
+                                "IO Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+    }
+    
+    private boolean canSetReqBodyText(){
+        if(Util.isStrEmpty(jta_req_body.getText())){
+            return true;
+        }
+        else{
+            int response = JOptionPane.showConfirmDialog(frame,
+                    "Body text exists. Erase?",
+                    "Erase?",
+                    JOptionPane.OK_CANCEL_OPTION);
+            if(response == JOptionPane.OK_OPTION){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     void showErrorDialog(final String error){
         errorDialog.showError(error);
     }
@@ -745,6 +795,18 @@ public class RESTView extends JPanel {
             }
             if(Util.isStrEmpty(new String(jpf_auth_password.getPassword()))){
                 errors.add("Password is empty.");
+            }
+        }
+        if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
+            // Get request body
+            String req_body = jta_req_body.getText();
+            if(!Util.isStrEmpty(req_body)){
+                String req_content_type = jd_body_content_type.getContentType();
+                String req_char_set = jd_body_content_type.getCharSet();
+                if(Util.isStrEmpty(req_content_type)
+                        || Util.isStrEmpty(req_char_set)){
+                    errors.add("Body content is set, but `Content-type' and/or `Char-set' not set.");
+                }
             }
         }
         return errors;
