@@ -256,6 +256,25 @@ public class RESTView extends JPanel {
         jrb_req_options.setMnemonic('o');
         jrb_req_trace.setMnemonic('e');
         
+        ActionListener jrbAL = new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
+                    reqBodyToggle(true);
+                }
+                else{
+                    reqBodyToggle(false);
+                }
+            }
+        };
+        
+        jrb_req_get.addActionListener(jrbAL);
+        jrb_req_post.addActionListener(jrbAL);
+        jrb_req_put.addActionListener(jrbAL);
+        jrb_req_delete.addActionListener(jrbAL);
+        jrb_req_head.addActionListener(jrbAL);
+        jrb_req_options.addActionListener(jrbAL);
+        jrb_req_trace.addActionListener(jrbAL);
+        
         JPanel jp_method_encp = new JPanel();
         jp_method_encp.setLayout(new FlowLayout(FlowLayout.LEFT));
         JPanel jp_method = new JPanel();
@@ -277,6 +296,7 @@ public class RESTView extends JPanel {
         jtp.addTab("Headers", jp_headers);
         
         // Body Tab
+        reqBodyToggle(false); // disable control by default
         JPanel jp_body = new JPanel();
         jp_body.setLayout(new BorderLayout());
         JPanel jp_body_north = new JPanel();
@@ -767,6 +787,17 @@ public class RESTView extends JPanel {
             }
         }
         return false;
+    }
+    
+    private void reqBodyToggle(final boolean boo){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                jta_req_body.setEnabled(boo);
+                jb_body_content_type.setEnabled(boo);
+                jb_body_file.setEnabled(boo);
+                jb_body_params.setEnabled(boo);
+            }
+        });
     }
     
     void showErrorDialog(final String error){
