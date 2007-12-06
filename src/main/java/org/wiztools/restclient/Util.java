@@ -8,7 +8,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URLEncoder;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,7 +28,7 @@ public class Util {
         return false;
     }
 
-    public static String getStackTrace(Throwable aThrowable) {
+    public static String getStackTrace(final Throwable aThrowable) {
         String errorMsg = aThrowable.getMessage();
         final Writer result = new StringWriter();
         final PrintWriter printWriter = new PrintWriter(result);
@@ -41,5 +46,22 @@ public class Util {
             out.append(new String(b, 0, n));
         }
         return out.toString();
+    }
+    
+    private static final String ENCODE = "UTF-8";
+    public static String parameterEncode(Map<String, String> params){
+        StringBuffer sb = new StringBuffer();
+        for(String key: params.keySet()){
+            try {
+                String value = params.get(key);
+                String encodedKey = URLEncoder.encode(key, ENCODE);
+                String encodedValue = URLEncoder.encode(value, ENCODE);
+                sb.append(encodedKey).append("=").append(encodedValue).append("&");
+            } catch (UnsupportedEncodingException ex) {
+                assert true: "Encoder UTF-8 supported in all Java platforms.";
+            }
+        }
+        sb.deleteCharAt(sb.length()-1);
+        return sb.toString();
     }
 }

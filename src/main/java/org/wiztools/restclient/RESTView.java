@@ -70,6 +70,12 @@ public class RESTView extends JPanel {
     
     private JTextField jtf_res_status = new JTextField();
     
+    private JTextArea jta_req_body = new JTextArea();
+    private JButton jb_body_content_type = new JButton("Content-type");
+    private JButton jb_body_file = new JButton("Load from file");
+    private JButton jb_body_params = new JButton("Insert parameters");
+    private BodyContentTypeDialog jd_body_content_type;
+    
     private JScrollPane jsp_res_body = new JScrollPane();
     private JTextArea jta_response = new JTextArea();
     
@@ -83,8 +89,8 @@ public class RESTView extends JPanel {
     // Authentication resources
     private JCheckBox jcb_auth_basic = new JCheckBox("BASIC");
     private JCheckBox jcb_auth_digest = new JCheckBox("DIGEST");
-    private JLabel jl_auth_host = new JLabel("Host: ");
-    private JLabel jl_auth_realm = new JLabel("Realm: ");
+    private JLabel jl_auth_host = new JLabel("<html>Host: </html>");
+    private JLabel jl_auth_realm = new JLabel("<html>Realm: </html>");
     private JLabel jl_auth_username = new JLabel("<html>Username: <font color=red>*</font></html>");
     private JLabel jl_auth_password = new JLabel("<html>Password: <font color=red>*</font></html>");
     private final int auth_text_size = 20;
@@ -260,18 +266,37 @@ public class RESTView extends JPanel {
         jp_method_encp.add(jp_method);
         jtp.addTab("Method", jp_method_encp);
         
+        // Headers Tab
         JPanel jp_headers = get2ColumnTablePanel(
                 new String[]{"Header", "Value"}, jt_req_headers);
         jtp.addTab("Headers", jp_headers);
         
-        JPanel jp_parameters = get2ColumnTablePanel(
-                new String[]{"Key", "Value"}, jt_req_params);
-        jtp.addTab("Parameters", jp_parameters);
-        
-        JPanel jp_body = get2ColumnTablePanel(
-                new String[]{"Key", "Value"}, jt_req_body);
+        // Body Tab
+        JPanel jp_body = new JPanel();
+        jp_body.setLayout(new BorderLayout());
+        JPanel jp_body_north = new JPanel();
+        jp_body_north.setLayout(new FlowLayout(FlowLayout.CENTER));
+        jb_body_content_type.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        jd_body_content_type.showMe();
+                    }
+                });
+            }
+        });
+        jp_body_north.add(jb_body_content_type);
+        jp_body_north.add(jb_body_file);
+        jp_body_north.add(jb_body_params);
+        jp_body.add(jp_body_north, BorderLayout.NORTH);
+        JPanel jp_body_center = new JPanel();
+        jp_body_center.setLayout(new GridLayout(1, 1));
+        JScrollPane jsp_body = new JScrollPane(jta_req_body);
+        jp_body_center.add(jsp_body);
+        jp_body.add(jp_body_center, BorderLayout.CENTER);
         jtp.addTab("Body", jp_body);
         
+        // Auth Tab
         JPanel jp_auth = new JPanel();
         jp_auth.setLayout(new BorderLayout());
         JPanel jp_auth_west = new JPanel();
@@ -456,6 +481,9 @@ public class RESTView extends JPanel {
     private void init(){
         // Initialize the errorDialog
         errorDialog = new ErrorDialog(frame, true);
+        
+        // Initialize jd_body_content_type
+        jd_body_content_type = new BodyContentTypeDialog(frame);
         
         this.setLayout(new BorderLayout());
         
