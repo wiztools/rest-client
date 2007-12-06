@@ -80,6 +80,8 @@ public class RESTView extends JPanel {
     private JButton jb_body_file = new JButton("Load from file");
     private JButton jb_body_params = new JButton("Insert parameters");
     private BodyContentTypeDialog jd_body_content_type;
+    private JScrollPane jsp_req_body;
+    private Dimension d_jsp_req_body;
     
     private JScrollPane jsp_res_body = new JScrollPane();
     private JTextArea jta_response = new JTextArea();
@@ -321,8 +323,8 @@ public class RESTView extends JPanel {
         jp_body.add(jp_body_north, BorderLayout.NORTH);
         JPanel jp_body_center = new JPanel();
         jp_body_center.setLayout(new GridLayout(1, 1));
-        JScrollPane jsp_body = new JScrollPane(jta_req_body);
-        jp_body_center.add(jsp_body);
+        jsp_req_body = new JScrollPane(jta_req_body);
+        jp_body_center.add(jsp_req_body);
         jp_body.add(jp_body_center, BorderLayout.CENTER);
         jtp.addTab("Body", jp_body);
         
@@ -760,6 +762,7 @@ public class RESTView extends JPanel {
                     // Get text from file and set
                     try{
                         String body = Util.getStringFromFile(f);
+                        // setJTAReqBodyDimension();
                         jta_req_body.setText(body);
                     }
                     catch(IOException ex){
@@ -781,8 +784,8 @@ public class RESTView extends JPanel {
             int response = JOptionPane.showConfirmDialog(frame,
                     "Body text exists. Erase?",
                     "Erase?",
-                    JOptionPane.OK_CANCEL_OPTION);
-            if(response == JOptionPane.OK_OPTION){
+                    JOptionPane.YES_NO_OPTION);
+            if(response == JOptionPane.YES_OPTION){
                 return true;
             }
         }
@@ -792,12 +795,27 @@ public class RESTView extends JPanel {
     private void reqBodyToggle(final boolean boo){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                setJTAReqBodyDimension();
+                
                 jta_req_body.setEnabled(boo);
                 jb_body_content_type.setEnabled(boo);
                 jb_body_file.setEnabled(boo);
                 jb_body_params.setEnabled(boo);
             }
         });
+    }
+    
+    private void setJTAReqBodyDimension(){
+        // The TextArea was re-drawing to a bigger size
+        // when large text was placed. This check is for
+        // avoiding that.
+        // This method will be invoked from calls that are running
+        // inside SwingUtilities.invokeLater()
+        if(d_jsp_req_body == null){
+            Dimension d = jta_req_body.getPreferredScrollableViewportSize();
+            d_jsp_req_body = d;
+        }
+        jsp_req_body.setPreferredSize(d_jsp_req_body);
     }
     
     void showErrorDialog(final String error){
