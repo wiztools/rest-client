@@ -40,17 +40,17 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 public class HTTPRequestThread extends Thread {
     
     private RequestBean request;
-    private RESTView view;
+    private View view;
     
     public HTTPRequestThread(final RequestBean request,
-            final RESTView view){
+            final View view){
         this.request = request;
         this.view = view;
     }
     
     @Override
     public void run(){
-        view.freeze();
+        view.doStart(request);
         
         URL url = request.getUrl();
         String urlStr = url.toString();
@@ -137,7 +137,8 @@ public class HTTPRequestThread extends Thread {
                     eeMethod.setRequestEntity(entity);
                 }
                 catch(UnsupportedEncodingException ex){
-                    view.showErrorDialog(Util.getStackTrace(ex));
+                    view.doError(Util.getStackTrace(ex));
+                    view.doEnd();
                     return;
                 }
             }
@@ -148,7 +149,10 @@ public class HTTPRequestThread extends Thread {
         
         try{
             int statusCode = client.executeMethod(method);
+            
             ResponseBean response = new ResponseBean();
+            
+            response.setStatusCode(statusCode);
             response.setStatusLine(method.getStatusLine().toString());
             
             final Header[] responseHeaders = method.getResponseHeaders();
@@ -162,17 +166,17 @@ public class HTTPRequestThread extends Thread {
                 response.setResponseBody(responseBody);
             }
             
-            view.ui_update_response(response);
+            view.doResponse(response);
         }
         catch(HttpException ex){
-            view.showErrorDialog(Util.getStackTrace(ex));
+            view.doError(Util.getStackTrace(ex));
         }
         catch(IOException ex){
-            view.showErrorDialog(Util.getStackTrace(ex));
+            view.doError(Util.getStackTrace(ex));
         }
         
         method.releaseConnection();
         
-        view.unfreeze();
+        view.doEnd();
     }
 }

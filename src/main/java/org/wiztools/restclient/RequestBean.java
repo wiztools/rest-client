@@ -26,7 +26,6 @@ public final class RequestBean {
     private String authUsername;
     private char[] authPassword;
     private Map<String, String> headers;
-    private Map<String, String> parameters;
     private ReqEntityBean body;
 
     public ReqEntityBean getBody() {
@@ -37,14 +36,6 @@ public final class RequestBean {
         this.body = body;
     }
 
-    public Map<String, String> getParameters() {
-        return Collections.unmodifiableMap(parameters);
-    }
-    
-    public void addParameter(final String key, final String value){
-        parameters.put(key, value);
-    }
-    
     public List<String> getAuthMethods() {
         return Collections.unmodifiableList(authMethods);
     }
@@ -89,10 +80,6 @@ public final class RequestBean {
         return Collections.unmodifiableMap(headers);
     }
 
-    /*public void setHeaders(Map headers) {
-        this.headers = headers;
-    }*/
-    
     public void addHeader(final String key, final String value){
         this.headers.put(key, value);
     }
@@ -115,7 +102,6 @@ public final class RequestBean {
     
     public RequestBean(){
         headers = new LinkedHashMap();
-        parameters = new LinkedHashMap();
         authMethods = new ArrayList<String>();
     }
 }

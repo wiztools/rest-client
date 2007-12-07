@@ -15,9 +15,18 @@ import java.util.Map;
  */
 public final class ResponseBean {
 
+    private int statusCode;
     private String statusLine;
     private Map<String, String> headers;
     private String responseBody;
+    
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
 
     public Map<String, String> getHeaders() {
         return Collections.unmodifiableMap(headers);

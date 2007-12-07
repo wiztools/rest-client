@@ -52,7 +52,7 @@ import javax.swing.border.MatteBorder;
  *
  * @author Subhash
  */
-public class RESTView extends JPanel {
+public class RESTView extends JPanel implements View {
     
     private JFileChooser jfc = new JFileChooser();
     
@@ -626,7 +626,7 @@ public class RESTView extends JPanel {
     }                                          
 
     // This is accessed by the Thread. Don't make it private.
-    void ui_update_response(final ResponseBean response){
+    public void doResponse(final ResponseBean response){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 jtf_res_status.setText(response.getStatusLine());
@@ -647,8 +647,7 @@ public class RESTView extends JPanel {
         });
     }
     
-    // This is accessed by the Thread. Don't make it private.
-    void freeze(){
+    public void doStart(RequestBean request){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 jpb_status.setVisible(true);
@@ -658,7 +657,7 @@ public class RESTView extends JPanel {
     }
     
     // This is accessed by the Thread. Don't make it private.
-    void unfreeze(){
+    public void doEnd(){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 jpb_status.setVisible(false);
@@ -823,7 +822,7 @@ public class RESTView extends JPanel {
         jsp_req_body.setPreferredSize(d_jsp_req_body);
     }
     
-    void showErrorDialog(final String error){
+    public void doError(final String error){
         errorDialog.showError(error);
     }
     
