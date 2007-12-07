@@ -27,7 +27,7 @@ public class Main {
                 JFrame jf = new JFrame("WizTools.org RESTClient " + VERSION);
                 ImageIcon icon = 
                         new ImageIcon(Main.class.getClassLoader()
-                        .getResource("org/wiztools/restclient/WizLogo.jpg"));
+                        .getResource("org/wiztools/restclient/WizLogo.png"));
                 jf.setIconImage(icon.getImage());
                 jf.setContentPane(new RESTView(jf));
                 jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
