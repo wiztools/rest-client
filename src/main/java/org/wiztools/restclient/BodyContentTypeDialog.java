@@ -11,6 +11,8 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.charset.Charset;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -30,18 +32,29 @@ public class BodyContentTypeDialog extends JDialog {
             "application/xml",
             "application/json",
             "application/x-www-form-urlencoded"};
+    private static final String DEFAULT_CONTENT_TYPE = "text/plain";
     
-    private static final String[] charSetArr =
-            new String[]{"UTF-8"};
+    // Charset
+    private static final String[] charSetArr;
+    static{
+        Map<String, Charset> charsets = Charset.availableCharsets();
+        int size = charsets.size();
+        charSetArr = new String[size];
+        int i = 0;
+        for(String key: charsets.keySet()){
+            charSetArr[i] = key;
+            i++;
+        }
+    }
+    private static final String DEFAULT_CHARSET = "UTF-8";
     
     private JComboBox jcb_content_type = new JComboBox(contentTypeArr);
     private JComboBox jcb_char_set = new JComboBox(charSetArr);
     
     private final BodyContentTypeDialog me;
     
-    private String contentType;
-    private String charSet;
-    
+    private String contentType = DEFAULT_CONTENT_TYPE;
+    private String charSet = DEFAULT_CHARSET;
     
     BodyContentTypeDialog(Frame f){
         // true means Modal:
@@ -49,8 +62,8 @@ public class BodyContentTypeDialog extends JDialog {
         me = this;
         setTitle("Body Content-type");
         init();
-        contentType = (String)jcb_content_type.getSelectedItem();
-        charSet = (String)jcb_char_set.getSelectedItem();
+        jcb_content_type.setSelectedItem(DEFAULT_CONTENT_TYPE);
+        jcb_char_set.setSelectedItem(DEFAULT_CHARSET);
     }
     
     private void init(){
@@ -63,7 +76,7 @@ public class BodyContentTypeDialog extends JDialog {
         jp_center_west.setLayout(new GridLayout(2, 1, 5, 5));
         JLabel jl_content_type = new JLabel("Content-type: ");
         jl_content_type.setLabelFor(jcb_content_type);
-        JLabel jl_char_set = new JLabel("Char-set: ");
+        JLabel jl_char_set = new JLabel("Charset: ");
         jl_char_set.setLabelFor(jcb_char_set);
         jp_center_west.add(jl_content_type);
         jp_center_west.add(jl_char_set);

@@ -558,8 +558,13 @@ public class RESTView extends JPanel {
             String uid = jtf_auth_username.getText();
             char[] pwd = jpf_auth_password.getPassword();
             
+            String realm = jtf_auth_realm.getText();
+            String host = jtf_auth_host.getText();
+            
             request.setAuthUsername(uid);
             request.setAuthPassword(pwd);
+            request.setAuthRealm(realm);
+            request.setAuthHost(host);
         }
         
         String url = (String)jcb_url.getSelectedItem();
