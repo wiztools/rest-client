@@ -11,7 +11,13 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -27,16 +33,44 @@ import javax.swing.SwingUtilities;
  */
 public class BodyContentTypeDialog extends JDialog {
     
-    private static final String[] contentTypeArr = 
-            new String[]{"text/plain",
-            "application/xml",
-            "application/json",
-            "application/x-www-form-urlencoded"};
+    private static final String[] contentTypeArr;
     private static final String DEFAULT_CONTENT_TYPE = "text/plain";
     
-    // Charset
     private static final String[] charSetArr;
+    private static final String DEFAULT_CHARSET = "UTF-8";
+    
     static{
+        InputStream is = BodyContentTypeDialog.class.getClassLoader().getResourceAsStream("org/wiztools/restclient/mime.types");
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String line = null;
+        String[] arr = null;
+        try{
+            List<String> ll = new ArrayList<String>();
+            while((line = br.readLine())!=null){
+                ll.add(line);
+            }
+            arr = new String[ll.size()];
+            arr = ll.toArray(arr);
+        }
+        catch(IOException ex){
+            arr = 
+                new String[]{"text/plain",
+                "application/xml",
+                "application/json",
+                "application/x-www-form-urlencoded"};
+        }
+        try{
+            br.close();
+        }
+        catch(IOException ex){
+            // do nothing!
+            assert true: "Jar file does not have mime.types!";
+        }
+        contentTypeArr = arr;
+    }
+    
+    static{
+        // Charset
         Map<String, Charset> charsets = Charset.availableCharsets();
         int size = charsets.size();
         charSetArr = new String[size];
@@ -46,7 +80,7 @@ public class BodyContentTypeDialog extends JDialog {
             i++;
         }
     }
-    private static final String DEFAULT_CHARSET = "UTF-8";
+    
     
     private JComboBox jcb_content_type = new JComboBox(contentTypeArr);
     private JComboBox jcb_char_set = new JComboBox(charSetArr);
