@@ -85,8 +85,10 @@ public class HTTPRequestThread extends Thread {
             int port = url.getPort();
             client.getState().setCredentials(new AuthScope(host, port, realm), creds);
             
-            // Set to default preemptive mode
-            client.getParams().setAuthenticationPreemptive(true);
+            // preemptive mode
+            if(request.isAuthPreemptive()){
+                client.getParams().setAuthenticationPreemptive(true);
+            }
         }
         
         HttpMethod method = null;
@@ -122,7 +124,7 @@ public class HTTPRequestThread extends Thread {
             method.addRequestHeader(header);
         }
         
-        // POST method specific logic
+        // POST/PUT method specific logic
         if(method instanceof EntityEnclosingMethod){
 
             EntityEnclosingMethod eeMethod = (EntityEnclosingMethod)method;

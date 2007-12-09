@@ -20,6 +20,7 @@ public final class RequestBean {
     
     private URL url;
     private String method;
+    private boolean authPreemptive;
     private List<String> authMethods;
     private String authHost;
     private String authRealm;
@@ -34,6 +35,14 @@ public final class RequestBean {
     
     public void setBody(final ReqEntityBean body){
         this.body = body;
+    }
+    
+    public boolean isAuthPreemptive() {
+        return authPreemptive;
+    }
+
+    public void setAuthPreemptive(boolean authPreemptive) {
+        this.authPreemptive = authPreemptive;
     }
 
     public List<String> getAuthMethods() {

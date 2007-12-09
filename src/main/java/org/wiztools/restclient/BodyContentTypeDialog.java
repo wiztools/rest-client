@@ -38,7 +38,8 @@ public class BodyContentTypeDialog extends JDialog {
     
     private static final String[] charSetArr;
     private static final String DEFAULT_CHARSET = "UTF-8";
-    
+
+    // Content-type
     static{
         InputStream is = BodyContentTypeDialog.class.getClassLoader().getResourceAsStream("org/wiztools/restclient/mime.types");
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -69,8 +70,8 @@ public class BodyContentTypeDialog extends JDialog {
         contentTypeArr = arr;
     }
     
+    // Charset
     static{
-        // Charset
         Map<String, Charset> charsets = Charset.availableCharsets();
         int size = charsets.size();
         charSetArr = new String[size];

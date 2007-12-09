@@ -6,21 +6,17 @@
 package org.wiztools.restclient;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -40,13 +36,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
-import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.MatteBorder;
 
 /**
  *
@@ -87,15 +80,19 @@ public class RESTView extends JPanel implements View {
     private JTextArea jta_response = new JTextArea();
     
     private JTable jt_res_headers = new JTable();
-    private JTable jt_req_headers = new JTable();
     private JTable jt_req_params = new JTable();
     private JTable jt_req_body = new JTable();
+    
+    private TwoColumnTablePanel jp_2col_req_headers;
+    
+    private ParameterDialog jd_req_paramDialog;
     
     private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();
 
     // Authentication resources
     private JCheckBox jcb_auth_basic = new JCheckBox("BASIC");
     private JCheckBox jcb_auth_digest = new JCheckBox("DIGEST");
+    private JCheckBox jcb_auth_preemptive = new JCheckBox("Preemptive");
     private JLabel jl_auth_host = new JLabel("<html>Host: </html>");
     private JLabel jl_auth_realm = new JLabel("<html>Realm: </html>");
     private JLabel jl_auth_username = new JLabel("<html>Username: <font color=red>*</font></html>");
@@ -114,124 +111,6 @@ public class RESTView extends JPanel implements View {
         this.frame = frame;
         init();
         view = this;
-    }
-    
-    private JPanel get2ColumnTablePanel(final String[] title, final JTable jt){
-        // Create and set the table model
-        final TwoColumnTableModel model = new TwoColumnTableModel(title);
-        jt.setModel(model);
-        
-        // Set the size
-        Dimension d = jt.getPreferredSize();
-        d.height = d.height / 2;
-        jt.setPreferredScrollableViewportSize(d);
-        
-        // Create Popupmenu
-        final JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem jmi_delete = new JMenuItem("Delete");
-        jmi_delete.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                SwingUtilities.invokeLater(new Runnable(){
-                    public void run(){
-                        int selectionCount = jt.getSelectedRowCount();
-                        if(selectionCount > 0){
-                            int[] rows = jt.getSelectedRows();
-                            Arrays.sort(rows);
-                            for(int i=rows.length-1; i>=0; i--){
-                                model.deleteRow(rows[i]);
-                            }
-                        }
-                    }
-                });
-            }
-        });
-        popupMenu.add(jmi_delete);
-        
-        // Attach popup menu
-        jt.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                showPopup(e);
-            }
-            
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                showPopup(e);
-            }
-            private void showPopup(MouseEvent e) {
-                if(jt_req_headers.getSelectedRowCount() == 0){
-                    // No table row selected
-                    return;
-                }
-                if (e.isPopupTrigger()) {
-                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-        });
-        
-        // Create the interface
-        JPanel jp = new JPanel();
-        jp.setLayout(new BorderLayout());
-        
-        JPanel jp_north = new JPanel();
-        jp_north.setLayout(new FlowLayout(FlowLayout.CENTER));
-        JLabel jl_key = new JLabel("Key: ");
-        JLabel jl_value = new JLabel("Value: ");
-        final int TEXT_FIELD_SIZE = 12;
-        final JTextField jtf_key = new JTextField(TEXT_FIELD_SIZE);
-        final JTextField jtf_value = new JTextField(TEXT_FIELD_SIZE);
-        jl_key.setDisplayedMnemonic('k');
-        jl_key.setLabelFor(jtf_key);
-        JButton jb_add = new JButton("Add");
-        jb_add.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                String key = jtf_key.getText();
-                String value = jtf_value.getText();
-                List<String> errors = null;
-                if(Util.isStrEmpty(key)){
-                    errors = new ArrayList<String>();
-                    errors.add("Key is empty.");
-                }
-                if(Util.isStrEmpty(value)){
-                    errors = errors==null?new ArrayList<String>():errors;
-                    errors.add("Value is empty.");
-                }
-                if(errors != null){
-                    StringBuffer sb = new StringBuffer();
-                    sb.append("<html><ul>");
-                    for(String error: errors){
-                        sb.append("<li>");
-                        sb.append(error);
-                        sb.append("</li>");
-                    }
-                    sb.append("</ul></html>");
-                    JOptionPane.showMessageDialog(frame, sb.toString(), "Validation Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                model.insertRow(key, value);
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        jtf_key.setText("");
-                        jtf_value.setText("");
-                        jtf_key.requestFocus();
-                    }
-                });
-            }
-        });
-        jp_north.add(jl_key);
-        jp_north.add(jtf_key);
-        jp_north.add(jl_value);
-        jp_north.add(jtf_value);
-        jp_north.add(jb_add);
-        jp.add(jp_north, BorderLayout.NORTH);
-        
-        JPanel jp_center = new JPanel();
-        jp_center.setLayout(new GridLayout(1, 1));
-        JScrollPane jsp = new JScrollPane(jt);
-        jp_center.add(jsp);
-        jp.add(jp_center, BorderLayout.CENTER);
-        
-        return jp;
     }
     
     private JTabbedPane initJTPRequest(){
@@ -293,9 +172,8 @@ public class RESTView extends JPanel implements View {
         jtp.addTab("Method", jp_method_encp);
         
         // Headers Tab
-        JPanel jp_headers = get2ColumnTablePanel(
-                new String[]{"Header", "Value"}, jt_req_headers);
-        jtp.addTab("Headers", jp_headers);
+        jp_2col_req_headers = new TwoColumnTablePanel(new String[]{"Header", "Value"}, frame);
+        jtp.addTab("Headers", jp_2col_req_headers);
         
         // Body Tab
         reqBodyToggle(false); // disable control by default
@@ -319,6 +197,11 @@ public class RESTView extends JPanel implements View {
             }
         });
         jp_body_north.add(jb_body_file);
+        jb_body_params.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                jb_body_paramActionPerformed(event);
+            }
+        });
         jp_body_north.add(jb_body_params);
         jp_body.add(jp_body_north, BorderLayout.NORTH);
         JPanel jp_body_center = new JPanel();
@@ -333,16 +216,10 @@ public class RESTView extends JPanel implements View {
         jp_auth.setLayout(new BorderLayout());
         JPanel jp_auth_west = new JPanel();
         jp_auth_west.setLayout(new BorderLayout());
-        JPanel jp_auth_west_north = new JPanel();
-        jp_auth_west_north.setBorder(new MatteBorder(1, 1, 1, 1, Color.red));
-        jp_auth_west_north.add(new JLabel("Authentication")); // @@@@@@@@@@@@@
-        jp_auth_west.add(jp_auth_west_north, BorderLayout.NORTH);
         JPanel jp_auth_west_center = new JPanel();
         jp_auth_west_center.setBorder(new TitledBorder("Auth Type"));
         jp_auth_west_center.setLayout(new GridLayout(2,1));
         jcb_auth_basic.setSelected(false);
-        //jcb_auth_basic.setEnabled();
-        //jcb_auth_digest.setEnabled(false);
         ActionListener action = new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 auth_enableActionPerformed(event);
@@ -353,6 +230,12 @@ public class RESTView extends JPanel implements View {
         jp_auth_west_center.add(jcb_auth_basic);
         jp_auth_west_center.add(jcb_auth_digest);
         jp_auth_west.add(jp_auth_west_center, BorderLayout.CENTER);
+        JPanel jp_auth_west_south = new JPanel();
+        jp_auth_west_south.setBorder(BorderFactory.createTitledBorder("Preemptive?"));
+        jp_auth_west_south.setLayout(new GridLayout(1, 1));
+        jcb_auth_preemptive.setEnabled(false);
+        jp_auth_west_south.add(jcb_auth_preemptive);
+        jp_auth_west.add(jp_auth_west_south, BorderLayout.SOUTH);
         jp_auth.add(jp_auth_west, BorderLayout.WEST);
         JPanel jp_auth_center = new JPanel();
         jp_auth_center.setBorder(new TitledBorder("Details"));
@@ -512,7 +395,20 @@ public class RESTView extends JPanel implements View {
     
     private void init(){
         // Initialize the errorDialog
-        errorDialog = new ErrorDialog(frame, true);
+        errorDialog = new ErrorDialog(frame);
+        
+        // Initialize parameter dialog
+        ParameterView pv = new ParameterView(){
+            public void setParameter(final String params) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        jta_req_body.setText(params);
+                    }
+                });
+            }
+            
+        };
+        jd_req_paramDialog = new ParameterDialog(frame, pv);
         
         // Initialize jd_body_content_type
         jd_body_content_type = new BodyContentTypeDialog(frame);
@@ -560,7 +456,9 @@ public class RESTView extends JPanel implements View {
             
             String realm = jtf_auth_realm.getText();
             String host = jtf_auth_host.getText();
+            boolean preemptive = jcb_auth_preemptive.isSelected();
             
+            request.setAuthPreemptive(preemptive);
             request.setAuthUsername(uid);
             request.setAuthPassword(pwd);
             request.setAuthRealm(realm);
@@ -597,7 +495,7 @@ public class RESTView extends JPanel implements View {
         }
         
         // Get request headers
-        Object[][] header_data = ((TwoColumnTableModel)jt_req_headers.getModel()).getData();
+        Object[][] header_data = jp_2col_req_headers.getTableModel().getData();
         if(header_data.length > 0){
             for(int i=0; i<header_data.length; i++){
                 String key = (String)header_data[i][0];
@@ -733,6 +631,7 @@ public class RESTView extends JPanel implements View {
     private void authToggle(final boolean boo){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
+                jcb_auth_preemptive.setEnabled(boo);
                 jtf_auth_host.setEnabled(boo);
                 jtf_auth_realm.setEnabled(boo);
                 jtf_auth_username.setEnabled(boo);
@@ -776,6 +675,17 @@ public class RESTView extends JPanel implements View {
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 }
+            }
+        });
+    }
+    
+    private void jb_body_paramActionPerformed(ActionEvent event){
+        if(!canSetReqBodyText()){
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable(){
+            public void run(){
+                jd_req_paramDialog.setVisible(true);
             }
         });
     }

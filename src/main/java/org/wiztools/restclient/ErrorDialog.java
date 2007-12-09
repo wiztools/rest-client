@@ -26,8 +26,8 @@ public class ErrorDialog extends javax.swing.JDialog {
     private java.awt.Frame parent;
     
     /** Creates new form ErrorDialog */
-    public ErrorDialog(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public ErrorDialog(java.awt.Frame parent) {
+        super(parent, true);
         this.parent = parent;
         this.setTitle("Error!");
         initComponents();
