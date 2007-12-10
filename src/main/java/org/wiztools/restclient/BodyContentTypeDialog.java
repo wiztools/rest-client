@@ -38,6 +38,9 @@ public class BodyContentTypeDialog extends JDialog {
     
     private static final String[] charSetArr;
     private static final String DEFAULT_CHARSET = "UTF-8";
+    
+    public static final String PARAM_CONTENT_TYPE = "application/x-www-form-urlencoded";
+    public static final String PARAM_CHARSET = "UTF-8";
 
     // Content-type
     static{
@@ -176,7 +179,17 @@ public class BodyContentTypeDialog extends JDialog {
         return this.contentType;
     }
     
+    void setContentType(String contentType){
+        this.contentType = contentType;
+        jcb_content_type.setSelectedItem(contentType);
+    }
+    
     String getCharSet(){
         return this.charSet;
+    }
+    
+    void setCharSet(String charSet){
+        this.charSet = charSet;
+        jcb_char_set.setSelectedItem(charSet);
     }
 }

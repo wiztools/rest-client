@@ -35,6 +35,7 @@ import javax.swing.SwingUtilities;
 public final class TwoColumnTablePanel extends JPanel {
     
     private TwoColumnTableModel model;
+    private Dimension tableDimension;
     
     public TwoColumnTableModel getTableModel(){
         return model;
@@ -42,15 +43,18 @@ public final class TwoColumnTablePanel extends JPanel {
 
     public TwoColumnTablePanel(final String[] title, final Frame frame) {
         
-        // Create and set the table model
+        // Create JTable
         final JTable jt = new JTable();
-        model = new TwoColumnTableModel(title);
-        jt.setModel(model);
         
         // Set the size
         Dimension d = jt.getPreferredSize();
         d.height = d.height / 2;
         jt.setPreferredScrollableViewportSize(d);
+        tableDimension = d;
+        
+        // Create and set the table model
+        model = new TwoColumnTableModel(title);
+        jt.setModel(model);
         
         // Create Popupmenu
         final JPopupMenu popupMenu = new JPopupMenu();
@@ -157,6 +161,10 @@ public final class TwoColumnTablePanel extends JPanel {
         jp_center.add(jsp);
         jp.add(jp_center, BorderLayout.CENTER);
         
+    }
+    
+    public Dimension getTableDimension(){
+        return tableDimension;
     }
     
 }

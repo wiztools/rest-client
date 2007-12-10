@@ -6,6 +6,7 @@
 package org.wiztools.restclient;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -14,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -29,11 +31,15 @@ public class ParameterDialog extends JDialog {
     private JButton jb_generate = new JButton("Generate");
     private JButton jb_cancel = new JButton("Cancel");
     
+    private ParameterDialog me;
+    
     ParameterDialog(Frame f, ParameterView view){
         // true means modal:
         super(f, true);
+        this.setTitle("Insert Parameter");
         this.frame = f;
         this.view = view;
+        this.me = this;
         init();
     }
     
@@ -62,6 +68,12 @@ public class ParameterDialog extends JDialog {
         jp_south.add(jb_cancel);
         jp.add(jp_south, BorderLayout.SOUTH);
         
+        // Adding 100px (arbitary number) to show
+        // decent view of empty table
+        Dimension d = jp_2col_center.getPreferredSize();
+        d.height = d.height + 100;
+        jp_2col_center.setPreferredSize(d);
+        
         this.setContentPane(jp);
         pack();
     }
@@ -69,6 +81,13 @@ public class ParameterDialog extends JDialog {
     private void actionGenerate(ActionEvent e){
         TwoColumnTableModel model = jp_2col_center.getTableModel();
         Object[][] data = model.getData();
+        if(data == null || data.length < 1){
+            JOptionPane.showMessageDialog(me,
+                    "Please add data!",
+                    "Error: No data present!",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         Map<String, String> m = new LinkedHashMap<String, String>();
         for(int i=0; i<data.length; i++){
             m.put((String)data[i][0], (String)data[i][1]);

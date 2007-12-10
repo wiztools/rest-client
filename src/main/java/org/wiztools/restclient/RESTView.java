@@ -683,8 +683,10 @@ public class RESTView extends JPanel implements View {
         if(!canSetReqBodyText()){
             return;
         }
+        checkAndSetParameterContentType();
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
+                jd_req_paramDialog.setLocationRelativeTo(frame);
                 jd_req_paramDialog.setVisible(true);
             }
         });
@@ -704,6 +706,30 @@ public class RESTView extends JPanel implements View {
             }
         }
         return false;
+    }
+    
+    
+    private void checkAndSetParameterContentType(){
+        if(!jd_body_content_type.getContentType().equals(BodyContentTypeDialog.PARAM_CONTENT_TYPE)
+                || !jd_body_content_type.getCharSet().equals(BodyContentTypeDialog.PARAM_CHARSET)){
+            int status = JOptionPane.showConfirmDialog(frame,
+                    "<html>For parameter the Content-type and Charset needs <br>" +
+                    "to be `" + BodyContentTypeDialog.PARAM_CONTENT_TYPE +
+                    "' and `"+
+                    BodyContentTypeDialog.PARAM_CHARSET +
+                    "' respectively.<br>"+
+                    "Do you want to set this option?</html>",
+                    "Parameter Content-type and Charset",
+                    JOptionPane.YES_NO_OPTION);
+            if(status == JOptionPane.YES_OPTION){
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        jd_body_content_type.setContentType(BodyContentTypeDialog.PARAM_CONTENT_TYPE);
+                        jd_body_content_type.setCharSet(BodyContentTypeDialog.PARAM_CHARSET);
+                    }
+                });
+            }
+        }
     }
     
     private void reqBodyToggle(final boolean boo){
