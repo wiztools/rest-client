@@ -233,6 +233,7 @@ public class RESTView extends JPanel implements View {
         JPanel jp_auth_west_south = new JPanel();
         jp_auth_west_south.setBorder(BorderFactory.createTitledBorder("Preemptive?"));
         jp_auth_west_south.setLayout(new GridLayout(1, 1));
+        jcb_auth_preemptive.setSelected(true);
         jcb_auth_preemptive.setEnabled(false);
         jp_auth_west_south.add(jcb_auth_preemptive);
         jp_auth_west.add(jp_auth_west_south, BorderLayout.SOUTH);
