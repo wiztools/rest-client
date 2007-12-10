@@ -80,9 +80,7 @@ public class RESTView extends JPanel implements View {
     private JTextArea jta_response = new JTextArea();
     
     private JTable jt_res_headers = new JTable();
-    private JTable jt_req_params = new JTable();
-    private JTable jt_req_body = new JTable();
-    
+
     private TwoColumnTablePanel jp_2col_req_headers;
     
     private ParameterDialog jd_req_paramDialog;
@@ -97,7 +95,7 @@ public class RESTView extends JPanel implements View {
     private JLabel jl_auth_realm = new JLabel("<html>Realm: </html>");
     private JLabel jl_auth_username = new JLabel("<html>Username: <font color=red>*</font></html>");
     private JLabel jl_auth_password = new JLabel("<html>Password: <font color=red>*</font></html>");
-    private final int auth_text_size = 20;
+    private static final int auth_text_size = 20;
     private JTextField jtf_auth_host = new JTextField(auth_text_size);
     private JTextField jtf_auth_realm = new JTextField(auth_text_size);
     private JTextField jtf_auth_username = new JTextField(auth_text_size);
