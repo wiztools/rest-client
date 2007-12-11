@@ -11,6 +11,7 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +23,6 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -31,7 +31,7 @@ import javax.swing.SwingUtilities;
  *
  * @author schandran
  */
-public class BodyContentTypeDialog extends JDialog {
+public class BodyContentTypeDialog extends EscapableDialog {
     
     private static final String[] contentTypeArr;
     private static final String DEFAULT_CONTENT_TYPE = "text/plain";
@@ -152,6 +152,10 @@ public class BodyContentTypeDialog extends JDialog {
         
         this.setContentPane(jp_encp);
         this.pack();
+    }
+    
+    public void doEscape(KeyEvent event){
+        hideMe(false);
     }
     
     void showMe(){

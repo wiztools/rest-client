@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,7 +21,7 @@ import javax.swing.SwingUtilities;
  *
  * @author  schandran
  */
-public class ErrorDialog extends javax.swing.JDialog {
+public class ErrorDialog extends EscapableDialog {
     
     private ErrorDialog errorDialog;
     private java.awt.Frame parent;
@@ -61,8 +62,16 @@ public class ErrorDialog extends javax.swing.JDialog {
 
         pack();
     }
+    
+    public void doEscape(KeyEvent event){
+        hideDialog();
+    }
 
     private void jb_okActionPerformed(java.awt.event.ActionEvent evt) {
+        hideDialog();
+    }
+    
+    private void hideDialog(){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 errorDialog.setVisible(false);

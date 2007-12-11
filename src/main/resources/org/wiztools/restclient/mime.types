@@ -35,6 +35,7 @@ application/isup
 application/java-archive
 application/java-serialized-object
 application/java-vm
+application/json
 application/mac-binhex40
 application/mac-compactpro
 application/macwriteii

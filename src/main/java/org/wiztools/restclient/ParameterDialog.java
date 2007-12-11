@@ -11,18 +11,20 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author schandran
  */
-public class ParameterDialog extends JDialog {
+public class ParameterDialog extends EscapableDialog {
     
     private final Frame frame;
     private final ParameterView view;
@@ -32,6 +34,8 @@ public class ParameterDialog extends JDialog {
     private JButton jb_cancel = new JButton("Cancel");
     
     private ParameterDialog me;
+    
+    static int BORDER_WIDTH = 5;
     
     ParameterDialog(Frame f, ParameterView view){
         // true means modal:
@@ -45,6 +49,8 @@ public class ParameterDialog extends JDialog {
     
     private void init(){
         JPanel jp = new JPanel();
+        
+        jp.setBorder(BorderFactory.createEmptyBorder(BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH));
         jp.setLayout(new BorderLayout());
         jp_2col_center = new TwoColumnTablePanel(
                 new String[]{"Key", "Value"}, frame);
@@ -78,6 +84,10 @@ public class ParameterDialog extends JDialog {
         pack();
     }
     
+    public void doEscape(KeyEvent event){
+        hideMe();
+    }
+    
     private void actionGenerate(ActionEvent e){
         TwoColumnTableModel model = jp_2col_center.getTableModel();
         Object[][] data = model.getData();
@@ -98,6 +108,14 @@ public class ParameterDialog extends JDialog {
     }
     
     private void actionCancel(ActionEvent e){
-        setVisible(false);
+        hideMe();
+    }
+    
+    private void hideMe(){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                setVisible(false);
+            }
+        });
     }
 }
