@@ -34,10 +34,10 @@ import javax.swing.SwingUtilities;
 public class BodyContentTypeDialog extends EscapableDialog {
     
     private static final String[] contentTypeArr;
-    private static final String DEFAULT_CONTENT_TYPE = "text/plain";
+    public static final String DEFAULT_CONTENT_TYPE = "text/plain";
     
     private static final String[] charSetArr;
-    private static final String DEFAULT_CHARSET = "UTF-8";
+    public static final String DEFAULT_CHARSET = "UTF-8";
     
     public static final String PARAM_CONTENT_TYPE = "application/x-www-form-urlencoded";
     public static final String PARAM_CHARSET = "UTF-8";

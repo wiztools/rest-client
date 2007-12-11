@@ -810,8 +810,8 @@ public class RESTView extends JPanel implements View {
         // Headers @TODO
         
         // Body
-        jd_body_content_type.setContentType(BodyContentTypeDialog.PARAM_CONTENT_TYPE);
-        jd_body_content_type.setCharSet(BodyContentTypeDialog.PARAM_CHARSET);
+        jd_body_content_type.setContentType(BodyContentTypeDialog.DEFAULT_CONTENT_TYPE);
+        jd_body_content_type.setCharSet(BodyContentTypeDialog.DEFAULT_CHARSET);
         
         // Auth
         jcb_auth_basic.setSelected(false);
