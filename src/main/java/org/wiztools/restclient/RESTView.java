@@ -30,7 +30,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -39,7 +38,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
-import javax.swing.border.BevelBorder;
 
 /**
  *
@@ -105,6 +103,8 @@ public class RESTView extends JPanel implements View {
     private final RESTView view;
     private final JFrame frame;
     
+    public static final int BORDER_WIDTH = 5;
+    
     protected RESTView(final JFrame frame){
         this.frame = frame;
         init();
@@ -157,7 +157,7 @@ public class RESTView extends JPanel implements View {
         JPanel jp_method_encp = new JPanel();
         jp_method_encp.setLayout(new FlowLayout(FlowLayout.LEFT));
         JPanel jp_method = new JPanel();
-        jp_method.setBorder(new TitledBorder("HTTP Method"));
+        jp_method.setBorder(BorderFactory.createTitledBorder("HTTP Method"));
         jp_method.setLayout(new GridLayout(4, 2));
         jp_method.add(jrb_req_get);
         jp_method.add(jrb_req_post);
@@ -215,7 +215,7 @@ public class RESTView extends JPanel implements View {
         JPanel jp_auth_west = new JPanel();
         jp_auth_west.setLayout(new BorderLayout());
         JPanel jp_auth_west_center = new JPanel();
-        jp_auth_west_center.setBorder(new TitledBorder("Auth Type"));
+        jp_auth_west_center.setBorder(BorderFactory.createTitledBorder("Auth Type"));
         jp_auth_west_center.setLayout(new GridLayout(2,1));
         jcb_auth_basic.setSelected(false);
         ActionListener action = new ActionListener() {
@@ -237,10 +237,10 @@ public class RESTView extends JPanel implements View {
         jp_auth_west.add(jp_auth_west_south, BorderLayout.SOUTH);
         jp_auth.add(jp_auth_west, BorderLayout.WEST);
         JPanel jp_auth_center = new JPanel();
-        jp_auth_center.setBorder(new TitledBorder("Details"));
+        jp_auth_center.setBorder(BorderFactory.createTitledBorder("Details"));
         jp_auth_center.setLayout(new BorderLayout());
         JPanel jp_auth_center_west = new JPanel();
-        jp_auth_center_west.setLayout(new GridLayout(4, 1, 5, 5));
+        jp_auth_center_west.setLayout(new GridLayout(4, 1, BORDER_WIDTH, BORDER_WIDTH));
         jl_auth_host.setEnabled(false);
         jl_auth_realm.setEnabled(false);
         jl_auth_username.setEnabled(false);
@@ -251,7 +251,7 @@ public class RESTView extends JPanel implements View {
         jp_auth_center_west.add(jl_auth_password);
         jp_auth_center.add(jp_auth_center_west, BorderLayout.WEST);
         JPanel jp_auth_center_center = new JPanel();
-        jp_auth_center_center.setLayout(new GridLayout(4, 1, 5, 5));
+        jp_auth_center_center.setLayout(new GridLayout(4, 1, BORDER_WIDTH, BORDER_WIDTH));
         jtf_auth_host.setEnabled(false);
         jtf_auth_realm.setEnabled(false);
         jtf_auth_username.setEnabled(false);
@@ -314,34 +314,31 @@ public class RESTView extends JPanel implements View {
     
     private JPanel initNorth(){
         JPanel jp = new JPanel();
-        jp.setLayout(new BorderLayout());
+        jp.setBorder(BorderFactory.createEmptyBorder(
+                BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH));
+        jp.setLayout(new BorderLayout(BORDER_WIDTH, BORDER_WIDTH));
+        
+        // North
+        JPanel jp_north = new JPanel();
+        jp_north.setLayout(new BorderLayout());
         jl_url.setLabelFor(jcb_url);
         jl_url.setDisplayedMnemonic('u');
-        jp.add(jl_url, BorderLayout.WEST);
-        Dimension d = jcb_url.getSize();
-        jcb_url.setSize(85, d.height);
+        jp_north.add(jl_url, BorderLayout.WEST);
         jcb_url.setEditable(true);
         jcb_url.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jcb_urlActionPerformed(evt);
             }
         });
-        jp.add(jcb_url, BorderLayout.CENTER);
-        JPanel jp_encp = new JPanel();
-        // top, left, bottom, right:
-        jp_encp.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jp_encp.setLayout(new GridLayout(1,1));
-        jp_encp.add(jp);
-        return jp_encp;
-    }
-    
-    private JPanel initCenter(){
-        JPanel jp = new JPanel();
-        jp.setLayout(new BorderLayout());
-        jp.add(initJTPRequest(), BorderLayout.NORTH);
+        jp_north.add(jcb_url, BorderLayout.CENTER);
+        jp.add(jp_north, BorderLayout.NORTH);
         
+        // Center
+        jp.add(initJTPRequest(), BorderLayout.CENTER);
+        
+        // SOUTH
         JPanel jp_buttons = new JPanel();
-        jp_buttons.setLayout(new BorderLayout(5, 5));
+        jp_buttons.setLayout(new BorderLayout(BORDER_WIDTH, BORDER_WIDTH));
         jb_request.setMnemonic('r');
         jb_request.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -356,23 +353,26 @@ public class RESTView extends JPanel implements View {
         });
         jp_buttons.add(jb_request, BorderLayout.CENTER);
         jp_buttons.add(jb_clear, BorderLayout.EAST);
-        JPanel jp_buttons_encp = new JPanel();
-        jp_buttons_encp.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-        jp_buttons_encp.setLayout(new GridLayout(1, 1));
-        jp_buttons_encp.add(jp_buttons);
-        jp.add(jp_buttons_encp, BorderLayout.CENTER);
+        jp.add(jp_buttons, BorderLayout.SOUTH);
         
-        jp.add(initJTPResponse(), BorderLayout.SOUTH);
-        JPanel jp_encp = new JPanel();
-        jp_encp.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jp_encp.setLayout(new GridLayout(1,1));
-        jp_encp.add(jp);
-        return jp_encp;
+        return jp;
+    }
+    
+    private JPanel initCenter(){
+        JPanel jp = new JPanel();
+        // Set top as 0:
+        jp.setBorder(BorderFactory.createEmptyBorder(
+                0, BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH));
+        jp.setLayout(new GridLayout(1, 1));
+        
+        jp.add(initJTPResponse(), BorderLayout.CENTER);
+        
+        return jp;
     }
     
     private JPanel initSouth(){
         JPanel jp = new JPanel();
-        jp.setBorder(new BevelBorder(1));
+        jp.setBorder(BorderFactory.createBevelBorder(1));
         jp.setLayout(new GridLayout(1, 2));
         Font font = jl_status.getFont();
         String fontName = font.getName();

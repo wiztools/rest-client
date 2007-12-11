@@ -35,8 +35,6 @@ public class ParameterDialog extends EscapableDialog {
     
     private ParameterDialog me;
     
-    static int BORDER_WIDTH = 5;
-    
     ParameterDialog(Frame f, ParameterView view){
         // true means modal:
         super(f, true);
@@ -50,7 +48,11 @@ public class ParameterDialog extends EscapableDialog {
     private void init(){
         JPanel jp = new JPanel();
         
-        jp.setBorder(BorderFactory.createEmptyBorder(BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH));
+        jp.setBorder(BorderFactory.createEmptyBorder(
+                RESTView.BORDER_WIDTH,
+                RESTView.BORDER_WIDTH,
+                RESTView.BORDER_WIDTH,
+                RESTView.BORDER_WIDTH));
         jp.setLayout(new BorderLayout());
         jp_2col_center = new TwoColumnTablePanel(
                 new String[]{"Key", "Value"}, frame);
