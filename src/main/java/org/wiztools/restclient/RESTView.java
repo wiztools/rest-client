@@ -664,7 +664,6 @@ public class RESTView extends JPanel implements View {
                     // Get text from file and set
                     try{
                         String body = Util.getStringFromFile(f);
-                        // setJTAReqBodyDimension();
                         jta_req_body.setText(body);
                     }
                     catch(IOException ex){
