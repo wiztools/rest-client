@@ -16,8 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -30,6 +28,10 @@ public class Util {
             return true;
         }
         return false;
+    }
+    
+    public static String getNullStrIfNull(final String str){
+        return str==null? "": str;
     }
 
     public static String getStackTrace(final Throwable aThrowable) {

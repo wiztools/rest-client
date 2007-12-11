@@ -799,4 +799,87 @@ public class RESTView extends JPanel implements View {
         }
         return errors;
     }
+    
+    private void clearUIRequest(){
+        // URL
+        jcb_url.setSelectedItem(null);
+        
+        // Method
+        jrb_req_get.setSelected(true);
+        
+        // Headers @TODO
+        
+        // Body
+        jd_body_content_type.setContentType(BodyContentTypeDialog.PARAM_CONTENT_TYPE);
+        jd_body_content_type.setCharSet(BodyContentTypeDialog.PARAM_CHARSET);
+        
+        // Auth
+        jcb_auth_basic.setSelected(false);
+        jcb_auth_digest.setSelected(false);
+        jtf_auth_host.setText("");
+        jtf_auth_realm.setText("");
+        jtf_auth_username.setText("");
+        jpf_auth_password.setText("");
+    }
+    
+    void setUIFromRequest(final RequestBean request){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                // Clear first
+                clearUIRequest();
+                
+                // URL
+                jcb_url.setSelectedItem(request.getUrl().toString());
+                
+                // Method
+                String reqMethod = request.getMethod();
+                if("GET".equals(reqMethod)){
+                    jrb_req_get.setSelected(true);
+                }
+                else if("POST".equals(reqMethod)){
+                    jrb_req_post.setSelected(true);
+                }
+                else if("PUT".equals(reqMethod)){
+                    jrb_req_put.setSelected(true);
+                }
+                else if("DELETE".equals(reqMethod)){
+                    jrb_req_delete.setSelected(true);
+                }
+                else if("HEAD".equals(reqMethod)){
+                    jrb_req_head.setSelected(true);
+                }
+                else if("OPTIONS".equals(reqMethod)){
+                    jrb_req_options.setSelected(true);
+                }
+                else if("TRACE".equals(reqMethod)){
+                    jrb_req_trace.setSelected(true);
+                }
+                
+                // Headers @TODO
+                
+                // Body
+                ReqEntityBean body = request.getBody();
+                if(body != null){
+                    jd_body_content_type.setContentType(body.getContentType());
+                    jd_body_content_type.setCharSet(body.getCharSet());
+                    jta_req_body.setText(body.getBody());
+                }
+                
+                // Authentication
+                List<String> authMethods = request.getAuthMethods();
+                for(String authMethod: authMethods){
+                    if("BASIC".equals(authMethod)){
+                        jcb_auth_basic.setSelected(true);
+                    }
+                    else if("DIGEST".equals(authMethod)){
+                        jcb_auth_digest.setSelected(true);
+                    }
+                }
+                jtf_auth_host.setText(Util.getNullStrIfNull(request.getAuthHost()));
+                jtf_auth_realm.setText(Util.getNullStrIfNull(request.getAuthRealm()));
+                jtf_auth_username.setText(Util.getNullStrIfNull(request.getAuthUsername()));
+                jpf_auth_password.setText(new String(request.getAuthPassword()));
+            }
+        });
+    }
 }
