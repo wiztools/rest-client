@@ -4,7 +4,7 @@
  * Created on November 29, 2007, 3:50 PM
  */
 
-package org.wiztools.restclient;
+package org.wiztools.restclient.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

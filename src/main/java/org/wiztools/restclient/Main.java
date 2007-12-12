@@ -5,6 +5,7 @@
 
 package org.wiztools.restclient;
 
+import org.wiztools.restclient.ui.RESTFrame;
 import javax.swing.SwingUtilities;
 
 /**

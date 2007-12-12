@@ -3,8 +3,9 @@
  * and open the template in the editor.
  */
 
-package org.wiztools.restclient;
+package org.wiztools.restclient.ui;
 
+import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
