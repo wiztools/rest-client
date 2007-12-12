@@ -117,7 +117,7 @@ public final class XMLUtil {
             }
 
             // creating the auth-password child element
-            String authPassword = bean.getAuthPassword().toString();
+            String authPassword = new String(bean.getAuthPassword());
             if (authPassword != null) {
                 e = xmldoc.createElementNS(null, "auth-password");
                 n = xmldoc.createTextNode(authPassword);
@@ -141,7 +141,7 @@ public final class XMLUtil {
 
             // creating the body child element
             ReqEntityBean rBean = bean.getBody();
-            if (rBean.getBody() != null) {
+            if (rBean != null) {
                 e = xmldoc.createElementNS(null, "body");
                 String contentType = rBean.getContentType();
                 String charSet = rBean.getCharSet();
