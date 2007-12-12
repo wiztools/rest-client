@@ -822,7 +822,7 @@ public class RESTView extends JPanel implements View {
         jpf_auth_password.setText("");
     }
     
-    void setUIFromRequest(final RequestBean request){
+    public void setUIFromRequest(final RequestBean request){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 // Clear first

@@ -10,13 +10,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import org.wiztools.restclient.RequestBean;
+import org.wiztools.restclient.Util;
+import org.wiztools.restclient.xml.XMLException;
+import org.wiztools.restclient.xml.XMLUtil;
 
 /**
  *
@@ -26,6 +33,8 @@ public class RESTFrame extends JFrame {
     
     private RESTView view;
     private AboutDialog aboutDialog;
+    
+    private JFileChooser jfc = new JFileChooser();
     
     public RESTFrame(final String title){
         super(title);
@@ -41,6 +50,11 @@ public class RESTFrame extends JFrame {
         
         JMenuItem jmi_open_req = new JMenuItem("Open Request");
         jmi_open_req.setMnemonic('o');
+        jmi_open_req.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                jmi_open_reqAction();
+            }
+        });
         jm_file.add(jmi_open_req);
         
         jm_file.addSeparator();
@@ -110,6 +124,27 @@ public class RESTFrame extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+    
+    private void jmi_open_reqAction(){
+        int status = jfc.showOpenDialog(this);
+        if(status == JFileChooser.APPROVE_OPTION){
+            File f = jfc.getSelectedFile();
+            Exception e = null;
+            try{
+                RequestBean request = XMLUtil.getRequestFromXMLFile(f);
+                view.setUIFromRequest(request);
+            }
+            catch(IOException ex){
+                e = ex;
+            }
+            catch(XMLException ex){
+                e = ex;
+            }
+            if(e != null){
+                view.doError(Util.getStackTrace(e));
+            }
+        }
     }
     
     private void shutdownCall(){

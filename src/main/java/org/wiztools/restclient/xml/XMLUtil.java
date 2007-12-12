@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.wiztools.restclient;
+package org.wiztools.restclient.xml;
 
+import org.wiztools.restclient.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -329,11 +330,19 @@ public final class XMLUtil {
     }
 
     public static Document getDocumentFromFile(final File f) throws IOException,
-            ParserConfigurationException, SAXException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(f);
-        return doc;
+            XMLException {
+        try{
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(f);
+            return doc;
+        }
+        catch(ParserConfigurationException ex){
+            throw new XMLException(ex.getMessage(), ex);
+        }
+        catch(SAXException ex){
+            throw new XMLException(ex.getMessage(), ex);
+        }
     }
 
     public static void writeRequestXML(final RequestBean bean, final File f)
@@ -351,14 +360,19 @@ public final class XMLUtil {
     }
     
     public static void writeXMLRequest(final File f, RequestBean bean) 
-            throws IOException, ParserConfigurationException, SAXException{
+            throws IOException, XMLException{
         Document doc = getDocumentFromFile(f);
         bean = xml2Request(doc);
     }
     
     public static void writeXMLResponse(final File f, ResponseBean bean) 
-            throws IOException, ParserConfigurationException, SAXException{
+            throws IOException, XMLException{
         Document doc = getDocumentFromFile(f);
         bean = xml2Response(doc);
+    }
+    
+    public static RequestBean getRequestFromXMLFile(final File f) throws IOException, XMLException{
+        Document doc = getDocumentFromFile(f);
+        return xml2Request(doc);
     }
 }
