@@ -18,9 +18,11 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import org.wiztools.restclient.RequestBean;
+import org.wiztools.restclient.ResponseBean;
 import org.wiztools.restclient.Util;
 import org.wiztools.restclient.xml.XMLException;
 import org.wiztools.restclient.xml.XMLUtil;
@@ -36,8 +38,11 @@ public class RESTFrame extends JFrame {
     
     private JFileChooser jfc = new JFileChooser();
     
+    private final RESTFrame me;
+    
     public RESTFrame(final String title){
         super(title);
+        me = this;
         init();
     }
     
@@ -63,10 +68,20 @@ public class RESTFrame extends JFrame {
         
         JMenuItem jmi_save_req = new JMenuItem("Save Request");
         jmi_save_req.setMnemonic('q');
+        jmi_save_req.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                actionSave(true);
+            }
+        });
         jm_file.add(jmi_save_req);
         
         JMenuItem jmi_save_res = new JMenuItem("Save Response");
         jmi_save_res.setMnemonic('s');
+        jmi_save_res.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                actionSave(false);
+            }
+        });
         jm_file.add(jmi_save_res);
         
         jm_file.addSeparator();
@@ -147,6 +162,80 @@ public class RESTFrame extends JFrame {
                 view.doError(Util.getStackTrace(e));
             }
         }
+    }
+    
+    private File getSaveFile(){
+        int status = jfc.showSaveDialog(this);
+        if(status == JFileChooser.APPROVE_OPTION){
+            File f = jfc.getSelectedFile();
+            if(f.exists()){
+                int yesNo = JOptionPane.showConfirmDialog(me,
+                        "File exists. Overwrite?",
+                        "File exists",
+                        JOptionPane.YES_NO_OPTION);
+                if(yesNo == JOptionPane.YES_OPTION){
+                    return f;
+                }
+                else{
+                    JOptionPane.showMessageDialog(me,
+                            "File not saved!",
+                            "Not saved",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }
+        return null;
+    }
+    
+    private void actionSave(final boolean isRequest){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if(isRequest){
+                    RequestBean request = view.getLastRequest();
+                    if(request == null){
+                        JOptionPane.showMessageDialog(view,
+                                "No last request available.",
+                                "No Request",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    File f = getSaveFile();
+                    if(f != null){
+                        try{
+                            XMLUtil.writeRequestXML(request, f);
+                        }
+                        catch(IOException ex){
+                            view.doError(Util.getStackTrace(ex));
+                        }
+                        catch(XMLException ex){
+                            view.doError(Util.getStackTrace(ex));
+                        }
+                    }
+                }
+                else{ // is response
+                    ResponseBean response = view.getLastResponse();
+                    if(response == null){
+                        JOptionPane.showMessageDialog(view,
+                                "No last response available.",
+                                "No Response",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    File f = getSaveFile();
+                    if(f != null){
+                        try{
+                            XMLUtil.writeResponseXML(response, f);
+                        }
+                        catch(IOException ex){
+                            view.doError(Util.getStackTrace(ex));
+                        }
+                        catch(XMLException ex){
+                            view.doError(Util.getStackTrace(ex));
+                        }
+                    }
+                }
+            }
+        });
     }
     
     private void shutdownCall(){

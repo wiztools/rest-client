@@ -107,6 +107,10 @@ public class RESTView extends JPanel implements View {
     
     public static final int BORDER_WIDTH = 5;
     
+    // Cache the last request and response
+    private RequestBean lastRequest;
+    private ResponseBean lastResponse;
+
     protected RESTView(final JFrame frame){
         this.frame = frame;
         init();
@@ -521,11 +525,13 @@ public class RESTView extends JPanel implements View {
         
 
         clear();
+        lastRequest = request;
         new HTTPRequestThread(request, view).start();
     }                                          
 
     // This is accessed by the Thread. Don't make it private.
     public void doResponse(final ResponseBean response){
+        lastResponse = response;
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 jtf_res_status.setText(response.getStatusLine());
@@ -541,7 +547,6 @@ public class RESTView extends JPanel implements View {
                 ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
                 model.setHeader(response.getHeaders());
                 jb_request.requestFocus();
-                // frame.pack();
             }
         });
     }
@@ -891,5 +896,13 @@ public class RESTView extends JPanel implements View {
                 jpf_auth_password.setText(new String(request.getAuthPassword()));
             }
         });
+    }
+    
+    public RequestBean getLastRequest() {
+        return lastRequest;
+    }
+
+    public ResponseBean getLastResponse() {
+        return lastResponse;
     }
 }
