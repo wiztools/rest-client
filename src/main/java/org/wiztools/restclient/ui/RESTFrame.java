@@ -36,7 +36,9 @@ public class RESTFrame extends JFrame {
     private RESTView view;
     private AboutDialog aboutDialog;
     
-    private JFileChooser jfc = new JFileChooser();
+    // Requests and responses are generally saved in different dirs
+    private JFileChooser jfc_request = new JFileChooser();
+    private JFileChooser jfc_response = new JFileChooser();
     
     private final RESTFrame me;
     
@@ -144,9 +146,9 @@ public class RESTFrame extends JFrame {
     }
     
     private void jmi_open_reqAction(){
-        int status = jfc.showOpenDialog(this);
+        int status = jfc_request.showOpenDialog(this);
         if(status == JFileChooser.APPROVE_OPTION){
-            File f = jfc.getSelectedFile();
+            File f = jfc_request.getSelectedFile();
             Exception e = null;
             try{
                 RequestBean request = XMLUtil.getRequestFromXMLFile(f);
@@ -164,7 +166,14 @@ public class RESTFrame extends JFrame {
         }
     }
     
-    private File getSaveFile(){
+    private File getSaveFile(final boolean isRequest){
+        JFileChooser jfc = null;
+        if(isRequest){
+            jfc = jfc_request;
+        }
+        else{
+            jfc = jfc_response;
+        }
         int status = jfc.showSaveDialog(this);
         if(status == JFileChooser.APPROVE_OPTION){
             File f = jfc.getSelectedFile();
@@ -183,6 +192,9 @@ public class RESTFrame extends JFrame {
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             }
+            else{ // If the file is new one
+                return f;
+            }
         }
         return null;
     }
@@ -199,7 +211,7 @@ public class RESTFrame extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-                    File f = getSaveFile();
+                    File f = getSaveFile(isRequest);
                     if(f != null){
                         try{
                             XMLUtil.writeRequestXML(request, f);
@@ -221,7 +233,7 @@ public class RESTFrame extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-                    File f = getSaveFile();
+                    File f = getSaveFile(isRequest);
                     if(f != null){
                         try{
                             XMLUtil.writeResponseXML(response, f);
