@@ -884,6 +884,7 @@ public class RESTView extends JPanel implements View {
                         jcb_auth_digest.setSelected(true);
                     }
                 }
+                jcb_auth_preemptive.setSelected(request.isAuthPreemptive());
                 jtf_auth_host.setText(Util.getNullStrIfNull(request.getAuthHost()));
                 jtf_auth_realm.setText(Util.getNullStrIfNull(request.getAuthRealm()));
                 jtf_auth_username.setText(Util.getNullStrIfNull(request.getAuthUsername()));
