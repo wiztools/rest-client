@@ -136,7 +136,7 @@ public final class XMLUtil {
             String charSet = rBean.getCharSet();
             String body = rBean.getBody();
             e.setAttributeNS(null, "content-type", contentType);
-            e.setAttributeNS(null, "char-set", charSet);
+            e.setAttributeNS(null, "charset", charSet);
             n = xmldoc.createTextNode(body);
             e.appendChild(n);
             request.appendChild(e);
@@ -221,9 +221,9 @@ public final class XMLUtil {
             node = elements.item(i);
             NamedNodeMap nodeMap = node.getAttributes();
             Node contentType = nodeMap.getNamedItem("content-type");
-            Node charSet = nodeMap.getNamedItem("char-set");
-            requestBean.setBody(new ReqEntityBean(contentType.getNodeValue(),
-                    charSet.getNodeValue(), node.getTextContent()));
+            Node charSet = nodeMap.getNamedItem("charset");
+            requestBean.setBody(new ReqEntityBean(node.getTextContent(), contentType.getNodeValue(),
+                    charSet.getNodeValue()));
         }
 
         return requestBean;
