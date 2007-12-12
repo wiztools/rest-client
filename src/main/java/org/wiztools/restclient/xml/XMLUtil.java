@@ -342,7 +342,6 @@ public final class XMLUtil {
         elements = doc.getElementsByTagName("body");
         for (int i = 0; i < elements.getLength(); i++) {
             node = elements.item(i);
-            System.out.println("body content" + node.getTextContent());
             responseBean.setResponseBody(node.getTextContent());
         }
 
@@ -360,6 +359,7 @@ public final class XMLUtil {
             serializer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
             serializer.transform(domSource, streamResult);
+            out.close();
         }
         catch(TransformerConfigurationException ex){
             throw new XMLException(ex.getMessage(), ex);
