@@ -78,6 +78,16 @@ public final class XMLUtil {
             request.appendChild(e);
         }
 
+
+        // creating the auth-preemptive child element
+        Boolean authPreemptive = bean.isAuthPreemptive();
+        if (authPreemptive != null) {
+            e = xmldoc.createElementNS(null, "auth-preemptive");
+            n = xmldoc.createTextNode(authPreemptive.toString());
+            e.appendChild(n);
+            request.appendChild(e);
+        }
+
         // creating the auth-host child element
         String authHost = bean.getAuthHost();
         if (authHost != null) {
@@ -174,6 +184,18 @@ public final class XMLUtil {
             String[] authenticationMethods = node.getTextContent().split(",");
             for (int j = 0; j < authenticationMethods.length; j++) {
                 requestBean.addAuthMethod(authenticationMethods[j]);
+            }
+        }
+
+        //get auth-preemptive
+        elements = doc.getElementsByTagName("auth-preemptive");
+        for (int i = 0; i < elements.getLength(); i++) {
+            node = elements.item(i);
+            if (node.getTextContent().equals("true")) {
+                requestBean.setAuthPreemptive(true);
+            }
+            else{
+                requestBean.setAuthPreemptive(false);
             }
         }
 
@@ -331,47 +353,45 @@ public final class XMLUtil {
 
     public static Document getDocumentFromFile(final File f) throws IOException,
             XMLException {
-        try{
+        try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(f);
             return doc;
-        }
-        catch(ParserConfigurationException ex){
+        } catch (ParserConfigurationException ex) {
             throw new XMLException(ex.getMessage(), ex);
-        }
-        catch(SAXException ex){
+        } catch (SAXException ex) {
             throw new XMLException(ex.getMessage(), ex);
         }
     }
 
     public static void writeRequestXML(final RequestBean bean, final File f)
-            throws IOException, ParserConfigurationException, 
+            throws IOException, ParserConfigurationException,
             TransformerConfigurationException, TransformerException {
         Document doc = request2XML(bean);
         writeXML(doc, f);
     }
 
     public static void writeResponseXML(final ResponseBean bean, final File f)
-            throws IOException, ParserConfigurationException, 
+            throws IOException, ParserConfigurationException,
             TransformerConfigurationException, TransformerException {
         Document doc = response2XML(bean);
         writeXML(doc, f);
     }
-    
-    public static void writeXMLRequest(final File f, RequestBean bean) 
-            throws IOException, XMLException{
+
+    public static void writeXMLRequest(final File f, RequestBean bean)
+            throws IOException, XMLException {
         Document doc = getDocumentFromFile(f);
         bean = xml2Request(doc);
     }
-    
-    public static void writeXMLResponse(final File f, ResponseBean bean) 
-            throws IOException, XMLException{
+
+    public static void writeXMLResponse(final File f, ResponseBean bean)
+            throws IOException, XMLException {
         Document doc = getDocumentFromFile(f);
         bean = xml2Response(doc);
     }
-    
-    public static RequestBean getRequestFromXMLFile(final File f) throws IOException, XMLException{
+
+    public static RequestBean getRequestFromXMLFile(final File f) throws IOException, XMLException {
         Document doc = getDocumentFromFile(f);
         return xml2Request(doc);
     }
