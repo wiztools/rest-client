@@ -5,6 +5,7 @@
 
 package org.wiztools.restclient.ui;
 
+import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -81,6 +82,19 @@ public class TwoColumnTableModel extends AbstractTableModel {
         }
         data = null;
         data = t;
+        fireTableDataChanged();
+    }
+    
+    public void setData(final Map<String, String> dataMap){
+        int size = dataMap.size();
+        Object[] keys = dataMap.keySet().toArray();
+        Object[][] o = new Object[size][2];
+        for(int i=0; i<size; i++){
+            o[i][0] = keys[i];
+            o[i][1] = dataMap.get(keys[i]);
+        }
+        data = null;
+        data = o;
         fireTableDataChanged();
     }
     

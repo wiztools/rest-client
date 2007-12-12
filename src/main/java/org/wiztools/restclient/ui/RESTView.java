@@ -32,6 +32,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -855,11 +856,16 @@ public class RESTView extends JPanel implements View {
                     jrb_req_trace.setSelected(true);
                 }
                 
-                // Headers @TODO
+                // Headers
+                Map<String, String> headers = request.getHeaders();
+                jp_2col_req_headers.getTableModel().setData(headers);
                 
                 // Body
                 ReqEntityBean body = request.getBody();
                 if(body != null){
+                    if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
+                        reqBodyToggle(true);
+                    }
                     jd_body_content_type.setContentType(body.getContentType());
                     jd_body_content_type.setCharSet(body.getCharSet());
                     jta_req_body.setText(body.getBody());
@@ -867,6 +873,9 @@ public class RESTView extends JPanel implements View {
                 
                 // Authentication
                 List<String> authMethods = request.getAuthMethods();
+                if(authMethods.size() > 0){
+                    authToggle(true);
+                }
                 for(String authMethod: authMethods){
                     if("BASIC".equals(authMethod)){
                         jcb_auth_basic.setSelected(true);

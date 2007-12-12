@@ -50,6 +50,8 @@ public class RESTFrame extends JFrame {
         
         JMenuItem jmi_open_req = new JMenuItem("Open Request");
         jmi_open_req.setMnemonic('o');
+        jmi_open_req.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         jmi_open_req.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 jmi_open_reqAction();
