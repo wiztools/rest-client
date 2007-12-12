@@ -47,7 +47,10 @@ public class AboutDialog extends EscapableDialog {
         
         JPanel jp_north = new JPanel();
         jp_north.setLayout(new FlowLayout(FlowLayout.CENTER));
-        JLabel jl_title = new JLabel(Main.TITLE + Main.VERSION);
+        JLabel jl_title = new JLabel(
+                "<html><h2>" +
+                Main.TITLE + Main.VERSION +
+                "</h2></html>");
         jp_north.add(jl_title);
         jp.add(jp_north, BorderLayout.NORTH);
         
@@ -57,7 +60,7 @@ public class AboutDialog extends EscapableDialog {
         String strText = "<html>RESTClient is a Java platform client application <br>" +
                 "to test RESTful webservices. It can be used <br>" +
                 "to test variety of HTTP communications. <br><br>" +
-                "http://rest-client.googlecode.com/</html>";
+                "<b>http://rest-client.googlecode.com/</b></html>";
         jl_text.setText(strText);
         jp_center.add(jl_text);
         jp.add(jp_center, BorderLayout.CENTER);
