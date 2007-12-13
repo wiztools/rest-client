@@ -70,6 +70,8 @@ public class RESTFrame extends JFrame {
         
         JMenuItem jmi_save_req = new JMenuItem("Save Request");
         jmi_save_req.setMnemonic('q');
+        jmi_save_req.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_S, ActionEvent.CTRL_MASK));
         jmi_save_req.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 actionSave(true);
