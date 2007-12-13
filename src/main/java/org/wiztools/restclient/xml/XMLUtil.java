@@ -120,7 +120,8 @@ public final class XMLUtil {
             String authPassword = new String(bean.getAuthPassword());
             if (authPassword != null) {
                 e = xmldoc.createElementNS(null, "auth-password");
-                n = xmldoc.createTextNode(authPassword);
+                String encPassword = Base64.encodeObject(authPassword);
+                n = xmldoc.createTextNode(encPassword);
                 e.appendChild(n);
                 request.appendChild(e);
             }
@@ -229,7 +230,8 @@ public final class XMLUtil {
         elements = doc.getElementsByTagName("auth-password");
         for (int i = 0; i < elements.getLength(); i++) {
             node = elements.item(i);
-            requestBean.setAuthPassword(node.getTextContent().toCharArray());
+            String password = (String) Base64.decodeToObject(node.getTextContent());
+            requestBean.setAuthPassword(password.toCharArray());
         }
 
         //get headers
