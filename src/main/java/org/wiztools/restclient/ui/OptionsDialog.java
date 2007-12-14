@@ -103,6 +103,7 @@ public class OptionsDialog extends EscapableDialog {
         JPanel jp_center_center = new JPanel();
         jp_center_center.setLayout(new GridLayout(4, 1, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
         jp_center_center.add(jtf_host);
+        jtf_port.setText("" + ProxyConfig.DEFAULT_PORT);
         jp_center_center.add(jtf_port);
         jp_center_center.add(jtf_username);
         jp_center_center.add(jpf_password);

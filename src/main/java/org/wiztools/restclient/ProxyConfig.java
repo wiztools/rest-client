@@ -13,6 +13,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author schandran
  */
 public final class ProxyConfig {
+    
+    // Global
+    public static final int DEFAULT_PORT = 8080;
 
     // Singleton
     
@@ -42,7 +45,7 @@ public final class ProxyConfig {
     
     private boolean enabled = false;
     private String host;
-    private int port;
+    private int port = DEFAULT_PORT;
     private boolean authEnabled = false;
     private String username;
     private char[] password;
