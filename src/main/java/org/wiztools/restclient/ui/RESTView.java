@@ -59,7 +59,7 @@ public class RESTView extends JPanel implements View {
     
     private JProgressBar jpb_status = new JProgressBar();
     
-    private JLabel jl_status = new JLabel("RESTClient");
+    private JLabel jl_status = new JLabel(" RESTClient");
     private JLabel jl_url = new JLabel("URL: ");
     private JComboBox jcb_url = new JComboBox();
     
@@ -894,6 +894,14 @@ public class RESTView extends JPanel implements View {
                 jtf_auth_realm.setText(Util.getNullStrIfNull(request.getAuthRealm()));
                 jtf_auth_username.setText(Util.getNullStrIfNull(request.getAuthUsername()));
                 jpf_auth_password.setText(new String(request.getAuthPassword()));
+            }
+        });
+    }
+    
+    public void setStatusMessage(final String msg){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                jl_status.setText(" " + msg);
             }
         });
     }

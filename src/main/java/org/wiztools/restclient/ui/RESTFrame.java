@@ -35,6 +35,7 @@ public class RESTFrame extends JFrame {
     
     private RESTView view;
     private AboutDialog aboutDialog;
+    private OptionsDialog optionsDialog;
     
     // Requests and responses are generally saved in different dirs
     private JFileChooser jfc_request = new JFileChooser();
@@ -101,6 +102,18 @@ public class RESTFrame extends JFrame {
         });
         jm_file.add(jmi_exit);
         
+        // Tools menu
+        JMenu jm_tools = new JMenu("Tools");
+        
+        JMenuItem jmi_options = new JMenuItem("Options");
+        jmi_options.setMnemonic('o');
+        jmi_options.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                actionOpenOptionsDialog(event);
+            }
+        });
+        jm_tools.add(jmi_options);
+        
         // Help menu
         JMenu jm_help = new JMenu("Help");
         
@@ -119,6 +132,7 @@ public class RESTFrame extends JFrame {
         
         // Add menus to menu-bar
         jmb.add(jm_file);
+        jmb.add(jm_tools);
         jmb.add(jm_help);
         
         this.setJMenuBar(jmb);
@@ -147,35 +161,56 @@ public class RESTFrame extends JFrame {
         setVisible(true);
     }
     
-    private void jmi_open_reqAction(){
-        int status = jfc_request.showOpenDialog(this);
-        if(status == JFileChooser.APPROVE_OPTION){
-            File f = jfc_request.getSelectedFile();
-            Exception e = null;
-            try{
-                RequestBean request = XMLUtil.getRequestFromXMLFile(f);
-                view.setUIFromRequest(request);
+    private void actionOpenOptionsDialog(ActionEvent event){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if(optionsDialog == null){
+                    optionsDialog = new OptionsDialog(me);
+                }
+                optionsDialog.setVisible(true);
             }
-            catch(IOException ex){
-                e = ex;
-            }
-            catch(XMLException ex){
-                e = ex;
-            }
-            if(e != null){
-                view.doError(Util.getStackTrace(e));
-            }
-        }
+        });
     }
     
+    private void jmi_open_reqAction(){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                jfc_request.setDialogTitle("Open Request");
+                int status = jfc_request.showOpenDialog(me);
+                if(status == JFileChooser.APPROVE_OPTION){
+                    File f = jfc_request.getSelectedFile();
+                    Exception e = null;
+                    try{
+                        RequestBean request = XMLUtil.getRequestFromXMLFile(f);
+                        view.setUIFromRequest(request);
+                    }
+                    catch(IOException ex){
+                        e = ex;
+                    }
+                    catch(XMLException ex){
+                        e = ex;
+                    }
+                    if(e != null){
+                        view.doError(Util.getStackTrace(e));
+                    }
+                }
+            }
+        });
+    }
+    
+    // This method is invoked from SU.invokeLater
     private File getSaveFile(final boolean isRequest){
         JFileChooser jfc = null;
+        final String title;
         if(isRequest){
             jfc = jfc_request;
+            title = "Save Request";
         }
         else{
             jfc = jfc_response;
+            title = "Save Response";
         }
+        jfc.setDialogTitle(title);
         int status = jfc.showSaveDialog(this);
         if(status == JFileChooser.APPROVE_OPTION){
             File f = jfc.getSelectedFile();
