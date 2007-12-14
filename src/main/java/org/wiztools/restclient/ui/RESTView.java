@@ -429,14 +429,9 @@ public class RESTView extends JPanel implements View {
         
         List<String> errors = validateForRequest();
         if(errors.size()!=0){
-            StringBuffer sb = new StringBuffer();
-            sb.append("<html><ul>");
-            for(String error: errors){
-                sb.append("<li>").append(error).append("</li>");
-            }
-            sb.append("</ul></html>");
+            String errStr = Util.getHTMLListFromList(errors);
             JOptionPane.showMessageDialog(frame,
-                sb.toString(),
+                errStr,
                 "Validation error",
                 JOptionPane.ERROR_MESSAGE);
             return;

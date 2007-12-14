@@ -15,6 +15,7 @@ import java.util.Map;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
@@ -56,6 +57,21 @@ public class HTTPRequestThread extends Thread {
         String urlStr = url.toString();
         
         HttpClient client = new HttpClient();
+        
+        // Set proxy
+        ProxyConfig proxy = ProxyConfig.getInstance();
+        proxy.acquire();
+        if(proxy.isEnabled()){
+            HostConfiguration hc = new HostConfiguration();
+            hc.setProxy(proxy.getHost(), proxy.getPort());
+            client.setHostConfiguration(hc);
+            if(proxy.isAuthEnabled()){
+                Credentials credentials = new UsernamePasswordCredentials(
+                        proxy.getUsername(), new String(proxy.getPassword()));
+                client.getState().setProxyCredentials(null , credentials);
+            }
+        }
+        proxy.release();
         
         boolean authEnabled = request.getAuthMethods().size()>0?true:false;
         

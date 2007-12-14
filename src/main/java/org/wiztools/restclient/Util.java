@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,6 +41,16 @@ public class Util {
         final PrintWriter printWriter = new PrintWriter(result);
         aThrowable.printStackTrace(printWriter);
         return errorMsg + "\n" + result.toString();
+    }
+    
+    public static String getHTMLListFromList(List<String> ll){
+        StringBuffer sb = new StringBuffer();
+        sb.append("<html><ul>");
+        for(String str: ll){
+            sb.append("<li>").append(str).append("</li>");
+        }
+        sb.append("</ul></html>");
+        return sb.toString();
     }
 
     public static String inputStream2String(final InputStream in) throws IOException {
