@@ -18,9 +18,12 @@ import javax.swing.JDialog;
  * @author schandran
  */
 public abstract class EscapableDialog extends JDialog implements KeyListener, ContainerListener {
+    
+    private final Frame _frame;
 
     public EscapableDialog(Frame f, boolean modal) {
         super(f, modal);
+        _frame = f;
         registerKeyAction(this);
     }
 
@@ -67,4 +70,17 @@ public abstract class EscapableDialog extends JDialog implements KeyListener, Co
             }
         }
     }
+    
+    /**
+     * Center the dialog relative to parent before displaying
+     * @param boo
+     */
+    @Override
+    public void setVisible(boolean boo){
+        if(boo){
+            this.setLocationRelativeTo(_frame);
+        }
+        super.setVisible(boo);
+    }
+    
 }

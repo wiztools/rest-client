@@ -1,5 +1,8 @@
 package org.wiztools.restclient.xml;
 
+// Slightly modified to include an static inner Exception class
+// Base64Exception -- Subhash.
+
 /**
  * <p>Encodes and decodes to and from Base64 notation.</p>
  * <p>Homepage: <a href="http://iharder.net/base64">http://iharder.net/base64</a>.</p>
@@ -936,8 +939,9 @@ public class Base64
             }   // end if: white space, equals sign or better
             else
             {
-                System.err.println( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );
-                return null;
+                // System.err.println( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );
+                throw new Base64Exception("Bad Base64 input character at " + i + ": " + source[i] + "(decimal)");
+                // return null;
             }   // end else: 
         }   // each input character
                                    
@@ -1805,5 +1809,14 @@ public class Base64
         
     }   // end inner class OutputStream
     
+    public static class Base64Exception extends RuntimeException{
+        public Base64Exception(final String msg){
+            super(msg);
+        }
+        
+        public Base64Exception(final String msg, final Throwable t){
+            super(msg, t);
+        }
+    }
     
 }   // end class Base64

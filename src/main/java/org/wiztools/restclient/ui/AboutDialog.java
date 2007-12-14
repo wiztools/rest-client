@@ -84,12 +84,6 @@ public class AboutDialog extends EscapableDialog {
     }
     
     @Override
-    public void setVisible(final boolean visible){
-        me.setLocationRelativeTo(frame);
-        super.setVisible(visible);
-    }
-    
-    @Override
     public void doEscape(KeyEvent event) {
         hideMe();
     }

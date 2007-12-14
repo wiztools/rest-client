@@ -166,12 +166,6 @@ public class OptionsDialog extends EscapableDialog {
     }
     
     @Override
-    public void setVisible(boolean boo){
-        this.setLocationRelativeTo(frame);
-        super.setVisible(boo);
-    }
-    
-    @Override
     public void doEscape(KeyEvent event) {
         actionClose();
     }

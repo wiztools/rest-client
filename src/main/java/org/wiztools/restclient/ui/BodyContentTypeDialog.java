@@ -158,11 +158,6 @@ public class BodyContentTypeDialog extends EscapableDialog {
         hideMe(false);
     }
     
-    void showMe(){
-        this.setLocationRelativeTo(this.getParent());
-        this.setVisible(true);
-    }
-    
     void hideMe(final boolean isOk){   
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

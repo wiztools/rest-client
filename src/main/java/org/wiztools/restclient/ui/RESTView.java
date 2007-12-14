@@ -189,7 +189,7 @@ public class RESTView extends JPanel implements View {
             public void actionPerformed(ActionEvent arg0) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        jd_body_content_type.showMe();
+                        jd_body_content_type.setVisible(true);
                     }
                 });
             }
