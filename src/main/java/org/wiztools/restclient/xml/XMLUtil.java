@@ -73,7 +73,7 @@ public final class XMLUtil {
                 for (String authMethod : authMethods) {
                     methods = methods + authMethod + ",";
                 }
-                String authenticationMethod = methods.substring(0, methods.length() - 1);
+                String authenticationMethod = methods.substring(0, methods.length()==0?0:methods.length()-1);
                 n = xmldoc.createTextNode(authenticationMethod);
                 e.appendChild(n);
                 request.appendChild(e);
@@ -117,8 +117,9 @@ public final class XMLUtil {
             }
 
             // creating the auth-password child element
-            String authPassword = new String(bean.getAuthPassword());
-            if (authPassword != null) {
+            String authPassword = null;
+            if(bean.getAuthPassword() != null){
+                authPassword = new String(bean.getAuthPassword());
                 e = xmldoc.createElementNS(null, "auth-password");
                 String encPassword = Base64.encodeObject(authPassword);
                 n = xmldoc.createTextNode(encPassword);

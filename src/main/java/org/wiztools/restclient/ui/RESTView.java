@@ -906,7 +906,12 @@ public class RESTView extends JPanel implements View {
                 jtf_auth_host.setText(Util.getNullStrIfNull(request.getAuthHost()));
                 jtf_auth_realm.setText(Util.getNullStrIfNull(request.getAuthRealm()));
                 jtf_auth_username.setText(Util.getNullStrIfNull(request.getAuthUsername()));
-                jpf_auth_password.setText(new String(request.getAuthPassword()));
+                if(request.getAuthPassword() != null){
+                    jpf_auth_password.setText(new String(request.getAuthPassword()));
+                }
+                
+                // Test script
+                jta_test_script.setText(request.getTestScript()==null?"":request.getTestScript());
             }
         });
     }
