@@ -153,6 +153,15 @@ public final class XMLUtil {
                 e.appendChild(n);
                 request.appendChild(e);
             }
+            // creating the test-script child element
+            String testScript = bean.getTestScript();
+            if (testScript != null) {
+                e = xmldoc.createElementNS(null, "test-script");
+                n = xmldoc.createTextNode(testScript);
+                e.appendChild(n);
+                request.appendChild(e);
+            }
+            
             root.appendChild(request);
 
             return xmldoc;
@@ -253,6 +262,13 @@ public final class XMLUtil {
             Node charSet = nodeMap.getNamedItem("charset");
             requestBean.setBody(new ReqEntityBean(node.getTextContent(), contentType.getNodeValue(),
                     charSet.getNodeValue()));
+        }
+        
+        //get test-script
+        elements = doc.getElementsByTagName("test-script");
+        for (int i = 0; i < elements.getLength(); i++) {
+            node = elements.item(i);
+            requestBean.setTestScript(node.getTextContent());
         }
 
         return requestBean;
