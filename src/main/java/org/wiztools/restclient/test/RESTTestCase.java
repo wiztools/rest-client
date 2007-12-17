@@ -13,8 +13,8 @@ import groovy.util.GroovyTestCase;
  */
 public class RESTTestCase extends GroovyTestCase {
     
-    private RoRequestBean request;
-    private RoResponseBean response;
+    protected RoRequestBean request;
+    protected RoResponseBean response;
     
     public void setRoRequestBean(final RoRequestBean request){
         this.request = request;
