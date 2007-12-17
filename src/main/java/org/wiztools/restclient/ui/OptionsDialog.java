@@ -243,6 +243,9 @@ public class OptionsDialog extends EscapableDialog {
                 proxy.setPassword(password);
             }
         }
+        else{
+            proxy.setEnabled(false);
+        }
         proxy.release();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
