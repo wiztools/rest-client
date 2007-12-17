@@ -40,6 +40,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
+import org.wiztools.restclient.test.Execute;
 
 /**
  *
@@ -75,6 +76,7 @@ public class RESTView extends JPanel implements View {
     private BodyContentTypeDialog jd_body_content_type;
     private JScrollPane jsp_req_body;
     private Dimension d_jsp_req_body;
+    private JTextArea jta_test_script = new JTextArea();
     
     private JScrollPane jsp_res_body = new JScrollPane();
     private JTextArea jta_response = new JTextArea();
@@ -272,6 +274,12 @@ public class RESTView extends JPanel implements View {
         jp_auth_encp.setLayout(new FlowLayout(FlowLayout.LEFT));
         jp_auth_encp.add(jp_auth);
         jtp.addTab("Authentication", jp_auth_encp);
+        
+        JPanel jp_test = new JPanel();
+        jp_test.setLayout(new BorderLayout());
+        JScrollPane jsp_test = new JScrollPane(jta_test_script);
+        jp_test.add(jsp_test, BorderLayout.CENTER);
+        jtp.addTab("Test Script", jp_test);
         
         return jtp;
     }
@@ -518,13 +526,25 @@ public class RESTView extends JPanel implements View {
             }
         }
         
+        // Test script specific
+        request.setTestScript(jta_test_script.getText());
 
         clear();
-        lastRequest = request;
         new HTTPRequestThread(request, view).start();
     }                                          
 
-    // This is accessed by the Thread. Don't make it private.
+    @Override
+    public void doStart(RequestBean request){
+        lastRequest = request;
+        SwingUtilities.invokeLater(new Runnable(){
+            public void run(){
+                jpb_status.setVisible(true);
+                jb_request.setEnabled(false);
+            }
+        });
+    }
+    
+    @Override
     public void doResponse(final ResponseBean response){
         lastResponse = response;
         SwingUtilities.invokeLater(new Runnable(){
@@ -544,18 +564,10 @@ public class RESTView extends JPanel implements View {
                 jb_request.requestFocus();
             }
         });
+        Execute.execute(lastRequest, response, view);
     }
     
-    public void doStart(RequestBean request){
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run(){
-                jpb_status.setVisible(true);
-                jb_request.setEnabled(false);
-            }
-        });
-    }
-    
-    // This is accessed by the Thread. Don't make it private.
+    @Override
     public void doEnd(){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
@@ -563,6 +575,16 @@ public class RESTView extends JPanel implements View {
                 jb_request.setEnabled(true);
             }
         });
+    }
+    
+    @Override
+    public void doTestResult(final String result){
+        doError(result);
+    }
+    
+    @Override
+    public void doError(final String error){
+        errorDialog.showError(error);
     }
     
     private void clear(){
@@ -756,10 +778,6 @@ public class RESTView extends JPanel implements View {
             d_jsp_req_body = d;
         }
         jsp_req_body.setPreferredSize(d_jsp_req_body);
-    }
-    
-    public void doError(final String error){
-        errorDialog.showError(error);
     }
     
     private List<String> validateForRequest(){

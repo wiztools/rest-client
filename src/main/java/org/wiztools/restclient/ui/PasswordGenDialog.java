@@ -55,6 +55,16 @@ public class PasswordGenDialog extends EscapableDialog {
         catch(IOException ex){
             tmp = "Help loading failed.";
         }
+        finally{
+            if(br != null){
+                try{
+                    br.close();
+                }
+                catch(IOException ex){
+                    // Do nothing!
+                }
+            }
+        }
         helpText = tmp;
     }
     
@@ -162,6 +172,8 @@ public class PasswordGenDialog extends EscapableDialog {
         jp_help.add(jp_help_south, BorderLayout.SOUTH);
         
         JTabbedPane jtp = new JTabbedPane();
+        jtp.setBorder(BorderFactory.createEmptyBorder(
+                RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
         jtp.addTab("Encoder/Decoder", jp);
         jtp.addTab("Help", jp_help);
         

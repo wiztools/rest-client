@@ -14,4 +14,5 @@ public interface View {
     public void doResponse(ResponseBean response);
     public void doEnd();
     public void doError(String error);
+    public void doTestResult(String error);
 }

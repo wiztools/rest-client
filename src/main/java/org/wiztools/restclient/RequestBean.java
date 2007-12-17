@@ -28,6 +28,15 @@ public final class RequestBean {
     private char[] authPassword;
     private Map<String, String> headers;
     private ReqEntityBean body;
+    private String testScript;
+    
+    public String getTestScript() {
+        return testScript;
+    }
+
+    public void setTestScript(String testScript) {
+        this.testScript = testScript;
+    }
 
     public ReqEntityBean getBody() {
         return body;

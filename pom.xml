@@ -162,13 +162,19 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.1</version>
-            <scope>test</scope>
+            <version>3.8.2</version>
+            <!--version>4.4</version-->
+            <!--scope>test</scope-->
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
-        </dependency>    
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>1.5.0</version>
+        </dependency>
     </dependencies>
 </project>
