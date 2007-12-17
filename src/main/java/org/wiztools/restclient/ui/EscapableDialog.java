@@ -4,6 +4,7 @@
  */
 package org.wiztools.restclient.ui;
 
+import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Frame;
@@ -11,6 +12,8 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
 
 /**
@@ -25,9 +28,15 @@ public abstract class EscapableDialog extends JDialog implements KeyListener, Co
         super(f, modal);
         _frame = f;
         registerKeyAction(this);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event){
+                doEscape(event);
+            }
+        });
     }
 
-    public abstract void doEscape(KeyEvent event);
+    public abstract void doEscape(AWTEvent event);
 
     //KeyListener interface
     public void keyPressed(KeyEvent e) {

@@ -6,11 +6,11 @@
 
 package org.wiztools.restclient.ui;
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -63,7 +63,8 @@ public class ErrorDialog extends EscapableDialog {
         pack();
     }
     
-    public void doEscape(KeyEvent event){
+    @Override
+    public void doEscape(AWTEvent event){
         hideDialog();
     }
 

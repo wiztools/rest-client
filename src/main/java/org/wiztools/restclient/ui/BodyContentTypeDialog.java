@@ -5,13 +5,13 @@
 
 package org.wiztools.restclient.ui;
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -154,7 +154,8 @@ public class BodyContentTypeDialog extends EscapableDialog {
         this.pack();
     }
     
-    public void doEscape(KeyEvent event){
+    @Override
+    public void doEscape(AWTEvent event){
         hideMe(false);
     }
     

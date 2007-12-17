@@ -37,6 +37,7 @@ public class RESTFrame extends JFrame {
     private RESTView view;
     private AboutDialog aboutDialog;
     private OptionsDialog optionsDialog;
+    private PasswordGenDialog passwordGenDialog;
     
     // Requests and responses are generally saved in different dirs
     private JFileChooser jfc_request = new JFileChooser();
@@ -105,6 +106,24 @@ public class RESTFrame extends JFrame {
         
         // Tools menu
         JMenu jm_tools = new JMenu("Tools");
+        
+        JMenuItem jmi_pwd_gen = new JMenuItem("Password Encoder/Decoder");
+        jmi_pwd_gen.setMnemonic('p');
+        jmi_pwd_gen.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                if(passwordGenDialog == null){
+                    passwordGenDialog = new PasswordGenDialog(me);
+                }
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        passwordGenDialog.setVisible(true);
+                    }
+                });
+            }
+        });
+        jm_tools.add(jmi_pwd_gen);
+        
+        jm_tools.addSeparator();
         
         JMenuItem jmi_options = new JMenuItem("Options");
         jmi_options.setMnemonic('o');

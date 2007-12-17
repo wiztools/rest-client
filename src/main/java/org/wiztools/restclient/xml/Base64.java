@@ -1068,13 +1068,15 @@ public class Base64
         }   // end try
         catch( java.io.IOException e )
         {
-            e.printStackTrace();
-            obj = null;
+            // e.printStackTrace();
+            // obj = null;
+            throw new Base64Exception("IOException while decoding...", e);
         }   // end catch
         catch( java.lang.ClassNotFoundException e )
         {
-            e.printStackTrace();
-            obj = null;
+            // e.printStackTrace();
+            // obj = null;
+            throw new Base64Exception("ClassNotFoundException while decoding...", e);
         }   // end catch
         finally
         {

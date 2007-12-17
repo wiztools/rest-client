@@ -5,13 +5,13 @@
 
 package org.wiztools.restclient.ui;
 
+import java.awt.AWTEvent;
 import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -84,7 +84,7 @@ public class AboutDialog extends EscapableDialog {
     }
     
     @Override
-    public void doEscape(KeyEvent event) {
+    public void doEscape(AWTEvent event) {
         hideMe();
     }
     
