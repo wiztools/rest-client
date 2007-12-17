@@ -181,7 +181,7 @@ public class OptionsDialog extends EscapableDialog {
     private void actionOk(){
         List<String> errors = new ArrayList<String>();
         
-        boolean enabled = jcb_enable.isEnabled();
+        boolean enabled = jcb_enable.isSelected();
         String host = jtf_host.getText();
         int port = -1;
         try{
