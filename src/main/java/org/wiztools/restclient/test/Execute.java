@@ -6,6 +6,7 @@
 package org.wiztools.restclient.test;
 
 import groovy.lang.GroovyClassLoader;
+import groovy.util.GroovyTestSuite;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.logging.Level;
@@ -38,7 +39,8 @@ public class Execute {
             testCase.setRoRequestBean(new RoRequestBean(request));
             testCase.setRoResponseBean(new RoResponseBean(response));
             
-            TestSuite suite = new TestSuite();
+            GroovyTestSuite suite = new GroovyTestSuite();
+            suite.addTest(testCase);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             TestRunner runner = new TestRunner(new PrintStream(baos));
             TestResult result = runner.doRun(suite);
@@ -47,6 +49,9 @@ public class Execute {
         } 
         catch(CompilationFailedException ex){
             Logger.getLogger(Execute.class.getName()).log(Level.SEVERE, null, ex);
+            view.doError(Util.getStackTrace(ex));
+        }
+        catch(ClassCastException ex){
             view.doError(Util.getStackTrace(ex));
         }
         catch (InstantiationException ex) {

@@ -23,5 +23,5 @@ public class RESTTestCase extends GroovyTestCase {
     public void setRoResponseBean(final RoResponseBean response){
         this.response = response;
     }
-    
+
 }

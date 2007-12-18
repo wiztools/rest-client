@@ -76,19 +76,10 @@ public class RESTView extends JPanel implements View {
     private BodyContentTypeDialog jd_body_content_type;
     private JScrollPane jsp_req_body;
     private Dimension d_jsp_req_body;
+    
+    private JScrollPane jsp_test_script;
     private JTextArea jta_test_script = new JTextArea();
     
-    private JScrollPane jsp_res_body = new JScrollPane();
-    private JTextArea jta_response = new JTextArea();
-    
-    private JTable jt_res_headers = new JTable();
-
-    private TwoColumnTablePanel jp_2col_req_headers;
-    
-    private ParameterDialog jd_req_paramDialog;
-    
-    private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();
-
     // Authentication resources
     private JCheckBox jcb_auth_basic = new JCheckBox("BASIC");
     private JCheckBox jcb_auth_digest = new JCheckBox("DIGEST");
@@ -102,6 +93,23 @@ public class RESTView extends JPanel implements View {
     private JTextField jtf_auth_realm = new JTextField(auth_text_size);
     private JTextField jtf_auth_username = new JTextField(auth_text_size);
     private JPasswordField jpf_auth_password = new JPasswordField(auth_text_size);
+    
+    // Response
+    private JScrollPane jsp_res_body = new JScrollPane();
+    private JTextArea jta_response = new JTextArea();
+    
+    private JTable jt_res_headers = new JTable();
+    
+    private JScrollPane jsp_test_result;
+    private JTextArea jta_test_result = new JTextArea();
+
+    private TwoColumnTablePanel jp_2col_req_headers;
+    
+    private ParameterDialog jd_req_paramDialog;
+    
+    private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();
+
+    
     
     private ErrorDialog errorDialog;
     private final RESTView view;
@@ -275,10 +283,11 @@ public class RESTView extends JPanel implements View {
         jp_auth_encp.add(jp_auth);
         jtp.addTab("Authentication", jp_auth_encp);
         
+        // Test script panel
         JPanel jp_test = new JPanel();
         jp_test.setLayout(new BorderLayout());
-        JScrollPane jsp_test = new JScrollPane(jta_test_script);
-        jp_test.add(jsp_test, BorderLayout.CENTER);
+        jsp_test_script = new JScrollPane(jta_test_script);
+        jp_test.add(jsp_test_script, BorderLayout.CENTER);
         jtp.addTab("Test Script", jp_test);
         
         return jtp;
@@ -323,6 +332,14 @@ public class RESTView extends JPanel implements View {
         jp_body_encp.setLayout(new GridLayout(1, 1));
         jp_body_encp.add(jp_body);
         jtp.addTab("Response Body", jp_body_encp);
+        
+        // Test result
+        JPanel jp_test_result = new JPanel();
+        jp_test_result.setLayout(new GridLayout(1, 1));
+        jsp_test_result = new JScrollPane(jta_test_result);
+        jp_test_result.add(jsp_test_result);
+        jtp.addTab("Test Result", jp_test_result);
+        
         return jtp;
     }
     
@@ -434,7 +451,6 @@ public class RESTView extends JPanel implements View {
     }
 
     private void jb_requestActionPerformed(java.awt.event.ActionEvent evt) {                                           
-        
         List<String> errors = validateForRequest();
         if(errors.size()!=0){
             String errStr = Util.getHTMLListFromList(errors);
@@ -579,7 +595,13 @@ public class RESTView extends JPanel implements View {
     
     @Override
     public void doTestResult(final String result){
-        doError(result);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                Dimension d = jsp_test_result.getPreferredSize();
+                jta_test_result.setText(result);
+                jsp_test_result.setPreferredSize(d);
+            }
+        });
     }
     
     @Override
@@ -594,6 +616,7 @@ public class RESTView extends JPanel implements View {
                 jta_response.setText("");
                 ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
                 model.setHeader(null);
+                jta_test_result.setText("");
             }
         });
     }
@@ -911,7 +934,9 @@ public class RESTView extends JPanel implements View {
                 }
                 
                 // Test script
+                Dimension d = jsp_test_script.getPreferredSize();
                 jta_test_script.setText(request.getTestScript()==null?"":request.getTestScript());
+                jsp_test_script.setPreferredSize(d);
             }
         });
     }
