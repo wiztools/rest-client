@@ -9,6 +9,7 @@ import groovy.lang.GroovyClassLoader;
 import groovy.util.GroovyTestSuite;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.TestResult;
@@ -25,6 +26,9 @@ import org.wiztools.restclient.View;
  * @author schandran
  */
 public class Execute {
+    
+    private static final Logger LOG = Logger.getLogger(Execute.class.getName());
+    
     public static void execute(RequestBean request, ResponseBean response, View view){
         final String script = request.getTestScript();
         if(Util.isStrEmpty(script)){
@@ -35,31 +39,35 @@ public class Execute {
 
             Class testClass = gcl.parseClass(script, "__GenRESTTestCase__");
 
+            TestSuite suite = new GroovyTestSuite();
+            
             RESTTestCase testCase = (RESTTestCase) testClass.newInstance();
             testCase.setRoRequestBean(new RoRequestBean(request));
             testCase.setRoResponseBean(new RoResponseBean(response));
             
-            GroovyTestSuite suite = new GroovyTestSuite();
             suite.addTest(testCase);
+            LOG.log(Level.INFO, "Test count: " + suite.countTestCases());
+            
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             TestRunner runner = new TestRunner(new PrintStream(baos));
             TestResult result = runner.doRun(suite);
+            
             byte[] bresult = baos.toByteArray();
             view.doTestResult(new String(bresult));
         } 
         catch(CompilationFailedException ex){
-            Logger.getLogger(Execute.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
             view.doError(Util.getStackTrace(ex));
         }
         catch(ClassCastException ex){
             view.doError(Util.getStackTrace(ex));
         }
         catch (InstantiationException ex) {
-            Logger.getLogger(Execute.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
             view.doError(Util.getStackTrace(ex));
         }
         catch (IllegalAccessException ex) {
-            Logger.getLogger(Execute.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
             view.doError(Util.getStackTrace(ex));
         }
     }
