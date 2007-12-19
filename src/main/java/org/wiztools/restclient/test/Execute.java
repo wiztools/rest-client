@@ -9,7 +9,6 @@ import groovy.lang.GroovyClassLoader;
 import groovy.util.GroovyTestSuite;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.TestResult;
