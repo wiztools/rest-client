@@ -35,6 +35,8 @@ import org.xml.sax.SAXException;
  * @author rsubramanian
  */
 public final class XMLUtil {
+    
+    private static final String[] VERSIONS = new String[]{"2.0"};
 
     public static Document request2XML(final RequestBean bean)
             throws XMLException {
@@ -51,6 +53,7 @@ public final class XMLUtil {
 
             xmldoc = impl.createDocument(null, "rest-client", null);
             Element root = xmldoc.getDocumentElement();
+            root.setAttributeNS(null, "version", Main.VERSION);
 
             request = xmldoc.createElementNS(null, "request");
             // creating the URL child element
@@ -173,11 +176,29 @@ public final class XMLUtil {
     }
 
     public static RequestBean xml2Request(final Document doc)
-            throws MalformedURLException {
+            throws MalformedURLException, XMLException {
         RequestBean requestBean = new RequestBean();
         NodeList elements = null;
         Node node = null;
-
+        
+        //get root element - rest-client
+        elements = doc.getElementsByTagName("rest-client");
+        for (int i = 0; i < elements.getLength(); i++) {
+            node = elements.item(i);
+            NamedNodeMap nodeMap = node.getAttributes();
+            Node key = nodeMap.getNamedItem("version");
+            boolean flag = true;
+            for(int j=0;j<VERSIONS.length;j++){
+                if(key.getNodeValue().equals(VERSIONS[j])){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag){
+                throw new XMLException("Version not supported");                
+            }
+        }
+        
         //get url
         elements = doc.getElementsByTagName("URL");
         for (int i = 0; i < elements.getLength(); i++) {
@@ -290,6 +311,7 @@ public final class XMLUtil {
 
             xmldoc = impl.createDocument(null, "rest-client", null);
             Element root = xmldoc.getDocumentElement();
+            root.setAttributeNS(null, "version", Main.VERSION);
 
             response = xmldoc.createElementNS(null, "response");
 
@@ -332,10 +354,29 @@ public final class XMLUtil {
         }
     }
 
-    public static ResponseBean xml2Response(final Document doc) {
+    public static ResponseBean xml2Response(final Document doc) throws XMLException {
         ResponseBean responseBean = new ResponseBean();
         NodeList elements = null;
         Node node = null;
+        
+         //get root element - rest-client
+        elements = doc.getElementsByTagName("rest-client");
+        for (int i = 0; i < elements.getLength(); i++) {
+            node = elements.item(i);
+            NamedNodeMap nodeMap = node.getAttributes();
+            Node key = nodeMap.getNamedItem("version");
+
+            boolean flag = true;
+            for(int j=0;j<VERSIONS.length;j++){
+                if(key.getNodeValue().equals(VERSIONS[j])){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag){
+                throw new XMLException("Version not supported");                
+            }
+        }
 
         //get status line and status code
         elements = doc.getElementsByTagName("status");
@@ -375,7 +416,7 @@ public final class XMLUtil {
             StreamResult streamResult = new StreamResult(out);
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer serializer = tf.newTransformer();
-            serializer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
+            serializer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
             serializer.transform(domSource, streamResult);
             out.close();
