@@ -644,25 +644,28 @@ public class RESTView extends JPanel implements View {
             });
         }
         else{ // Add new item
-            // The total number of items should not exceed 20
-            if(count > 19){
-                // Remove last item to give place
-                // to new one
-                //l.removeLast();
+            if(((String)item).trim().length() != 0 ) {
+                // The total number of items should not exceed 20
+                if(count > 19){
+                    // Remove last item to give place
+                    // to new one
+                    //l.removeLast();
+                    SwingUtilities.invokeLater(new Runnable(){
+                        public void run(){
+                            jcb_url.removeItemAt(count - 1);
+                        }
+                    });
+                }
+                //l.addFirst(item);
                 SwingUtilities.invokeLater(new Runnable(){
                     public void run(){
-                        jcb_url.removeItemAt(count - 1);
+                        // System.out.println("Inserting at top");
+                        jcb_url.insertItemAt(item, 0);
                     }
                 });
             }
-            //l.addFirst(item);
-            SwingUtilities.invokeLater(new Runnable(){
-                public void run(){
-                    // System.out.println("Inserting at top");
-                    jcb_url.insertItemAt(item, 0);
-                }
-            });
         }
+        jb_requestActionPerformed(event);
     }
     
     private void auth_enableActionPerformed(final ActionEvent event){
