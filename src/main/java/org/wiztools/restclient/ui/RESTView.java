@@ -40,7 +40,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
-import org.wiztools.restclient.test.Execute;
+import junit.framework.TestSuite;
+import org.wiztools.restclient.test.TestException;
+import org.wiztools.restclient.test.TestUtil;
 
 /**
  *
@@ -565,6 +567,8 @@ public class RESTView extends JPanel implements View {
     @Override
     public void doResponse(final ResponseBean response){
         lastResponse = response;
+        
+        // Update the UI:
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 jtf_res_status.setText(response.getStatusLine());
@@ -582,7 +586,17 @@ public class RESTView extends JPanel implements View {
                 jb_request.requestFocus();
             }
         });
-        Execute.execute(lastRequest, response, view);
+        
+        // Now execute tests:
+        try{
+            TestSuite suite = TestUtil.getTestSuite(lastRequest, response);
+            if(suite != null){ // suite will be null if there is no associated script
+                TestUtil.execute(suite, view);
+            }
+        }
+        catch(TestException ex){
+            doError(Util.getStackTrace(ex));
+        }
     }
     
     @Override
