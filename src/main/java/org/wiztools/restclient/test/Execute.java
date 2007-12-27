@@ -9,6 +9,8 @@ import groovy.lang.GroovyClassLoader;
 import groovy.util.GroovyTestSuite;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.TestResult;
@@ -35,17 +37,28 @@ public class Execute {
         }
         try {
             GroovyClassLoader gcl = new GroovyClassLoader();
-
+            
             Class testClass = gcl.parseClass(script, "__GenRESTTestCase__");
 
             TestSuite suite = new GroovyTestSuite();
             
-            RESTTestCase testCase = (RESTTestCase) testClass.newInstance();
-            testCase.setRoRequestBean(new RoRequestBean(request));
-            testCase.setRoResponseBean(new RoResponseBean(response));
+            final RoRequestBean roRequest = new RoRequestBean(request);
+            final RoResponseBean roResponse = new RoResponseBean(response);
             
-            suite.addTest(testCase);
-            LOG.log(Level.INFO, "Test count: " + suite.countTestCases());
+            Method[] m_arr = testClass.getDeclaredMethods();
+            for(int i=0; i<m_arr.length; i++){
+                String methName = m_arr[i].getName();
+                int modifiers = m_arr[i].getModifiers();
+                if(!Modifier.isPublic(modifiers) ||
+                        Modifier.isAbstract(modifiers) ||
+                        !methName.startsWith("test")){
+                    continue;
+                }
+                RESTTestCase test = (RESTTestCase)GroovyTestSuite.createTest(testClass, methName);
+                test.setRoRequestBean(roRequest);
+                test.setRoResponseBean(roResponse);
+                suite.addTest(test);
+            }
             
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             TestRunner runner = new TestRunner(new PrintStream(baos));
@@ -59,14 +72,6 @@ public class Execute {
             view.doError(Util.getStackTrace(ex));
         }
         catch(ClassCastException ex){
-            view.doError(Util.getStackTrace(ex));
-        }
-        catch (InstantiationException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-            view.doError(Util.getStackTrace(ex));
-        }
-        catch (IllegalAccessException ex) {
-            LOG.log(Level.SEVERE, null, ex);
             view.doError(Util.getStackTrace(ex));
         }
     }

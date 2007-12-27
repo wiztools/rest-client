@@ -336,6 +336,7 @@ public class RESTView extends JPanel implements View {
         // Test result
         JPanel jp_test_result = new JPanel();
         jp_test_result.setLayout(new GridLayout(1, 1));
+        jta_test_result.setEditable(false);
         jsp_test_result = new JScrollPane(jta_test_result);
         jp_test_result.add(jsp_test_result);
         jtp.addTab("Test Result", jp_test_result);
@@ -357,6 +358,7 @@ public class RESTView extends JPanel implements View {
         jp_north.add(jl_url, BorderLayout.WEST);
         jcb_url.setEditable(true);
         jcb_url.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jcb_urlActionPerformed(evt);
             }
@@ -373,7 +375,7 @@ public class RESTView extends JPanel implements View {
         jb_request.setMnemonic('r');
         jb_request.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                jb_requestActionPerformed(event);
+                jb_requestActionPerformed();
             }
         });
         jb_clear.setMnemonic('c');
@@ -450,7 +452,7 @@ public class RESTView extends JPanel implements View {
         this.add(initSouth(), BorderLayout.SOUTH);
     }
 
-    private void jb_requestActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void jb_requestActionPerformed() {                                           
         List<String> errors = validateForRequest();
         if(errors.size()!=0){
             String errStr = Util.getHTMLListFromList(errors);
@@ -665,7 +667,8 @@ public class RESTView extends JPanel implements View {
                 });
             }
         }
-        jb_requestActionPerformed(event);
+        // Use this to trigger request action on pressing Enter:
+        // jb_requestActionPerformed(event);
     }
     
     private void auth_enableActionPerformed(final ActionEvent event){
