@@ -10,8 +10,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -36,7 +39,24 @@ import org.xml.sax.SAXException;
  */
 public final class XMLUtil {
     
+    private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
+    
     private static final String[] VERSIONS = new String[]{"2.0"};
+    
+    static{
+        // Sort the version array for binary search
+        Arrays.sort(VERSIONS);
+    }
+    
+    private static void checkIfVersionValid(final Node versionNode) throws XMLException{
+        if(versionNode == null){
+            throw new XMLException("Attribute `version' not available for root element <rest-client>");
+        }
+        int res = Arrays.binarySearch(VERSIONS, versionNode.getNodeValue());
+        if(res == -1){
+            throw new XMLException("Version not supported");                
+        }
+    }
 
     public static Document request2XML(final RequestBean bean)
             throws XMLException {
@@ -174,123 +194,125 @@ public final class XMLUtil {
             throw new XMLException(ex.getMessage(), ex);
         }
     }
+    
+    private static Map<String, String> getHeadersFromHeaderNode(final Node node) throws XMLException{
+        Map<String, String> m = new LinkedHashMap<String, String>();
+        
+        NodeList llHeader = node.getChildNodes();
+        int maxHeader = llHeader.getLength();
+        for(int j=0; j<maxHeader; j++){
+            Node headerNode = llHeader.item(j);
+            if(headerNode.getNodeType() != Node.ELEMENT_NODE){
+                continue;
+            }
+            if(!"header".equals(headerNode.getNodeName())){
+                throw new XMLException("<headers> element should contain only <header> elements");
+            }
+            NamedNodeMap nodeMap = headerNode.getAttributes();
+            Node key = nodeMap.getNamedItem("key");
+            Node value = nodeMap.getNamedItem("value");
+            m.put(key.getNodeValue(), value.getNodeValue());
+        }
+        
+        return m;
+    }
 
     public static RequestBean xml2Request(final Document doc)
             throws MalformedURLException, XMLException {
         RequestBean requestBean = new RequestBean();
-        NodeList elements = null;
-        Node node = null;
         
-        //get root element - rest-client
-        elements = doc.getElementsByTagName("rest-client");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            NamedNodeMap nodeMap = node.getAttributes();
-            Node key = nodeMap.getNamedItem("version");
-            boolean flag = true;
-            for(int j=0;j<VERSIONS.length;j++){
-                if(key.getNodeValue().equals(VERSIONS[j])){
-                    flag = false;
-                    break;
+        // Get the rootNode
+        Node rootNode = doc.getFirstChild();
+        
+        if(!"rest-client".equals(rootNode.getNodeName())){
+            throw new XMLException("Root node is not <rest-client>");
+        }
+        NamedNodeMap nodeMapVerAttr = rootNode.getAttributes();
+        Node versionNode = nodeMapVerAttr.getNamedItem("version");
+        checkIfVersionValid(versionNode);
+        
+        // Get the requestNode
+        NodeList llRequest = rootNode.getChildNodes();
+        int size = llRequest.getLength();
+        int reqNodeCount = 0;
+        Node requestNode = null;
+        for(int i=0; i<size; i++){
+            Node tNode = llRequest.item(i);
+            if(tNode.getNodeType() == Node.ELEMENT_NODE){
+                requestNode = tNode;
+                reqNodeCount++;
+            }
+        }
+        if(reqNodeCount != 1){
+            throw new XMLException("There can be only one child node for root node: <request>");
+        }
+        if(!"request".equals(requestNode.getNodeName())){
+            throw new XMLException("The child node of <rest-client> should be <request>");
+        }
+        
+        // Process other nodes
+        NodeList ll = requestNode.getChildNodes();
+        int max = ll.getLength();
+        for(int i=0; i<max; i++){
+            Node node = ll.item(i);
+            String nodeName = node.getNodeName();
+            LOG.fine(nodeName + " : " + node.getNodeType());
+            if(node.getNodeType() != Node.ELEMENT_NODE){
+                continue;
+            }
+            if("URL".equals(nodeName)){
+                URL url = new URL(node.getTextContent());
+                requestBean.setUrl(url);
+            }
+            else if("method".equals(nodeName)){
+                requestBean.setMethod(node.getTextContent());
+            }
+            else if("auth-methods".equals(nodeName)){
+                String[] authenticationMethods = node.getTextContent().split(",");
+                for (int j = 0; j < authenticationMethods.length; j++) {
+                    requestBean.addAuthMethod(authenticationMethods[j]);
                 }
             }
-            if(flag){
-                throw new XMLException("Version not supported");                
+            else if("auth-preemptive".equals(nodeName)){
+                if (node.getTextContent().equals("true")) {
+                    requestBean.setAuthPreemptive(true);
+                }
+                else{
+                    requestBean.setAuthPreemptive(false);
+                }
             }
-        }
-        
-        //get url
-        elements = doc.getElementsByTagName("URL");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            URL url = new URL(node.getTextContent());
-            requestBean.setUrl(url);
-        }
-
-        //get method
-        elements = doc.getElementsByTagName("method");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            requestBean.setMethod(node.getTextContent());
-        }
-
-        //get auth-methods
-        elements = doc.getElementsByTagName("auth-methods");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            String[] authenticationMethods = node.getTextContent().split(",");
-            for (int j = 0; j < authenticationMethods.length; j++) {
-                requestBean.addAuthMethod(authenticationMethods[j]);
+            else if("auth-host".equals(nodeName)){
+                requestBean.setAuthHost(node.getTextContent());
             }
-        }
-
-        //get auth-preemptive
-        elements = doc.getElementsByTagName("auth-preemptive");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            if (node.getTextContent().equals("true")) {
-                requestBean.setAuthPreemptive(true);
+            else if("auth-realm".equals(nodeName)){
+                requestBean.setAuthRealm(node.getTextContent());
+            }
+            else if("auth-username".equals(nodeName)){
+                requestBean.setAuthUsername(node.getTextContent());
+            }
+            else if("auth-password".equals(nodeName)){
+                String password = (String) Base64.decodeToObject(node.getTextContent());
+                requestBean.setAuthPassword(password.toCharArray());
+            }
+            else if("headers".equals(nodeName)){
+                Map<String, String> m = getHeadersFromHeaderNode(node);
+                for(String key: m.keySet()){
+                    requestBean.addHeader(key, m.get(key));
+                }
+            }
+            else if("body".equals(nodeName)){
+                NamedNodeMap nodeMap = node.getAttributes();
+                Node contentType = nodeMap.getNamedItem("content-type");
+                Node charSet = nodeMap.getNamedItem("charset");
+                requestBean.setBody(new ReqEntityBean(node.getTextContent(), contentType.getNodeValue(),
+                        charSet.getNodeValue()));
+            }
+            else if("test-script".equals(nodeName)){
+                requestBean.setTestScript(node.getTextContent());
             }
             else{
-                requestBean.setAuthPreemptive(false);
+                throw new XMLException("Invalid element encountered: <" + nodeName + ">");
             }
-        }
-
-        //get auth-host
-        elements = doc.getElementsByTagName("auth-host");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            requestBean.setAuthHost(node.getTextContent());
-        }
-
-        //get auth-realm
-        elements = doc.getElementsByTagName("auth-realm");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            requestBean.setAuthRealm(node.getTextContent());
-        }
-
-        //get auth-username
-        elements = doc.getElementsByTagName("auth-username");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            requestBean.setAuthUsername(node.getTextContent());
-        }
-
-        //get password
-        elements = doc.getElementsByTagName("auth-password");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            String password = (String) Base64.decodeToObject(node.getTextContent());
-            requestBean.setAuthPassword(password.toCharArray());
-        }
-
-        //get headers
-        elements = doc.getElementsByTagName("header");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            NamedNodeMap nodeMap = node.getAttributes();
-            Node key = nodeMap.getNamedItem("key");
-            Node value = nodeMap.getNamedItem("value");
-            requestBean.addHeader(key.getNodeValue(), value.getNodeValue());
-        }
-
-        //get body
-        elements = doc.getElementsByTagName("body");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            NamedNodeMap nodeMap = node.getAttributes();
-            Node contentType = nodeMap.getNamedItem("content-type");
-            Node charSet = nodeMap.getNamedItem("charset");
-            requestBean.setBody(new ReqEntityBean(node.getTextContent(), contentType.getNodeValue(),
-                    charSet.getNodeValue()));
-        }
-        
-        //get test-script
-        elements = doc.getElementsByTagName("test-script");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            requestBean.setTestScript(node.getTextContent());
         }
 
         return requestBean;
@@ -356,53 +378,63 @@ public final class XMLUtil {
 
     public static ResponseBean xml2Response(final Document doc) throws XMLException {
         ResponseBean responseBean = new ResponseBean();
-        NodeList elements = null;
-        Node node = null;
         
-         //get root element - rest-client
-        elements = doc.getElementsByTagName("rest-client");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            NamedNodeMap nodeMap = node.getAttributes();
-            Node key = nodeMap.getNamedItem("version");
-
-            boolean flag = true;
-            for(int j=0;j<VERSIONS.length;j++){
-                if(key.getNodeValue().equals(VERSIONS[j])){
-                    flag = false;
-                    break;
+        // Get the rootNode
+        Node rootNode = doc.getFirstChild();
+        if(!"rest-client".equals(rootNode.getNodeName())){
+            throw new XMLException("The root node must be <rest-client>");
+        }
+        NamedNodeMap nodeMapVerAttr = rootNode.getAttributes();
+        Node nodeVersion = nodeMapVerAttr.getNamedItem("version");
+        checkIfVersionValid(nodeVersion);
+        
+        // Get the responseNode
+        NodeList llResponse = rootNode.getChildNodes();
+        int size = llResponse.getLength();
+        int resNodeCount = 0;
+        Node responseNode = null;
+        for(int i=0; i<size; i++){
+            Node tNode = llResponse.item(i);
+            if(tNode.getNodeType() == Node.ELEMENT_NODE){
+                responseNode = tNode;
+                resNodeCount++;
+            }
+        }
+        if(resNodeCount != 1){
+            throw new XMLException("There can be only one child node for root node: <response>");
+        }
+        if(!"response".equals(responseNode.getNodeName())){
+            throw new XMLException("The child node of <rest-client> should be <response>");
+        }
+        
+        // Process other nodes
+        NodeList ll = responseNode.getChildNodes();
+        int max = ll.getLength();
+        for(int i=0; i < max; i++){
+            Node node = ll.item(i);
+            String nodeName = node.getNodeName();
+            LOG.fine(nodeName + " : " + node.getNodeType());
+            if(node.getNodeType() != Node.ELEMENT_NODE){
+                continue;
+            }
+            if("status".equals(nodeName)){
+                responseBean.setStatusLine(node.getTextContent());
+                NamedNodeMap nodeMap = node.getAttributes();
+                Node n = nodeMap.getNamedItem("code");
+                responseBean.setStatusCode(Integer.parseInt(n.getNodeValue()));
+            }
+            else if("headers".equals(nodeName)){
+                Map<String, String> m = getHeadersFromHeaderNode(node);
+                for(String key: m.keySet()){
+                    responseBean.addHeader(key, m.get(key));
                 }
             }
-            if(flag){
-                throw new XMLException("Version not supported");                
+            else if("body".equals(nodeName)){
+                responseBean.setResponseBody(node.getTextContent());
             }
-        }
-
-        //get status line and status code
-        elements = doc.getElementsByTagName("status");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            responseBean.setStatusLine(node.getTextContent());
-            NamedNodeMap nodeMap = node.getAttributes();
-            Node n = nodeMap.getNamedItem("code");
-            responseBean.setStatusCode(Integer.parseInt(n.getNodeValue()));
-        }
-
-        //get headers
-        elements = doc.getElementsByTagName("header");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            NamedNodeMap nodeMap = node.getAttributes();
-            Node key = nodeMap.getNamedItem("key");
-            Node value = nodeMap.getNamedItem("value");
-            responseBean.addHeader(key.getNodeValue(), value.getNodeValue());
-        }
-
-        //get body
-        elements = doc.getElementsByTagName("body");
-        for (int i = 0; i < elements.getLength(); i++) {
-            node = elements.item(i);
-            responseBean.setResponseBody(node.getTextContent());
+            else{
+                throw new XMLException("Unrecognized element found: <" + nodeName + ">");
+            }
         }
 
         return responseBean;

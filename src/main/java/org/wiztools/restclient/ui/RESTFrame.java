@@ -211,7 +211,7 @@ public class RESTFrame extends JFrame {
                         e = ex;
                     }
                     catch(Base64.Base64Exception ex){
-                        view.doError(Util.getStackTrace(ex));
+                        e = ex;
                     }
                     if(e != null){
                         view.doError(Util.getStackTrace(e));
