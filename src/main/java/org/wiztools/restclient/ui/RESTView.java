@@ -547,7 +547,10 @@ public class RESTView extends JPanel implements View {
         }
         
         // Test script specific
-        request.setTestScript(jta_test_script.getText());
+        String testScript = jta_test_script.getText();
+        testScript = testScript == null || testScript.trim().equals("")?
+            null: testScript.trim();
+        request.setTestScript(testScript);
 
         clear();
         new HTTPRequestThread(request, view).start();

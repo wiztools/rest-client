@@ -69,7 +69,6 @@ public final class XMLUtil {
             Element request = null;
             Node n = null;
             Element subChild = null;
-            Node node = null;
 
             xmldoc = impl.createDocument(null, "rest-client", null);
             Element root = xmldoc.getDocumentElement();
@@ -90,64 +89,66 @@ public final class XMLUtil {
 
             // creating the auth-methods child element
             List<String> authMethods = bean.getAuthMethods();
-            if (authMethods != null || authMethods.size() > 0) {
-                e = xmldoc.createElementNS(null, "auth-methods");
-                String methods = "";
-                for (String authMethod : authMethods) {
-                    methods = methods + authMethod + ",";
+            if(authMethods.size() > 0){
+                if (authMethods != null || authMethods.size() > 0) {
+                    e = xmldoc.createElementNS(null, "auth-methods");
+                    String methods = "";
+                    for (String authMethod : authMethods) {
+                        methods = methods + authMethod + ",";
+                    }
+                    String authenticationMethod = methods.substring(0, methods.length()==0?0:methods.length()-1);
+                    n = xmldoc.createTextNode(authenticationMethod);
+                    e.appendChild(n);
+                    request.appendChild(e);
                 }
-                String authenticationMethod = methods.substring(0, methods.length()==0?0:methods.length()-1);
-                n = xmldoc.createTextNode(authenticationMethod);
-                e.appendChild(n);
-                request.appendChild(e);
-            }
 
 
-            // creating the auth-preemptive child element
-            Boolean authPreemptive = bean.isAuthPreemptive();
-            if (authPreemptive != null) {
-                e = xmldoc.createElementNS(null, "auth-preemptive");
-                n = xmldoc.createTextNode(authPreemptive.toString());
-                e.appendChild(n);
-                request.appendChild(e);
-            }
+                // creating the auth-preemptive child element
+                Boolean authPreemptive = bean.isAuthPreemptive();
+                if (authPreemptive != null) {
+                    e = xmldoc.createElementNS(null, "auth-preemptive");
+                    n = xmldoc.createTextNode(authPreemptive.toString());
+                    e.appendChild(n);
+                    request.appendChild(e);
+                }
 
-            // creating the auth-host child element
-            String authHost = bean.getAuthHost();
-            if (authHost != null) {
-                e = xmldoc.createElementNS(null, "auth-host");
-                n = xmldoc.createTextNode(authHost);
-                e.appendChild(n);
-                request.appendChild(e);
-            }
+                // creating the auth-host child element
+                String authHost = bean.getAuthHost();
+                if (authHost != null) {
+                    e = xmldoc.createElementNS(null, "auth-host");
+                    n = xmldoc.createTextNode(authHost);
+                    e.appendChild(n);
+                    request.appendChild(e);
+                }
 
-            // creating the auth-realm child element
-            String authRealm = bean.getAuthRealm();
-            if (authRealm != null) {
-                e = xmldoc.createElementNS(null, "auth-realm");
-                n = xmldoc.createTextNode(authRealm);
-                e.appendChild(n);
-                request.appendChild(e);
-            }
+                // creating the auth-realm child element
+                String authRealm = bean.getAuthRealm();
+                if (authRealm != null) {
+                    e = xmldoc.createElementNS(null, "auth-realm");
+                    n = xmldoc.createTextNode(authRealm);
+                    e.appendChild(n);
+                    request.appendChild(e);
+                }
 
-            // creating the auth-username child element
-            String authUsername = bean.getAuthUsername();
-            if (authUsername != null) {
-                e = xmldoc.createElementNS(null, "auth-username");
-                n = xmldoc.createTextNode(authUsername);
-                e.appendChild(n);
-                request.appendChild(e);
-            }
+                // creating the auth-username child element
+                String authUsername = bean.getAuthUsername();
+                if (authUsername != null) {
+                    e = xmldoc.createElementNS(null, "auth-username");
+                    n = xmldoc.createTextNode(authUsername);
+                    e.appendChild(n);
+                    request.appendChild(e);
+                }
 
-            // creating the auth-password child element
-            String authPassword = null;
-            if(bean.getAuthPassword() != null){
-                authPassword = new String(bean.getAuthPassword());
-                e = xmldoc.createElementNS(null, "auth-password");
-                String encPassword = Base64.encodeObject(authPassword);
-                n = xmldoc.createTextNode(encPassword);
-                e.appendChild(n);
-                request.appendChild(e);
+                // creating the auth-password child element
+                String authPassword = null;
+                if(bean.getAuthPassword() != null){
+                    authPassword = new String(bean.getAuthPassword());
+                    e = xmldoc.createElementNS(null, "auth-password");
+                    String encPassword = Base64.encodeObject(authPassword);
+                    n = xmldoc.createTextNode(encPassword);
+                    e.appendChild(n);
+                    request.appendChild(e);
+                }
             }
 
             // creating the headers child element
