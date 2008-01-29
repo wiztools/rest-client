@@ -70,7 +70,7 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
                     <target>1.5</target>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
@@ -84,20 +84,38 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
                         <manifestEntries>
                             <mode>development</mode>
                             <url>${pom.url}</url>
+                            <SplashScreen-Image>org/wiztools/restclient/Splash.png</SplashScreen-Image>
                         </manifestEntries>
                     </archive>
                 </configuration>
-            </plugin>
+            </plugin-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
+                <!--groupId>org.apache.maven.plugins</groupId-->
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
                     <archive>
                         <manifest>
                             <mainClass>org.wiztools.restclient.Main</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <mode>development</mode>
+                            <url>${pom.url}</url>
+                            <SplashScreen-Image>org/wiztools/restclient/Splash.png</SplashScreen-Image>
+                        </manifestEntries>
                     </archive>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>attached</goal> <!-- goals == mojos -->
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -159,11 +177,11 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
     </reporting>
     
     <dependencies>
-        <!--dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.2</version>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
@@ -171,8 +189,8 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>1.5.0</version>
+            <artifactId>groovy-all-minimal</artifactId>
+            <version>1.5.1</version>
         </dependency>
     </dependencies>
 </project>

@@ -48,6 +48,7 @@ public class RESTFrame extends JFrame {
     public RESTFrame(final String title){
         super(title);
         me = this;
+        
         init();
     }
     
