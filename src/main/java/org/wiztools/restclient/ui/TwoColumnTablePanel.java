@@ -122,6 +122,15 @@ public final class TwoColumnTablePanel extends JPanel {
                     errors = errors==null?new ArrayList<String>():errors;
                     errors.add("Value is empty.");
                 }
+                Object[][] data = model.getData();
+                if(data != null){
+                    for(int i=0; i<data.length; i++){
+                        if((data[i][0] != null) && (data[i][0].equals(key))){
+                            errors = errors==null?new ArrayList<String>():errors;
+                            errors.add("Duplicate key found! Delete the original before adding!");
+                        }
+                    }
+                }
                 if(errors != null){
                     StringBuffer sb = new StringBuffer();
                     sb.append("<html><ul>");
