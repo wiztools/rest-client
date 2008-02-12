@@ -2,6 +2,7 @@ package org.wiztools.restclient;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -116,5 +117,44 @@ public final class RequestBean {
     public RequestBean(){
         headers = new LinkedHashMap();
         authMethods = new ArrayList<String>();
+    }
+    
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof RequestBean){
+            final RequestBean bean = (RequestBean)o;
+            boolean isEqual = true;
+            isEqual = isEqual && this.authHost == null? bean.authHost == null: this.authHost.equals(bean.authHost);
+            isEqual = isEqual && this.authMethods == null? bean.authMethods == null: this.authMethods.equals(bean.authMethods);
+            isEqual = isEqual && this.authPassword == null? bean.authPassword == null: Arrays.equals(this.authPassword, bean.authPassword);
+            isEqual = isEqual && this.authPreemptive == bean.authPreemptive;
+            isEqual = isEqual && this.authRealm == null? bean.authRealm == null: this.authRealm.equals(bean.authRealm);
+            isEqual = isEqual && this.authUsername == null? bean.authUsername == null: this.authUsername.equals(bean.authUsername);
+            isEqual = isEqual && this.body == null? bean.body == null: this.body.equals(bean.body);
+            isEqual = isEqual && this.headers == null? bean.headers == null: this.headers.equals(bean.headers);
+            isEqual = isEqual && this.method == null? bean.method == null: this.method.equals(bean.method);
+            isEqual = isEqual && this.testScript == null? bean.testScript == null: this.testScript.equals(bean.testScript);
+            isEqual = isEqual && this.url == null? bean.url == null: this.url.equals(bean.url);
+            return isEqual;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + (this.url != null ? this.url.hashCode() : 0);
+        hash = 59 * hash + (this.method != null ? this.method.hashCode() : 0);
+        hash = 59 * hash + (this.authPreemptive ? 1 : 0);
+        hash = 59 * hash + (this.authMethods != null ? this.authMethods.hashCode() : 0);
+        hash = 59 * hash + (this.authHost != null ? this.authHost.hashCode() : 0);
+        hash = 59 * hash + (this.authRealm != null ? this.authRealm.hashCode() : 0);
+        hash = 59 * hash + (this.authUsername != null ? this.authUsername.hashCode() : 0);
+        hash = 59 * hash + (this.authPassword != null ? this.authPassword.hashCode() : 0);
+        hash = 59 * hash + (this.body != null ? this.body.hashCode() : 0);
+        hash = 59 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
+        return hash;
     }
 }

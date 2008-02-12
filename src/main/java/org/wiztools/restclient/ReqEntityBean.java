@@ -39,5 +39,29 @@ public class ReqEntityBean {
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
+    
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof ReqEntityBean){
+            ReqEntityBean bean = (ReqEntityBean)o;
+            boolean isEqual = true;
+            isEqual = isEqual && this.body == null? bean.body == null: this.body.equals(bean.body);
+            isEqual = isEqual && this.charSet == null? bean.charSet == null: this.charSet.equals(bean.charSet);
+            isEqual = isEqual && this.contentType == null? bean.contentType == null: this.contentType.equals(bean.contentType);
+            return isEqual;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 29 * hash + (this.contentType != null ? this.contentType.hashCode() : 0);
+        hash = 29 * hash + (this.charSet != null ? this.charSet.hashCode() : 0);
+        hash = 29 * hash + (this.body != null ? this.body.hashCode() : 0);
+        return hash;
+    }
 
 }
