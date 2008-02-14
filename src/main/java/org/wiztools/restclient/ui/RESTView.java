@@ -448,8 +448,8 @@ public class RESTView extends JPanel implements View {
         this.add(initCenter(), BorderLayout.CENTER);
         this.add(initSouth(), BorderLayout.SOUTH);
     }
-
-    private void jb_requestActionPerformed() {                                           
+    
+    public RequestBean getRequestFromUI(){
         List<String> errors = validateForRequest();
         if(errors.size()!=0){
             String errStr = Util.getHTMLListFromList(errors);
@@ -457,7 +457,7 @@ public class RESTView extends JPanel implements View {
                 errStr,
                 "Validation error",
                 JOptionPane.ERROR_MESSAGE);
-            return;
+            return null;
         }
         
         RequestBean request = new RequestBean();
@@ -546,9 +546,15 @@ public class RESTView extends JPanel implements View {
         testScript = testScript == null || testScript.trim().equals("")?
             null: testScript.trim();
         request.setTestScript(testScript);
+        return request;
+    }
 
-        clear();
-        new HTTPRequestThread(request, view).start();
+    private void jb_requestActionPerformed() {                                           
+        RequestBean request = getRequestFromUI();
+        if(request!=null){
+            clear();
+            new HTTPRequestThread(request, view).start();
+        }
     }                                          
 
     @Override

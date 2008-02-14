@@ -42,12 +42,12 @@ public class ReqEntityBean {
     
     @Override
     public boolean equals(Object o){
-        if(o instanceof ReqEntityBean){
+        if(o != null && o instanceof ReqEntityBean){
             ReqEntityBean bean = (ReqEntityBean)o;
             boolean isEqual = true;
-            isEqual = isEqual && this.body == null? bean.body == null: this.body.equals(bean.body);
-            isEqual = isEqual && this.charSet == null? bean.charSet == null: this.charSet.equals(bean.charSet);
-            isEqual = isEqual && this.contentType == null? bean.contentType == null: this.contentType.equals(bean.contentType);
+            isEqual = isEqual && (this.body == null? bean.body == null: this.body.equals(bean.body));
+            isEqual = isEqual && (this.charSet == null? bean.charSet == null: this.charSet.equals(bean.charSet));
+            isEqual = isEqual && (this.contentType == null? bean.contentType == null: this.contentType.equals(bean.contentType));
             return isEqual;
         }
         else{

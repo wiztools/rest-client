@@ -260,6 +260,7 @@ public class RESTFrame extends JFrame {
             public void run() {
                 if(isRequest){
                     RequestBean request = view.getLastRequest();
+                    
                     if(request == null){
                         JOptionPane.showMessageDialog(view,
                                 "No last request available.",
@@ -267,6 +268,23 @@ public class RESTFrame extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
+
+                    RequestBean uiRequest = view.getRequestFromUI();
+                    if(!request.equals(uiRequest)){
+                        final String message = "<html>The Request details in the UI has changed from the last Request.<br>" +
+                                "RESTClient saves only the last completed Request. If you want to save the<br> last completed Request, press <b>Ok</b>.<br><br>" +
+                                "Else, if you want to save the request with changed parameters, press<br> <b>Cancel</b> and complete the request before attempting to save.</html>";
+                        int optionChoosen = JOptionPane.showConfirmDialog(view,
+                                message,
+                                "Request Parameters Changed!",
+                                JOptionPane.OK_CANCEL_OPTION,
+                                JOptionPane.INFORMATION_MESSAGE);
+                        if(optionChoosen == JOptionPane.CANCEL_OPTION){
+                            return;
+                        }
+                        
+                    }
+                    
                     File f = getSaveFile(isRequest);
                     if(f != null){
                         try{

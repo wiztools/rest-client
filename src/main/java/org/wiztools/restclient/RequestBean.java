@@ -121,20 +121,20 @@ public final class RequestBean {
     
     @Override
     public boolean equals(Object o){
-        if(o instanceof RequestBean){
+        if(o != null && o instanceof RequestBean){
             final RequestBean bean = (RequestBean)o;
             boolean isEqual = true;
-            isEqual = isEqual && this.authHost == null? bean.authHost == null: this.authHost.equals(bean.authHost);
-            isEqual = isEqual && this.authMethods == null? bean.authMethods == null: this.authMethods.equals(bean.authMethods);
-            isEqual = isEqual && this.authPassword == null? bean.authPassword == null: Arrays.equals(this.authPassword, bean.authPassword);
-            isEqual = isEqual && this.authPreemptive == bean.authPreemptive;
-            isEqual = isEqual && this.authRealm == null? bean.authRealm == null: this.authRealm.equals(bean.authRealm);
-            isEqual = isEqual && this.authUsername == null? bean.authUsername == null: this.authUsername.equals(bean.authUsername);
-            isEqual = isEqual && this.body == null? bean.body == null: this.body.equals(bean.body);
-            isEqual = isEqual && this.headers == null? bean.headers == null: this.headers.equals(bean.headers);
             isEqual = isEqual && this.method == null? bean.method == null: this.method.equals(bean.method);
-            isEqual = isEqual && this.testScript == null? bean.testScript == null: this.testScript.equals(bean.testScript);
-            isEqual = isEqual && this.url == null? bean.url == null: this.url.equals(bean.url);
+            isEqual = isEqual && (this.headers == null? bean.headers == null: this.headers.equals(bean.headers));
+            isEqual = isEqual && (this.body == null? bean.body == null: this.body.equals(bean.body));
+            isEqual = isEqual && (this.authHost == null? bean.authHost == null: this.authHost.equals(bean.authHost));
+            isEqual = isEqual && (this.authMethods == null? bean.authMethods == null: this.authMethods.equals(bean.authMethods));
+            isEqual = isEqual && (this.authPassword == null? bean.authPassword == null: Arrays.equals(this.authPassword, bean.authPassword));
+            isEqual = isEqual && (this.authPreemptive == bean.authPreemptive);
+            isEqual = isEqual && (this.authRealm == null? bean.authRealm == null: this.authRealm.equals(bean.authRealm));
+            isEqual = isEqual && (this.authUsername == null? bean.authUsername == null: this.authUsername.equals(bean.authUsername));
+            isEqual = isEqual && (this.testScript == null? bean.testScript == null: this.testScript.equals(bean.testScript));
+            isEqual = isEqual && (this.url == null? bean.url == null: this.url.equals(bean.url));
             return isEqual;
         }
         else{
