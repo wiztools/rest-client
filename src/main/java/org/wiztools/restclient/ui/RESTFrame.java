@@ -279,7 +279,7 @@ public class RESTFrame extends JFrame {
                                 "Request Parameters Changed!",
                                 JOptionPane.OK_CANCEL_OPTION,
                                 JOptionPane.INFORMATION_MESSAGE);
-                        if(optionChoosen == JOptionPane.CANCEL_OPTION){
+                        if(optionChoosen != JOptionPane.OK_OPTION){
                             return;
                         }
                         
