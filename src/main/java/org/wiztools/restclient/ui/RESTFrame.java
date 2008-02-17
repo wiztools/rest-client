@@ -6,7 +6,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -73,7 +75,7 @@ public class RESTFrame extends JFrame {
                 KeyEvent.VK_S, ActionEvent.CTRL_MASK));
         jmi_save_req.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                actionSave(true);
+                actionSave(SAVE_REQUEST);
             }
         });
         jm_file.add(jmi_save_req);
@@ -82,10 +84,19 @@ public class RESTFrame extends JFrame {
         jmi_save_res.setMnemonic('s');
         jmi_save_res.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                actionSave(false);
+                actionSave(SAVE_RESPONSE);
             }
         });
         jm_file.add(jmi_save_res);
+        
+        JMenuItem jmi_save_res_body = new JMenuItem("Save Response Body");
+        // jmi_save_res_body.setMnemonic(' ');
+        jmi_save_res_body.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                actionSave(SAVE_RESPONSE_BODY);
+            }
+        });
+        jm_file.add(jmi_save_res_body);
         
         jm_file.addSeparator();
         
@@ -217,17 +228,28 @@ public class RESTFrame extends JFrame {
         });
     }
     
+    private static final int SAVE_REQUEST = 0;
+    private static final int SAVE_RESPONSE = 1;
+    private static final int SAVE_RESPONSE_BODY = 2;
+    
     // This method is invoked from SU.invokeLater
-    private File getSaveFile(final boolean isRequest){
+    private File getSaveFile(final int type){
         JFileChooser jfc = null;
         final String title;
-        if(isRequest){
+        if(type == SAVE_REQUEST){
             jfc = jfc_request;
             title = "Save Request";
         }
-        else{
+        else if(type == SAVE_RESPONSE){
             jfc = jfc_response;
             title = "Save Response";
+        }
+        else if(type == SAVE_RESPONSE_BODY){
+            jfc = jfc_response;
+            title = "Save Response Body";
+        }
+        else{
+            title = "NULL";
         }
         jfc.setDialogTitle(title);
         int status = jfc.showSaveDialog(this);
@@ -255,10 +277,10 @@ public class RESTFrame extends JFrame {
         return null;
     }
     
-    private void actionSave(final boolean isRequest){
+    private void actionSave(final int type){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                if(isRequest){
+                if(type == SAVE_REQUEST){
                     RequestBean request = view.getLastRequest();
                     
                     if(request == null){
@@ -285,7 +307,7 @@ public class RESTFrame extends JFrame {
                         
                     }
                     
-                    File f = getSaveFile(isRequest);
+                    File f = getSaveFile(SAVE_REQUEST);
                     if(f != null){
                         try{
                             XMLUtil.writeRequestXML(request, f);
@@ -298,7 +320,7 @@ public class RESTFrame extends JFrame {
                         }
                     }
                 }
-                else{ // is response
+                else if(type == SAVE_RESPONSE){
                     ResponseBean response = view.getLastResponse();
                     if(response == null){
                         JOptionPane.showMessageDialog(view,
@@ -307,7 +329,7 @@ public class RESTFrame extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-                    File f = getSaveFile(isRequest);
+                    File f = getSaveFile(SAVE_RESPONSE);
                     if(f != null){
                         try{
                             XMLUtil.writeResponseXML(response, f);
@@ -317,6 +339,32 @@ public class RESTFrame extends JFrame {
                         }
                         catch(XMLException ex){
                             view.doError(Util.getStackTrace(ex));
+                        }
+                    }
+                }
+                else if(type == SAVE_RESPONSE_BODY){
+                    ResponseBean response = view.getLastResponse();
+                    if(response == null){
+                        JOptionPane.showMessageDialog(view,
+                                "No last response available.",
+                                "No Response",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    File f = getSaveFile(SAVE_RESPONSE_BODY);
+                    if(f != null){
+                        PrintWriter pw = null;
+                        try{
+                            pw = new PrintWriter(new FileWriter(f));
+                            pw.print(response.getResponseBody());
+                        }
+                        catch(IOException ex){
+                            view.doError(Util.getStackTrace(ex));
+                        }
+                        finally{
+                            if(pw != null){
+                                pw.close();
+                            }
                         }
                     }
                 }
