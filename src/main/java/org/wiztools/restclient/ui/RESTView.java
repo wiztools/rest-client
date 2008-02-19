@@ -378,7 +378,11 @@ public class RESTView extends JPanel implements View {
         jb_clear.setMnemonic('c');
         jb_clear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                clear();
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        clearUIResponse();
+                    }
+                });
             }
         });
         jp_buttons.add(jb_request, BorderLayout.CENTER);
@@ -552,7 +556,11 @@ public class RESTView extends JPanel implements View {
     private void jb_requestActionPerformed() {                                           
         RequestBean request = getRequestFromUI();
         if(request!=null){
-            clear();
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    clearUIResponse();
+                }
+            });
             new HTTPRequestThread(request, view).start();
         }
     }                                          
@@ -629,16 +637,12 @@ public class RESTView extends JPanel implements View {
         errorDialog.showError(error);
     }
     
-    private void clear(){
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run(){
-                jtf_res_status.setText("");
-                jta_response.setText("");
-                ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
-                model.setHeader(null);
-                jta_test_result.setText("");
-            }
-        });
+    void clearUIResponse(){
+        jtf_res_status.setText("");
+        jta_response.setText("");
+        ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
+        model.setHeader(null);
+        jta_test_result.setText("");
     }
     
     private void jcb_urlActionPerformed(final ActionEvent event){
@@ -877,7 +881,7 @@ public class RESTView extends JPanel implements View {
         return errors;
     }
     
-    private void clearUIRequest(){
+    void clearUIRequest(){
         // URL
         jcb_url.setSelectedItem(null);
         
@@ -886,9 +890,11 @@ public class RESTView extends JPanel implements View {
         
         // Headers @TODO
         
+        
         // Body
         jd_body_content_type.setContentType(BodyContentTypeDialog.DEFAULT_CONTENT_TYPE);
         jd_body_content_type.setCharSet(BodyContentTypeDialog.DEFAULT_CHARSET);
+        jta_req_body.setText("");
         
         // Auth
         jcb_auth_basic.setSelected(false);
@@ -897,6 +903,9 @@ public class RESTView extends JPanel implements View {
         jtf_auth_realm.setText("");
         jtf_auth_username.setText("");
         jpf_auth_password.setText("");
+        
+        // Script
+        jta_test_script.setText("");
     }
     
     public void setUIFromRequest(final RequestBean request){

@@ -111,6 +111,36 @@ public class RESTFrame extends JFrame {
         });
         jm_file.add(jmi_exit);
         
+        // Edit menu
+        JMenu jm_edit = new JMenu("Edit");
+        
+        JMenuItem jmi_clear_res = new JMenuItem("Clear Response");
+        jmi_clear_res.setMnemonic('c');
+        jmi_clear_res.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        view.clearUIResponse();
+                    }
+                });
+            }
+        });
+        jm_edit.add(jmi_clear_res);
+        JMenuItem jmi_reset_all = new JMenuItem("Reset All");
+        jmi_reset_all.setMnemonic('a');
+        jmi_reset_all.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        view.clearUIResponse();
+                        view.clearUIRequest();
+                    }
+                });
+            }
+        });
+        jm_edit.add(jmi_reset_all);
+        
+        
         // Tools menu
         JMenu jm_tools = new JMenu("Tools");
         
@@ -159,6 +189,7 @@ public class RESTFrame extends JFrame {
         
         // Add menus to menu-bar
         jmb.add(jm_file);
+        jmb.add(jm_edit);
         jmb.add(jm_tools);
         jmb.add(jm_help);
         
