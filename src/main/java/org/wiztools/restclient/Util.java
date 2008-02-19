@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
@@ -94,5 +96,19 @@ public class Util {
                 br.close();
             }
         }
+    }
+    
+    public static String getMimeType(File f){
+        String type = null;
+        try{
+            URL u = f.toURI().toURL();
+            URLConnection uc = u.openConnection();
+            type = uc.getContentType();
+        }
+        catch(Exception e){
+            // Do nothing!
+            e.printStackTrace();
+        }
+        return type;
     }
 }

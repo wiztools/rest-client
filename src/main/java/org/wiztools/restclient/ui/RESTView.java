@@ -732,6 +732,14 @@ public class RESTView extends JPanel implements View {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
+                    // Determine the MIME type and set parameter
+                    String contentType = Util.getMimeType(f);
+                    int contentTypeYesNo = JOptionPane.showConfirmDialog(view,
+                            "Change ContentType To: " + contentType + "?",
+                            "Change ContentType?", JOptionPane.YES_NO_OPTION);
+                    if(contentTypeYesNo == JOptionPane.YES_OPTION){
+                        jd_body_content_type.setContentType(contentType);
+                    }
                     // Get text from file and set
                     try{
                         String body = Util.getStringFromFile(f);
