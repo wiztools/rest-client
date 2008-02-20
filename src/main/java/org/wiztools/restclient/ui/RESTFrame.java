@@ -67,6 +67,14 @@ public class RESTFrame extends JFrame {
         });
         jm_file.add(jmi_open_req);
         
+        JMenuItem jmi_open_res = new JMenuItem("Open Response");
+        jmi_open_res.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jmi_open_resAction();
+            }
+        });
+        jm_file.add(jmi_open_res);
+        
         jm_file.addSeparator();
         
         JMenuItem jmi_save_req = new JMenuItem("Save Request");
@@ -230,13 +238,32 @@ public class RESTFrame extends JFrame {
         });
     }
     
+    private static final int OPEN_REQUEST = 0;
+    private static final int OPEN_RESPONSE = 1;
+    
+    private File getOpenFile(final int type){
+        String title = null;
+        if(type == OPEN_REQUEST){
+            title = "Open Request";
+        }
+        else if(type == OPEN_RESPONSE){
+            title = "Open Response";
+        }
+        jfc_request.setDialogTitle(title);
+        int status = jfc_request.showOpenDialog(me);
+        if(status == JFileChooser.APPROVE_OPTION){
+            File f = jfc_request.getSelectedFile();
+            return f;
+        }
+        return null;
+    }
+    
+    
     private void jmi_open_reqAction(){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                jfc_request.setDialogTitle("Open Request");
-                int status = jfc_request.showOpenDialog(me);
-                if(status == JFileChooser.APPROVE_OPTION){
-                    File f = jfc_request.getSelectedFile();
+                File f = getOpenFile(OPEN_REQUEST);
+                if(f != null){
                     Exception e = null;
                     try{
                         RequestBean request = XMLUtil.getRequestFromXMLFile(f);
@@ -249,6 +276,29 @@ public class RESTFrame extends JFrame {
                         e = ex;
                     }
                     catch(Base64.Base64Exception ex){
+                        e = ex;
+                    }
+                    if(e != null){
+                        view.doError(Util.getStackTrace(e));
+                    }
+                }
+        }});
+    }
+    
+    private void jmi_open_resAction(){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                File f = getOpenFile(OPEN_RESPONSE);
+                if(f != null){
+                    Exception e = null;
+                    try{
+                        ResponseBean response = XMLUtil.getResponseFromXMLFile(f);
+                        view.setUIFromResponse(response);
+                    }
+                    catch(IOException ex){
+                        e = ex;
+                    }
+                    catch(XMLException ex){
                         e = ex;
                     }
                     if(e != null){

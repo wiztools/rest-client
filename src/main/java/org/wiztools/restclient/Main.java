@@ -12,7 +12,7 @@ import org.wiztools.restclient.ui.SplashScreen;
 public class Main {
     
     public static final String TITLE = "WizTools.org RESTClient ";
-    public static final String VERSION = "2.0";
+    public static final String VERSION = "2.1";
 
     /**
      * @param args the command line arguments

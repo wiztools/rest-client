@@ -54,4 +54,28 @@ public final class ResponseBean {
     public ResponseBean(){
         headers = new LinkedHashMap<String, String>();
     }
+    
+    @Override
+    public boolean equals(Object o){
+        if(o != null && o instanceof ResponseBean){
+            final ResponseBean bean = (ResponseBean)o;
+            boolean isEqual = true;
+            isEqual = isEqual && (this.statusCode == bean.statusCode);
+            isEqual = isEqual && (this.statusLine == null? bean.statusLine == null: this.statusLine.equals(bean.statusLine));
+            isEqual = isEqual && (this.headers == null? bean.headers == null: this.headers.equals(bean.headers));
+            isEqual = isEqual && (this.responseBody == null? bean.responseBody == null: this.responseBody.equals(bean.responseBody));
+            return isEqual;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + this.statusCode;
+        hash = 29 * hash + (this.statusLine != null ? this.statusLine.hashCode() : 0);
+        hash = 29 * hash + (this.headers != null ? this.headers.hashCode() : 0);
+        hash = 29 * hash + (this.responseBody != null ? this.responseBody.hashCode() : 0);
+        return hash;
+    }
 }

@@ -500,4 +500,9 @@ public final class XMLUtil {
         Document doc = getDocumentFromFile(f);
         return xml2Request(doc);
     }
+    
+    public static ResponseBean getResponseFromXMLFile(final File f) throws IOException, XMLException{
+        Document doc = getDocumentFromFile(f);
+        return xml2Response(doc);
+    }
 }

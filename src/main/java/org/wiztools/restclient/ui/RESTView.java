@@ -912,7 +912,25 @@ public class RESTView extends JPanel implements View {
         jta_test_script.setText("");
     }
     
-    public void setUIFromRequest(final RequestBean request){
+    void setUIFromResponse(final ResponseBean response){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                // Clear first
+                clearUIResponse();
+                
+                // Response status line
+                jtf_res_status.setText(response.getStatusLine());
+                
+                // Response header
+                resHeaderTableModel.setHeader(response.getHeaders());
+                
+                // Response body
+                jta_response.setText(response.getResponseBody());
+            }
+        });
+    }
+    
+    void setUIFromRequest(final RequestBean request){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 // Clear first

@@ -124,7 +124,7 @@ public final class RequestBean {
         if(o != null && o instanceof RequestBean){
             final RequestBean bean = (RequestBean)o;
             boolean isEqual = true;
-            isEqual = isEqual && this.method == null? bean.method == null: this.method.equals(bean.method);
+            isEqual = isEqual && (this.method == null? bean.method == null: this.method.equals(bean.method));
             isEqual = isEqual && (this.headers == null? bean.headers == null: this.headers.equals(bean.headers));
             isEqual = isEqual && (this.body == null? bean.body == null: this.body.equals(bean.body));
             isEqual = isEqual && (this.authHost == null? bean.authHost == null: this.authHost.equals(bean.authHost));
