@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -888,8 +889,8 @@ public class RESTView extends JPanel implements View {
         // Method
         jrb_req_get.setSelected(true);
         
-        // Headers @TODO
-        
+        // Headers
+        jp_2col_req_headers.getTableModel().setData(Collections.EMPTY_MAP);
         
         // Body
         jd_body_content_type.setContentType(BodyContentTypeDialog.DEFAULT_CONTENT_TYPE);
