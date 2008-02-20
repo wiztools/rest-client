@@ -35,6 +35,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import junit.framework.TestSuite;
 import org.wiztools.restclient.test.TestException;
@@ -318,7 +319,7 @@ public class RESTView extends JPanel implements View {
         jsp.setPreferredSize(d);
         jp_headers_others.add(jsp);
         jp_headers.add(jp_headers_others, BorderLayout.CENTER);
-        jtp.addTab("Response Headers", jp_headers);
+        jtp.addTab("Headers", jp_headers);
         
         JPanel jp_body = new JPanel();
         jp_body.setLayout(new GridLayout(1,1));
@@ -329,7 +330,7 @@ public class RESTView extends JPanel implements View {
         jp_body_encp.setBorder(BorderFactory.createEmptyBorder());
         jp_body_encp.setLayout(new GridLayout(1, 1));
         jp_body_encp.add(jp_body);
-        jtp.addTab("Response Body", jp_body_encp);
+        jtp.addTab("Body", jp_body_encp);
         
         // Test result
         JPanel jp_test_result = new JPanel();
@@ -390,6 +391,7 @@ public class RESTView extends JPanel implements View {
         jp_buttons.add(jb_clear, BorderLayout.EAST);
         jp.add(jp_buttons, BorderLayout.SOUTH);
         
+        jp.setBorder(BorderFactory.createTitledBorder("HTTP Request"));
         return jp;
     }
     
@@ -402,6 +404,7 @@ public class RESTView extends JPanel implements View {
         
         jp.add(initJTPResponse(), BorderLayout.CENTER);
         
+        jp.setBorder(BorderFactory.createTitledBorder("HTTP Response"));
         return jp;
     }
     
