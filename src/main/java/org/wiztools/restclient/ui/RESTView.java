@@ -30,6 +30,7 @@ import javax.swing.SwingUtilities;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -64,7 +65,7 @@ public class RESTView extends JPanel implements View {
     private JLabel jl_url = new JLabel("URL: ");
     private JComboBox jcb_url = new JComboBox();
     
-    private JButton jb_request = new JButton(">");
+    private JButton jb_request = null;
     
     private JTextField jtf_res_status = new JTextField();
     
@@ -363,6 +364,8 @@ public class RESTView extends JPanel implements View {
             }
         });
         jp_north.add(jcb_url, BorderLayout.CENTER);
+        ImageIcon ico = new ImageIcon(this.getClass().getClassLoader().getResource("org/wiztools/restclient/go.png"));
+        jb_request = new JButton(ico);
         jb_request.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 jb_requestActionPerformed();
