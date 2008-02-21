@@ -18,6 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import org.wiztools.restclient.EncapsulateBean;
 import org.wiztools.restclient.RequestBean;
 import org.wiztools.restclient.ResponseBean;
 import org.wiztools.restclient.Util;
@@ -75,6 +76,14 @@ public class RESTFrame extends JFrame {
         });
         jm_file.add(jmi_open_res);
         
+        JMenuItem jmi_open_archive = new JMenuItem("Open Req-Res Archive");
+        jmi_open_archive.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jmi_open_archiveAction();
+            }
+        });
+        jm_file.add(jmi_open_archive);
+        
         jm_file.addSeparator();
         
         JMenuItem jmi_save_req = new JMenuItem("Save Request");
@@ -105,6 +114,14 @@ public class RESTFrame extends JFrame {
             }
         });
         jm_file.add(jmi_save_res_body);
+        
+        JMenuItem jmi_save_archive = new JMenuItem("Save Req-Res Archive");
+        jmi_save_archive.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                actionSave(SAVE_ARCHIVE);
+            }
+        });
+        jm_file.add(jmi_save_archive);
         
         jm_file.addSeparator();
         
@@ -240,6 +257,7 @@ public class RESTFrame extends JFrame {
     
     private static final int OPEN_REQUEST = 0;
     private static final int OPEN_RESPONSE = 1;
+    private static final int OPEN_ARCHIVE = 2;
     
     private File getOpenFile(final int type){
         String title = null;
@@ -248,6 +266,9 @@ public class RESTFrame extends JFrame {
         }
         else if(type == OPEN_RESPONSE){
             title = "Open Response";
+        }
+        else if(type == OPEN_ARCHIVE){
+            title = "Open Req-Res Archive";
         }
         jfc_request.setDialogTitle(title);
         int status = jfc_request.showOpenDialog(me);
@@ -309,14 +330,40 @@ public class RESTFrame extends JFrame {
         });
     }
     
+    private void jmi_open_archiveAction(){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                File f = getOpenFile(OPEN_ARCHIVE);
+                if(f != null){
+                    Exception e = null;
+                    try{
+                        EncapsulateBean encp = Util.getReqResArchive(f);
+                        view.setUIFromRequest(encp.getRequestBean());
+                        view.setUIFromResponse(encp.getResponseBean());
+                    }
+                    catch(IOException ex){
+                        e = ex;
+                    }
+                    catch(XMLException ex){
+                        e = ex;
+                    }
+                    if(e != null){
+                        view.doError(Util.getStackTrace(e));
+                    }
+                }
+            }
+        });
+    }
+    
     private static final int SAVE_REQUEST = 0;
     private static final int SAVE_RESPONSE = 1;
     private static final int SAVE_RESPONSE_BODY = 2;
+    private static final int SAVE_ARCHIVE = 3;
     
     // This method is invoked from SU.invokeLater
     private File getSaveFile(final int type){
         JFileChooser jfc = null;
-        final String title;
+        String title = null;
         if(type == SAVE_REQUEST){
             jfc = jfc_request;
             title = "Save Request";
@@ -329,8 +376,9 @@ public class RESTFrame extends JFrame {
             jfc = jfc_response;
             title = "Save Response Body";
         }
-        else{
-            title = "NULL";
+        else if(type == SAVE_ARCHIVE){
+            jfc = jfc_request;
+            title = "Save Req-Res Archive";
         }
         jfc.setDialogTitle(title);
         int status = jfc.showSaveDialog(this);
@@ -447,6 +495,31 @@ public class RESTFrame extends JFrame {
                                 pw.close();
                             }
                         }
+                    }
+                }
+                else if(type == SAVE_ARCHIVE){
+                    RequestBean request = view.getLastRequest();
+                    ResponseBean response = view.getLastResponse();
+                    if(request == null || response == null){
+                        JOptionPane.showMessageDialog(view,
+                                "No last request/response available.",
+                                "No Request/Response",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    File f = getSaveFile(SAVE_ARCHIVE);
+                    Exception e = null;
+                    try{
+                        Util.createReqResArchive(request, response, f);
+                    }
+                    catch(IOException ex){
+                        e = ex;
+                    }
+                    catch(XMLException ex){
+                        e = ex;
+                    }
+                    if(e != null){
+                        view.doError(Util.getStackTrace(e));
                     }
                 }
             }

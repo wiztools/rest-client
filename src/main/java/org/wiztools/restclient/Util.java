@@ -17,6 +17,7 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -108,75 +109,112 @@ public class Util {
 
     public static String getMimeType(File f) {
         String type = null;
+        URLConnection uc = null;
         try {
             URL u = f.toURI().toURL();
-            URLConnection uc = u.openConnection();
+            uc = u.openConnection();
             type = uc.getContentType();
         } catch (Exception e) {
             // Do nothing!
             e.printStackTrace();
+        }
+        finally{
+            if(uc != null){
+                // No method like uc.close() !!
+            }
         }
         return type;
     }
 
     public static void createReqResArchive(RequestBean request, ResponseBean response, File zipFile)
             throws IOException, XMLException {
-        File requestFile = new File("request.xml");
-        File responseFile = new File("response.xml");
+        File requestFile = File.createTempFile("req-", ".xml");
+        File responseFile = File.createTempFile("res-", ".xml");
         XMLUtil.writeRequestXML(request, requestFile);
         XMLUtil.writeResponseXML(response, responseFile);
 
-        String[] filesToZip = new String[]{"request.xml", "response.xml"};
-        byte[] buf = new byte[1024];
+        Map<String, File> files = new HashMap<String, File>();
+        files.put("request.xml", requestFile);
+        files.put("response.xml", responseFile);
+        byte[] buf = new byte[BUFF_SIZE];
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile));
-        for (int i = 0; i < filesToZip.length; i++) {
-            FileInputStream fis = new FileInputStream(filesToZip[i]);
-            zos.putNextEntry(new ZipEntry(filesToZip[i]));
-            int len;
-            while((len = fis.read(buf)) > 0){
-                zos.write(buf, 0, len);
+        boolean isSuccess = false;
+        try{
+            for (String entryName: files.keySet()) {
+                File entryFile = files.get(entryName);
+                FileInputStream fis = new FileInputStream(entryFile);
+                zos.putNextEntry(new ZipEntry(entryName));
+                int len;
+                while ((len = fis.read(buf)) > 0) {
+                    zos.write(buf, 0, len);
+                }
+                zos.closeEntry();
+                fis.close();
             }
-            zos.closeEntry();
-            fis.close();
+            isSuccess = true;
         }
-        zos.close();
-        requestFile.delete();
-        responseFile.delete();
+        finally{
+            IOException ioe = null;
+            if(zos != null){
+                try{
+                    zos.close();
+                }
+                catch(IOException ex){
+                    isSuccess = false;
+                    ioe = ex;
+                }
+            }
+            if(!isSuccess){ // Failed: delete half-written zip file
+                zipFile.delete();
+            }
+            requestFile.delete();
+            responseFile.delete();
+            if(ioe != null){
+                throw ioe;
+            }
+        }
     }
+
+    private static final int BUFF_SIZE = 1024 * 4;
+    
     public static EncapsulateBean getReqResArchive(File zipFile)
-            throws FileNotFoundException, IOException, XMLException{
+            throws FileNotFoundException, IOException, XMLException {
         EncapsulateBean encpBean = new EncapsulateBean();
-        BufferedOutputStream dest = null;
-         FileInputStream fis = new 
-	   FileInputStream(zipFile);
-         ZipInputStream zis = new 
-	   ZipInputStream(new BufferedInputStream(fis));
-         ZipEntry entry;
-         while((entry = zis.getNextEntry()) != null) {
-            int count;
-            byte data[] = new byte[1024];
-            File tmpFile = new File(entry.getName());
-            FileOutputStream fos = new 
-	      FileOutputStream(tmpFile);
-            dest = new 
-              BufferedOutputStream(fos, 1024);
-            while ((count = zis.read(data, 0, 1024)) 
-              != -1) {
-               dest.write(data, 0, count);
+        // BufferedOutputStream dest = null;
+        FileInputStream fis = new FileInputStream(zipFile);
+        ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
+        ZipEntry entry;
+        try{
+            while ((entry = zis.getNextEntry()) != null) {
+                int count;
+                byte data[] = new byte[BUFF_SIZE];
+                File tmpFile = File.createTempFile(entry.getName(), "");
+                try{
+                    FileOutputStream fos = new FileOutputStream(tmpFile);
+                    BufferedOutputStream dest = new BufferedOutputStream(fos, BUFF_SIZE);
+                    while ((count = zis.read(data, 0, BUFF_SIZE)) != -1) {
+                        dest.write(data, 0, count);
+                    }
+                    dest.flush();
+                    dest.close();
+
+                    if (entry.getName().equals("request.xml")) {
+                        RequestBean reqBean = XMLUtil.getRequestFromXMLFile(tmpFile);
+                        encpBean.setRequestBean(reqBean);
+                    }
+                    else {
+                        ResponseBean resBean = XMLUtil.getResponseFromXMLFile(tmpFile);
+                        encpBean.setResponseBean(resBean);
+                    }
+                }
+                finally{
+                    tmpFile.delete();
+                }
             }
-            if(entry.getName().equals("request.xml")){
-                RequestBean reqBean = XMLUtil.getRequestFromXMLFile(tmpFile);
-                encpBean.setRequestBean(reqBean);
-            }
-            else{
-                ResponseBean resBean = XMLUtil.getResponseFromXMLFile(tmpFile);
-                encpBean.setResponseBean(resBean);
-            }
-            dest.flush();
-            dest.close();
-            tmpFile.delete();
-         }
-         zis.close();
+        }
+        finally{
+            zis.close();
+        }
         return encpBean;
     }
 }
