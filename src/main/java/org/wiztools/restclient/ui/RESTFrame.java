@@ -338,8 +338,15 @@ public class RESTFrame extends JFrame {
                     Exception e = null;
                     try{
                         EncapsulateBean encp = Util.getReqResArchive(f);
-                        view.setUIFromRequest(encp.getRequestBean());
-                        view.setUIFromResponse(encp.getResponseBean());
+                        RequestBean request = encp.getRequestBean();
+                        ResponseBean response = encp.getResponseBean();
+                        if(request != null && response != null){
+                            view.setUIFromRequest(request);
+                            view.setUIFromResponse(response);
+                        }
+                        else{
+                            view.doError("Unable to load archive! Check if valid archive!");
+                        }
                     }
                     catch(IOException ex){
                         e = ex;

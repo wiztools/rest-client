@@ -37,6 +37,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
 import org.wiztools.restclient.test.TestException;
 import org.wiztools.restclient.test.TestUtil;
@@ -63,8 +64,7 @@ public class RESTView extends JPanel implements View {
     private JLabel jl_url = new JLabel("URL: ");
     private JComboBox jcb_url = new JComboBox();
     
-    private JButton jb_request = new JButton(" Request ");
-    private JButton jb_clear = new JButton(" Clear Response ");
+    private JButton jb_request = new JButton(">");
     
     private JTextField jtf_res_status = new JTextField();
     
@@ -351,7 +351,7 @@ public class RESTView extends JPanel implements View {
         
         // North
         JPanel jp_north = new JPanel();
-        jp_north.setLayout(new BorderLayout());
+        jp_north.setLayout(new BorderLayout(BORDER_WIDTH, 0));
         jl_url.setLabelFor(jcb_url);
         jl_url.setDisplayedMnemonic('u');
         jp_north.add(jl_url, BorderLayout.WEST);
@@ -363,13 +363,19 @@ public class RESTView extends JPanel implements View {
             }
         });
         jp_north.add(jcb_url, BorderLayout.CENTER);
+        jb_request.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                jb_requestActionPerformed();
+            }
+        });
+        jp_north.add(jb_request, BorderLayout.EAST);
         jp.add(jp_north, BorderLayout.NORTH);
         
         // Center
         jp.add(initJTPRequest(), BorderLayout.CENTER);
         
         // SOUTH
-        JPanel jp_buttons = new JPanel();
+        /*JPanel jp_buttons = new JPanel();
         jp_buttons.setLayout(new BorderLayout(BORDER_WIDTH, BORDER_WIDTH));
         jb_request.setMnemonic('r');
         jb_request.addActionListener(new ActionListener() {
@@ -389,9 +395,9 @@ public class RESTView extends JPanel implements View {
         });
         jp_buttons.add(jb_request, BorderLayout.CENTER);
         jp_buttons.add(jb_clear, BorderLayout.EAST);
-        jp.add(jp_buttons, BorderLayout.SOUTH);
+        jp.add(jp_buttons, BorderLayout.SOUTH);*/
         
-        jp.setBorder(BorderFactory.createTitledBorder("HTTP Request"));
+        jp.setBorder(BorderFactory.createTitledBorder(null, "HTTP Request", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
         return jp;
     }
     
@@ -404,7 +410,7 @@ public class RESTView extends JPanel implements View {
         
         jp.add(initJTPResponse(), BorderLayout.CENTER);
         
-        jp.setBorder(BorderFactory.createTitledBorder("HTTP Response"));
+        jp.setBorder(BorderFactory.createTitledBorder(null, "HTTP Response", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
         return jp;
     }
     
