@@ -32,12 +32,12 @@ public class RCFileView extends FileView {
         return null;
     }
     
-    private static final String iconBasePath = "org/wiztools/restclient/";
-    private static final Icon FOLDER_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_folder.png");
-    private static final Icon FILE_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_file.png");
-    private static final Icon REQUEST_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_request.png");
-    private static final Icon RESPONSE_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_response.png");
-    private static final Icon ARCHIVE_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_archive.png");
+    public static final String iconBasePath = "org/wiztools/restclient/";
+    public static final Icon FOLDER_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_folder.png");
+    public static final Icon FILE_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_file.png");
+    public static final Icon REQUEST_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_request.png");
+    public static final Icon RESPONSE_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_response.png");
+    public static final Icon ARCHIVE_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_archive.png");
     
     @Override
     public Icon getIcon(final File f){

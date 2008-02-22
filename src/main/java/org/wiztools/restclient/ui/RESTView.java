@@ -31,7 +31,6 @@ import javax.swing.SwingUtilities;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -368,8 +367,8 @@ public class RESTView extends JPanel implements View {
             }
         });
         jp_north.add(jcb_url, BorderLayout.CENTER);
-        ImageIcon ico = new ImageIcon(this.getClass().getClassLoader().getResource("org/wiztools/restclient/go.png"));
-        jb_request = new JButton(ico);
+        jb_request = new JButton(UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png"));
+        jb_request.setToolTipText("Go!");
         jb_request.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 jb_requestActionPerformed();

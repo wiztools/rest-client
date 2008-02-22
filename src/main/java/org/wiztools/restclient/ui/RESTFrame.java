@@ -60,7 +60,7 @@ public class RESTFrame extends JFrame {
         JMenu jm_file = new JMenu("File");
         jm_file.setMnemonic('f');
         
-        JMenuItem jmi_open_req = new JMenuItem("Open Request");
+        JMenuItem jmi_open_req = new JMenuItem("Open Request", RCFileView.REQUEST_ICON);
         jmi_open_req.setMnemonic('o');
         jmi_open_req.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_O, ActionEvent.CTRL_MASK));
@@ -71,7 +71,7 @@ public class RESTFrame extends JFrame {
         });
         jm_file.add(jmi_open_req);
         
-        JMenuItem jmi_open_res = new JMenuItem("Open Response");
+        JMenuItem jmi_open_res = new JMenuItem("Open Response", RCFileView.RESPONSE_ICON);
         jmi_open_res.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jmi_open_resAction();
@@ -79,7 +79,7 @@ public class RESTFrame extends JFrame {
         });
         jm_file.add(jmi_open_res);
         
-        JMenuItem jmi_open_archive = new JMenuItem("Open Req-Res Archive");
+        JMenuItem jmi_open_archive = new JMenuItem("Open Req-Res Archive", RCFileView.ARCHIVE_ICON);
         jmi_open_archive.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jmi_open_archiveAction();
@@ -89,7 +89,7 @@ public class RESTFrame extends JFrame {
         
         jm_file.addSeparator();
         
-        JMenuItem jmi_save_req = new JMenuItem("Save Request");
+        JMenuItem jmi_save_req = new JMenuItem("Save Request", RCFileView.REQUEST_ICON);
         jmi_save_req.setMnemonic('q');
         jmi_save_req.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_S, ActionEvent.CTRL_MASK));
@@ -100,7 +100,7 @@ public class RESTFrame extends JFrame {
         });
         jm_file.add(jmi_save_req);
         
-        JMenuItem jmi_save_res = new JMenuItem("Save Response");
+        JMenuItem jmi_save_res = new JMenuItem("Save Response", RCFileView.RESPONSE_ICON);
         jmi_save_res.setMnemonic('s');
         jmi_save_res.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
@@ -109,7 +109,7 @@ public class RESTFrame extends JFrame {
         });
         jm_file.add(jmi_save_res);
         
-        JMenuItem jmi_save_res_body = new JMenuItem("Save Response Body");
+        JMenuItem jmi_save_res_body = new JMenuItem("Save Response Body", RCFileView.FILE_ICON);
         // jmi_save_res_body.setMnemonic(' ');
         jmi_save_res_body.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -118,7 +118,7 @@ public class RESTFrame extends JFrame {
         });
         jm_file.add(jmi_save_res_body);
         
-        JMenuItem jmi_save_archive = new JMenuItem("Save Req-Res Archive");
+        JMenuItem jmi_save_archive = new JMenuItem("Save Req-Res Archive", RCFileView.ARCHIVE_ICON);
         jmi_save_archive.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 actionSave(SAVE_ARCHIVE);
@@ -128,7 +128,7 @@ public class RESTFrame extends JFrame {
         
         jm_file.addSeparator();
         
-        JMenuItem jmi_exit = new JMenuItem("Exit");
+        JMenuItem jmi_exit = new JMenuItem("Exit", UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "fv_exit.png"));
         jmi_exit.setMnemonic('x');
         jmi_exit.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
