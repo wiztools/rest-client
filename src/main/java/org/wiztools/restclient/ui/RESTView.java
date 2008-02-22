@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.LinkedList;
 import javax.swing.ButtonGroup;
@@ -36,7 +37,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
-import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
@@ -49,7 +49,7 @@ import org.wiztools.restclient.test.TestUtil;
  */
 public class RESTView extends JPanel implements View {
     
-    private JFileChooser jfc = new JFileChooser();
+    private JFileChooser jfc = UIUtil.getNewJFileChooser();
     
     private JRadioButton jrb_req_get = new JRadioButton("GET");
     private JRadioButton jrb_req_post = new JRadioButton("POST");
@@ -61,7 +61,7 @@ public class RESTView extends JPanel implements View {
     
     private JProgressBar jpb_status = new JProgressBar();
     
-    private JLabel jl_status = new JLabel(" RESTClient");
+    private JLabel jl_status = new JLabel(Main.TITLE);
     private JLabel jl_url = new JLabel("URL: ");
     private JComboBox jcb_url = new JComboBox();
     
@@ -125,6 +125,10 @@ public class RESTView extends JPanel implements View {
         this.frame = frame;
         init();
         view = this;
+        
+        // Start status clear thread:
+        statusLastUpdated = Calendar.getInstance();
+        new StatusClearerThread().start();
     }
     
     private JTabbedPane initJTPRequest(){
@@ -464,6 +468,11 @@ public class RESTView extends JPanel implements View {
         this.add(initNorth(), BorderLayout.NORTH);
         this.add(initCenter(), BorderLayout.CENTER);
         this.add(initSouth(), BorderLayout.SOUTH);
+    }
+    
+    ResponseBean getResponseFromUI(){
+        //@TODO
+        return null;
     }
     
     public RequestBean getRequestFromUI(){
@@ -1016,10 +1025,13 @@ public class RESTView extends JPanel implements View {
         });
     }
     
+    private Calendar statusLastUpdated;
+    
     public void setStatusMessage(final String msg){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 jl_status.setText(" " + msg);
+                statusLastUpdated = Calendar.getInstance();
             }
         });
     }
@@ -1030,5 +1042,23 @@ public class RESTView extends JPanel implements View {
 
     public ResponseBean getLastResponse() {
         return lastResponse;
+    }
+    
+    private class StatusClearerThread extends Thread{
+        public void run(){
+            while(true){
+                try{
+                    Thread.sleep(5*1000);
+                }
+                catch(InterruptedException ex){
+                    // Do nothing!
+                }
+                Calendar c = (Calendar)statusLastUpdated.clone();
+                c.add(Calendar.SECOND, 20);
+                if(Calendar.getInstance().after(c)){
+                    setStatusMessage(Main.TITLE);
+                }
+            }
+        }
     }
 }

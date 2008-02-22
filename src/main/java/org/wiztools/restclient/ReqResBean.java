@@ -9,7 +9,7 @@ package org.wiztools.restclient;
  *
  * @author rsubramanian
  */
-public final class EncapsulateBean {
+public final class ReqResBean {
     
     private RequestBean requestBean;
     private ResponseBean responseBean;

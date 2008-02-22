@@ -18,7 +18,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import org.wiztools.restclient.EncapsulateBean;
+import javax.swing.filechooser.FileFilter;
+import org.wiztools.restclient.FileType;
+import org.wiztools.restclient.ReqResBean;
 import org.wiztools.restclient.RequestBean;
 import org.wiztools.restclient.ResponseBean;
 import org.wiztools.restclient.Util;
@@ -38,8 +40,9 @@ public class RESTFrame extends JFrame {
     private PasswordGenDialog passwordGenDialog;
     
     // Requests and responses are generally saved in different dirs
-    private JFileChooser jfc_request = new JFileChooser();
-    private JFileChooser jfc_response = new JFileChooser();
+    private JFileChooser jfc_request = UIUtil.getNewJFileChooser();
+    private JFileChooser jfc_response = UIUtil.getNewJFileChooser();
+    private JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
     
     private final RESTFrame me;
     
@@ -222,6 +225,11 @@ public class RESTFrame extends JFrame {
     }
     
     private void init(){
+        // JFileChooser: Initialize
+        jfc_request.addChoosableFileFilter(new RCFileFilter(FileType.REQUEST_EXT));
+        jfc_response.addChoosableFileFilter(new RCFileFilter(FileType.RESPONSE_EXT));
+        jfc_archive.addChoosableFileFilter(new RCFileFilter(FileType.ARCHIVE_EXT));
+        
         // Create AboutDialog
         aboutDialog = new AboutDialog(this);
         
@@ -261,19 +269,23 @@ public class RESTFrame extends JFrame {
     
     private File getOpenFile(final int type){
         String title = null;
+        JFileChooser jfc = null;
         if(type == OPEN_REQUEST){
+            jfc = jfc_request;
             title = "Open Request";
         }
         else if(type == OPEN_RESPONSE){
+            jfc = jfc_response;
             title = "Open Response";
         }
         else if(type == OPEN_ARCHIVE){
+            jfc = jfc_archive;
             title = "Open Req-Res Archive";
         }
-        jfc_request.setDialogTitle(title);
-        int status = jfc_request.showOpenDialog(me);
+        jfc.setDialogTitle(title);
+        int status = jfc.showOpenDialog(me);
         if(status == JFileChooser.APPROVE_OPTION){
-            File f = jfc_request.getSelectedFile();
+            File f = jfc.getSelectedFile();
             return f;
         }
         return null;
@@ -337,7 +349,7 @@ public class RESTFrame extends JFrame {
                 if(f != null){
                     Exception e = null;
                     try{
-                        EncapsulateBean encp = Util.getReqResArchive(f);
+                        ReqResBean encp = Util.getReqResArchive(f);
                         RequestBean request = encp.getRequestBean();
                         ResponseBean response = encp.getResponseBean();
                         if(request != null && response != null){
@@ -384,13 +396,49 @@ public class RESTFrame extends JFrame {
             title = "Save Response Body";
         }
         else if(type == SAVE_ARCHIVE){
-            jfc = jfc_request;
+            jfc = jfc_archive;
             title = "Save Req-Res Archive";
         }
         jfc.setDialogTitle(title);
         int status = jfc.showSaveDialog(this);
         if(status == JFileChooser.APPROVE_OPTION){
             File f = jfc.getSelectedFile();
+            
+            if(f == null){
+                return null;
+            }
+            
+            String ext = null;
+            switch(type){
+                case SAVE_REQUEST: 
+                    ext = FileType.REQUEST_EXT;
+                    break;
+                case SAVE_RESPONSE:
+                    ext = FileType.RESPONSE_EXT;
+                    break;
+                case SAVE_ARCHIVE:
+                    ext = FileType.ARCHIVE_EXT;
+                    break;
+                default:
+                    break;
+            }
+            if(ext != null){
+                String path = f.getAbsolutePath();
+                path = path.toLowerCase();
+                // Add our extension only if the selected filter is ours
+                FileFilter ff = jfc.getFileFilter();
+                RCFileFilter rcFileFilter = null;
+                if(ff instanceof RCFileFilter){
+                    rcFileFilter = (RCFileFilter)ff;
+                }
+                if((rcFileFilter != null) &&
+                        (rcFileFilter.getFileTypeExt().equals(ext)) &&
+                        !path.endsWith(ext)){
+                    f = new File(f.getAbsolutePath() + ext);
+                    jfc.setSelectedFile(f);
+                    view.setStatusMessage("Adding default extension: " + ext);
+                }
+            }
             if(f.exists()){
                 int yesNo = JOptionPane.showConfirmDialog(me,
                         "File exists. Overwrite?",
@@ -514,19 +562,24 @@ public class RESTFrame extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
+                    RequestBean uiRequest = view.getRequestFromUI();
+                    ResponseBean uiResponse = view.getResponseFromUI();
+                    //@TODO: Check if UI and last req/res are same
                     File f = getSaveFile(SAVE_ARCHIVE);
-                    Exception e = null;
-                    try{
-                        Util.createReqResArchive(request, response, f);
-                    }
-                    catch(IOException ex){
-                        e = ex;
-                    }
-                    catch(XMLException ex){
-                        e = ex;
-                    }
-                    if(e != null){
-                        view.doError(Util.getStackTrace(e));
+                    if(f != null){
+                        Exception e = null;
+                        try{
+                            Util.createReqResArchive(request, response, f);
+                        }
+                        catch(IOException ex){
+                            e = ex;
+                        }
+                        catch(XMLException ex){
+                            e = ex;
+                        }
+                        if(e != null){
+                            view.doError(Util.getStackTrace(e));
+                        }
                     }
                 }
             }

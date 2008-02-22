@@ -177,9 +177,9 @@ public class Util {
 
     private static final int BUFF_SIZE = 1024 * 4;
     
-    public static EncapsulateBean getReqResArchive(File zipFile)
+    public static ReqResBean getReqResArchive(File zipFile)
             throws FileNotFoundException, IOException, XMLException {
-        EncapsulateBean encpBean = new EncapsulateBean();
+        ReqResBean encpBean = new ReqResBean();
         // BufferedOutputStream dest = null;
         FileInputStream fis = new FileInputStream(zipFile);
         ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
