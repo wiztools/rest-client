@@ -62,7 +62,7 @@ public class RESTView extends JPanel implements View {
     
     private JProgressBar jpb_status = new JProgressBar();
     
-    private JLabel jl_status = new JLabel(Main.TITLE);
+    private JLabel jl_status = new JLabel(RCConstants.TITLE);
     private JLabel jl_url = new JLabel("URL: ");
     private JComboBox jcb_url = new JComboBox();
     
@@ -1047,6 +1047,7 @@ public class RESTView extends JPanel implements View {
     }
     
     private class StatusClearerThread extends Thread{
+        @Override
         public void run(){
             while(true){
                 try{
@@ -1058,7 +1059,7 @@ public class RESTView extends JPanel implements View {
                 Calendar c = (Calendar)statusLastUpdated.clone();
                 c.add(Calendar.SECOND, 20);
                 if(Calendar.getInstance().after(c)){
-                    setStatusMessage(Main.TITLE);
+                    setStatusMessage(RCConstants.TITLE);
                 }
             }
         }

@@ -11,6 +11,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -45,20 +47,19 @@ public class AboutDialog extends EscapableDialog {
         jp_north.setLayout(new FlowLayout(FlowLayout.CENTER));
         JLabel jl_title = new JLabel(
                 "<html><h2>" +
-                Main.TITLE + Main.VERSION +
+                RCConstants.TITLE + RCConstants.VERSION +
                 "</h2></html>");
         jp_north.add(jl_title);
         jp.add(jp_north, BorderLayout.NORTH);
         
         JPanel jp_center = new JPanel();
         jp_center.setLayout(new FlowLayout());
-        JLabel jl_text = new JLabel();
-        String strText = "<html>RESTClient is a Java platform client application <br>" +
-                "to test RESTful webservices. It can be used <br>" +
-                "to test variety of HTTP communications. <br><br>" +
-                "<b>http://rest-client.googlecode.com/</b></html>";
-        jl_text.setText(strText);
-        jp_center.add(jl_text);
+        JTextPane jtp = new JTextPane();
+        jtp.setEditable(false);
+        jtp.setContentType("text/html");
+        jtp.setSize(40, 40);
+        jtp.setText(MessageI18N.getMessage("menu.help.about"));
+        jp_center.add(new JScrollPane(jtp));
         jp.add(jp_center, BorderLayout.CENTER);
         
         JPanel jp_south = new JPanel();

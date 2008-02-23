@@ -21,7 +21,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -69,7 +68,7 @@ public final class XMLUtil {
 
             xmldoc = impl.createDocument(null, "rest-client", null);
             Element root = xmldoc.getDocumentElement();
-            root.setAttributeNS(null, "version", Main.VERSION);
+            root.setAttributeNS(null, "version", RCConstants.VERSION);
 
             request = xmldoc.createElementNS(null, "request");
             // creating the URL child element
@@ -331,7 +330,7 @@ public final class XMLUtil {
 
             xmldoc = impl.createDocument(null, "rest-client", null);
             Element root = xmldoc.getDocumentElement();
-            root.setAttributeNS(null, "version", Main.VERSION);
+            root.setAttributeNS(null, "version", RCConstants.VERSION);
 
             response = xmldoc.createElementNS(null, "response");
 

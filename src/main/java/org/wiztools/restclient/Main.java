@@ -11,9 +11,6 @@ import org.wiztools.restclient.ui.SplashScreen;
  */
 public class Main {
     
-    public static final String TITLE = "WizTools.org RESTClient ";
-    public static final String VERSION = "2.1";
-
     /**
      * @param args the command line arguments
      */
@@ -29,7 +26,7 @@ public class Main {
         
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new RESTFrame(TITLE + VERSION);
+                new RESTFrame(RCConstants.TITLE + RCConstants.VERSION);
             }
         });
         
