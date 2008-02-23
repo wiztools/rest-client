@@ -160,6 +160,11 @@ public class BodyContentTypeDialog extends EscapableDialog {
                 if(isOk){
                     contentType = (String)jcb_content_type.getSelectedItem();
                     charSet = (String)jcb_char_set.getSelectedItem();
+                    
+                    // Fire all listeners:
+                    for(ContentTypeCharSetChangeListener listener: listeners){
+                        listener.changed(contentType, charSet);
+                    }
                 }
                 else{
                     jcb_content_type.setSelectedItem(me.contentType);
@@ -174,17 +179,37 @@ public class BodyContentTypeDialog extends EscapableDialog {
         return this.contentType;
     }
     
-    void setContentType(String contentType){
+    void setContentType(final String contentType){
         this.contentType = contentType;
-        jcb_content_type.setSelectedItem(contentType);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                jcb_content_type.setSelectedItem(contentType);
+                for(ContentTypeCharSetChangeListener listener: listeners){
+                    listener.changed(contentType, charSet);
+                }
+            }
+        });
     }
     
     String getCharSet(){
         return this.charSet;
     }
     
-    void setCharSet(String charSet){
+    void setCharSet(final String charSet){
         this.charSet = charSet;
-        jcb_char_set.setSelectedItem(charSet);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                jcb_content_type.setSelectedItem(contentType);
+                for(ContentTypeCharSetChangeListener listener: listeners){
+                    listener.changed(contentType, charSet);
+                }
+            }
+        });
+    }
+    
+    private List<ContentTypeCharSetChangeListener> listeners = new ArrayList<ContentTypeCharSetChangeListener>();
+    
+    void addContentTypeCharSetChangeListener(ContentTypeCharSetChangeListener listener){
+        listeners.add(listener);
     }
 }

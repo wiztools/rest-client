@@ -36,7 +36,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
 import org.wiztools.restclient.test.TestException;
@@ -68,10 +70,11 @@ public class RESTView extends JPanel implements View {
     
     private JTextField jtf_res_status = new JTextField();
     
+    private JTextField jtf_body_content_type = new JTextField();
     private JTextArea jta_req_body = new JTextArea();
-    private JButton jb_body_content_type = new JButton("Content-type");
-    private JButton jb_body_file = new JButton("Load from file");
-    private JButton jb_body_params = new JButton("Insert parameters");
+    private JButton jb_body_content_type = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "edit.png"));
+    private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+    private JButton jb_body_params = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
     private BodyContentTypeDialog jd_body_content_type;
     private JScrollPane jsp_req_body;
     private Dimension d_jsp_req_body;
@@ -198,6 +201,16 @@ public class RESTView extends JPanel implements View {
         jp_body.setLayout(new BorderLayout());
         JPanel jp_body_north = new JPanel();
         jp_body_north.setLayout(new FlowLayout(FlowLayout.CENTER));
+        
+        jtf_body_content_type.setEditable(false);
+        jtf_body_content_type.setColumns(24);
+        jtf_body_content_type.setToolTipText("Selected Content-type & Charset");
+        jtf_body_content_type.setText(
+                jd_body_content_type.getContentType() + "; "
+                + jd_body_content_type.getCharSet());
+        jp_body_north.add(jtf_body_content_type);
+    
+        jb_body_content_type.setToolTipText("Edit Content-type & Charset");
         jb_body_content_type.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 SwingUtilities.invokeLater(new Runnable() {
@@ -208,18 +221,26 @@ public class RESTView extends JPanel implements View {
             }
         });
         jp_body_north.add(jb_body_content_type);
+        
+        JSeparator js = new JSeparator(SwingConstants.VERTICAL);
+        jp_body_north.add(js);
+        
+        jb_body_file.setToolTipText("Load from file");
         jb_body_file.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 jb_body_fileActionPerformed(event);
             }
         });
         jp_body_north.add(jb_body_file);
+        
+        jb_body_params.setToolTipText("Insert parameters");
         jb_body_params.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 jb_body_paramActionPerformed(event);
             }
         });
         jp_body_north.add(jb_body_params);
+        
         jp_body.add(jp_body_north, BorderLayout.NORTH);
         JPanel jp_body_center = new JPanel();
         jp_body_center.setLayout(new GridLayout(1, 1));
@@ -380,29 +401,6 @@ public class RESTView extends JPanel implements View {
         // Center
         jp.add(initJTPRequest(), BorderLayout.CENTER);
         
-        // SOUTH
-        /*JPanel jp_buttons = new JPanel();
-        jp_buttons.setLayout(new BorderLayout(BORDER_WIDTH, BORDER_WIDTH));
-        jb_request.setMnemonic('r');
-        jb_request.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                jb_requestActionPerformed();
-            }
-        });
-        jb_clear.setMnemonic('c');
-        jb_clear.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        clearUIResponse();
-                    }
-                });
-            }
-        });
-        jp_buttons.add(jb_request, BorderLayout.CENTER);
-        jp_buttons.add(jb_clear, BorderLayout.EAST);
-        jp.add(jp_buttons, BorderLayout.SOUTH);*/
-        
         jp.setBorder(BorderFactory.createTitledBorder(null, "HTTP Request", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
         return jp;
     }
@@ -461,6 +459,11 @@ public class RESTView extends JPanel implements View {
         
         // Initialize jd_body_content_type
         jd_body_content_type = new BodyContentTypeDialog(frame);
+        jd_body_content_type.addContentTypeCharSetChangeListener(new ContentTypeCharSetChangeListener() {
+            public void changed(String contentType, String charSet) {
+                jtf_body_content_type.setText(contentType + "; " + charSet);
+            }
+        });
         
         this.setLayout(new BorderLayout());
         
