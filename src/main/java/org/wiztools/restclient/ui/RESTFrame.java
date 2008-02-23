@@ -42,6 +42,7 @@ public class RESTFrame extends JFrame {
     // Requests and responses are generally saved in different dirs
     private JFileChooser jfc_request = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_response = UIUtil.getNewJFileChooser();
+    private JFileChooser jfc_response_body = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
     
     private final RESTFrame me;
@@ -392,7 +393,7 @@ public class RESTFrame extends JFrame {
             title = "Save Response";
         }
         else if(type == SAVE_RESPONSE_BODY){
-            jfc = jfc_response;
+            jfc = jfc_response_body;
             title = "Save Response Body";
         }
         else if(type == SAVE_ARCHIVE){
