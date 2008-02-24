@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -86,8 +85,9 @@ public class RESTView extends JPanel implements View {
     private JScrollPane jsp_test_script;
     private JTextArea jta_test_script = new JTextArea();
     private JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
-    private JButton jb_req_test_test = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "wand.png"));
+    private JButton jb_req_test_run = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "wand.png"));
     private JButton jb_req_test_quick = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "quick_test.png"));
+    private RunTestDialog jd_runTestDialog;
     
     // Authentication resources
     private JCheckBox jcb_auth_basic = new JCheckBox("BASIC");
@@ -359,9 +359,21 @@ public class RESTView extends JPanel implements View {
             }
         });
         jp_test_north.add(jb_req_test_template);
-        jb_req_test_test.setToolTipText("Test Wizard");
-        jp_test_north.add(jb_req_test_test);
-        jb_req_test_quick.setToolTipText("Quick Test-Using last request & response");
+        jb_req_test_run.setToolTipText("Run Test");
+        jb_req_test_run.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        if(jd_runTestDialog == null){
+                            jd_runTestDialog = new RunTestDialog(frame);
+                        }
+                        jd_runTestDialog.setVisible(true);
+                    }
+                });
+            }
+        });
+        jp_test_north.add(jb_req_test_run);
+        jb_req_test_quick.setToolTipText("Quick Run Test-Using last request & response");
         jb_req_test_quick.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(lastRequest == null || lastResponse == null){
