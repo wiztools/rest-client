@@ -1,0 +1,15 @@
+/*
+* This is a template provided by RESTClient. Modify as per need.
+*/
+
+// The test class name should end with `Test'--this is a convention:
+public class TemplateClassTest extends org.wiztools.restclient.test.RESTTestCase{
+
+  // Test method names should start with `test':
+  public void testMethod(){
+    if(response.getStatusCode() != 200){
+      fail("This will fail the test!");
+    }
+  }
+
+}

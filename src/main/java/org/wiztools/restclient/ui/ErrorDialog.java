@@ -75,9 +75,14 @@ public class ErrorDialog extends EscapableDialog {
     }
     
     void showError(final String error){
+        showMessage("Error", error);
+    }
+    
+    void showMessage(final String title, final String message){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
-                jta_error.setText(error);
+                errorDialog.setTitle(title);
+                jta_error.setText(message);
                 errorDialog.setLocationRelativeTo(parent);
                 jb_ok.requestFocus();
                 errorDialog.setVisible(true);

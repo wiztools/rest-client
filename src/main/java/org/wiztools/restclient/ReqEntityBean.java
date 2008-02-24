@@ -41,6 +41,12 @@ public class ReqEntityBean {
     }
     
     @Override
+    public Object clone(){
+        ReqEntityBean cloned = new ReqEntityBean(body, contentType, charSet);
+        return cloned;
+    }
+    
+    @Override
     public boolean equals(Object o){
         if(o != null && o instanceof ReqEntityBean){
             ReqEntityBean bean = (ReqEntityBean)o;

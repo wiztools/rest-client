@@ -120,6 +120,23 @@ public final class RequestBean {
     }
     
     @Override
+    public Object clone(){
+        RequestBean cloned = new RequestBean();
+        cloned.setAuthHost(authHost);
+        cloned.setAuthPassword(authPassword);
+        cloned.setAuthPreemptive(authPreemptive);
+        cloned.setAuthRealm(authRealm);
+        cloned.setAuthUsername(authUsername);
+        if(body != null){
+            cloned.setBody((ReqEntityBean)body.clone());
+        }
+        cloned.setMethod(method);
+        cloned.setTestScript(testScript);
+        cloned.setUrl(url);
+        return cloned;
+    }
+    
+    @Override
     public boolean equals(Object o){
         if(o != null && o instanceof RequestBean){
             final RequestBean bean = (RequestBean)o;

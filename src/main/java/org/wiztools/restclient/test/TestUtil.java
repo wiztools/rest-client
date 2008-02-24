@@ -80,7 +80,7 @@ public class TestUtil {
             throw new TestException("", ex);
         }
     }
-    
+
     public static void execute(final TestSuite suite, final View view){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         TestRunner runner = new TestRunner(new PrintStream(baos));

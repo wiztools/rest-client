@@ -8,8 +8,12 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -81,6 +85,9 @@ public class RESTView extends JPanel implements View {
     
     private JScrollPane jsp_test_script;
     private JTextArea jta_test_script = new JTextArea();
+    private JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
+    private JButton jb_req_test_test = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "wand.png"));
+    private JButton jb_req_test_quick = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "quick_test.png"));
     
     // Authentication resources
     private JCheckBox jcb_auth_basic = new JCheckBox("BASIC");
@@ -111,8 +118,6 @@ public class RESTView extends JPanel implements View {
     
     private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();
 
-    
-    
     private ErrorDialog errorDialog;
     private final RESTView view;
     private final JFrame frame;
@@ -122,6 +127,27 @@ public class RESTView extends JPanel implements View {
     // Cache the last request and response
     private RequestBean lastRequest;
     private ResponseBean lastResponse;
+    
+    // Load templateTestScript:
+    private static final String templateTestScript;
+    static{
+        InputStream is = RESTView.class.getClassLoader().getResourceAsStream("org/wiztools/restclient/test-script.template");
+        String t = null;
+        try{
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String str = null;
+            StringBuffer sb = new StringBuffer();
+            while((str = br.readLine()) != null){
+                sb.append(str).append("\n");
+            }
+            br.close();
+            t = sb.toString();
+        }
+        catch(IOException ex){
+            assert true: "Failed loading `test-script.template'!";
+        }
+        templateTestScript = t;
+    }
 
     protected RESTView(final JFrame frame){
         this.frame = frame;
@@ -200,7 +226,7 @@ public class RESTView extends JPanel implements View {
         JPanel jp_body = new JPanel();
         jp_body.setLayout(new BorderLayout());
         JPanel jp_body_north = new JPanel();
-        jp_body_north.setLayout(new FlowLayout(FlowLayout.CENTER));
+        jp_body_north.setLayout(new FlowLayout(FlowLayout.LEFT));
         
         jtf_body_content_type.setEditable(false);
         jtf_body_content_type.setColumns(24);
@@ -310,6 +336,78 @@ public class RESTView extends JPanel implements View {
         // Test script panel
         JPanel jp_test = new JPanel();
         jp_test.setLayout(new BorderLayout());
+        
+        JPanel jp_test_north = new JPanel();
+        jp_test_north.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jb_req_test_template.setToolTipText("Insert Template");
+        jb_req_test_template.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String t = jta_test_script.getText();
+                if(!Util.isStrEmpty(t)){
+                    JOptionPane.showMessageDialog(frame,
+                            "Script text already present! Please clear existing script!",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        Dimension d = jsp_test_script.getPreferredSize();
+                        jta_test_script.setText(templateTestScript);
+                        jsp_test_script.setPreferredSize(d);
+                    }
+                });
+            }
+        });
+        jp_test_north.add(jb_req_test_template);
+        jb_req_test_test.setToolTipText("Test Wizard");
+        jp_test_north.add(jb_req_test_test);
+        jb_req_test_quick.setToolTipText("Quick Test-Using last request & response");
+        jb_req_test_quick.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(lastRequest == null || lastResponse == null){
+                    JOptionPane.showMessageDialog(frame, "No Last Request/Response", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                String testScript = jta_test_script.getText();
+                if(Util.isStrEmpty(testScript)){
+                    JOptionPane.showMessageDialog(frame, "No Script", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try{
+                    View testView = new View() {
+                        public void doStart(RequestBean request) {
+                            // Do nothing
+                        }
+
+                        public void doResponse(ResponseBean response) {
+                            // Do nothing
+                        }
+
+                        public void doEnd() {
+                            // Do nothing
+                        }
+
+                        public void doError(String error) {
+                            view.doError(error);
+                        }
+
+                        public void doTestResult(String testResult) {
+                            view.doMessage("Test Result", testResult);
+                        }
+                    };
+                    RequestBean t_lastRequest = (RequestBean)lastRequest.clone();
+                    t_lastRequest.setTestScript(testScript);
+                    TestSuite ts = TestUtil.getTestSuite(t_lastRequest, lastResponse);
+                    TestUtil.execute(ts, testView);
+                }
+                catch(TestException ex){
+                    view.doError(Util.getStackTrace(ex));
+                }
+            }
+        });
+        jp_test_north.add(jb_req_test_quick);
+        jp_test.add(jp_test_north, BorderLayout.NORTH);
+        
         jsp_test_script = new JScrollPane(jta_test_script);
         jp_test.add(jsp_test_script, BorderLayout.CENTER);
         jtp.addTab("Test Script", jp_test);
@@ -659,6 +757,10 @@ public class RESTView extends JPanel implements View {
     @Override
     public void doError(final String error){
         errorDialog.showError(error);
+    }
+    
+    public void doMessage(final String title, final String message){
+        errorDialog.showMessage(title, message);
     }
     
     void clearUIResponse(){
