@@ -13,6 +13,7 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -79,12 +80,8 @@ public class RunTestDialog extends EscapableDialog {
         Container c = this.getContentPane();
         c.setLayout(new BorderLayout());
         
-        JPanel jp_north = new JPanel();
-        jp_north.setLayout(new FlowLayout(FlowLayout.CENTER));
-        jp_north.add(new JLabel("Run Test"));
-        c.add(jp_north, BorderLayout.NORTH);
-        
         JPanel jp_center = new JPanel();
+        jp_center.setBorder(BorderFactory.createTitledBorder("Run Test"));
         jp_center.setLayout(new GridLayout(3, 1));
         jp_center.add(jrb_archive);
         JPanel jp_center_file = new JPanel();

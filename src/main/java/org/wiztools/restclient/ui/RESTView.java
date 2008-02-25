@@ -118,7 +118,7 @@ public class RESTView extends JPanel implements View {
     
     private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();
 
-    private ErrorDialog errorDialog;
+    private MessageDialog messageDialog;
     private final RESTView view;
     private final JFrame frame;
     
@@ -157,6 +157,10 @@ public class RESTView extends JPanel implements View {
         // Start status clear thread:
         statusLastUpdated = Calendar.getInstance();
         new StatusClearerThread().start();
+    }
+    
+    private static String getFormattedContentType(final String contentType, final String charset){
+        return "Content-Type: " + contentType + "; charset=" + charset;
     }
     
     private JTabbedPane initJTPRequest(){
@@ -231,9 +235,9 @@ public class RESTView extends JPanel implements View {
         jtf_body_content_type.setEditable(false);
         jtf_body_content_type.setColumns(24);
         jtf_body_content_type.setToolTipText("Selected Content-type & Charset");
-        jtf_body_content_type.setText(
-                jd_body_content_type.getContentType() + "; "
-                + jd_body_content_type.getCharSet());
+        jtf_body_content_type.setText(getFormattedContentType(
+                jd_body_content_type.getContentType(),
+                jd_body_content_type.getCharSet()));
         jp_body_north.add(jtf_body_content_type);
     
         jb_body_content_type.setToolTipText("Edit Content-type & Charset");
@@ -297,6 +301,7 @@ public class RESTView extends JPanel implements View {
         JPanel jp_auth_west_south = new JPanel();
         jp_auth_west_south.setBorder(BorderFactory.createTitledBorder("Preemptive?"));
         jp_auth_west_south.setLayout(new GridLayout(1, 1));
+        jcb_auth_preemptive.setToolTipText("Send authentication credentials before challenge");
         jcb_auth_preemptive.setSelected(true);
         jcb_auth_preemptive.setEnabled(false);
         jp_auth_west_south.add(jcb_auth_preemptive);
@@ -551,8 +556,8 @@ public class RESTView extends JPanel implements View {
     }
     
     private void init(){
-        // Initialize the errorDialog
-        errorDialog = new ErrorDialog(frame);
+        // Initialize the messageDialog
+        messageDialog = new MessageDialog(frame);
         
         // Initialize parameter dialog
         ParameterView pv = new ParameterView(){
@@ -571,7 +576,7 @@ public class RESTView extends JPanel implements View {
         jd_body_content_type = new BodyContentTypeDialog(frame);
         jd_body_content_type.addContentTypeCharSetChangeListener(new ContentTypeCharSetChangeListener() {
             public void changed(String contentType, String charSet) {
-                jtf_body_content_type.setText(contentType + "; " + charSet);
+                jtf_body_content_type.setText(RESTView.getFormattedContentType(contentType, charSet));
             }
         });
         
@@ -768,11 +773,11 @@ public class RESTView extends JPanel implements View {
     
     @Override
     public void doError(final String error){
-        errorDialog.showError(error);
+        messageDialog.showError(error);
     }
     
     public void doMessage(final String title, final String message){
-        errorDialog.showMessage(title, message);
+        messageDialog.showMessage(title, message);
     }
     
     void clearUIResponse(){

@@ -15,18 +15,18 @@ import javax.swing.SwingUtilities;
  *
  * @author  schandran
  */
-public class ErrorDialog extends EscapableDialog {
+public class MessageDialog extends EscapableDialog {
     
-    private ErrorDialog errorDialog;
+    private MessageDialog messageDialog;
     private java.awt.Frame parent;
     
     /** Creates new form ErrorDialog */
-    public ErrorDialog(java.awt.Frame parent) {
+    public MessageDialog(java.awt.Frame parent) {
         super(parent, true);
         this.parent = parent;
         this.setTitle("Error!");
         initComponents();
-        this.errorDialog = this;
+        this.messageDialog = this;
     }
     
     private void initComponents() {
@@ -69,7 +69,7 @@ public class ErrorDialog extends EscapableDialog {
     private void hideDialog(){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
-                errorDialog.setVisible(false);
+                messageDialog.setVisible(false);
             }
         });
     }
@@ -81,11 +81,11 @@ public class ErrorDialog extends EscapableDialog {
     void showMessage(final String title, final String message){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
-                errorDialog.setTitle(title);
+                messageDialog.setTitle(title);
                 jta_error.setText(message);
-                errorDialog.setLocationRelativeTo(parent);
+                messageDialog.setLocationRelativeTo(parent);
                 jb_ok.requestFocus();
-                errorDialog.setVisible(true);
+                messageDialog.setVisible(true);
             }
         });
     }

@@ -471,6 +471,11 @@ public final class XMLUtil {
             throw new XMLException(ex.getMessage(), ex);
         }
     }
+    
+    public static String getDocumentCharset(final File f) throws IOException, XMLException{
+        Document doc = getDocumentFromFile(f);
+        return doc.getXmlEncoding();
+    }
 
     public static void writeRequestXML(final RequestBean bean, final File f)
             throws IOException, XMLException {
