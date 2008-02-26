@@ -46,6 +46,8 @@ import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
 import org.wiztools.restclient.test.TestException;
 import org.wiztools.restclient.test.TestUtil;
+import org.wiztools.restclient.xml.XMLException;
+import org.wiztools.restclient.xml.XMLUtil;
 
 /**
  *
@@ -881,13 +883,38 @@ public class RESTView extends JPanel implements View {
                     }
                     // Determine the MIME type and set parameter
                     String contentType = Util.getMimeType(f);
+                    String charset = null;
+                    if(XMLUtil.XML_MIME.equals(contentType)){
+                        try{
+                            charset = XMLUtil.getDocumentCharset(f);
+                        }
+                        catch(IOException ex){
+                            // Do nothing!
+                        }
+                        catch(XMLException ex){
+                            // Do nothing!
+                        }
+                    }
                     String oldContentType = jd_body_content_type.getContentType();
+                    String oldCharset = jd_body_content_type.getCharSet();
                     if(!oldContentType.equals(contentType)){
                         int contentTypeYesNo = JOptionPane.showConfirmDialog(view,
                                 "Change ContentType To: " + contentType + "?",
                                 "Change ContentType?", JOptionPane.YES_NO_OPTION);
                         if(contentTypeYesNo == JOptionPane.YES_OPTION){
                             jd_body_content_type.setContentType(contentType);
+                            if(charset != null){ // is XML file
+                                jd_body_content_type.setCharSet(charset);
+                            }
+                        }
+                    }
+                    // Only the charset has changed:
+                    else if((charset != null) && (!oldCharset.equals(charset))){
+                        int charsetYesNo = JOptionPane.showConfirmDialog(view,
+                                "Change Charset To: " + charset + "?",
+                                "Change Charset?", JOptionPane.YES_NO_OPTION);
+                        if(charsetYesNo == JOptionPane.YES_OPTION){
+                            jd_body_content_type.setCharSet(charset);
                         }
                     }
                     // Get text from file and set

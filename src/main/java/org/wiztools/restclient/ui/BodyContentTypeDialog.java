@@ -199,7 +199,7 @@ public class BodyContentTypeDialog extends EscapableDialog {
         this.charSet = charSet;
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                jcb_content_type.setSelectedItem(contentType);
+                jcb_char_set.setSelectedItem(charSet);
                 for(ContentTypeCharSetChangeListener listener: listeners){
                     listener.changed(contentType, charSet);
                 }

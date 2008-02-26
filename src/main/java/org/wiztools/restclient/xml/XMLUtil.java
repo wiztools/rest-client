@@ -37,7 +37,10 @@ public final class XMLUtil {
     
     private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
     
-    private static final String[] VERSIONS = new String[]{"2.0"};
+    private static final String[] VERSIONS = new String[]{"2.0", RCConstants.VERSION};
+    
+    public static final String XML_MIME = "application/xml";
+    public static final String XML_DEFAULT_ENCODING = "UTF-8";
     
     static{
         // Sort the version array for binary search
