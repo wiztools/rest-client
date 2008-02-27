@@ -20,6 +20,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import org.wiztools.restclient.FileType;
+import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.ReqResBean;
 import org.wiztools.restclient.RequestBean;
 import org.wiztools.restclient.ResponseBean;
@@ -169,6 +170,27 @@ public class RESTFrame extends JFrame {
         });
         jm_edit.add(jmi_reset_all);
         
+        jm_edit.addSeparator();
+        
+        JMenuItem jmi_reset_to_last = new JMenuItem("Reset to Last Request-Response");
+        jmi_reset_to_last.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        if(view.getLastRequest() != null && view.getLastResponse() != null){
+                            view.setUIToLastRequestResponse();
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(me,
+                                    "No Last Request-Response Available",
+                                    "No Last Request-Response Available",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                });
+            }
+        });
+        jm_edit.add(jmi_reset_to_last);
         
         // Tools menu
         JMenu jm_tools = new JMenu("Tools");
@@ -462,6 +484,24 @@ public class RESTFrame extends JFrame {
         return null;
     }
     
+    private static final String[] DO_SAVE_UI_REQUEST = new String[]{"Request", "completed Request"};
+    private static final String[] DO_SAVE_UI_RESPONSE = new String[]{"Response", "received Response"};
+    private static final String[] DO_SAVE_UI_ARCHIVE = new String[]{"Request/Response", "completed Request-Response"};
+    
+    private boolean doSaveEvenIfUIChanged(final String[] parameters){
+        final String message = MessageI18N.getMessage(
+                "yes-no.cant.save.req-res", parameters);
+        int optionChoosen = JOptionPane.showConfirmDialog(view,
+                message,
+                "UI Parameters Changed!",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.INFORMATION_MESSAGE);
+        if(optionChoosen != JOptionPane.OK_OPTION){
+            return false;
+        }
+        return true;
+    }
+    
     private void actionSave(final int type){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -478,15 +518,7 @@ public class RESTFrame extends JFrame {
 
                     RequestBean uiRequest = view.getRequestFromUI();
                     if(!request.equals(uiRequest)){
-                        final String message = "<html>The Request details in the UI has changed from the last Request.<br>" +
-                                "RESTClient saves only the last completed Request. If you want to save the<br> last completed Request, press <b>Ok</b>.<br><br>" +
-                                "Else, if you want to save the request with changed parameters, press<br> <b>Cancel</b> and complete the request before attempting to save.</html>";
-                        int optionChoosen = JOptionPane.showConfirmDialog(view,
-                                message,
-                                "Request Parameters Changed!",
-                                JOptionPane.OK_CANCEL_OPTION,
-                                JOptionPane.INFORMATION_MESSAGE);
-                        if(optionChoosen != JOptionPane.OK_OPTION){
+                        if(!doSaveEvenIfUIChanged(DO_SAVE_UI_REQUEST)){
                             return;
                         }
                         
@@ -512,6 +544,9 @@ public class RESTFrame extends JFrame {
                                 "No last response available.",
                                 "No Response",
                                 JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if(!doSaveEvenIfUIChanged(DO_SAVE_UI_RESPONSE)){
                         return;
                     }
                     File f = getSaveFile(SAVE_RESPONSE);
@@ -565,7 +600,11 @@ public class RESTFrame extends JFrame {
                     }
                     RequestBean uiRequest = view.getRequestFromUI();
                     ResponseBean uiResponse = view.getResponseFromUI();
-                    //@TODO: Check if UI and last req/res are same
+                    if((!request.equals(uiRequest)) || (!response.equals(uiResponse))){
+                        if(!doSaveEvenIfUIChanged(DO_SAVE_UI_ARCHIVE)){
+                            return;
+                        }
+                    }
                     File f = getSaveFile(SAVE_ARCHIVE);
                     if(f != null){
                         Exception e = null;

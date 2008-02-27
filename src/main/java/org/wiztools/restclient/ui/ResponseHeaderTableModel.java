@@ -12,7 +12,7 @@ public class ResponseHeaderTableModel extends AbstractTableModel {
     private final String[] title = new String[]{"HTTP Header", "Value"};
     private String[][] headers;
     
-    public void setHeader(Map<String, String> mapHeaders){
+    public void setHeaders(Map<String, String> mapHeaders){
         if(mapHeaders == null){
             headers = new String[0][0];
         }
@@ -26,6 +26,10 @@ public class ResponseHeaderTableModel extends AbstractTableModel {
             }
         }
         fireTableDataChanged();
+    }
+    
+    public String[][] getHeaders(){
+        return headers;
     }
     
     @Override

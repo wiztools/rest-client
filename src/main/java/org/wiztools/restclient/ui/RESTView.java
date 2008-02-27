@@ -589,9 +589,24 @@ public class RESTView extends JPanel implements View {
         this.add(initSouth(), BorderLayout.SOUTH);
     }
     
+    void setUIToLastRequestResponse(){
+        if(lastRequest != null && lastResponse != null){
+            setUIFromRequest(lastRequest);
+            setUIFromResponse(lastResponse);
+        }
+    }
+    
     ResponseBean getResponseFromUI(){
-        //@TODO
-        return null;
+        ResponseBean response = new ResponseBean();
+        response.setResponseBody(jta_response.getText());
+        String statusLine = jtf_res_status.getText();
+        response.setStatusLine(statusLine);
+        response.setStatusCode(Util.getStatusCodeFromStatusLine(statusLine));
+        String[][] headers = ((ResponseHeaderTableModel)jt_res_headers.getModel()).getHeaders();
+        for(int i=0; i<headers.length; i++){
+            response.addHeader(headers[i][0], headers[i][1]);
+        }
+        return response;
     }
     
     public RequestBean getRequestFromUI(){
@@ -735,7 +750,7 @@ public class RESTView extends JPanel implements View {
                     jta_response.setText("");
                 }
                 ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
-                model.setHeader(response.getHeaders());
+                model.setHeaders(response.getHeaders());
                 jb_request.requestFocus();
             }
         });
@@ -786,7 +801,7 @@ public class RESTView extends JPanel implements View {
         jtf_res_status.setText("");
         jta_response.setText("");
         ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
-        model.setHeader(null);
+        model.setHeaders(null);
         jta_test_result.setText("");
     }
     
@@ -1088,7 +1103,7 @@ public class RESTView extends JPanel implements View {
                 jtf_res_status.setText(response.getStatusLine());
                 
                 // Response header
-                resHeaderTableModel.setHeader(response.getHeaders());
+                resHeaderTableModel.setHeaders(response.getHeaders());
                 
                 // Response body
                 jta_response.setText(response.getResponseBody());

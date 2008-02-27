@@ -20,6 +20,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -216,6 +218,17 @@ public class Util {
             zis.close();
         }
         return encpBean;
+    }
+    
+    public static final int getStatusCodeFromStatusLine(final String statusLine){
+        int retVal = -1;
+        final String STATUS_PATTERN = "[^\\s]+\\s([0-9]{3})\\s.*";
+        Pattern p = Pattern.compile(STATUS_PATTERN);
+        Matcher m = p.matcher(statusLine);
+        if(m.matches()){
+            retVal = Integer.parseInt(m.group(1));
+        }
+        return retVal;
     }
 }
 

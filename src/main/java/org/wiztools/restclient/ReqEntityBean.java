@@ -4,7 +4,7 @@ package org.wiztools.restclient;
  *
  * @author schandran
  */
-public class ReqEntityBean {
+public final class ReqEntityBean {
     
     private String contentType;
     private String charSet;
