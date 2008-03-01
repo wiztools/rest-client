@@ -611,6 +611,7 @@ public class RESTView extends JPanel implements View {
         for(int i=0; i<headers.length; i++){
             response.addHeader(headers[i][0], headers[i][1]);
         }
+        response.setTestResult(jta_test_result.getText());
         return response;
     }
     
@@ -784,6 +785,7 @@ public class RESTView extends JPanel implements View {
     
     @Override
     public void doTestResult(final String result){
+        lastResponse.setTestResult(result);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 Dimension d = jsp_test_result.getPreferredSize();
@@ -1111,6 +1113,9 @@ public class RESTView extends JPanel implements View {
                 
                 // Response body
                 jta_response.setText(response.getResponseBody());
+                
+                // Response test result
+                jta_test_result.setText(response.getTestResult());
             }
         });
     }

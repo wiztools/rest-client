@@ -546,8 +546,11 @@ public class RESTFrame extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-                    if(!doSaveEvenIfUIChanged(DO_SAVE_UI_RESPONSE)){
-                        return;
+                    ResponseBean uiResponse = view.getResponseFromUI();
+                    if(!response.equals(uiResponse)){
+                        if(!doSaveEvenIfUIChanged(DO_SAVE_UI_RESPONSE)){
+                            return;
+                        }
                     }
                     File f = getSaveFile(SAVE_RESPONSE);
                     if(f != null){

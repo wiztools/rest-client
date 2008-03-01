@@ -366,6 +366,15 @@ public final class XMLUtil {
                 e.appendChild(n);
                 response.appendChild(e);
             }
+            
+            // test result
+            String testResult = bean.getTestResult();
+            if(testResult != null){
+                e = xmldoc.createElementNS(null, "test-result");
+                n = xmldoc.createTextNode(testResult);
+                e.appendChild(n);
+                response.appendChild(e);
+            }
 
             root.appendChild(response);
 
@@ -432,6 +441,9 @@ public final class XMLUtil {
             else if("body".equals(nodeName)){
                 responseBean.setResponseBody(node.getTextContent());
             }
+            else if("test-result".equals(nodeName)){
+                responseBean.setTestResult(node.getTextContent());
+            }
             else{
                 throw new XMLException("Unrecognized element found: <" + nodeName + ">");
             }
@@ -492,17 +504,17 @@ public final class XMLUtil {
         writeXML(doc, f);
     }
 
-    public static void writeXMLRequest(final File f, RequestBean bean)
+    /*public static void writeXMLRequest(final File f, RequestBean bean)
             throws IOException, XMLException {
         Document doc = getDocumentFromFile(f);
         bean = xml2Request(doc);
-    }
+    }*/
 
-    public static void writeXMLResponse(final File f, ResponseBean bean)
+    /*public static void writeXMLResponse(final File f, ResponseBean bean)
             throws IOException, XMLException {
         Document doc = getDocumentFromFile(f);
         bean = xml2Response(doc);
-    }
+    }*/
 
     public static RequestBean getRequestFromXMLFile(final File f) throws IOException, XMLException {
         Document doc = getDocumentFromFile(f);

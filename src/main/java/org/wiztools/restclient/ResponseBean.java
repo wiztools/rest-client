@@ -14,6 +14,7 @@ public final class ResponseBean {
     private String statusLine;
     private Map<String, String> headers;
     private String responseBody;
+    private String testResult;
     
     public int getStatusCode() {
         return statusCode;
@@ -51,6 +52,14 @@ public final class ResponseBean {
         this.statusLine = statusLine;
     }
     
+    public String getTestResult() {
+        return testResult;
+    }
+
+    public void setTestResult(String testResult) {
+        this.testResult = testResult;
+    }
+    
     public ResponseBean(){
         headers = new LinkedHashMap<String, String>();
     }
@@ -64,6 +73,7 @@ public final class ResponseBean {
             isEqual = isEqual && (this.statusLine == null? bean.statusLine == null: this.statusLine.equals(bean.statusLine));
             isEqual = isEqual && (this.headers == null? bean.headers == null: this.headers.equals(bean.headers));
             isEqual = isEqual && (this.responseBody == null? bean.responseBody == null: this.responseBody.equals(bean.responseBody));
+            isEqual = isEqual && (this.testResult == null? bean.testResult == null: this.testResult.equals(bean.testResult));
             return isEqual;
         }
         return false;
@@ -72,10 +82,12 @@ public final class ResponseBean {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 29 * hash + this.statusCode;
-        hash = 29 * hash + (this.statusLine != null ? this.statusLine.hashCode() : 0);
-        hash = 29 * hash + (this.headers != null ? this.headers.hashCode() : 0);
-        hash = 29 * hash + (this.responseBody != null ? this.responseBody.hashCode() : 0);
+        hash = 53 * hash + this.statusCode;
+        hash = 53 * hash + (this.statusLine != null ? this.statusLine.hashCode() : 0);
+        hash = 53 * hash + (this.headers != null ? this.headers.hashCode() : 0);
+        hash = 53 * hash + (this.responseBody != null ? this.responseBody.hashCode() : 0);
+        hash = 53 * hash + (this.testResult != null ? this.testResult.hashCode() : 0);
         return hash;
     }
+    
 }
