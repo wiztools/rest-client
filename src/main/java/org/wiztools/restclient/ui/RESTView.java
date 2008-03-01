@@ -191,12 +191,17 @@ public class RESTView extends JPanel implements View {
         
         ActionListener jrbAL = new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
-                    reqBodyToggle(true);
-                }
-                else{
-                    reqBodyToggle(false);
-                }
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
+                            setUIReqBodyEnabled(true);
+                        }
+                        else{
+                            setUIReqBodyEnabled(false);
+                        }
+                    }
+                });
+                
             }
         };
         
@@ -228,7 +233,7 @@ public class RESTView extends JPanel implements View {
         jtp.addTab("Headers", jp_2col_req_headers);
         
         // Body Tab
-        reqBodyToggle(false); // disable control by default
+        setUIReqBodyEnabled(false); // disable control by default
         JPanel jp_body = new JPanel();
         jp_body.setLayout(new BorderLayout());
         JPanel jp_body_north = new JPanel();
@@ -854,30 +859,30 @@ public class RESTView extends JPanel implements View {
     }
     
     private void auth_enableActionPerformed(final ActionEvent event){
-        if(jcb_auth_basic.isSelected() || jcb_auth_digest.isSelected()){
-            authToggle(true);
-        }
-        else{
-            authToggle(false);
-        }
-    }
-    
-    private void authToggle(final boolean boo){
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run(){
-                jcb_auth_preemptive.setEnabled(boo);
-                jtf_auth_host.setEnabled(boo);
-                jtf_auth_realm.setEnabled(boo);
-                jtf_auth_username.setEnabled(boo);
-                jpf_auth_password.setEnabled(boo);
-
-                // Disable/enable labels:
-                jl_auth_host.setEnabled(boo);
-                jl_auth_realm.setEnabled(boo);
-                jl_auth_username.setEnabled(boo);
-                jl_auth_password.setEnabled(boo);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if(jcb_auth_basic.isSelected() || jcb_auth_digest.isSelected()){
+                    setUIReqAuthEnabled(true);
+                }
+                else{
+                    setUIReqAuthEnabled(false);
+                }
             }
         });
+    }
+    
+    private void setUIReqAuthEnabled(final boolean boo){
+        jcb_auth_preemptive.setEnabled(boo);
+        jtf_auth_host.setEnabled(boo);
+        jtf_auth_realm.setEnabled(boo);
+        jtf_auth_username.setEnabled(boo);
+        jpf_auth_password.setEnabled(boo);
+
+        // Disable/enable labels:
+        jl_auth_host.setEnabled(boo);
+        jl_auth_realm.setEnabled(boo);
+        jl_auth_username.setEnabled(boo);
+        jl_auth_password.setEnabled(boo);
     }
     
     private void jb_body_fileActionPerformed(ActionEvent event){
@@ -1001,17 +1006,13 @@ public class RESTView extends JPanel implements View {
         }
     }
     
-    private void reqBodyToggle(final boolean boo){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                setJTAReqBodyDimension();
+    private void setUIReqBodyEnabled(final boolean boo){
+        setJTAReqBodyDimension();
                 
-                jta_req_body.setEnabled(boo);
-                jb_body_content_type.setEnabled(boo);
-                jb_body_file.setEnabled(boo);
-                jb_body_params.setEnabled(boo);
-            }
-        });
+        jta_req_body.setEnabled(boo);
+        jb_body_content_type.setEnabled(boo);
+        jb_body_file.setEnabled(boo);
+        jb_body_params.setEnabled(boo);
     }
     
     private void setJTAReqBodyDimension(){
@@ -1024,7 +1025,9 @@ public class RESTView extends JPanel implements View {
             Dimension d = jta_req_body.getPreferredScrollableViewportSize();
             d_jsp_req_body = d;
         }
-        jsp_req_body.setPreferredSize(d_jsp_req_body);
+        if(jsp_req_body != null){
+            jsp_req_body.setPreferredSize(d_jsp_req_body);
+        }
     }
     
     private List<String> validateForRequest(){
@@ -1080,6 +1083,7 @@ public class RESTView extends JPanel implements View {
         jd_body_content_type.setContentType(BodyContentTypeDialog.DEFAULT_CONTENT_TYPE);
         jd_body_content_type.setCharSet(BodyContentTypeDialog.DEFAULT_CHARSET);
         jta_req_body.setText("");
+        setUIReqBodyEnabled(false);
         
         // Auth
         jcb_auth_basic.setSelected(false);
@@ -1152,7 +1156,7 @@ public class RESTView extends JPanel implements View {
                 ReqEntityBean body = request.getBody();
                 if(body != null){
                     if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
-                        reqBodyToggle(true);
+                        setUIReqBodyEnabled(true);
                     }
                     jd_body_content_type.setContentType(body.getContentType());
                     jd_body_content_type.setCharSet(body.getCharSet());
@@ -1162,7 +1166,7 @@ public class RESTView extends JPanel implements View {
                 // Authentication
                 List<String> authMethods = request.getAuthMethods();
                 if(authMethods.size() > 0){
-                    authToggle(true);
+                    setUIReqAuthEnabled(true);
                 }
                 for(String authMethod: authMethods){
                     if("BASIC".equals(authMethod)){
