@@ -9,20 +9,26 @@ import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import org.wiztools.restclient.FileType;
+import org.wiztools.restclient.ReqResBean;
+import org.wiztools.restclient.RequestBean;
+import org.wiztools.restclient.ResponseBean;
+import org.wiztools.restclient.Util;
+import org.wiztools.restclient.xml.XMLException;
 
 /**
  *
@@ -40,13 +46,17 @@ public class RunTestDialog extends EscapableDialog {
     private JButton jb_archive_browse = new JButton("Browse");
     
     private RunTestDialog me;
+    private RESTFrame frame;
     
     private JFileChooser jfc = UIUtil.getNewJFileChooser();
     
-    public RunTestDialog(Frame f){
+    private File archiveFile;
+    
+    public RunTestDialog(RESTFrame f){
         super(f, true);
         this.setTitle("Run Test");
         me = this;
+        frame = f;
         init();
         this.pack();
     }
@@ -92,7 +102,16 @@ public class RunTestDialog extends EscapableDialog {
         jb_archive_browse.setMnemonic('b');
         jb_archive_browse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //@TODO
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        File f = frame.getOpenFile(FileChooserType.OPEN_ARCHIVE, me);
+                        if(f == null){ // Cancel pressed
+                            return;
+                        }
+                        archiveFile = f;
+                        jtf_archive.setText(archiveFile.getAbsolutePath());
+                    }
+                });
             }
         });
         jp_center_file.add(jb_archive_browse);
@@ -105,7 +124,11 @@ public class RunTestDialog extends EscapableDialog {
         jb_next.setMnemonic('n');
         jb_next.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                jb_nextAction();
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        jb_nextAction();
+                    }
+                });
             }
         });
         jp_south.add(jb_next);
@@ -120,7 +143,38 @@ public class RunTestDialog extends EscapableDialog {
     }
     
     private void jb_nextAction(){
-        
+        try{
+            RequestBean request = null;
+            ResponseBean response = null;
+            if(jrb_archive.isSelected()){
+                if(archiveFile == null){
+                    JOptionPane.showMessageDialog(frame,
+                            "Please select a file!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                ReqResBean req_res = Util.getReqResArchive(archiveFile);
+                request = req_res.getRequestBean();
+                response = req_res.getResponseBean();
+            }
+            else{
+                request = frame.getView().getLastRequest();
+                response = frame.getView().getLastResponse();
+                if(request == null || response == null){
+                    JOptionPane.showMessageDialog(me,
+                            "No last Request/Response available!", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            me.setVisible(false);
+            frame.getView().runClonedRequestTest(request, response);
+        }
+        catch(IOException ex){
+            frame.getView().doError(Util.getStackTrace(ex));
+        }
+        catch(XMLException ex){
+            frame.getView().doError(Util.getStackTrace(ex));
+        }
     }
 
     @Override

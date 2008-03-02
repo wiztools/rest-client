@@ -1,5 +1,6 @@
 package org.wiztools.restclient.ui;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -43,7 +44,7 @@ public class RESTFrame extends JFrame {
     // Requests and responses are generally saved in different dirs
     private JFileChooser jfc_request = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_response = UIUtil.getNewJFileChooser();
-    private JFileChooser jfc_response_body = UIUtil.getNewJFileChooser();
+    private JFileChooser jfc_generic = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
     
     private final RESTFrame me;
@@ -53,6 +54,10 @@ public class RESTFrame extends JFrame {
         me = this;
         
         init();
+    }
+    
+    RESTView getView(){
+        return view;
     }
     
     private void createMenu(){
@@ -97,7 +102,7 @@ public class RESTFrame extends JFrame {
                 KeyEvent.VK_S, ActionEvent.CTRL_MASK));
         jmi_save_req.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                actionSave(SAVE_REQUEST);
+                actionSave(FileChooserType.SAVE_REQUEST);
             }
         });
         jm_file.add(jmi_save_req);
@@ -106,7 +111,7 @@ public class RESTFrame extends JFrame {
         jmi_save_res.setMnemonic('s');
         jmi_save_res.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                actionSave(SAVE_RESPONSE);
+                actionSave(FileChooserType.SAVE_RESPONSE);
             }
         });
         jm_file.add(jmi_save_res);
@@ -115,7 +120,7 @@ public class RESTFrame extends JFrame {
         // jmi_save_res_body.setMnemonic(' ');
         jmi_save_res_body.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                actionSave(SAVE_RESPONSE_BODY);
+                actionSave(FileChooserType.SAVE_GENERIC); // For save response body
             }
         });
         jm_file.add(jmi_save_res_body);
@@ -123,7 +128,7 @@ public class RESTFrame extends JFrame {
         JMenuItem jmi_save_archive = new JMenuItem("Save Req-Res Archive", RCFileView.ARCHIVE_ICON);
         jmi_save_archive.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                actionSave(SAVE_ARCHIVE);
+                actionSave(FileChooserType.SAVE_ARCHIVE);
             }
         });
         jm_file.add(jmi_save_archive);
@@ -286,27 +291,35 @@ public class RESTFrame extends JFrame {
         });
     }
     
-    private static final int OPEN_REQUEST = 0;
-    private static final int OPEN_RESPONSE = 1;
-    private static final int OPEN_ARCHIVE = 2;
+    File getOpenFile(final FileChooserType type){
+        return getOpenFile(type, me);
+    }
     
-    private File getOpenFile(final int type){
+    File getOpenFile(final FileChooserType type, Component parent){
         String title = null;
         JFileChooser jfc = null;
-        if(type == OPEN_REQUEST){
+        if(type == FileChooserType.OPEN_REQUEST){
             jfc = jfc_request;
             title = "Open Request";
         }
-        else if(type == OPEN_RESPONSE){
+        else if(type == FileChooserType.OPEN_RESPONSE){
             jfc = jfc_response;
             title = "Open Response";
         }
-        else if(type == OPEN_ARCHIVE){
+        else if(type == FileChooserType.OPEN_ARCHIVE){
             jfc = jfc_archive;
             title = "Open Req-Res Archive";
         }
+        else if(type == FileChooserType.OPEN_REQUEST_BODY){
+            jfc = jfc_generic;
+            title = "Open Request Body";
+        }
+        else if(type == FileChooserType.OPEN_TEST_SCRIPT){
+            jfc = jfc_generic;
+            title = "Open Test Script";
+        }
         jfc.setDialogTitle(title);
-        int status = jfc.showOpenDialog(me);
+        int status = jfc.showOpenDialog(parent);
         if(status == JFileChooser.APPROVE_OPTION){
             File f = jfc.getSelectedFile();
             return f;
@@ -318,7 +331,7 @@ public class RESTFrame extends JFrame {
     private void jmi_open_reqAction(){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                File f = getOpenFile(OPEN_REQUEST);
+                File f = getOpenFile(FileChooserType.OPEN_REQUEST);
                 if(f != null){
                     Exception e = null;
                     try{
@@ -344,7 +357,7 @@ public class RESTFrame extends JFrame {
     private void jmi_open_resAction(){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                File f = getOpenFile(OPEN_RESPONSE);
+                File f = getOpenFile(FileChooserType.OPEN_RESPONSE);
                 if(f != null){
                     Exception e = null;
                     try{
@@ -368,7 +381,7 @@ public class RESTFrame extends JFrame {
     private void jmi_open_archiveAction(){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                File f = getOpenFile(OPEN_ARCHIVE);
+                File f = getOpenFile(FileChooserType.OPEN_ARCHIVE);
                 if(f != null){
                     Exception e = null;
                     try{
@@ -397,28 +410,23 @@ public class RESTFrame extends JFrame {
         });
     }
     
-    private static final int SAVE_REQUEST = 0;
-    private static final int SAVE_RESPONSE = 1;
-    private static final int SAVE_RESPONSE_BODY = 2;
-    private static final int SAVE_ARCHIVE = 3;
-    
     // This method is invoked from SU.invokeLater
-    private File getSaveFile(final int type){
+    File getSaveFile(final FileChooserType type){
         JFileChooser jfc = null;
         String title = null;
-        if(type == SAVE_REQUEST){
+        if(type == FileChooserType.SAVE_REQUEST){
             jfc = jfc_request;
             title = "Save Request";
         }
-        else if(type == SAVE_RESPONSE){
+        else if(type == FileChooserType.SAVE_RESPONSE){
             jfc = jfc_response;
             title = "Save Response";
         }
-        else if(type == SAVE_RESPONSE_BODY){
-            jfc = jfc_response_body;
+        else if(type == FileChooserType.SAVE_RESPONSE_BODY){
+            jfc = jfc_generic;
             title = "Save Response Body";
         }
-        else if(type == SAVE_ARCHIVE){
+        else if(type == FileChooserType.SAVE_ARCHIVE){
             jfc = jfc_archive;
             title = "Save Req-Res Archive";
         }
@@ -502,10 +510,10 @@ public class RESTFrame extends JFrame {
         return true;
     }
     
-    private void actionSave(final int type){
+    private void actionSave(final FileChooserType type){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                if(type == SAVE_REQUEST){
+                if(type == FileChooserType.SAVE_REQUEST){
                     RequestBean request = view.getLastRequest();
                     
                     if(request == null){
@@ -524,7 +532,7 @@ public class RESTFrame extends JFrame {
                         
                     }
                     
-                    File f = getSaveFile(SAVE_REQUEST);
+                    File f = getSaveFile(FileChooserType.SAVE_REQUEST);
                     if(f != null){
                         try{
                             XMLUtil.writeRequestXML(request, f);
@@ -537,7 +545,7 @@ public class RESTFrame extends JFrame {
                         }
                     }
                 }
-                else if(type == SAVE_RESPONSE){
+                else if(type == FileChooserType.SAVE_RESPONSE){
                     ResponseBean response = view.getLastResponse();
                     if(response == null){
                         JOptionPane.showMessageDialog(view,
@@ -552,7 +560,7 @@ public class RESTFrame extends JFrame {
                             return;
                         }
                     }
-                    File f = getSaveFile(SAVE_RESPONSE);
+                    File f = getSaveFile(FileChooserType.SAVE_RESPONSE);
                     if(f != null){
                         try{
                             XMLUtil.writeResponseXML(response, f);
@@ -565,7 +573,7 @@ public class RESTFrame extends JFrame {
                         }
                     }
                 }
-                else if(type == SAVE_RESPONSE_BODY){
+                else if(type == FileChooserType.SAVE_RESPONSE_BODY){
                     ResponseBean response = view.getLastResponse();
                     if(response == null){
                         JOptionPane.showMessageDialog(view,
@@ -574,7 +582,7 @@ public class RESTFrame extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-                    File f = getSaveFile(SAVE_RESPONSE_BODY);
+                    File f = getSaveFile(FileChooserType.SAVE_RESPONSE_BODY);
                     if(f != null){
                         PrintWriter pw = null;
                         try{
@@ -591,7 +599,7 @@ public class RESTFrame extends JFrame {
                         }
                     }
                 }
-                else if(type == SAVE_ARCHIVE){
+                else if(type == FileChooserType.SAVE_ARCHIVE){
                     RequestBean request = view.getLastRequest();
                     ResponseBean response = view.getLastResponse();
                     if(request == null || response == null){
@@ -608,7 +616,7 @@ public class RESTFrame extends JFrame {
                             return;
                         }
                     }
-                    File f = getSaveFile(SAVE_ARCHIVE);
+                    File f = getSaveFile(FileChooserType.SAVE_ARCHIVE);
                     if(f != null){
                         Exception e = null;
                         try{

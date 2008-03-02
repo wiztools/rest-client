@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
@@ -54,8 +52,6 @@ import org.wiztools.restclient.xml.XMLUtil;
  * @author Subhash
  */
 public class RESTView extends JPanel implements View {
-    
-    private JFileChooser jfc = UIUtil.getNewJFileChooser();
     
     private JRadioButton jrb_req_get = new JRadioButton("GET");
     private JRadioButton jrb_req_post = new JRadioButton("POST");
@@ -87,6 +83,7 @@ public class RESTView extends JPanel implements View {
     private JScrollPane jsp_test_script;
     private JTextArea jta_test_script = new JTextArea();
     private JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
+    private JButton jb_req_test_open = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JButton jb_req_test_run = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "wand.png"));
     private JButton jb_req_test_quick = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "quick_test.png"));
     private RunTestDialog jd_runTestDialog;
@@ -122,7 +119,7 @@ public class RESTView extends JPanel implements View {
 
     private MessageDialog messageDialog;
     private final RESTView view;
-    private final JFrame frame;
+    private final RESTFrame frame;
     
     public static final int BORDER_WIDTH = 5;
     
@@ -151,7 +148,7 @@ public class RESTView extends JPanel implements View {
         templateTestScript = t;
     }
 
-    protected RESTView(final JFrame frame){
+    protected RESTView(final RESTFrame frame){
         this.frame = frame;
         init();
         view = this;
@@ -371,9 +368,51 @@ public class RESTView extends JPanel implements View {
             }
         });
         jp_test_north.add(jb_req_test_template);
+        jb_req_test_open.setToolTipText("Open Test Script From File");
+        jb_req_test_open.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        String str = jta_test_script.getText();
+                        if(!Util.isStrEmpty(str)){
+                            int ret = JOptionPane.showConfirmDialog(frame, "Script already exists. Erase?", "Erase existing script?", JOptionPane.YES_NO_OPTION);
+                            if(ret == JOptionPane.NO_OPTION){
+                                return;
+                            }
+                        }
+                        File f = frame.getOpenFile(FileChooserType.OPEN_TEST_SCRIPT);
+                        if(f == null){ // Cancel pressed
+                            return;
+                        }
+                        if(!f.canRead()){
+                            JOptionPane.showMessageDialog(frame,
+                                    "IO Error (Read permission denied): " + f.getAbsolutePath(),
+                                    "IO Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        try{
+                            String testScript = Util.getStringFromFile(f);
+                            Dimension d = jta_test_script.getPreferredSize();
+                            jta_test_script.setText(testScript);
+                            jta_test_script.setPreferredSize(d);
+                        }
+                        catch(IOException ex){
+                            doError(Util.getStackTrace(ex));
+                        }
+                    }
+                });
+            }
+        });
+        jp_test_north.add(jb_req_test_open);
+        jp_test_north.add(new JSeparator(JSeparator.VERTICAL));
         jb_req_test_run.setToolTipText("Run Test");
         jb_req_test_run.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if(Util.isStrEmpty(jta_test_script.getText())){
+                    JOptionPane.showMessageDialog(frame,
+                            "No script!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         if(jd_runTestDialog == null){
@@ -397,36 +436,7 @@ public class RESTView extends JPanel implements View {
                     JOptionPane.showMessageDialog(frame, "No Script", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                try{
-                    View testView = new View() {
-                        public void doStart(RequestBean request) {
-                            // Do nothing
-                        }
-
-                        public void doResponse(ResponseBean response) {
-                            // Do nothing
-                        }
-
-                        public void doEnd() {
-                            // Do nothing
-                        }
-
-                        public void doError(String error) {
-                            view.doError(error);
-                        }
-
-                        public void doTestResult(String testResult) {
-                            view.doMessage("Test Result", testResult);
-                        }
-                    };
-                    RequestBean t_lastRequest = (RequestBean)lastRequest.clone();
-                    t_lastRequest.setTestScript(testScript);
-                    TestSuite ts = TestUtil.getTestSuite(t_lastRequest, lastResponse);
-                    TestUtil.execute(ts, testView);
-                }
-                catch(TestException ex){
-                    view.doError(Util.getStackTrace(ex));
-                }
+                runClonedRequestTest(lastRequest, lastResponse);
             }
         });
         jp_test_north.add(jb_req_test_quick);
@@ -437,6 +447,39 @@ public class RESTView extends JPanel implements View {
         jtp.addTab("Test Script", jp_test);
         
         return jtp;
+    }
+    
+    void runClonedRequestTest(RequestBean request, ResponseBean response){
+        View testView = new View() {
+            public void doStart(RequestBean request) {
+                // Do nothing
+            }
+
+            public void doResponse(ResponseBean response) {
+                // Do nothing
+            }
+
+            public void doEnd() {
+                // Do nothing
+            }
+
+            public void doError(String error) {
+                view.doError(error);
+            }
+
+            public void doTestResult(String testResult) {
+                view.doMessage("Test Result", testResult);
+            }
+        };
+        RequestBean t_request = (RequestBean)request.clone();
+        t_request.setTestScript(jta_test_script.getText());
+        try{
+            TestSuite ts = TestUtil.getTestSuite(t_request, response);
+            TestUtil.execute(ts, testView);
+        }
+        catch(TestException ex){
+            view.doError(Util.getStackTrace(ex));
+        }
     }
     
     private JTabbedPane initJTPResponse(){
@@ -893,63 +936,63 @@ public class RESTView extends JPanel implements View {
         }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                int returnVal = jfc.showOpenDialog(frame);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File f = jfc.getSelectedFile();
-                    if(!f.canRead()){
-                        JOptionPane.showMessageDialog(frame,
-                                "File not readable: " + f.getAbsolutePath(),
-                                "IO Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
+                File f = frame.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
+                if(f == null){ // Pressed cancel?
+                    return;
+                }
+                if(!f.canRead()){
+                    JOptionPane.showMessageDialog(frame,
+                            "File not readable: " + f.getAbsolutePath(),
+                            "IO Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                // Determine the MIME type and set parameter
+                String contentType = Util.getMimeType(f);
+                String charset = null;
+                if(XMLUtil.XML_MIME.equals(contentType)){
+                    try{
+                        charset = XMLUtil.getDocumentCharset(f);
                     }
-                    // Determine the MIME type and set parameter
-                    String contentType = Util.getMimeType(f);
-                    String charset = null;
-                    if(XMLUtil.XML_MIME.equals(contentType)){
-                        try{
-                            charset = XMLUtil.getDocumentCharset(f);
-                        }
-                        catch(IOException ex){
-                            // Do nothing!
-                        }
-                        catch(XMLException ex){
-                            // Do nothing!
-                        }
+                    catch(IOException ex){
+                        // Do nothing!
                     }
-                    String oldContentType = jd_body_content_type.getContentType();
-                    String oldCharset = jd_body_content_type.getCharSet();
-                    if(!oldContentType.equals(contentType)){
-                        int contentTypeYesNo = JOptionPane.showConfirmDialog(view,
-                                "Change ContentType To: " + contentType + "?",
-                                "Change ContentType?", JOptionPane.YES_NO_OPTION);
-                        if(contentTypeYesNo == JOptionPane.YES_OPTION){
-                            jd_body_content_type.setContentType(contentType);
-                            if(charset != null){ // is XML file
-                                jd_body_content_type.setCharSet(charset);
-                            }
-                        }
+                    catch(XMLException ex){
+                        // Do nothing!
                     }
-                    // Only the charset has changed:
-                    else if((charset != null) && (!oldCharset.equals(charset))){
-                        int charsetYesNo = JOptionPane.showConfirmDialog(view,
-                                "Change Charset To: " + charset + "?",
-                                "Change Charset?", JOptionPane.YES_NO_OPTION);
-                        if(charsetYesNo == JOptionPane.YES_OPTION){
+                }
+                String oldContentType = jd_body_content_type.getContentType();
+                String oldCharset = jd_body_content_type.getCharSet();
+                if(!oldContentType.equals(contentType)){
+                    int contentTypeYesNo = JOptionPane.showConfirmDialog(view,
+                            "Change ContentType To: " + contentType + "?",
+                            "Change ContentType?", JOptionPane.YES_NO_OPTION);
+                    if(contentTypeYesNo == JOptionPane.YES_OPTION){
+                        jd_body_content_type.setContentType(contentType);
+                        if(charset != null){ // is XML file
                             jd_body_content_type.setCharSet(charset);
                         }
                     }
-                    // Get text from file and set
-                    try{
-                        String body = Util.getStringFromFile(f);
-                        jta_req_body.setText(body);
+                }
+                // Only the charset has changed:
+                else if((charset != null) && (!oldCharset.equals(charset))){
+                    int charsetYesNo = JOptionPane.showConfirmDialog(view,
+                            "Change Charset To: " + charset + "?",
+                            "Change Charset?", JOptionPane.YES_NO_OPTION);
+                    if(charsetYesNo == JOptionPane.YES_OPTION){
+                        jd_body_content_type.setCharSet(charset);
                     }
-                    catch(IOException ex){
-                        JOptionPane.showMessageDialog(frame,
-                                "IO Error: " + ex.getMessage(),
-                                "IO Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
+                }
+                // Get text from file and set
+                try{
+                    String body = Util.getStringFromFile(f);
+                    jta_req_body.setText(body);
+                }
+                catch(IOException ex){
+                    JOptionPane.showMessageDialog(frame,
+                            "IO Error: " + ex.getMessage(),
+                            "IO Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
