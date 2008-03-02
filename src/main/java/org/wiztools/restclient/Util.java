@@ -136,8 +136,8 @@ public class Util {
         XMLUtil.writeResponseXML(response, responseFile);
 
         Map<String, File> files = new HashMap<String, File>();
-        files.put("request.xml", requestFile);
-        files.put("response.xml", responseFile);
+        files.put("request.rcq", requestFile);
+        files.put("response.rcs", responseFile);
         byte[] buf = new byte[BUFF_SIZE];
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile));
         boolean isSuccess = false;
@@ -200,11 +200,11 @@ public class Util {
                     dest.flush();
                     dest.close();
 
-                    if (entry.getName().equals("request.xml")) {
+                    if (entry.getName().equals("request.rcq")) {
                         RequestBean reqBean = XMLUtil.getRequestFromXMLFile(tmpFile);
                         encpBean.setRequestBean(reqBean);
                     }
-                    else {
+                    else if(entry.getName().equals("response.rcs")){
                         ResponseBean resBean = XMLUtil.getResponseFromXMLFile(tmpFile);
                         encpBean.setResponseBean(resBean);
                     }

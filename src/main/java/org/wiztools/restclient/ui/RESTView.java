@@ -654,7 +654,8 @@ public class RESTView extends JPanel implements View {
         for(int i=0; i<headers.length; i++){
             response.addHeader(headers[i][0], headers[i][1]);
         }
-        response.setTestResult(jta_test_result.getText());
+        String testResult = Util.isStrEmpty(jta_test_result.getText())? null: jta_test_result.getText();
+        response.setTestResult(testResult);
         return response;
     }
     
