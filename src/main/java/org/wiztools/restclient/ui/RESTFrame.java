@@ -120,7 +120,7 @@ public class RESTFrame extends JFrame {
         // jmi_save_res_body.setMnemonic(' ');
         jmi_save_res_body.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                actionSave(FileChooserType.SAVE_GENERIC); // For save response body
+                actionSave(FileChooserType.SAVE_RESPONSE_BODY);
             }
         });
         jm_file.add(jmi_save_res_body);
