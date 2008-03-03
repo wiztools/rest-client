@@ -187,6 +187,8 @@ public class Util {
         ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
         ZipEntry entry;
         try{
+            boolean isReqRead = false;
+            boolean isResRead = false;
             while ((entry = zis.getNextEntry()) != null) {
                 int count;
                 byte data[] = new byte[BUFF_SIZE];
@@ -203,15 +205,20 @@ public class Util {
                     if (entry.getName().equals("request.rcq")) {
                         RequestBean reqBean = XMLUtil.getRequestFromXMLFile(tmpFile);
                         encpBean.setRequestBean(reqBean);
+                        isReqRead = true;
                     }
                     else if(entry.getName().equals("response.rcs")){
                         ResponseBean resBean = XMLUtil.getResponseFromXMLFile(tmpFile);
                         encpBean.setResponseBean(resBean);
+                        isResRead = true;
                     }
                 }
                 finally{
                     tmpFile.delete();
                 }
+            }
+            if((!isReqRead) || (!isResRead)){
+                throw new IOException("Archive does not have request.rcq/response.rcs!");
             }
         }
         finally{
