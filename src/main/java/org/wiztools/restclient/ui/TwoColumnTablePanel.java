@@ -108,7 +108,8 @@ public final class TwoColumnTablePanel extends JPanel {
         final JTextField jtf_value = new JTextField(TEXT_FIELD_SIZE);
         jl_key.setDisplayedMnemonic('k');
         jl_key.setLabelFor(jtf_key);
-        JButton jb_add = new JButton("Add");
+        JButton jb_add = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "add.png"));
+        jb_add.setToolTipText("Add");
         jb_add.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 String key = jtf_key.getText();
