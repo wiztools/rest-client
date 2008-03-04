@@ -182,9 +182,9 @@ public class RESTView extends JPanel implements View {
         jrb_req_post.setMnemonic('p');
         jrb_req_put.setMnemonic('t');
         jrb_req_delete.setMnemonic('d');
-        jrb_req_head.setMnemonic('h');
-        jrb_req_options.setMnemonic('o');
-        jrb_req_trace.setMnemonic('e');
+        //jrb_req_head.setMnemonic('h');
+        //jrb_req_options.setMnemonic('o');
+        //jrb_req_trace.setMnemonic('e');
         
         ActionListener jrbAL = new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {

@@ -65,10 +65,10 @@ public class RESTFrame extends JFrame {
         
         // File menu
         JMenu jm_file = new JMenu("File");
-        jm_file.setMnemonic('f');
+        jm_file.setMnemonic(KeyEvent.VK_F);
         
         JMenuItem jmi_open_req = new JMenuItem("Open Request", RCFileView.REQUEST_ICON);
-        jmi_open_req.setMnemonic('o');
+        jmi_open_req.setMnemonic(KeyEvent.VK_O);
         jmi_open_req.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         jmi_open_req.addActionListener(new ActionListener() {
@@ -97,7 +97,7 @@ public class RESTFrame extends JFrame {
         jm_file.addSeparator();
         
         JMenuItem jmi_save_req = new JMenuItem("Save Request", RCFileView.REQUEST_ICON);
-        jmi_save_req.setMnemonic('q');
+        jmi_save_req.setMnemonic(KeyEvent.VK_Q);
         jmi_save_req.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_S, ActionEvent.CTRL_MASK));
         jmi_save_req.addActionListener(new ActionListener() {
@@ -108,7 +108,7 @@ public class RESTFrame extends JFrame {
         jm_file.add(jmi_save_req);
         
         JMenuItem jmi_save_res = new JMenuItem("Save Response", RCFileView.RESPONSE_ICON);
-        jmi_save_res.setMnemonic('s');
+        jmi_save_res.setMnemonic(KeyEvent.VK_S);
         jmi_save_res.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 actionSave(FileChooserType.SAVE_RESPONSE);
@@ -136,7 +136,7 @@ public class RESTFrame extends JFrame {
         jm_file.addSeparator();
         
         JMenuItem jmi_exit = new JMenuItem("Exit", UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "fv_exit.png"));
-        jmi_exit.setMnemonic('x');
+        jmi_exit.setMnemonic(KeyEvent.VK_X);
         jmi_exit.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
         jmi_exit.addActionListener(new ActionListener() {
@@ -148,9 +148,10 @@ public class RESTFrame extends JFrame {
         
         // Edit menu
         JMenu jm_edit = new JMenu("Edit");
+        jm_edit.setMnemonic(KeyEvent.VK_E);
         
         JMenuItem jmi_clear_res = new JMenuItem("Clear Response");
-        jmi_clear_res.setMnemonic('c');
+        jmi_clear_res.setMnemonic(KeyEvent.VK_C);
         jmi_clear_res.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(new Runnable() {
@@ -229,6 +230,7 @@ public class RESTFrame extends JFrame {
         
         // Help menu
         JMenu jm_help = new JMenu("Help");
+        jm_help.setMnemonic(KeyEvent.VK_H);
         
         JMenuItem jmi_about = new JMenuItem("About");
         jmi_about.setMnemonic('a');
