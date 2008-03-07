@@ -54,7 +54,7 @@ public class HTTPRequestThread extends Thread {
 		HttpClient client = new HttpClient();
                 
                 // Set timeout (default 1 minute--60000 milliseconds)
-                client.getHttpConnectionManager().getParams().setConnectionTimeout(60000);
+                // client.getHttpConnectionManager().getParams().setConnectionTimeout(60000);
 
 		// Set proxy
 		ProxyConfig proxy = ProxyConfig.getInstance();
