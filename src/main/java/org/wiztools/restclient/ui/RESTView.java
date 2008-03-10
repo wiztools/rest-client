@@ -1134,10 +1134,12 @@ public class RESTView extends JPanel implements View {
         // Auth
         jcb_auth_basic.setSelected(false);
         jcb_auth_digest.setSelected(false);
+        jcb_auth_preemptive.setSelected(true);
         jtf_auth_host.setText("");
         jtf_auth_realm.setText("");
         jtf_auth_username.setText("");
         jpf_auth_password.setText("");
+        setUIReqAuthEnabled(false);
         
         // Script
         jta_test_script.setText("");
