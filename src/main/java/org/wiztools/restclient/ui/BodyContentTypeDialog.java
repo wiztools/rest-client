@@ -100,6 +100,10 @@ public class BodyContentTypeDialog extends EscapableDialog {
     }
     
     private void init(){
+        // [Issue: 49]: Making editable:
+        jcb_content_type.setEditable(true);
+        jcb_char_set.setEditable(true);
+        
         JPanel jp = new JPanel();
         jp.setLayout(new BorderLayout());
         
