@@ -4,7 +4,6 @@ import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -545,6 +544,8 @@ public class RESTView extends JPanel implements View {
         jl_url.setLabelFor(jcb_url);
         jl_url.setDisplayedMnemonic('u');
         jp_north.add(jl_url, BorderLayout.WEST);
+        
+        jcb_url.setToolTipText("URL");
         jcb_url.setEditable(true);
         jcb_url.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -587,11 +588,7 @@ public class RESTView extends JPanel implements View {
         JPanel jp = new JPanel();
         jp.setBorder(BorderFactory.createBevelBorder(1));
         jp.setLayout(new GridLayout(1, 2));
-        Font font = jl_status.getFont();
-        String fontName = font.getName();
-        int fontSize = font.getSize();
-        Font newFont = new Font(fontName, Font.PLAIN, fontSize);
-        jl_status.setFont(newFont);
+        jl_status.setFont(UIUtil.FONT_DIALOG_12_PLAIN);
         jp.add(jl_status);
         JPanel jp_south_jcb = new JPanel();
         jp_south_jcb.setLayout(new FlowLayout(FlowLayout.RIGHT));
