@@ -71,7 +71,7 @@ public class OptionsConnectionPanel extends JPanel {
         jp_encp.add(jp_label_grid, BorderLayout.WEST);
         jp_encp.add(jp_input_grid, BorderLayout.CENTER);
         
-        jp_encp.setBorder(BorderFactory.createTitledBorder("Connection Timeout"));
+        jp_encp.setBorder(BorderFactory.createTitledBorder("Request Timeout"));
     }
     
     int getTimeoutInMillis(){
