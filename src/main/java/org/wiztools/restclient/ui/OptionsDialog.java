@@ -3,7 +3,6 @@ package org.wiztools.restclient.ui;
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,7 +27,7 @@ import org.wiztools.restclient.Util;
  */
 public class OptionsDialog extends EscapableDialog {
     
-    private final Frame frame;
+    private final RESTFrame frame;
     private final OptionsDialog me;
     
     private JCheckBox jcb_enable = new JCheckBox("Enable");
@@ -40,7 +39,7 @@ public class OptionsDialog extends EscapableDialog {
     private JTextField jtf_username = new JTextField(jtf_size);
     private JPasswordField jpf_password = new JPasswordField(jtf_size);
 
-    public OptionsDialog(Frame f){
+    public OptionsDialog(RESTFrame f){
         super(f, true);
         frame = f;
         me = this;
@@ -109,6 +108,11 @@ public class OptionsDialog extends EscapableDialog {
         JTabbedPane jtp = new JTabbedPane();
         jtp.setBorder(BorderFactory.createEmptyBorder(
                 RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+        OptionsConnectionPanel jp_o_cp = new OptionsConnectionPanel();
+        JPanel jp_t = new JPanel();
+        jp_t.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jp_t.add(jp_o_cp);
+        jtp.addTab("Connection", jp_t);
         jtp.addTab("Proxy", jp);
         
         // Encapsulating

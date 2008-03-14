@@ -26,7 +26,7 @@ public final class ProxyConfig {
     private ProxyConfig(){}
     
     // Lock to ensure consistency
-    private Lock _lck = new ReentrantLock();
+    private final Lock _lck = new ReentrantLock();
     
     public void acquire(){
         _lck.lock();
