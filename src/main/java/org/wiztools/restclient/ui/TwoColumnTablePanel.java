@@ -1,5 +1,6 @@
 package org.wiztools.restclient.ui;
 
+import java.util.Map;
 import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -12,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -32,6 +34,7 @@ public final class TwoColumnTablePanel extends JPanel {
     
     private TwoColumnTableModel model;
     private Dimension tableDimension;
+    private KeyValMultiEntryDialog jd_multi;
     
     public TwoColumnTableModel getTableModel(){
         return model;
@@ -95,6 +98,56 @@ public final class TwoColumnTablePanel extends JPanel {
             }
         });
         
+        // Initialize the Multi-entry dialog:
+        MultiEntryAdd callback = new MultiEntryAdd() {
+            public void add(Map<String, String> keyValuePair, List<String> invalidLines) {
+                Object[][] data = model.getData();
+                List<String> keys = new ArrayList<String>();
+                for(Object[] o: data){
+                    String key = (String)o[0];
+                    keys.add(key);
+                }
+                Map<String, String> keyAlreadyExists = new LinkedHashMap<String, String>();
+                
+                int successCount = 0;
+                for(String key: keyValuePair.keySet()){
+                    String value = keyValuePair.get(key);
+                    if(keys.contains(key)){
+                        keyAlreadyExists.put(key, keyValuePair.get(key));
+                    }
+                    else{
+                        model.insertRow(key, value);
+                        successCount++;
+                    }
+                }
+                StringBuffer sb = new StringBuffer();
+                sb.append("Added ").append(successCount).append(" key/value pairs.\n\n");
+                sb.append("**Skipped Following Due To Duplication**\n\n");
+                if(keyAlreadyExists.size() == 0){
+                    sb.append("- None -\n");
+                }
+                else{
+                    for(String key: keyAlreadyExists.keySet()){
+                        String value = keyAlreadyExists.get(key);
+                        sb.append(key).append(": ").append(value).append("\n");
+                    }
+                }
+                
+                sb.append("\n**Lines Skipped Due To Pattern Mis-match**\n\n");
+                if(invalidLines.size() == 0){
+                    sb.append("- None -\n");
+                }
+                else{
+                    for(String line: invalidLines){
+                        sb.append(line).append("\n");
+                    }
+                }
+                
+                ((RESTFrame)frame).getView().doMessage("Multi-insert Result", sb.toString());
+            }
+        };
+        jd_multi = new KeyValMultiEntryDialog(frame, callback);
+        
         // Create the interface
         JPanel jp = this;
         jp.setLayout(new BorderLayout());
@@ -104,7 +157,7 @@ public final class TwoColumnTablePanel extends JPanel {
         JLabel jl_key = new JLabel("Key: ");
         JLabel jl_value = new JLabel("Value: ");
         final int TEXT_FIELD_SIZE = 12;
-        final JTextField jtf_key = new JTextField(TEXT_FIELD_SIZE);
+        final JTextField jtf_key = new JTextField(TEXT_FIELD_SIZE - 2);
         final JTextField jtf_value = new JTextField(TEXT_FIELD_SIZE);
         jl_key.setDisplayedMnemonic('k');
         jl_key.setLabelFor(jtf_key);
@@ -154,11 +207,23 @@ public final class TwoColumnTablePanel extends JPanel {
                 });
             }
         });
+        JButton jb_multi_insert = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
+        jb_multi_insert.setToolTipText("Multi-insert");
+        jb_multi_insert.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        jd_multi.setVisible(true);
+                    }
+                });
+            }
+        });
         jp_north.add(jl_key);
         jp_north.add(jtf_key);
         jp_north.add(jl_value);
         jp_north.add(jtf_value);
         jp_north.add(jb_add);
+        jp_north.add(jb_multi_insert);
         jp.add(jp_north, BorderLayout.NORTH);
         
         JPanel jp_center = new JPanel();

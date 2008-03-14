@@ -15,6 +15,7 @@ enum FileChooserType {
     OPEN_ARCHIVE,
     OPEN_REQUEST_BODY,
     OPEN_TEST_SCRIPT,
+    OPEN_GENERIC,
 
     SAVE_REQUEST,
     SAVE_RESPONSE,

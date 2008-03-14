@@ -320,6 +320,10 @@ public class RESTFrame extends JFrame {
             jfc = jfc_generic;
             title = "Open Test Script";
         }
+        else if(type == FileChooserType.OPEN_GENERIC){
+            jfc = jfc_generic;
+            title = "Open";
+        }
         jfc.setDialogTitle(title);
         int status = jfc.showOpenDialog(parent);
         if(status == JFileChooser.APPROVE_OPTION){
