@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.Util;
 
 /**
@@ -36,7 +37,7 @@ import org.wiztools.restclient.Util;
 public class KeyValMultiEntryDialog extends EscapableDialog {
 
     private JButton jb_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private JButton jb_help = new JButton("Help");
+    private JButton jb_help = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "question.png"));
     private JButton jb_add = new JButton("Add");
     private JButton jb_cancel = new JButton("Cancel");
     private JScrollPane jsp_in;
@@ -61,6 +62,7 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
 
         JPanel jp_north = new JPanel();
         jp_north.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jb_file.setToolTipText("Load from file");
         jb_file.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(new Runnable() {
@@ -72,6 +74,18 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
             }
         });
         jp_north.add(jb_file);
+        jb_help.setToolTipText("Help");
+        jb_help.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        JOptionPane.showMessageDialog(me,
+                                MessageI18N.getMessage("help.keyval.multi"),
+                                "Help", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                });
+            }
+        });
         jp_north.add(jb_help);
 
         jp.add(jp_north, BorderLayout.NORTH);
@@ -157,6 +171,14 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
 
         me.setVisible(false);
         callback.add(keyValMap, linesNotMatching);
+    }
+    
+    @Override
+    public void setVisible(boolean boo){
+        super.setVisible(boo);
+        if(boo == true){
+            jta_in.requestFocus();
+        }
     }
 
     @Override
