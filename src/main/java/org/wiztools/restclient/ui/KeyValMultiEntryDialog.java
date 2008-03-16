@@ -157,7 +157,9 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
             if ((index > -1) && (index != 0) && (index != (line.length() - 1))) {
                 String key = line.substring(0, index);
                 String value = line.substring(index + 1);
-                if ("".equals(key.trim()) || "".equals(value.trim())) {
+                key = key.trim();
+                value = value.trim();
+                if ("".equals(key) || "".equals(value)) {
                     linesNotMatching.add(line);
                 } else {
                     keyValMap.put(key, value);
