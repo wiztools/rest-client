@@ -124,6 +124,9 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
                 RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
         setContentPane(jp);
         pack();
+        
+        // By default have the focus on the text area:
+        jta_in.requestFocus();
     }
     
     private void loadFromFile(){
