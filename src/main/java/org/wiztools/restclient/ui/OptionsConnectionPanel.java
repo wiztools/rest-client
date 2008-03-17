@@ -16,6 +16,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import org.wiztools.restclient.GlobalOptions;
 
 /**
  *
@@ -150,6 +151,17 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
     
     @Override
     public boolean saveOptions(){
+        int reqTimeout = (Integer)jftf_timeout.getValue();
+        if(jrb_minutes.isSelected()){
+            reqTimeout = 60 * 1000 * reqTimeout;
+        }
+        else if(jrb_seconds.isSelected()){
+            reqTimeout = 1000 * reqTimeout;
+        }
+        GlobalOptions options = GlobalOptions.getInstance();
+        options.acquire();
+        options.setRequestTimeoutInMillis(reqTimeout);
+        options.release();
         return true;
     }
     
