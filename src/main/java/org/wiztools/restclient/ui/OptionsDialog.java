@@ -44,11 +44,9 @@ public class OptionsDialog extends EscapableDialog {
         JTabbedPane jtp = new JTabbedPane();
         jtp.setBorder(BorderFactory.createEmptyBorder(
                 RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
-        JPanel jp_t = new JPanel();
-        jp_t.setLayout(new FlowLayout(FlowLayout.LEFT));
-        jp_t.add(jp_conn_panel);
-        jtp.addTab("Connection", jp_t);
-        jtp.addTab("Proxy", jp_proxy_panel);
+        
+        jtp.addTab("Connection", UIUtil.getFlowLayoutPanelLeftAligned("Request Timeout", jp_conn_panel));
+        jtp.addTab("Proxy", UIUtil.getFlowLayoutPanelLeftAligned(jp_proxy_panel));
         
         // Encapsulating
         JPanel jp_encp = new JPanel();
@@ -135,6 +133,9 @@ public class OptionsDialog extends EscapableDialog {
     }
     
     private void actionCancel(){
+        jp_conn_panel.revertOptions();
+        jp_proxy_panel.revertOptions();
+        
         // Finally, hide:
         me.setVisible(false);
     }

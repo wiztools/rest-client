@@ -156,6 +156,7 @@ public class PasswordGenDialog extends EscapableDialog {
         Dimension d = jtp_help_center.getPreferredSize();
         jtp_help_center.setText(helpText);
         jtp_help_center.setPreferredSize(d);
+        jtp_help_center.setCaretPosition(0);
         JScrollPane jsp_center = new JScrollPane(jtp_help_center);
         jp_help.add(jsp_center, BorderLayout.CENTER);
         

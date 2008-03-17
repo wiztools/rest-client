@@ -14,6 +14,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class GlobalOptions {
     
+    public static final Integer DEFAULT_TIMEOUT_MILLIS = new Integer(60000);
+    
     private static GlobalOptions me;
     Lock lock = new ReentrantLock();
     

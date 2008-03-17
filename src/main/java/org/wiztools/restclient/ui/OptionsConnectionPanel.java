@@ -10,7 +10,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -24,15 +23,20 @@ import org.wiztools.restclient.GlobalOptions;
  */
 public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
 
-    private static final Integer DEFAULT_TIMEOUT_MILLIS = new Integer(60000);
     private static final String MINUTES = "Minutes";
     private static final String SECONDS = "Seconds";
     private static final String MILLISECONDS = "Milli-seconds";
     private JRadioButton jrb_minutes = new JRadioButton(MINUTES);
     private JRadioButton jrb_seconds = new JRadioButton(SECONDS);
     private JRadioButton jrb_millisecs = new JRadioButton(MILLISECONDS);
-    private JFormattedTextField jftf_timeout = new JFormattedTextField(DEFAULT_TIMEOUT_MILLIS);
+    private JFormattedTextField jftf_timeout = new JFormattedTextField(GlobalOptions.DEFAULT_TIMEOUT_MILLIS);
+    
+    // Holds the previous selection for convertion between units:
     private String lastSelected;
+    
+    // Last okyed
+    private String ok_type = MILLISECONDS;
+    private Integer ok_value = GlobalOptions.DEFAULT_TIMEOUT_MILLIS;
 
     public OptionsConnectionPanel() {
         ButtonGroup bg = new ButtonGroup();
@@ -72,8 +76,6 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
         jp_encp.setLayout(new BorderLayout());
         jp_encp.add(jp_label_grid, BorderLayout.WEST);
         jp_encp.add(jp_input_grid, BorderLayout.CENTER);
-        
-        jp_encp.setBorder(BorderFactory.createTitledBorder("Request Timeout"));
     }
     
     int getTimeoutInMillis(){
@@ -152,21 +154,38 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
     @Override
     public boolean saveOptions(){
         int reqTimeout = (Integer)jftf_timeout.getValue();
+        
+        ok_type = MILLISECONDS;
         if(jrb_minutes.isSelected()){
             reqTimeout = 60 * 1000 * reqTimeout;
+            ok_type = MINUTES;
         }
         else if(jrb_seconds.isSelected()){
             reqTimeout = 1000 * reqTimeout;
+            ok_type = SECONDS;
         }
+        ok_value = reqTimeout;
+        
         GlobalOptions options = GlobalOptions.getInstance();
         options.acquire();
         options.setRequestTimeoutInMillis(reqTimeout);
         options.release();
+        
         return true;
     }
     
     @Override
     public boolean revertOptions(){
+        if(ok_type.equals(MILLISECONDS)){
+            jrb_millisecs.setSelected(true);
+        }
+        else if(ok_type.equals(SECONDS)){
+            jrb_seconds.setSelected(true);
+        }
+        else if(ok_type.equals(MINUTES)){
+            jrb_minutes.setSelected(true);
+        }
+        jftf_timeout.setValue(ok_value);
         return true;
     }
 }
