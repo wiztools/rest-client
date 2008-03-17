@@ -9,6 +9,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JFormattedTextField;
@@ -20,7 +21,7 @@ import javax.swing.JRadioButton;
  *
  * @author Subhash
  */
-public class OptionsConnectionPanel extends JPanel {
+public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
 
     private static final Integer DEFAULT_TIMEOUT_MILLIS = new Integer(60000);
     private static final String MINUTES = "Minutes";
@@ -140,5 +141,20 @@ public class OptionsConnectionPanel extends JPanel {
                 lastSelected = MINUTES;
             }
         }
+    }
+
+    @Override
+    public List<String> validateInput() {
+        return null;
+    }
+    
+    @Override
+    public boolean saveOptions(){
+        return true;
+    }
+    
+    @Override
+    public boolean revertOptions(){
+        return true;
     }
 }

@@ -83,6 +83,7 @@ public class MessageDialog extends EscapableDialog {
             public void run(){
                 messageDialog.setTitle(title);
                 jta_error.setText(message);
+                jta_error.setCaretPosition(0);
                 messageDialog.setLocationRelativeTo(parent);
                 jb_ok.requestFocus();
                 messageDialog.setVisible(true);

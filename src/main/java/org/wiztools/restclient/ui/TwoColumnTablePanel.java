@@ -122,7 +122,7 @@ public final class TwoColumnTablePanel extends JPanel {
                 }
                 StringBuffer sb = new StringBuffer();
                 sb.append("Added ").append(successCount).append(" key/value pairs.\n\n");
-                sb.append("**Skipped Following Due To Duplication**\n\n");
+                sb.append("**Lines Skipped Due To Duplication**\n\n");
                 if(keyAlreadyExists.size() == 0){
                     sb.append("- None -\n");
                 }
