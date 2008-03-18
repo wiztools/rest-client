@@ -81,12 +81,12 @@ public class TestUtil {
         }
     }
 
-    public static void execute(final TestSuite suite, final View view){
+    public static String execute(final TestSuite suite){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         TestRunner runner = new TestRunner(new PrintStream(baos));
         TestResult result = runner.doRun(suite);
 
         byte[] bresult = baos.toByteArray();
-        view.doTestResult(new String(bresult));
+        return new String(bresult);
     }
 }

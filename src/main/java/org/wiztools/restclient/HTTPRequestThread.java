@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import junit.framework.TestSuite;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
@@ -28,6 +29,8 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.methods.TraceMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.wiztools.restclient.test.TestException;
+import org.wiztools.restclient.test.TestUtil;
 
 /**
  *
@@ -186,6 +189,18 @@ public class HTTPRequestThread extends Thread {
 			if(responseBody != null){
 				response.setResponseBody(responseBody);
 			}
+                        
+                        // Now execute tests:
+                        try{
+                            TestSuite suite = TestUtil.getTestSuite(request, response);
+                            if(suite != null){ // suite will be null if there is no associated script
+                                String testResult = TestUtil.execute(suite);
+                                response.setTestResult(testResult);
+                            }
+                        }
+                        catch(TestException ex){
+                            view.doError(Util.getStackTrace(ex));
+                        }
 
 			view.doResponse(response);
 		}

@@ -449,32 +449,12 @@ public class RESTView extends JPanel implements View {
     }
     
     void runClonedRequestTest(RequestBean request, ResponseBean response){
-        View testView = new View() {
-            public void doStart(RequestBean request) {
-                // Do nothing
-            }
-
-            public void doResponse(ResponseBean response) {
-                // Do nothing
-            }
-
-            public void doEnd() {
-                // Do nothing
-            }
-
-            public void doError(String error) {
-                view.doError(error);
-            }
-
-            public void doTestResult(String testResult) {
-                view.doMessage("Test Result", testResult);
-            }
-        };
         RequestBean t_request = (RequestBean)request.clone();
         t_request.setTestScript(jta_test_script.getText());
         try{
             TestSuite ts = TestUtil.getTestSuite(t_request, response);
-            TestUtil.execute(ts, testView);
+            String testResult = TestUtil.execute(ts);
+            view.doMessage("Test Result", testResult);
         }
         catch(TestException ex){
             view.doError(Util.getStackTrace(ex));
@@ -784,7 +764,8 @@ public class RESTView extends JPanel implements View {
         lastResponse = response;
         
         // Update the UI:
-        SwingUtilities.invokeLater(new Runnable(){
+        setUIFromResponse(response);
+        /*SwingUtilities.invokeLater(new Runnable(){
             public void run(){
                 jtf_res_status.setText(response.getStatusLine());
                 String responseBody = response.getResponseBody();
@@ -800,18 +781,7 @@ public class RESTView extends JPanel implements View {
                 model.setHeaders(response.getHeaders());
                 jb_request.requestFocus();
             }
-        });
-        
-        // Now execute tests:
-        try{
-            TestSuite suite = TestUtil.getTestSuite(lastRequest, response);
-            if(suite != null){ // suite will be null if there is no associated script
-                TestUtil.execute(suite, view);
-            }
-        }
-        catch(TestException ex){
-            doError(Util.getStackTrace(ex));
-        }
+        });*/
     }
     
     @Override
@@ -820,18 +790,6 @@ public class RESTView extends JPanel implements View {
             public void run(){
                 jpb_status.setVisible(false);
                 jb_request.setEnabled(true);
-            }
-        });
-    }
-    
-    @Override
-    public void doTestResult(final String result){
-        lastResponse.setTestResult(result);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                Dimension d = jsp_test_result.getPreferredSize();
-                jta_test_result.setText(result);
-                jsp_test_result.setPreferredSize(d);
             }
         });
     }
@@ -1155,10 +1113,16 @@ public class RESTView extends JPanel implements View {
                 resHeaderTableModel.setHeaders(response.getHeaders());
                 
                 // Response body
+                Dimension d = jsp_res_body.getPreferredSize();
                 jta_response.setText(response.getResponseBody());
+                jsp_res_body.setPreferredSize(d);
+                jta_response.setCaretPosition(0);
                 
                 // Response test result
+                d = jsp_test_result.getPreferredSize();
                 jta_test_result.setText(response.getTestResult());
+                jsp_test_result.setPreferredSize(d);
+                jta_test_result.setCaretPosition(0);
             }
         });
     }
