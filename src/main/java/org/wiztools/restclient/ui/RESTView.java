@@ -468,16 +468,6 @@ public class RESTView extends JPanel implements View {
         JPanel jp_headers = new JPanel();
         jp_headers.setLayout(new BorderLayout());
         
-        // Header Tab: Status Line Header
-        JPanel jp_headers_status = new JPanel();
-        jp_headers_status.setLayout(new FlowLayout(FlowLayout.CENTER));
-        JLabel jl_res_statusLine = new JLabel("Status: ");
-        jp_headers_status.add(jl_res_statusLine);
-        jtf_res_status.setColumns(35);
-        jtf_res_status.setEditable(false);
-        jp_headers_status.add(jtf_res_status);
-        jp_headers.add(jp_headers_status, BorderLayout.NORTH);
-        
         // Header Tab: Other Headers
         JPanel jp_headers_others = new JPanel();
         jp_headers_others.setLayout(new GridLayout(1, 1));
@@ -556,8 +546,20 @@ public class RESTView extends JPanel implements View {
         // Set top as 0:
         jp.setBorder(BorderFactory.createEmptyBorder(
                 0, BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH));
-        jp.setLayout(new GridLayout(1, 1));
+        jp.setLayout(new BorderLayout(BORDER_WIDTH, BORDER_WIDTH));
         
+        // Header Tab: Status Line Header
+        JPanel jp_status = new JPanel();
+        jp_status.setLayout(new BorderLayout(BORDER_WIDTH, BORDER_WIDTH));
+        JLabel jl_res_statusLine = new JLabel("Status: ");
+        jp_status.add(jl_res_statusLine, BorderLayout.WEST);
+        jtf_res_status.setColumns(35);
+        jtf_res_status.setEditable(false);
+        jp_status.add(jtf_res_status, BorderLayout.CENTER);
+        
+        jp.add(jp_status, BorderLayout.NORTH);
+        
+        // Center having tabs
         jp.add(initJTPResponse(), BorderLayout.CENTER);
         
         jp.setBorder(BorderFactory.createTitledBorder(null, "HTTP Response", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));

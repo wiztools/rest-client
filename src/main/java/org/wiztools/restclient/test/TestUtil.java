@@ -19,7 +19,6 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import org.wiztools.restclient.RequestBean;
 import org.wiztools.restclient.ResponseBean;
 import org.wiztools.restclient.Util;
-import org.wiztools.restclient.View;
 
 /**
  *
