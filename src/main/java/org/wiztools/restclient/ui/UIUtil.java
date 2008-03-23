@@ -1,11 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient.ui;
 
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.net.URL;
