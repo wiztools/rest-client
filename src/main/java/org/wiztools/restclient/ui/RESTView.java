@@ -769,23 +769,6 @@ public class RESTView extends JPanel implements View {
         
         // Update the UI:
         setUIFromResponse(response);
-        /*SwingUtilities.invokeLater(new Runnable(){
-            public void run(){
-                jtf_res_status.setText(response.getStatusLine());
-                String responseBody = response.getResponseBody();
-                if(responseBody != null){
-                    Dimension d = jta_response.getPreferredScrollableViewportSize();
-                    jta_response.setText(responseBody);
-                    jsp_res_body.setPreferredSize(d);
-                }
-                else{
-                    jta_response.setText("");
-                }
-                ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
-                model.setHeaders(response.getHeaders());
-                jb_request.requestFocus();
-            }
-        });*/
     }
     
     @Override
