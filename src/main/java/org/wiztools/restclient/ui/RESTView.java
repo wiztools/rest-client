@@ -361,6 +361,7 @@ public class RESTView extends JPanel implements View {
                     public void run() {
                         Dimension d = jsp_test_script.getPreferredSize();
                         jta_test_script.setText(templateTestScript);
+                        jta_test_script.setCaretPosition(0);
                         jsp_test_script.setPreferredSize(d);
                     }
                 });
@@ -393,6 +394,7 @@ public class RESTView extends JPanel implements View {
                             String testScript = Util.getStringFromFile(f);
                             Dimension d = jta_test_script.getPreferredSize();
                             jta_test_script.setText(testScript);
+                            jta_test_script.setCaretPosition(0);
                             jta_test_script.setPreferredSize(d);
                         }
                         catch(IOException ex){
@@ -945,6 +947,7 @@ public class RESTView extends JPanel implements View {
                 try{
                     String body = Util.getStringFromFile(f);
                     jta_req_body.setText(body);
+                    jta_req_body.setCaretPosition(0);
                 }
                 catch(IOException ex){
                     JOptionPane.showMessageDialog(frame,

@@ -136,6 +136,7 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
                 String content = Util.getStringFromFile(f);
                 Dimension d = jta_in.getPreferredSize();
                 jta_in.setText(content);
+                jta_in.setCaretPosition(0);
                 jta_in.setPreferredSize(d);
             }
             catch(IOException ex){
