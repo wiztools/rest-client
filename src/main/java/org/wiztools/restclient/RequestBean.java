@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author schandran
  */
-public final class RequestBean {
+public final class RequestBean implements Cloneable{
     
     private URL url;
     private String method;
@@ -130,6 +130,11 @@ public final class RequestBean {
         if(body != null){
             cloned.setBody((ReqEntityBean)body.clone());
         }
+        if(headers.size() != 0){
+            for(String header: headers.keySet()){
+                cloned.addHeader(header, headers.get(header));
+            }
+        }
         cloned.setMethod(method);
         cloned.setTestScript(testScript);
         cloned.setUrl(url);
@@ -173,5 +178,15 @@ public final class RequestBean {
         hash = 59 * hash + (this.body != null ? this.body.hashCode() : 0);
         hash = 59 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
         return hash;
+    }
+    
+    @Override
+    public String toString(){
+        StringBuffer sb = new StringBuffer();
+        sb.append("@Request[");
+        sb.append(url).append(", ");
+        sb.append(method);
+        sb.append("]");
+        return sb.toString();
     }
 }

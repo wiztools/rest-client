@@ -8,7 +8,7 @@ import java.util.Map;
  *
  * @author schandran
  */
-public final class ResponseBean {
+public final class ResponseBean implements Cloneable{
 
     private int statusCode;
     private String statusLine;
@@ -65,6 +65,20 @@ public final class ResponseBean {
     }
     
     @Override
+    public Object clone(){
+        ResponseBean response = new ResponseBean();
+        response.statusCode = statusCode;
+        response.statusLine = statusLine;
+        response.responseBody = responseBody;
+        if(headers.size() != 0){
+            for(String header: headers.keySet()){
+                response.addHeader(header, headers.get(header));
+            }
+        }
+        return response;
+    }
+    
+    @Override
     public boolean equals(Object o){
         if(o != null && o instanceof ResponseBean){
             final ResponseBean bean = (ResponseBean)o;
@@ -90,4 +104,12 @@ public final class ResponseBean {
         return hash;
     }
     
+    @Override
+    public String toString(){
+        StringBuffer sb = new StringBuffer();
+        sb.append("@Response[");
+        sb.append(statusLine);
+        sb.append("]");
+        return sb.toString();
+    }
 }

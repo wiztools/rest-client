@@ -4,7 +4,7 @@ package org.wiztools.restclient;
  *
  * @author schandran
  */
-public final class ReqEntityBean {
+public final class ReqEntityBean implements Cloneable{
     
     private String contentType;
     private String charSet;
@@ -70,4 +70,14 @@ public final class ReqEntityBean {
         return hash;
     }
 
+    @Override
+    public String toString(){
+        StringBuffer sb = new StringBuffer();
+        sb.append("@RequestBody[");
+        sb.append(contentType).append(", ");
+        sb.append(charSet).append(", ");
+        sb.append(body);
+        sb.append("]");
+        return sb.toString();
+    }
 }
