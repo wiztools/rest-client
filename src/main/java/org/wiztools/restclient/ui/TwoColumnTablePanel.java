@@ -31,16 +31,72 @@ import javax.swing.SwingUtilities;
  * @author schandran
  */
 public final class TwoColumnTablePanel extends JPanel {
+
+    private Frame frame;
     
     private TwoColumnTableModel model;
     private Dimension tableDimension;
     private KeyValMultiEntryDialog jd_multi;
+
+    private void initMultiEntryDialog(){
+        // Initialize the Multi-entry dialog:
+        MultiEntryAdd callback = new MultiEntryAdd() {
+            public void add(Map<String, String> keyValuePair, List<String> invalidLines) {
+                Object[][] data = model.getData();
+                List<String> keys = new ArrayList<String>();
+                for(Object[] o: data){
+                    String key = (String)o[0];
+                    keys.add(key);
+                }
+                Map<String, String> keyAlreadyExists = new LinkedHashMap<String, String>();
+
+                int successCount = 0;
+                for(String key: keyValuePair.keySet()){
+                    String value = keyValuePair.get(key);
+                    if(keys.contains(key)){
+                        keyAlreadyExists.put(key, keyValuePair.get(key));
+                    }
+                    else{
+                        model.insertRow(key, value);
+                        successCount++;
+                    }
+                }
+                StringBuffer sb = new StringBuffer();
+                sb.append("Added ").append(successCount).append(" key/value pairs.\n\n");
+                sb.append("**Lines Skipped Due To Duplication**\n\n");
+                if(keyAlreadyExists.size() == 0){
+                    sb.append("- None -\n");
+                }
+                else{
+                    for(String key: keyAlreadyExists.keySet()){
+                        String value = keyAlreadyExists.get(key);
+                        sb.append(key).append(": ").append(value).append("\n");
+                    }
+                }
+
+                sb.append("\n**Lines Skipped Due To Pattern Mis-match**\n\n");
+                if(invalidLines.size() == 0){
+                    sb.append("- None -\n");
+                }
+                else{
+                    for(String line: invalidLines){
+                        sb.append(line).append("\n");
+                    }
+                }
+
+                ((RESTFrame)frame).getView().doMessage("Multi-insert Result", sb.toString());
+            }
+        };
+        jd_multi = new KeyValMultiEntryDialog(frame, callback);
+    }
     
     public TwoColumnTableModel getTableModel(){
         return model;
     }
 
     public TwoColumnTablePanel(final String[] title, final Frame frame) {
+
+        this.frame = frame;
         
         // Create JTable
         final JTable jt = new JTable();
@@ -97,57 +153,7 @@ public final class TwoColumnTablePanel extends JPanel {
                 }
             }
         });
-        
-        // Initialize the Multi-entry dialog:
-        MultiEntryAdd callback = new MultiEntryAdd() {
-            public void add(Map<String, String> keyValuePair, List<String> invalidLines) {
-                Object[][] data = model.getData();
-                List<String> keys = new ArrayList<String>();
-                for(Object[] o: data){
-                    String key = (String)o[0];
-                    keys.add(key);
-                }
-                Map<String, String> keyAlreadyExists = new LinkedHashMap<String, String>();
-                
-                int successCount = 0;
-                for(String key: keyValuePair.keySet()){
-                    String value = keyValuePair.get(key);
-                    if(keys.contains(key)){
-                        keyAlreadyExists.put(key, keyValuePair.get(key));
-                    }
-                    else{
-                        model.insertRow(key, value);
-                        successCount++;
-                    }
-                }
-                StringBuffer sb = new StringBuffer();
-                sb.append("Added ").append(successCount).append(" key/value pairs.\n\n");
-                sb.append("**Lines Skipped Due To Duplication**\n\n");
-                if(keyAlreadyExists.size() == 0){
-                    sb.append("- None -\n");
-                }
-                else{
-                    for(String key: keyAlreadyExists.keySet()){
-                        String value = keyAlreadyExists.get(key);
-                        sb.append(key).append(": ").append(value).append("\n");
-                    }
-                }
-                
-                sb.append("\n**Lines Skipped Due To Pattern Mis-match**\n\n");
-                if(invalidLines.size() == 0){
-                    sb.append("- None -\n");
-                }
-                else{
-                    for(String line: invalidLines){
-                        sb.append(line).append("\n");
-                    }
-                }
-                
-                ((RESTFrame)frame).getView().doMessage("Multi-insert Result", sb.toString());
-            }
-        };
-        jd_multi = new KeyValMultiEntryDialog(frame, callback);
-        
+
         // Create the interface
         JPanel jp = this;
         jp.setLayout(new BorderLayout());
@@ -213,6 +219,9 @@ public final class TwoColumnTablePanel extends JPanel {
             public void actionPerformed(ActionEvent e){
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
+                        if(jd_multi == null){
+                            initMultiEntryDialog();
+                        }
                         jd_multi.setVisible(true);
                     }
                 });

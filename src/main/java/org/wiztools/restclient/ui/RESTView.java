@@ -1161,6 +1161,7 @@ public class RESTView extends JPanel implements View {
                     jd_body_content_type.setContentType(body.getContentType());
                     jd_body_content_type.setCharSet(body.getCharSet());
                     jta_req_body.setText(body.getBody());
+                    jta_req_body.setCaretPosition(0);
                 }
                 
                 // Authentication
@@ -1187,6 +1188,7 @@ public class RESTView extends JPanel implements View {
                 // Test script
                 Dimension d = jsp_test_script.getPreferredSize();
                 jta_test_script.setText(request.getTestScript()==null?"":request.getTestScript());
+                jta_test_script.setCaretPosition(0);
                 jsp_test_script.setPreferredSize(d);
             }
         });
