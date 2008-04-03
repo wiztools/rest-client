@@ -13,6 +13,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.JFrame;
+
 import org.wiztools.restclient.Util;
 
 /**
@@ -21,13 +23,13 @@ import org.wiztools.restclient.Util;
  */
 public class OptionsDialog extends EscapableDialog {
     
-    private final RESTFrame frame;
+    private final JFrame frame;
     private final OptionsDialog me;
     
     private OptionsConnectionPanel jp_conn_panel;
     private OptionsProxyPanel jp_proxy_panel;
     
-    public OptionsDialog(RESTFrame f){
+    public OptionsDialog(JFrame f){
         super(f, true);
         frame = f;
         me = this;

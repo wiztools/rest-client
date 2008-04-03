@@ -47,13 +47,18 @@ public class RESTFrame extends JFrame {
     private JFileChooser jfc_generic = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
     
-    private final RESTFrame me;
+    private final JFrame me;
+
+    public RESTFrame(final String title, JFrame frame){
+        me = frame;
+        init(true);
+    }
     
     public RESTFrame(final String title){
         super(title);
         me = this;
         
-        init();
+        init(false);
     }
     
     RESTView getView(){
@@ -254,32 +259,33 @@ public class RESTFrame extends JFrame {
         this.setJMenuBar(jmb);
     }
     
-    private void init(){
+    private void init(final boolean isPlugin){
         // JFileChooser: Initialize
         jfc_request.addChoosableFileFilter(new RCFileFilter(FileType.REQUEST_EXT));
         jfc_response.addChoosableFileFilter(new RCFileFilter(FileType.RESPONSE_EXT));
         jfc_archive.addChoosableFileFilter(new RCFileFilter(FileType.ARCHIVE_EXT));
         
-        // Create AboutDialog
-        aboutDialog = new AboutDialog(this);
-        
-        createMenu();
-        
-        ImageIcon icon = 
-                new ImageIcon(this.getClass().getClassLoader()
-                .getResource("org/wiztools/restclient/WizLogo.png"));
-        setIconImage(icon.getImage());
-        view = new RESTView(this);
-        setContentPane(view);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent event){
-                shutdownCall();
-            }
-        });
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
+        if(!isPlugin){
+            // Create AboutDialog
+            aboutDialog = new AboutDialog(this);
+
+            createMenu();
+            ImageIcon icon =
+                    UIUtil.getIconFromClasspath("org/wiztools/restclient/WizLogo.png");
+            setIconImage(icon.getImage());
+            view = new RESTView(this);
+            setContentPane(view);
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent event){
+                    shutdownCall();
+                }
+            });
+
+            pack();
+            setLocationRelativeTo(null);
+            setVisible(true);
+        }
     }
     
     private void actionOpenOptionsDialog(ActionEvent event){
