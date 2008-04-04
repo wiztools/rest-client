@@ -30,7 +30,7 @@ public class TestUtil {
             return null;
         }
         try{
-            GroovyClassLoader gcl = new GroovyClassLoader();
+            GroovyClassLoader gcl = new GroovyClassLoader(TestUtil.class.getClassLoader());
 
             Class testClass = gcl.parseClass(script, "__GenRESTTestCase__");
 
