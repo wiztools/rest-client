@@ -272,6 +272,10 @@ public class RESTMain implements RESTUserInterface {
         jfc_request.addChoosableFileFilter(new RCFileFilter(FileType.REQUEST_EXT));
         jfc_response.addChoosableFileFilter(new RCFileFilter(FileType.RESPONSE_EXT));
         jfc_archive.addChoosableFileFilter(new RCFileFilter(FileType.ARCHIVE_EXT));
+
+        // Set the view on the pane
+        view = new RESTView(this);
+        frame.setContentPane(view);
         
         if(!isPlugin){
             // Create AboutDialog
@@ -281,8 +285,6 @@ public class RESTMain implements RESTUserInterface {
             ImageIcon icon =
                     UIUtil.getIconFromClasspath("org/wiztools/restclient/WizLogo.png");
             frame.setIconImage(icon.getImage());
-            view = new RESTView(this);
-            frame.setContentPane(view);
             frame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent event){
