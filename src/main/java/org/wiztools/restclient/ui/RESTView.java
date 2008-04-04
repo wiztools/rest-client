@@ -118,7 +118,7 @@ public class RESTView extends JPanel implements View {
 
     private MessageDialog messageDialog;
     private final RESTView view;
-    private final RESTFrame frame;
+    private final RESTUserInterface rest_ui;
     
     public static final int BORDER_WIDTH = 5;
     
@@ -147,8 +147,8 @@ public class RESTView extends JPanel implements View {
         templateTestScript = t;
     }
 
-    protected RESTView(final RESTFrame frame){
-        this.frame = frame;
+    protected RESTView(final RESTUserInterface ui){
+        this.rest_ui = ui;
         init();
         view = this;
         
@@ -225,7 +225,7 @@ public class RESTView extends JPanel implements View {
         jtp.addTab("Method", jp_method_encp);
         
         // Headers Tab
-        jp_2col_req_headers = new TwoColumnTablePanel(new String[]{"Header", "Value"}, frame);
+        jp_2col_req_headers = new TwoColumnTablePanel(new String[]{"Header", "Value"}, rest_ui);
         jtp.addTab("Headers", jp_2col_req_headers);
         
         // Body Tab
@@ -352,7 +352,7 @@ public class RESTView extends JPanel implements View {
             public void actionPerformed(ActionEvent e) {
                 String t = jta_test_script.getText();
                 if(!Util.isStrEmpty(t)){
-                    JOptionPane.showMessageDialog(frame,
+                    JOptionPane.showMessageDialog(rest_ui.getFrame(),
                             "Script text already present! Please clear existing script!",
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -375,17 +375,17 @@ public class RESTView extends JPanel implements View {
                     public void run() {
                         String str = jta_test_script.getText();
                         if(!Util.isStrEmpty(str)){
-                            int ret = JOptionPane.showConfirmDialog(frame, "Script already exists. Erase?", "Erase existing script?", JOptionPane.YES_NO_OPTION);
+                            int ret = JOptionPane.showConfirmDialog(rest_ui.getFrame(), "Script already exists. Erase?", "Erase existing script?", JOptionPane.YES_NO_OPTION);
                             if(ret == JOptionPane.NO_OPTION){
                                 return;
                             }
                         }
-                        File f = frame.getOpenFile(FileChooserType.OPEN_TEST_SCRIPT);
+                        File f = rest_ui.getOpenFile(FileChooserType.OPEN_TEST_SCRIPT);
                         if(f == null){ // Cancel pressed
                             return;
                         }
                         if(!f.canRead()){
-                            JOptionPane.showMessageDialog(frame,
+                            JOptionPane.showMessageDialog(rest_ui.getFrame(),
                                     "IO Error (Read permission denied): " + f.getAbsolutePath(),
                                     "IO Error", JOptionPane.ERROR_MESSAGE);
                             return;
@@ -410,14 +410,14 @@ public class RESTView extends JPanel implements View {
         jb_req_test_run.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(Util.isStrEmpty(jta_test_script.getText())){
-                    JOptionPane.showMessageDialog(frame,
+                    JOptionPane.showMessageDialog(rest_ui.getFrame(),
                             "No script!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         if(jd_runTestDialog == null){
-                            jd_runTestDialog = new RunTestDialog(frame);
+                            jd_runTestDialog = new RunTestDialog(rest_ui);
                         }
                         jd_runTestDialog.setVisible(true);
                     }
@@ -429,12 +429,12 @@ public class RESTView extends JPanel implements View {
         jb_req_test_quick.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(lastRequest == null || lastResponse == null){
-                    JOptionPane.showMessageDialog(frame, "No Last Request/Response", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(rest_ui.getFrame(), "No Last Request/Response", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 String testScript = jta_test_script.getText();
                 if(Util.isStrEmpty(testScript)){
-                    JOptionPane.showMessageDialog(frame, "No Script", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(rest_ui.getFrame(), "No Script", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 runClonedRequestTest(lastRequest, lastResponse);
@@ -588,7 +588,7 @@ public class RESTView extends JPanel implements View {
     
     private void init(){
         // Initialize the messageDialog
-        messageDialog = new MessageDialog(frame);
+        messageDialog = new MessageDialog(rest_ui.getFrame());
         
         // Initialize parameter dialog
         ParameterView pv = new ParameterView(){
@@ -601,10 +601,10 @@ public class RESTView extends JPanel implements View {
             }
             
         };
-        jd_req_paramDialog = new ParameterDialog(frame, pv);
+        jd_req_paramDialog = new ParameterDialog(rest_ui, pv);
         
         // Initialize jd_body_content_type
-        jd_body_content_type = new BodyContentTypeDialog(frame);
+        jd_body_content_type = new BodyContentTypeDialog(rest_ui.getFrame());
         jd_body_content_type.addContentTypeCharSetChangeListener(new ContentTypeCharSetChangeListener() {
             public void changed(String contentType, String charSet) {
                 jtf_body_content_type.setText(RESTView.getFormattedContentType(contentType, charSet));
@@ -644,7 +644,7 @@ public class RESTView extends JPanel implements View {
         List<String> errors = validateForRequest();
         if(errors.size()!=0){
             String errStr = Util.getHTMLListFromList(errors);
-            JOptionPane.showMessageDialog(frame,
+            JOptionPane.showMessageDialog(rest_ui.getFrame(),
                 errStr,
                 "Validation error",
                 JOptionPane.ERROR_MESSAGE);
@@ -879,12 +879,12 @@ public class RESTView extends JPanel implements View {
         }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                File f = frame.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
+                File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
                 if(f == null){ // Pressed cancel?
                     return;
                 }
                 if(!f.canRead()){
-                    JOptionPane.showMessageDialog(frame,
+                    JOptionPane.showMessageDialog(rest_ui.getFrame(),
                             "File not readable: " + f.getAbsolutePath(),
                             "IO Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -933,7 +933,7 @@ public class RESTView extends JPanel implements View {
                     jta_req_body.setCaretPosition(0);
                 }
                 catch(IOException ex){
-                    JOptionPane.showMessageDialog(frame,
+                    JOptionPane.showMessageDialog(rest_ui.getFrame(),
                             "IO Error: " + ex.getMessage(),
                             "IO Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -949,7 +949,7 @@ public class RESTView extends JPanel implements View {
         checkAndSetParameterContentType();
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
-                jd_req_paramDialog.setLocationRelativeTo(frame);
+                jd_req_paramDialog.setLocationRelativeTo(rest_ui.getFrame());
                 jd_req_paramDialog.setVisible(true);
             }
         });
@@ -960,7 +960,7 @@ public class RESTView extends JPanel implements View {
             return true;
         }
         else{
-            int response = JOptionPane.showConfirmDialog(frame,
+            int response = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
                     "Body text exists. Erase?",
                     "Erase?",
                     JOptionPane.YES_NO_OPTION);
@@ -975,7 +975,7 @@ public class RESTView extends JPanel implements View {
     private void checkAndSetParameterContentType(){
         if(!jd_body_content_type.getContentType().equals(BodyContentTypeDialog.PARAM_CONTENT_TYPE)
                 || !jd_body_content_type.getCharSet().equals(BodyContentTypeDialog.PARAM_CHARSET)){
-            int status = JOptionPane.showConfirmDialog(frame,
+            int status = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
                     "<html>For parameter the Content-type and Charset needs <br>" +
                     "to be `" + BodyContentTypeDialog.PARAM_CONTENT_TYPE +
                     "' and `"+

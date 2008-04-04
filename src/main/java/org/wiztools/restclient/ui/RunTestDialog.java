@@ -41,17 +41,17 @@ public class RunTestDialog extends EscapableDialog {
     private JButton jb_archive_browse = new JButton("Browse");
     
     private RunTestDialog me;
-    private RESTFrame frame;
+    private RESTUserInterface ui;
     
     private JFileChooser jfc = UIUtil.getNewJFileChooser();
     
     private File archiveFile;
     
-    public RunTestDialog(RESTFrame f){
-        super(f, true);
+    public RunTestDialog(RESTUserInterface ui){
+        super(ui.getFrame(), true);
+        this.ui = ui;
         this.setTitle("Run Test");
         me = this;
-        frame = f;
         init();
         this.pack();
     }
@@ -99,7 +99,7 @@ public class RunTestDialog extends EscapableDialog {
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        File f = frame.getOpenFile(FileChooserType.OPEN_ARCHIVE, me);
+                        File f = ui.getOpenFile(FileChooserType.OPEN_ARCHIVE, me);
                         if(f == null){ // Cancel pressed
                             return;
                         }
@@ -143,7 +143,7 @@ public class RunTestDialog extends EscapableDialog {
             ResponseBean response = null;
             if(jrb_archive.isSelected()){
                 if(archiveFile == null){
-                    JOptionPane.showMessageDialog(frame,
+                    JOptionPane.showMessageDialog(ui.getFrame(),
                             "Please select a file!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -152,8 +152,8 @@ public class RunTestDialog extends EscapableDialog {
                 response = req_res.getResponseBean();
             }
             else{
-                request = frame.getView().getLastRequest();
-                response = frame.getView().getLastResponse();
+                request = ui.getView().getLastRequest();
+                response = ui.getView().getLastResponse();
                 if(request == null || response == null){
                     JOptionPane.showMessageDialog(me,
                             "No last Request/Response available!", "Error",
@@ -162,13 +162,13 @@ public class RunTestDialog extends EscapableDialog {
                 }
             }
             me.setVisible(false);
-            frame.getView().runClonedRequestTest(request, response);
+            ui.getView().runClonedRequestTest(request, response);
         }
         catch(IOException ex){
-            frame.getView().doError(Util.getStackTrace(ex));
+            ui.getView().doError(Util.getStackTrace(ex));
         }
         catch(XMLException ex){
-            frame.getView().doError(Util.getStackTrace(ex));
+            ui.getView().doError(Util.getStackTrace(ex));
         }
     }
 

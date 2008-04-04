@@ -34,7 +34,7 @@ import org.wiztools.restclient.xml.XMLUtil;
  *
  * @author schandran
  */
-public class RESTFrame extends JFrame {
+public class RESTMain implements RESTUserInterface {
     
     private RESTView view;
     private AboutDialog aboutDialog;
@@ -47,22 +47,30 @@ public class RESTFrame extends JFrame {
     private JFileChooser jfc_generic = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
     
-    private final JFrame me;
+    private final JFrame frame;
 
-    public RESTFrame(final String title, JFrame frame){
-        me = frame;
-        init(true);
+    /**
+     * This constructor is used for plugin initialization
+     * @param frame
+     */
+    public RESTMain(final JFrame frame){
+        this.frame = frame;
+        init(true); // true means isPlugin==true
     }
     
-    public RESTFrame(final String title){
-        super(title);
-        me = this;
-        
-        init(false);
+    public RESTMain(final String title){
+        frame = new JFrame(title);
+        init(false); // false means isPlugin==false
     }
     
-    RESTView getView(){
+    @Override
+    public RESTView getView(){
         return view;
+    }
+    
+    @Override
+    public JFrame getFrame(){
+        return this.frame;
     }
     
     private void createMenu(){
@@ -192,7 +200,7 @@ public class RESTFrame extends JFrame {
                             view.setUIToLastRequestResponse();
                         }
                         else{
-                            JOptionPane.showMessageDialog(me,
+                            JOptionPane.showMessageDialog(frame,
                                     "No Last Request-Response Available",
                                     "No Last Request-Response Available",
                                     JOptionPane.INFORMATION_MESSAGE);
@@ -211,7 +219,7 @@ public class RESTFrame extends JFrame {
         jmi_pwd_gen.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 if(passwordGenDialog == null){
-                    passwordGenDialog = new PasswordGenDialog(me);
+                    passwordGenDialog = new PasswordGenDialog(frame);
                 }
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
@@ -256,7 +264,7 @@ public class RESTFrame extends JFrame {
         jmb.add(jm_tools);
         jmb.add(jm_help);
         
-        this.setJMenuBar(jmb);
+        frame.setJMenuBar(jmb);
     }
     
     private void init(final boolean isPlugin){
@@ -267,24 +275,24 @@ public class RESTFrame extends JFrame {
         
         if(!isPlugin){
             // Create AboutDialog
-            aboutDialog = new AboutDialog(this);
+            aboutDialog = new AboutDialog(frame);
 
             createMenu();
             ImageIcon icon =
                     UIUtil.getIconFromClasspath("org/wiztools/restclient/WizLogo.png");
-            setIconImage(icon.getImage());
+            frame.setIconImage(icon.getImage());
             view = new RESTView(this);
-            setContentPane(view);
-            addWindowListener(new WindowAdapter() {
+            frame.setContentPane(view);
+            frame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent event){
                     shutdownCall();
                 }
             });
 
-            pack();
-            setLocationRelativeTo(null);
-            setVisible(true);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
         }
     }
     
@@ -292,18 +300,20 @@ public class RESTFrame extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 if(optionsDialog == null){
-                    optionsDialog = new OptionsDialog(me);
+                    optionsDialog = new OptionsDialog(frame);
                 }
                 optionsDialog.setVisible(true);
             }
         });
     }
     
-    File getOpenFile(final FileChooserType type){
-        return getOpenFile(type, me);
+    @Override
+    public File getOpenFile(final FileChooserType type){
+        return getOpenFile(type, frame);
     }
     
-    File getOpenFile(final FileChooserType type, Component parent){
+    @Override
+    public File getOpenFile(final FileChooserType type, final Component parent){
         String title = null;
         JFileChooser jfc = null;
         if(type == FileChooserType.OPEN_REQUEST){
@@ -423,7 +433,8 @@ public class RESTFrame extends JFrame {
     }
     
     // This method is invoked from SU.invokeLater
-    File getSaveFile(final FileChooserType type){
+    @Override
+    public File getSaveFile(final FileChooserType type){
         JFileChooser jfc = null;
         String title = null;
         if(type == FileChooserType.SAVE_REQUEST){
@@ -443,7 +454,7 @@ public class RESTFrame extends JFrame {
             title = "Save Req-Res Archive";
         }
         jfc.setDialogTitle(title);
-        int status = jfc.showSaveDialog(this);
+        int status = jfc.showSaveDialog(frame);
         if(status == JFileChooser.APPROVE_OPTION){
             File f = jfc.getSelectedFile();
             
@@ -483,7 +494,7 @@ public class RESTFrame extends JFrame {
                 }
             }
             if(f.exists()){
-                int yesNo = JOptionPane.showConfirmDialog(me,
+                int yesNo = JOptionPane.showConfirmDialog(frame,
                         "File exists. Overwrite?",
                         "File exists",
                         JOptionPane.YES_NO_OPTION);
@@ -491,7 +502,7 @@ public class RESTFrame extends JFrame {
                     return f;
                 }
                 else{
-                    JOptionPane.showMessageDialog(me,
+                    JOptionPane.showMessageDialog(frame,
                             "File not saved!",
                             "Not saved",
                             JOptionPane.INFORMATION_MESSAGE);

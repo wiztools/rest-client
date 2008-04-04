@@ -37,7 +37,7 @@ public class PasswordGenDialog extends EscapableDialog {
     
     static{
         String tmp = null;
-        InputStream is = RESTFrame.class.getClassLoader().getResourceAsStream("org/wiztools/restclient/PasswordHelp.txt");
+        InputStream is = RESTMain.class.getClassLoader().getResourceAsStream("org/wiztools/restclient/PasswordHelp.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         try{
             StringBuffer sb = new StringBuffer();

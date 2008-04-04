@@ -1,6 +1,6 @@
 package org.wiztools.restclient;
 
-import org.wiztools.restclient.ui.RESTFrame;
+import org.wiztools.restclient.ui.RESTMain;
 import javax.swing.SwingUtilities;
 
 /**
@@ -45,7 +45,7 @@ public class Main {
         
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new RESTFrame(RCConstants.TITLE + RCConstants.VERSION);
+                new RESTMain(RCConstants.TITLE + RCConstants.VERSION);
             }
         });
         

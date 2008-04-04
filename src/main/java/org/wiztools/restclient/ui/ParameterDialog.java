@@ -5,7 +5,6 @@ import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
@@ -22,7 +21,6 @@ import javax.swing.SwingUtilities;
  */
 public class ParameterDialog extends EscapableDialog {
     
-    private final Frame frame;
     private final ParameterView view;
     private TwoColumnTablePanel jp_2col_center;
     
@@ -31,11 +29,13 @@ public class ParameterDialog extends EscapableDialog {
     
     private ParameterDialog me;
     
-    ParameterDialog(Frame f, ParameterView view){
+    private final RESTUserInterface ui;
+    
+    ParameterDialog(RESTUserInterface ui, ParameterView view){
         // true means modal:
-        super(f, true);
+        super(ui.getFrame(), true);
         this.setTitle("Insert Parameter");
-        this.frame = f;
+        this.ui = ui;
         this.view = view;
         this.me = this;
         init();
@@ -51,7 +51,7 @@ public class ParameterDialog extends EscapableDialog {
                 RESTView.BORDER_WIDTH));
         jp.setLayout(new BorderLayout());
         jp_2col_center = new TwoColumnTablePanel(
-                new String[]{"Key", "Value"}, frame);
+                new String[]{"Key", "Value"}, ui);
         jp.add(jp_2col_center, BorderLayout.CENTER);
         
         JPanel jp_south = new JPanel();

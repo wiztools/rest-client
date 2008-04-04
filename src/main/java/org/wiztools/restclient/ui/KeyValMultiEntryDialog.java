@@ -1,7 +1,6 @@
 package org.wiztools.restclient.ui;
 
 import java.awt.AWTEvent;
-import java.awt.Frame;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -39,13 +38,13 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
     private JScrollPane jsp_in;
     private JTextArea jta_in = new JTextArea(18, 35);
     private JDialog me;
-    private Frame frame;
+    private RESTUserInterface ui;
     private MultiEntryAdd callback;
 
-    public KeyValMultiEntryDialog(Frame f, MultiEntryAdd callback) {
-        super(f, true);
+    public KeyValMultiEntryDialog(RESTUserInterface ui, MultiEntryAdd callback) {
+        super(ui.getFrame(), true);
+        this.ui = ui;
         me = this;
-        frame = f;
         setTitle("Multi-entry");
         this.callback = callback;
 
@@ -126,7 +125,7 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
     }
     
     private void loadFromFile(){
-        File f = ((RESTFrame)frame).getOpenFile(FileChooserType.OPEN_TEST_SCRIPT, me);
+        File f = ui.getOpenFile(FileChooserType.OPEN_TEST_SCRIPT, me);
         if(f != null){
             try{
                 String content = Util.getStringFromFile(f);
@@ -136,7 +135,7 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
                 jta_in.setPreferredSize(d);
             }
             catch(IOException ex){
-                ((RESTFrame)frame).getView().doError(Util.getStackTrace(ex));
+                ui.getView().doError(Util.getStackTrace(ex));
             }
         }
     }

@@ -5,7 +5,6 @@ import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +31,7 @@ import javax.swing.SwingUtilities;
  */
 public final class TwoColumnTablePanel extends JPanel {
 
-    private Frame frame;
+    private RESTUserInterface rest_ui;
     
     private TwoColumnTableModel model;
     private Dimension tableDimension;
@@ -84,19 +83,19 @@ public final class TwoColumnTablePanel extends JPanel {
                     }
                 }
 
-                ((RESTFrame)frame).getView().doMessage("Multi-insert Result", sb.toString());
+                rest_ui.getView().doMessage("Multi-insert Result", sb.toString());
             }
         };
-        jd_multi = new KeyValMultiEntryDialog(frame, callback);
+        jd_multi = new KeyValMultiEntryDialog(rest_ui, callback);
     }
     
     public TwoColumnTableModel getTableModel(){
         return model;
     }
 
-    public TwoColumnTablePanel(final String[] title, final Frame frame) {
+    public TwoColumnTablePanel(final String[] title, final RESTUserInterface ui) {
 
-        this.frame = frame;
+        this.rest_ui = ui;
         
         // Create JTable
         final JTable jt = new JTable();
@@ -200,7 +199,7 @@ public final class TwoColumnTablePanel extends JPanel {
                         sb.append("</li>");
                     }
                     sb.append("</ul></html>");
-                    JOptionPane.showMessageDialog(frame, sb.toString(), "Validation Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(ui.getFrame(), sb.toString(), "Validation Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 model.insertRow(key, value);
