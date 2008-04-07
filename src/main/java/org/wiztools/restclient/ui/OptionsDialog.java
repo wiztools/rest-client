@@ -15,6 +15,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.JFrame;
 
+import org.wiztools.restclient.GlobalOptions;
 import org.wiztools.restclient.Util;
 
 /**
@@ -40,7 +41,9 @@ public class OptionsDialog extends EscapableDialog {
         this.setTitle("Options");
         
         jp_conn_panel = new OptionsConnectionPanel();
+        jp_conn_panel.initOptions();
         jp_proxy_panel = new OptionsProxyPanel();
+        jp_proxy_panel.initOptions();
         
         // Tabbed pane
         JTabbedPane jtp = new JTabbedPane();
@@ -90,6 +93,21 @@ public class OptionsDialog extends EscapableDialog {
         this.setContentPane(jp_encp);
         
         pack();
+        
+        // Add shutdownhook--so that options are persisted
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run(){
+                writeProperties();
+            }
+        });
+    }
+    
+    private void writeProperties(){
+        jp_conn_panel.shutdownOptions();
+        jp_proxy_panel.shutdownOptions();
+        
+        GlobalOptions.getInstance().writeProperties();
     }
     
     @Override

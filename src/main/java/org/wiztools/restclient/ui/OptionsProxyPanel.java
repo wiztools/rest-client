@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -14,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import org.wiztools.restclient.GlobalOptions;
 import org.wiztools.restclient.ProxyConfig;
 import org.wiztools.restclient.Util;
 
@@ -22,6 +24,10 @@ import org.wiztools.restclient.Util;
  * @author Subhash
  */
 public class OptionsProxyPanel extends JPanel implements IOptionsPanel {
+    
+    private static final Logger LOG = Logger.getLogger(OptionsProxyPanel.class.getName());
+    
+    private static final String PROP_PREFIX = "proxy.options.";
     
     private JCheckBox jcb_enable = new JCheckBox("Enable");
     private JCheckBox jcb_auth_enable = new JCheckBox("Authentication");
@@ -205,8 +211,7 @@ public class OptionsProxyPanel extends JPanel implements IOptionsPanel {
         return true;
     }
     
-    @Override
-    public boolean revertOptions(){
+    private void setUIFromCache(){
         ProxyConfig proxy = ProxyConfig.getInstance();
         
         proxy.acquire();
@@ -225,8 +230,50 @@ public class OptionsProxyPanel extends JPanel implements IOptionsPanel {
 
         // Disable/enable the interface:
         toggleEnable(proxy.isEnabled());
-        toggleAuthEnable(proxy.isAuthEnabled());
+        // toggleAuthEnable(proxy.isAuthEnabled());
+    }
+    
+    @Override
+    public boolean revertOptions(){
+        setUIFromCache();
         
         return true;
+    }
+
+    @Override
+    public void initOptions() {
+        GlobalOptions options = GlobalOptions.getInstance();
+        ProxyConfig proxy = ProxyConfig.getInstance();
+        
+        proxy.acquire();
+        try{
+            proxy.setEnabled(Boolean.valueOf(options.getProperty(PROP_PREFIX + "is_enabled")));
+            proxy.setHost(options.getProperty(PROP_PREFIX + "host"));
+            proxy.setPort(Integer.parseInt(options.getProperty(PROP_PREFIX + "port")));
+            proxy.setAuthEnabled(Boolean.valueOf(options.getProperty(PROP_PREFIX + "is_auth_enabled")));
+            proxy.setUsername(options.getProperty(PROP_PREFIX + "username"));
+            proxy.setPassword(options.getProperty(PROP_PREFIX + "password").toCharArray());
+            setUIFromCache();
+        }
+        catch(Exception ex){
+            LOG.info("Cannot load Proxy options from properties.");
+        }
+        proxy.release();
+    }
+
+    @Override
+    public void shutdownOptions() {
+        GlobalOptions options = GlobalOptions.getInstance();
+        ProxyConfig proxy = ProxyConfig.getInstance();
+        
+        proxy.acquire();
+        options.setProperty(PROP_PREFIX + "is_enabled", String.valueOf(proxy.isEnabled()));
+        options.setProperty(PROP_PREFIX + "host", proxy.getHost());
+        options.setProperty(PROP_PREFIX + "port", String.valueOf(proxy.getPort()));
+        options.setProperty(PROP_PREFIX + "is_auth_enabled", String.valueOf(proxy.isAuthEnabled()));
+        options.setProperty(PROP_PREFIX + "username", proxy.getUsername());
+        String pwd = proxy.getPassword()==null? "": new String(proxy.getPassword());
+        options.setProperty(PROP_PREFIX + "password", pwd);
+        proxy.release();
     }
 }

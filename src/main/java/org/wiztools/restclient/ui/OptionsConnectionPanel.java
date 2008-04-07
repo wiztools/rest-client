@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -18,6 +19,9 @@ import org.wiztools.restclient.GlobalOptions;
  * @author Subhash
  */
 public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
+    private static final Logger LOG = Logger.getLogger(OptionsConnectionPanel.class.getName());
+    
+    private static final String PROP_PREFIX = "conn.options.";
 
     private static final String MINUTES = "Minutes";
     private static final String SECONDS = "Seconds";
@@ -170,8 +174,7 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
         return true;
     }
     
-    @Override
-    public boolean revertOptions(){
+    private void setUIFromCache(){
         if(ok_type.equals(MILLISECONDS)){
             jrb_millisecs.setSelected(true);
         }
@@ -182,6 +185,40 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
             jrb_minutes.setSelected(true);
         }
         jftf_timeout.setValue(ok_value);
+    }
+    
+    @Override
+    public boolean revertOptions(){
+        setUIFromCache();
         return true;
+    }
+
+    @Override
+    public void initOptions() {
+        GlobalOptions options = GlobalOptions.getInstance();
+        try{
+            ok_type = options.getProperty(PROP_PREFIX + "type");
+            ok_value = Integer.parseInt(options.getProperty(PROP_PREFIX + "value"));
+            // ok_value is always stored in milli-secs, so convertion is necessary:
+            if(SECONDS.equals(ok_type)){
+                lastSelected = SECONDS;
+                ok_value = ok_value / 1000;
+            }
+            else if(MINUTES.equals(ok_type)){
+                lastSelected = MINUTES;
+                ok_value = (ok_value / 1000) / 60;
+            }
+            setUIFromCache();
+        }
+        catch(Exception ex){
+            LOG.info("Could not load Connection options from property.");
+        }
+    }
+
+    @Override
+    public void shutdownOptions() {
+        GlobalOptions options = GlobalOptions.getInstance();
+        options.setProperty(PROP_PREFIX + "type", ok_type);
+        options.setProperty(PROP_PREFIX + "value", String.valueOf(ok_value));
     }
 }
