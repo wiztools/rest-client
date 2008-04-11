@@ -10,4 +10,12 @@
             <implementation-class>org.wiztools.restclient.idea.RestClientProjectComponent</implementation-class>
         </component>
     </project-components>
+    <actions>
+        <group id="RESTClient.MenuToolbar" description="REST Client Menu ToolBar">
+            <separator/>
+            <action id="AboutPluginAction" class="org.wiztools.restclient.idea.AboutPluginAction" text="about "
+                    icon="/actions/help.png"/>
+        </group>
+
+    </actions>
 </idea-plugin>
