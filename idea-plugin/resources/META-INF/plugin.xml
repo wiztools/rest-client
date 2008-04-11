@@ -2,9 +2,14 @@
 <idea-plugin>
     <name>REST Client plugin for IntelliJ IDEA</name>
     <description>RESTClient is a Java platform client application to test RESTful webservices</description>
-    <version>1.0</version>
-    <vendor email="linux_china@hotmail.com">Jacky Chan</vendor>
+    <version>0.1</version>
+    <vendor url="http://code.google.com/p/rest-client" email="libing.chen@gmail.com">Subhash Chandran, Jacky Chan</vendor>
     <idea-version since-build="8000"/>
+    <description><![CDATA[
+    <html>
+        RESTClient is a Java Swing application to test RESTful webservices. It can be used to test variety of HTTP communications.
+    </html>
+    ]]></description>
     <project-components>
         <component>
             <implementation-class>org.wiztools.restclient.idea.RestClientProjectComponent</implementation-class>
