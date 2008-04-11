@@ -275,9 +275,8 @@ public class RESTMain implements RESTUserInterface {
 
         // Set the view on the pane
         view = new RESTView(this);
-        frame.setContentPane(view);
-        
         if(!isPlugin){
+            frame.setContentPane(view);
             // Create AboutDialog
             aboutDialog = new AboutDialog(frame);
 
