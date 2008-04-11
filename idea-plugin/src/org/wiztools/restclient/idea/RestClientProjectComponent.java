@@ -7,14 +7,20 @@ import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.openapi.util.IconLoader;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.peer.PeerFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import javax.swing.Icon;
-import javax.swing.JFrame;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.GridConstraints;
+
+import javax.swing.*;
+
 import org.jetbrains.annotations.NotNull;
 import org.wiztools.restclient.ui.RESTMain;
 
+import java.awt.*;
 
 
 /**
@@ -26,7 +32,8 @@ public class RestClientProjectComponent implements ProjectComponent {
     public static final String TOOL_WINDOW_ID = "REST Client";
     private Project project;
     private static final Icon icon = IconLoader.getIcon("/resources/icons/web_logo.png");
-    
+    private RESTMain restMain;
+
     /**
      * construct project component
      *
@@ -34,6 +41,25 @@ public class RestClientProjectComponent implements ProjectComponent {
      */
     public RestClientProjectComponent(Project project) {
         this.project = project;
+    }
+
+    /**
+     * get rest client project component
+     *
+     * @param project project
+     * @return project component
+     */
+    public static RestClientProjectComponent getInstance(Project project) {
+        return project.getComponent(RestClientProjectComponent.class);
+    }
+
+    /**
+     * get RESTMain class
+     *
+     * @return RESTMain class
+     */
+    public RESTMain getRestMain() {
+        return restMain;
     }
 
     /**
@@ -64,6 +90,8 @@ public class RestClientProjectComponent implements ProjectComponent {
      * fired when project opened
      */
     public void projectOpened() {
+        JFrame jFrame = WindowManager.getInstance().getFrame(project);
+        restMain = new RESTMain(jFrame);
         registerRestClientToolWindow(project);
     }
 
@@ -82,12 +110,31 @@ public class RestClientProjectComponent implements ProjectComponent {
      */
     public void registerRestClientToolWindow(Project project) {
         ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-        JFrame jFrame = WindowManager.getInstance().getFrame(project);
-        RESTMain restMain = new RESTMain(jFrame);
         ToolWindow toolWindow = toolWindowManager.registerToolWindow(TOOL_WINDOW_ID, false, ToolWindowAnchor.BOTTOM);
         ContentFactory contentFactory = PeerFactory.getInstance().getContentFactory();
-        Content content = contentFactory.createContent(restMain.getView(), "", false);
+        Content content = contentFactory.createContent(constructPanel(restMain.getView()), "", false);
         toolWindow.getContentManager().addContent(content);
         toolWindow.setIcon(icon);
+    }
+
+    /**
+     * construct tool window panel
+     *
+     * @param restView RESTView
+     * @return restview
+     */
+    public JPanel constructPanel(JPanel restView) {
+        JPanel toolPanel = new JPanel();
+        toolPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        toolPanel.add(ActionManager.getInstance().createActionToolbar("RESTClient Menu Bar", (ActionGroup) ActionManager.getInstance()
+                .getAction("RESTClient.MenuToolbar"), true).getComponent(),
+                new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_HORIZONTAL, GridConstraints
+                        .SIZEPOLICY_CAN_SHRINK | GridConstraints
+                        .SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 12), null));
+        toolPanel.add(restView, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null,
+                null, null));
+        return toolPanel;
     }
 }
