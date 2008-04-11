@@ -1,7 +1,7 @@
 <!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
 <idea-plugin>
     <name>REST Client plugin</name>
-    <description>RESTClient is a Java platform client application to test RESTful webservices</description>
+    <description>RESTClient is a Java application to test RESTful webservices.</description>
     <version>0.1</version>
     <vendor url="http://code.google.com/p/rest-client" email="libing.chen@gmail.com">Subhash Chandran, Jacky Chan</vendor>
     <idea-version since-build="8000"/>
