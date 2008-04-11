@@ -275,11 +275,10 @@ public class RESTMain implements RESTUserInterface {
 
         // Set the view on the pane
         view = new RESTView(this);
+        // Create AboutDialog
+        aboutDialog = new AboutDialog(frame);
         if(!isPlugin){
             frame.setContentPane(view);
-            // Create AboutDialog
-            aboutDialog = new AboutDialog(frame);
-
             createMenu();
             ImageIcon icon =
                     UIUtil.getIconFromClasspath("org/wiztools/restclient/WizLogo.png");
