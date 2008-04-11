@@ -249,11 +249,7 @@ public class RESTMain implements RESTUserInterface {
         jmi_about.setMnemonic('a');
         jmi_about.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        aboutDialog.setVisible(true);
-                    }
-                });
+              showAboutDialog();
             }
         });
         jm_help.add(jmi_about);
@@ -663,5 +659,16 @@ public class RESTMain implements RESTUserInterface {
     private void shutdownCall(){
         System.out.println("Exiting...");
         System.exit(0);
+    }
+
+     /**
+     * show about dialog
+     */
+    public void showAboutDialog() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                aboutDialog.setVisible(true);
+            }
+        });
     }
 }
