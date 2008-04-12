@@ -2,12 +2,10 @@ package org.wiztools.restclient;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -17,6 +15,11 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.MalformedInputException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +73,19 @@ public class Util {
         StringBuffer out = new StringBuffer();
         byte[] b = new byte[4096];
         for (int n; (n = in.read(b)) != -1;) {
-            out.append(new String(b, 0, n));
+            Charset charset = Charset.forName(ENCODE);
+            CharsetDecoder decoder = charset.newDecoder();
+            CharBuffer charBuffer = null;
+            for(int i=0; i<n; i++){
+                try{
+                    charBuffer = decoder.decode(ByteBuffer.wrap(b, 0, n));
+                }
+                catch(MalformedInputException ex){
+                    throw new IOException("File not in supported encoding (" + ENCODE + ")");
+                }
+            }
+            charBuffer.rewind(); // Bring the buffer's pointer to 0
+            out.append(charBuffer.toString());
         }
         return out.toString();
     }
@@ -93,18 +108,13 @@ public class Util {
     }
 
     public static String getStringFromFile(File f) throws FileNotFoundException, IOException {
-        BufferedReader br = null;
+        InputStream is = null;
         try {
-            br = new BufferedReader(new FileReader(f));
-            String line = null;
-            StringBuffer sb = new StringBuffer();
-            while ((line = br.readLine()) != null) {
-                sb.append(line).append('\n');
-            }
-            return sb.toString();
+            is = new FileInputStream(f);
+            return inputStream2String(is);
         } finally {
-            if (br != null) {
-                br.close();
+            if(is != null){
+                is.close();
             }
         }
     }
