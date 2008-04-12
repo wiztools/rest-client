@@ -65,6 +65,9 @@ public class Util {
         sb.append("</ul></html>");
         return sb.toString();
     }
+    
+    private static final String ENCODE = "UTF-8";
+    private static final Charset UTF8CHARSET = Charset.forName(ENCODE);
 
     public static String inputStream2String(final InputStream in) throws IOException {
         if (in == null) {
@@ -72,24 +75,22 @@ public class Util {
         }
         StringBuffer out = new StringBuffer();
         byte[] b = new byte[4096];
+        CharsetDecoder decoder = UTF8CHARSET.newDecoder();
         for (int n; (n = in.read(b)) != -1;) {
-            Charset charset = Charset.forName(ENCODE);
-            CharsetDecoder decoder = charset.newDecoder();
             CharBuffer charBuffer = null;
-            for(int i=0; i<n; i++){
-                try{
-                    charBuffer = decoder.decode(ByteBuffer.wrap(b, 0, n));
-                }
-                catch(MalformedInputException ex){
-                    throw new IOException("File not in supported encoding (" + ENCODE + ")");
-                }
+            try{
+                charBuffer = decoder.decode(ByteBuffer.wrap(b, 0, n));
+            }
+            catch(MalformedInputException ex){
+                throw new IOException(
+                        "File not in supported encoding (" + ENCODE + ")", ex);
             }
             charBuffer.rewind(); // Bring the buffer's pointer to 0
             out.append(charBuffer.toString());
         }
         return out.toString();
     }
-    private static final String ENCODE = "UTF-8";
+    
 
     public static String parameterEncode(Map<String, String> params) {
         StringBuffer sb = new StringBuffer();
