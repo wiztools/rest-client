@@ -937,6 +937,8 @@ public class RESTView extends JPanel implements View {
                             "IO Error: " + ex.getMessage(),
                             "IO Error",
                             JOptionPane.ERROR_MESSAGE);
+                    jd_body_content_type.setContentType(oldContentType);
+                    jd_body_content_type.setCharSet(oldCharset);
                 }
             }
         });
