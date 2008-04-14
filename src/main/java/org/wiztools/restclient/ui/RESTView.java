@@ -392,10 +392,10 @@ public class RESTView extends JPanel implements View {
                         }
                         try{
                             String testScript = Util.getStringFromFile(f);
-                            Dimension d = jta_test_script.getPreferredSize();
+                            Dimension d = jsp_test_script.getPreferredSize();
                             jta_test_script.setText(testScript);
                             jta_test_script.setCaretPosition(0);
-                            jta_test_script.setPreferredSize(d);
+                            jsp_test_script.setPreferredSize(d);
                         }
                         catch(IOException ex){
                             doError(Util.getStackTrace(ex));
