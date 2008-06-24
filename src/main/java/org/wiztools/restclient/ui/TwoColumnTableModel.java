@@ -42,6 +42,11 @@ public class TwoColumnTableModel extends AbstractTableModel {
         fireTableCellUpdated(row, col);
     }
     
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex){
+        return true;
+    }
+    
     public void insertRow(Object key, Object value){
         int len = data.length;
         Object[][] t = new Object[len+1][2];
