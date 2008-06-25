@@ -60,7 +60,7 @@ public final class TwoColumnTablePanel extends JPanel {
                         successCount++;
                     }
                 }
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 sb.append("Added ").append(successCount).append(" key/value pairs.\n\n");
                 sb.append("**Lines Skipped Due To Duplication**\n\n");
                 if(keyAlreadyExists.size() == 0){
@@ -191,7 +191,7 @@ public final class TwoColumnTablePanel extends JPanel {
                     }
                 }
                 if(errors != null){
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     sb.append("<html><ul>");
                     for(String error: errors){
                         sb.append("<li>");

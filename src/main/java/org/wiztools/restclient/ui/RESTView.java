@@ -134,7 +134,7 @@ public class RESTView extends JPanel implements View {
         try{
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String str = null;
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             while((str = br.readLine()) != null){
                 sb.append(str).append("\n");
             }

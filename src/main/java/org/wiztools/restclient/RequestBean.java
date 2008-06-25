@@ -182,7 +182,7 @@ public final class RequestBean implements Cloneable{
     
     @Override
     public String toString(){
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("@Request[");
         sb.append(url).append(", ");
         sb.append(method);

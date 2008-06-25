@@ -72,7 +72,7 @@ public final class ReqEntityBean implements Cloneable{
 
     @Override
     public String toString(){
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("@RequestBody[");
         sb.append(contentType).append(", ");
         sb.append(charSet).append(", ");

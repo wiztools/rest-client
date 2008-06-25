@@ -57,7 +57,7 @@ public class Util {
     }
 
     public static String getHTMLListFromList(List<String> ll) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("<html><ul>");
         for (String str : ll) {
             sb.append("<li>").append(str).append("</li>");
@@ -73,7 +73,7 @@ public class Util {
         if (in == null) {
             return "";
         }
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         byte[] b = new byte[4096];
         CharsetDecoder decoder = UTF8CHARSET.newDecoder();
         for (int n; (n = in.read(b)) != -1;) {
@@ -93,7 +93,7 @@ public class Util {
     
 
     public static String parameterEncode(Map<String, String> params) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (String key : params.keySet()) {
             try {
                 String value = params.get(key);
