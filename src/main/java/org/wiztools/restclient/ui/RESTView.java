@@ -537,13 +537,17 @@ public class RESTView extends JPanel implements View {
             public void mouseReleased(MouseEvent e) {
                 showPopup(e);
             }
-            private void showPopup(MouseEvent e) {
+            private void showPopup(final MouseEvent e) {
                 if("".equals(jta_response.getText().trim())){
                     // No response body
                     return;
                 }
                 if (e.isPopupTrigger()) {
-                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                        }
+                    });
                 }
             }
         });
