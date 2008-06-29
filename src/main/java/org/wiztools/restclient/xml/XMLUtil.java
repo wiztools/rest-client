@@ -1,9 +1,12 @@
 package org.wiztools.restclient.xml;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import org.wiztools.restclient.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -15,6 +18,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -524,5 +529,29 @@ public final class XMLUtil {
     public static ResponseBean getResponseFromXMLFile(final File f) throws IOException, XMLException{
         Document doc = getDocumentFromFile(f);
         return xml2Response(doc);
+    }
+    
+    public static String indentXML(final String in) 
+            throws ParserConfigurationException,
+            SAXException,
+            IOException,
+            TransformerConfigurationException,
+            TransformerException{
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document doc = docBuilder.parse(new ByteArrayInputStream(in.getBytes("UTF-8")));
+        Source source = new DOMSource(doc);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Result result = new StreamResult(new OutputStreamWriter(baos));
+        
+        TransformerFactory factory = TransformerFactory.newInstance();
+        factory.setAttribute("indent-number", 4);
+        Transformer transformer = factory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+        transformer.setOutputProperty(OutputKeys.INDENT,"yes");
+        transformer.transform(source, result);
+        byte[] arr = baos.toByteArray();
+        
+        return new String(arr);
     }
 }

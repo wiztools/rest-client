@@ -1,5 +1,10 @@
 package org.wiztools.restclient.ui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -7,6 +12,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -34,8 +41,10 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
@@ -45,6 +54,7 @@ import org.wiztools.restclient.test.TestException;
 import org.wiztools.restclient.test.TestUtil;
 import org.wiztools.restclient.xml.XMLException;
 import org.wiztools.restclient.xml.XMLUtil;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -481,6 +491,62 @@ public class RESTView extends JPanel implements View {
         jp_headers_others.add(jsp);
         jp_headers.add(jp_headers_others, BorderLayout.CENTER);
         jtp.addTab("Headers", jp_headers);
+        
+        // Response body
+        // First the pop-up menu for xml formatting:
+        final JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem jmi_indentXml = new JMenuItem("Indent XML");
+        jmi_indentXml.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                String resText = jta_response.getText();
+                if("".equals(resText.trim())){
+                    setStatusMessage("No response body!");
+                    return;
+                }
+                try {
+                    final String indentedXML = XMLUtil.indentXML(resText);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            jta_response.setText(indentedXML);
+                            jta_response.setCaretPosition(0);
+                        }
+                    });
+                } catch (ParserConfigurationException ex) {
+                    setStatusMessage("Not an XML.");
+                } catch (SAXException ex) {
+                    setStatusMessage("Not an XML.");
+                } catch (IOException ex) {
+                    setStatusMessage("IOError while processing XML.");
+                } catch (TransformerConfigurationException ex) {
+                    setStatusMessage("TransformerConfiguration error.");
+                } catch (TransformerException ex) {
+                    setStatusMessage("XML transformation error.");
+                }
+            }
+        });
+        popupMenu.add(jmi_indentXml);
+        
+        // Attach popup menu
+        jta_response.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                showPopup(e);
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopup(e);
+            }
+            private void showPopup(MouseEvent e) {
+                if("".equals(jta_response.getText().trim())){
+                    // No response body
+                    return;
+                }
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
         
         JPanel jp_body = new JPanel();
         jp_body.setLayout(new GridLayout(1,1));
