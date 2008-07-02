@@ -5,6 +5,7 @@ import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -53,11 +54,10 @@ public class AboutDialog extends EscapableDialog {
         jp.add(jp_north, BorderLayout.NORTH);
         
         JPanel jp_center = new JPanel();
-        jp_center.setLayout(new FlowLayout());
+        jp_center.setLayout(new GridLayout(1, 1));
         JTextPane jtp = new JTextPane();
         jtp.setEditable(false);
         jtp.setContentType("text/html");
-        jtp.setSize(40, 40);
         jtp.setText(MessageI18N.getMessage("menu.help.about"));
         jp_center.add(new JScrollPane(jtp));
         jp.add(jp_center, BorderLayout.CENTER);

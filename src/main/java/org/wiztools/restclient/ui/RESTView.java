@@ -1,7 +1,5 @@
 package org.wiztools.restclient.ui;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -125,6 +123,9 @@ public class RESTView extends JPanel implements View {
     private ParameterDialog jd_req_paramDialog;
     
     private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();
+    
+    // Session Details
+    SessionFrame sessionFrame = new SessionFrame("RESTClient: Session View");
 
     private MessageDialog messageDialog;
     private final RESTView view;
@@ -509,18 +510,19 @@ public class RESTView extends JPanel implements View {
                         public void run() {
                             jta_response.setText(indentedXML);
                             jta_response.setCaretPosition(0);
+                            setStatusMessage("Indent XML: Success");
                         }
                     });
                 } catch (ParserConfigurationException ex) {
-                    setStatusMessage("Not an XML.");
+                    setStatusMessage("Indent XML: XML Parser Configuration Error.");
                 } catch (SAXException ex) {
-                    setStatusMessage("Not an XML.");
+                    setStatusMessage("Indent XML: Not an XML.");
                 } catch (IOException ex) {
-                    setStatusMessage("IOError while processing XML.");
+                    setStatusMessage("Indent XML: IOError while processing XML.");
                 } catch (TransformerConfigurationException ex) {
-                    setStatusMessage("TransformerConfiguration error.");
+                    setStatusMessage("Indent XML: TransformerConfiguration error.");
                 } catch (TransformerException ex) {
-                    setStatusMessage("XML transformation error.");
+                    setStatusMessage("Indent XML: XML transformation error.");
                 }
             }
         });
@@ -688,6 +690,12 @@ public class RESTView extends JPanel implements View {
         this.add(initSouth(), BorderLayout.SOUTH);
     }
     
+    void showSessionFrame(){
+        if(!sessionFrame.isVisible()){
+            sessionFrame.setVisible(true);
+        }
+    }
+    
     void setUIToLastRequestResponse(){
         if(lastRequest != null && lastResponse != null){
             setUIFromRequest(lastRequest);
@@ -831,6 +839,9 @@ public class RESTView extends JPanel implements View {
                 jb_request.setEnabled(false);
             }
         });
+        
+        // Update status message
+        setStatusMessage("Processing request...");
     }
     
     @Override
@@ -839,6 +850,14 @@ public class RESTView extends JPanel implements View {
         
         // Update the UI:
         setUIFromResponse(response);
+        
+        // Update status message
+        setStatusMessage("Response received.");
+        
+        // Update Session View
+        if(sessionFrame.isVisible()){
+            sessionFrame.getSessionView().add(lastRequest, lastResponse);
+        }
     }
     
     @Override

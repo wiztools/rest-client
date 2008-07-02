@@ -214,6 +214,19 @@ public class RESTMain implements RESTUserInterface {
         // Tools menu
         JMenu jm_tools = new JMenu("Tools");
         
+        JMenuItem jmi_session = new JMenuItem("Open Session View");
+        jmi_session.setMnemonic('s');
+        jmi_session.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        view.showSessionFrame();
+                    }
+                });
+            }
+        });
+        jm_tools.add(jmi_session);
+        
         JMenuItem jmi_pwd_gen = new JMenuItem("Password Encoder/Decoder");
         jmi_pwd_gen.setMnemonic('p');
         jmi_pwd_gen.addActionListener(new ActionListener() {
