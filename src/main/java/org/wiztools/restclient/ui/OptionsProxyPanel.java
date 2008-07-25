@@ -23,7 +23,7 @@ import org.wiztools.restclient.Util;
  *
  * @author Subhash
  */
-public class OptionsProxyPanel extends JPanel implements IOptionsPanel {
+class OptionsProxyPanel extends JPanel implements IOptionsPanel {
     
     private static final Logger LOG = Logger.getLogger(OptionsProxyPanel.class.getName());
     

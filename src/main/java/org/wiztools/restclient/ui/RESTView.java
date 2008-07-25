@@ -109,6 +109,11 @@ public class RESTView extends JPanel implements View {
     private JTextField jtf_auth_username = new JTextField(auth_text_size);
     private JPasswordField jpf_auth_password = new JPasswordField(auth_text_size);
     
+    // SSL
+    private JTextField jtf_ssl_truststore_file = new JTextField(auth_text_size);
+    private JButton jb_ssl_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+    private JPasswordField jpf_ssl_truststore_pwd = new JPasswordField(auth_text_size);
+    
     // Response
     private JScrollPane jsp_res_body = new JScrollPane();
     private JTextArea jta_response = new JTextArea();
@@ -351,6 +356,30 @@ public class RESTView extends JPanel implements View {
         jp_auth_encp.setLayout(new FlowLayout(FlowLayout.LEFT));
         jp_auth_encp.add(jp_auth);
         jtp.addTab("Authentication", jp_auth_encp);
+        
+        // SSL Tab
+        JPanel jp_ssl = new JPanel();
+        jp_ssl.setLayout(new BorderLayout(BORDER_WIDTH, BORDER_WIDTH));
+        // SSL West
+        JPanel jp_ssl_west = new JPanel();
+        jp_ssl_west.setLayout(new GridLayout(2, 1));
+        jp_ssl_west.add(new JLabel("Trust store file:"));
+        jp_ssl_west.add(new JLabel("Trust store password:"));
+        jp_ssl.add(jp_ssl_west, BorderLayout.WEST);
+        // SSL Center
+        JPanel jp_ssl_center = new JPanel();
+        jp_ssl_center.setLayout(new GridLayout(2, 1));
+        jp_ssl_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_truststore_file));
+        jp_ssl_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_truststore_pwd));
+        jp_ssl.add(jp_ssl_center, BorderLayout.CENTER);
+        // SSL East
+        JPanel jp_ssl_east = new JPanel();
+        jp_ssl_east = new JPanel();
+        jp_ssl_east.setLayout(new GridLayout(2, 1));
+        jp_ssl_east.add(UIUtil.getFlowLayoutPanelLeftAligned(jb_ssl_browse));
+        jp_ssl_east.add(new JLabel());
+        jp_ssl.add(jp_ssl_east, BorderLayout.EAST);
+        jtp.addTab("SSL", UIUtil.getFlowLayoutPanelLeftAligned("SSL Trust Store Configuration", jp_ssl));
         
         // Test script panel
         JPanel jp_test = new JPanel();
@@ -809,6 +838,10 @@ public class RESTView extends JPanel implements View {
                 request.setBody(body);
             }
         }
+        
+        // SSL specific
+        request.setSslTrustStore(jtf_ssl_truststore_file.getText());
+        request.setSslTrustStorePassword(jpf_ssl_truststore_pwd.getPassword());
         
         // Test script specific
         String testScript = jta_test_script.getText();

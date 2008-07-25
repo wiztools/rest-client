@@ -1,9 +1,12 @@
 package org.wiztools.restclient;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.security.KeyStore;
 import java.util.Map;
 import junit.framework.TestSuite;
 import org.apache.http.Header;
@@ -24,6 +27,8 @@ import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
@@ -52,6 +57,9 @@ public class NewHTTPRequestThread extends Thread {
         view.doStart(request);
 
         URL url = request.getUrl();
+        String urlHost = url.getHost();
+        int urlPort = url.getPort()==-1?url.getDefaultPort():url.getPort();
+        String urlProtocol = url.getProtocol();
         String urlStr = url.toString();
 
         DefaultHttpClient httpclient = new DefaultHttpClient();
@@ -77,16 +85,16 @@ public class NewHTTPRequestThread extends Thread {
         }
         proxy.release();
 
+        // HTTP Authentication
         boolean authEnabled = request.getAuthMethods().size() > 0 ? true : false;
-
         if (authEnabled) {
             String uid = request.getAuthUsername();
             String pwd = new String(request.getAuthPassword());
-            String host = Util.isStrEmpty(request.getAuthHost()) ? url.getHost() : request.getAuthHost();
+            String host = Util.isStrEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
             String realm = Util.isStrEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
 
             httpclient.getCredentialsProvider().setCredentials(
-                    new AuthScope(host, url.getPort(), realm),
+                    new AuthScope(host, urlPort, realm),
                     new UsernamePasswordCredentials(uid, pwd));
 
             // preemptive mode
@@ -142,6 +150,25 @@ public class NewHTTPRequestThread extends Thread {
                         return;
                     }
                 }
+            }
+            
+            // SSL
+            String trustStorePath = request.getSslTrustStore();
+            char[] trustStorePassword = request.getSslTrustStorePassword();
+            if(urlProtocol.equalsIgnoreCase("https") && !Util.isStrEmpty(trustStorePath)){
+                System.out.println("inside https");
+                KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
+                FileInputStream instream = new FileInputStream(new File(trustStorePath));
+                try{
+                    trustStore.load(instream, trustStorePassword);
+                }
+                finally{
+                    instream.close();
+                }
+                
+                SSLSocketFactory socketFactory = new SSLSocketFactory(trustStore);
+                Scheme sch = new Scheme(urlProtocol, socketFactory, urlPort);
+                httpclient.getConnectionManager().getSchemeRegistry().register(sch);
             }
 
             httpclient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler());

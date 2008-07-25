@@ -1,5 +1,7 @@
 package org.wiztools.restclient.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.net.URL;
@@ -29,17 +31,33 @@ public class UIUtil {
         return new ImageIcon(url);
     }
     
-    public static JPanel getFlowLayoutPanelLeftAligned(JPanel panel){
-        return getFlowLayoutPanelLeftAligned(null, panel);
+    public static JPanel getFlowLayoutPanelLeftAligned(Component component){
+        return getFlowLayoutPanelLeftAligned(null, component);
     }
     
-    public static JPanel getFlowLayoutPanelLeftAligned(String title, JPanel panel){
+    public static JPanel getFlowLayoutPanelLeftAligned(String title, Component component){
         JPanel jp = new JPanel();
         jp.setLayout(new FlowLayout(FlowLayout.LEFT));
         if(title != null){
-            panel.setBorder(BorderFactory.createTitledBorder(title));
+            if(component instanceof JPanel){
+                JPanel p = (JPanel)component;
+                p.setBorder(BorderFactory.createTitledBorder(title));
+            }
         }
-        jp.add(panel);
+        jp.add(component);
+        return jp;
+    }
+    
+    public static JPanel getBorderLayoutPanelLeftAligned(String title, Component component){
+        JPanel jp = new JPanel();
+        jp.setLayout(new BorderLayout());
+        if(title != null){
+            if(component instanceof JPanel){
+                JPanel p = (JPanel)component;
+                p.setBorder(BorderFactory.createTitledBorder(title));
+            }
+        }
+        jp.add(component, BorderLayout.CENTER);
         return jp;
     }
 }

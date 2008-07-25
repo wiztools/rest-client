@@ -25,6 +25,24 @@ public final class RequestBean implements Cloneable{
     private Map<String, String> headers;
     private ReqEntityBean body;
     private String testScript;
+    private String sslTrustStore;
+    private char[] sslTrustStorePassword;
+
+    public String getSslTrustStore() {
+        return sslTrustStore;
+    }
+
+    public void setSslTrustStore(String sslKeyStore) {
+        this.sslTrustStore = sslKeyStore;
+    }
+
+    public char[] getSslTrustStorePassword() {
+        return sslTrustStorePassword;
+    }
+
+    public void setSslTrustStorePassword(char[] sslKeyStorePassword) {
+        this.sslTrustStorePassword = sslKeyStorePassword;
+    }
     
     public String getTestScript() {
         return testScript;
