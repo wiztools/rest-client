@@ -826,7 +826,7 @@ public class RESTView extends JPanel implements View {
                     clearUIResponse();
                 }
             });
-            new HTTPRequestThread(request, view).start();
+            new NewHTTPRequestThread(request, view).start();
         }
     }                                          
 

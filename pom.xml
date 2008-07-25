@@ -7,7 +7,6 @@ To build executable jar, run:
 $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wiztools.restclient</groupId>
@@ -16,7 +15,6 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
     <version>3.0-SNAPSHOT</version>
     <name>restclient</name>
     <url>http://rest-client.googlecode.com/</url>
-    
     <description>
         RESTClient is a Java platform client application to test RESTful webservices.
     </description>
@@ -34,7 +32,6 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
         <developerConnection>scm:svn:https://rest-client.googlecode.com/svn/trunk/</developerConnection>
         <url>http://rest-client.googlecode.com/svn/trunk/</url>
     </scm>
-    
     <developers>
         <developer>
             <id>subwiz</id>
@@ -59,7 +56,6 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
             <timezone>+1</timezone>
         </developer>
     </developers>
-    
     <build>
         <plugins>
             <plugin>
@@ -119,7 +115,6 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
             </plugin>
         </plugins>
     </build>
-    
     <reporting>
         <plugins>
             <plugin>
@@ -175,12 +170,17 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
             </plugin>
         </plugins>
     </reporting>
-    
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.0-alpha4</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>

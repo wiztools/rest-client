@@ -213,6 +213,7 @@ public class RESTMain implements RESTUserInterface {
         
         // Tools menu
         JMenu jm_tools = new JMenu("Tools");
+        jm_tools.setMnemonic('o');
         
         JMenuItem jmi_session = new JMenuItem("Open Session View");
         jmi_session.setMnemonic('s');
