@@ -364,21 +364,42 @@ public class RESTView extends JPanel implements View {
         JPanel jp_ssl_west = new JPanel();
         jp_ssl_west.setLayout(new GridLayout(2, 1));
         jp_ssl_west.add(new JLabel("Trust store file:"));
-        jp_ssl_west.add(new JLabel("Trust store password:"));
+        jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Trust store password:")));
         jp_ssl.add(jp_ssl_west, BorderLayout.WEST);
         // SSL Center
         JPanel jp_ssl_center = new JPanel();
         jp_ssl_center.setLayout(new GridLayout(2, 1));
-        jp_ssl_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_truststore_file));
+        JPanel jp_ssl_center_flow = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_truststore_file);
+        jb_ssl_browse.setToolTipText("Open truststore file.");
+        jb_ssl_browse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
+                        if(f == null){
+                            // do nothing--cancel pressed
+                        }
+                        else if(f.canRead()){
+                            jtf_ssl_truststore_file.setText(f.getAbsolutePath());
+                        }
+                        else{
+                            setStatusMessage("Truststore file cannot be read.");
+                        }
+                    }
+                });
+            }
+        });
+        jp_ssl_center_flow.add(jb_ssl_browse);
+        jp_ssl_center.add(jp_ssl_center_flow);
         jp_ssl_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_truststore_pwd));
         jp_ssl.add(jp_ssl_center, BorderLayout.CENTER);
         // SSL East
-        JPanel jp_ssl_east = new JPanel();
+        /*JPanel jp_ssl_east = new JPanel();
         jp_ssl_east = new JPanel();
         jp_ssl_east.setLayout(new GridLayout(2, 1));
         jp_ssl_east.add(UIUtil.getFlowLayoutPanelLeftAligned(jb_ssl_browse));
         jp_ssl_east.add(new JLabel());
-        jp_ssl.add(jp_ssl_east, BorderLayout.EAST);
+        jp_ssl.add(jp_ssl_east, BorderLayout.EAST);*/
         jtp.addTab("SSL", UIUtil.getFlowLayoutPanelLeftAligned("SSL Trust Store Configuration", jp_ssl));
         
         // Test script panel

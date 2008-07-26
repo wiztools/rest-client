@@ -47,17 +47,4 @@ public class UIUtil {
         jp.add(component);
         return jp;
     }
-    
-    public static JPanel getBorderLayoutPanelLeftAligned(String title, Component component){
-        JPanel jp = new JPanel();
-        jp.setLayout(new BorderLayout());
-        if(title != null){
-            if(component instanceof JPanel){
-                JPanel p = (JPanel)component;
-                p.setBorder(BorderFactory.createTitledBorder(title));
-            }
-        }
-        jp.add(component, BorderLayout.CENTER);
-        return jp;
-    }
 }
