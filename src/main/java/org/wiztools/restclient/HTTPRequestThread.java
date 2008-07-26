@@ -1,222 +1,220 @@
 package org.wiztools.restclient;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.security.KeyStore;
 import java.util.Map;
 import junit.framework.TestSuite;
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthPolicy;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.HeadMethod;
-import org.apache.commons.httpclient.methods.OptionsMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.httpclient.methods.TraceMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpOptions;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpTrace;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.ClientPNames;
+import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.message.AbstractHttpMessage;
+import org.apache.http.message.BasicHeader;
 import org.wiztools.restclient.test.TestException;
 import org.wiztools.restclient.test.TestUtil;
 
 /**
  *
- * @author schandran
+ * @author subwiz
  */
 public class HTTPRequestThread extends Thread {
 
-	private RequestBean request;
-	private View view;
+    private RequestBean request;
+    private View view;
 
-	public HTTPRequestThread(final RequestBean request,
-			final View view){
-		this.request = request;
-		this.view = view;
-	}
+    public HTTPRequestThread(final RequestBean request,
+            final View view) {
+        this.request = request;
+        this.view = view;
+    }
 
-	@Override
-	public void run(){
-		view.doStart(request);
+    @Override
+    public void run() {
+        view.doStart(request);
 
-		URL url = request.getUrl();
-		String urlStr = url.toString();
+        URL url = request.getUrl();
+        String urlHost = url.getHost();
+        int urlPort = url.getPort()==-1?url.getDefaultPort():url.getPort();
+        String urlProtocol = url.getProtocol();
+        String urlStr = url.toString();
 
-		HttpClient client = new HttpClient();
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+
+        // Set request timeout (default 1 minute--60000 milliseconds)
+        GlobalOptions options = GlobalOptions.getInstance();
+        options.acquire();
+        httpclient.getParams().setLongParameter(ClientPNames.CONNECTION_MANAGER_TIMEOUT, options.getRequestTimeoutInMillis());
+        options.release();
+
+
+        // Set proxy
+        ProxyConfig proxy = ProxyConfig.getInstance();
+        proxy.acquire();
+        if (proxy.isEnabled()) {
+            final HttpHost proxyHost = new HttpHost(proxy.getHost(), proxy.getPort(), "http");
+            if (proxy.isAuthEnabled()) {
+                httpclient.getCredentialsProvider().setCredentials(
+                        new AuthScope(proxy.getHost(), proxy.getPort()),
+                        new UsernamePasswordCredentials(proxy.getUsername(), new String(proxy.getPassword())));
+                httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyHost);
+            }
+        }
+        proxy.release();
+
+        // HTTP Authentication
+        boolean authEnabled = request.getAuthMethods().size() > 0 ? true : false;
+        if (authEnabled) {
+            String uid = request.getAuthUsername();
+            String pwd = new String(request.getAuthPassword());
+            String host = Util.isStrEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
+            String realm = Util.isStrEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
+
+            httpclient.getCredentialsProvider().setCredentials(
+                    new AuthScope(host, urlPort, realm),
+                    new UsernamePasswordCredentials(uid, pwd));
+
+            // preemptive mode
+            if (request.isAuthPreemptive()) {
+                httpclient.getParams().setBooleanParameter(ClientPNames.PREEMPTIVE_AUTHENTICATION, true);
+            }
+        }
+
+        AbstractHttpMessage method = null;
+
+        String httpMethod = request.getMethod();
+        try {
+            if ("GET".equals(httpMethod)) {
+                method = new HttpGet(urlStr);
+            } else if ("HEAD".equals(httpMethod)) {
+                method = new HttpHead(urlStr);
+            } else if ("POST".equals(httpMethod)) {
+                method = new HttpPost(urlStr);
+            } else if ("PUT".equals(httpMethod)) {
+                method = new HttpPut(urlStr);
+            } else if ("DELETE".equals(httpMethod)) {
+                method = new HttpDelete(urlStr);
+            } else if ("OPTIONS".equals(httpMethod)) {
+                method = new HttpOptions(urlStr);
+            } else if ("TRACE".equals(httpMethod)) {
+                method = new HttpTrace(urlStr);
+            }
+
+            // Get request headers
+            Map<String, String> header_data = request.getHeaders();
+            for (String key : header_data.keySet()) {
+                String value = header_data.get(key);
+                Header header = new BasicHeader(key, value);
+                method.addHeader(header);
+            }
+
+            // POST/PUT method specific logic
+            if (method instanceof HttpEntityEnclosingRequest) {
+
+                HttpEntityEnclosingRequest eeMethod = (HttpEntityEnclosingRequest) method;
+
+                // Create and set RequestEntity
+                ReqEntityBean bean = request.getBody();
+                if (bean != null) {
+                    try {
+
+                        HttpEntity entity = new StringEntity(
+                                bean.getBody(), bean.getCharSet());
+                        eeMethod.setEntity(entity);
+                    } catch (UnsupportedEncodingException ex) {
+                        view.doError(Util.getStackTrace(ex));
+                        view.doEnd();
+                        return;
+                    }
+                }
+            }
+            
+            // SSL
+            String trustStorePath = request.getSslTrustStore();
+            char[] trustStorePassword = request.getSslTrustStorePassword();
+            if(urlProtocol.equalsIgnoreCase("https") && !Util.isStrEmpty(trustStorePath)){
+                System.out.println("inside https");
+                KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
+                FileInputStream instream = new FileInputStream(new File(trustStorePath));
+                try{
+                    trustStore.load(instream, trustStorePassword);
+                }
+                finally{
+                    instream.close();
+                }
                 
-                // Set request timeout (default 1 minute--60000 milliseconds)
-                GlobalOptions options = GlobalOptions.getInstance();
-                options.acquire();
-                client.getHttpConnectionManager().getParams().setConnectionTimeout(
-                        options.getRequestTimeoutInMillis());
-                options.release();
+                SSLSocketFactory socketFactory = new SSLSocketFactory(trustStore);
+                Scheme sch = new Scheme(urlProtocol, socketFactory, urlPort);
+                httpclient.getConnectionManager().getSchemeRegistry().register(sch);
+            }
 
-		// Set proxy
-		ProxyConfig proxy = ProxyConfig.getInstance();
-		proxy.acquire();
-		if(proxy.isEnabled()){
-			HostConfiguration hc = new HostConfiguration();
-			hc.setProxy(proxy.getHost(), proxy.getPort());
-			client.setHostConfiguration(hc);
-			if(proxy.isAuthEnabled()){
-				Credentials credentials = new UsernamePasswordCredentials(
-						proxy.getUsername(), new String(proxy.getPassword()));
-				client.getState().setProxyCredentials(null , credentials);
-			}
-		}
-		proxy.release();
+            httpclient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler());
 
-		boolean authEnabled = request.getAuthMethods().size()>0?true:false;
+            // Now Execute:
+            HttpResponse http_res = httpclient.execute((HttpUriRequest) method);
 
-		if(authEnabled){
-			// Type of authentication
-			List authPrefs = new ArrayList(2);
-			List<String> authMethods = request.getAuthMethods();
-			for(String authMethod: authMethods){
-				if("BASIC".equals(authMethod)){
-					authPrefs.add(AuthPolicy.BASIC);
-				}
-				else if("DIGEST".equals(authMethod)){
-					authPrefs.add(AuthPolicy.DIGEST);
-				}
-			}
-			client.getParams().setParameter(AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
+            ResponseBean response = new ResponseBean();
 
-			// Pass the credentials
-			String uid = request.getAuthUsername();
-			String pwd = new String(request.getAuthPassword());
-			Credentials creds = new UsernamePasswordCredentials(uid, pwd);
+            response.setStatusCode(http_res.getStatusLine().getStatusCode());
+            response.setStatusLine(http_res.getStatusLine().toString());
 
-			String host = Util.isStrEmpty(request.getAuthHost()) ?
-					AuthScope.ANY_HOST: request.getAuthHost();
-			String realm = Util.isStrEmpty(request.getAuthRealm()) ?
-					AuthScope.ANY_REALM: request.getAuthRealm();
-			int port = url.getPort();
-			client.getState().setCredentials(new AuthScope(host, port, realm), creds);
+            final Header[] responseHeaders = http_res.getAllHeaders();
+            for (Header header : responseHeaders) {
+                response.addHeader(header.getName(), header.getValue());
+            }
 
-			// preemptive mode
-			if(request.isAuthPreemptive()){
-				client.getParams().setAuthenticationPreemptive(true);
-			}
-		}
+            InputStream is = http_res.getEntity().getContent();
+            String responseBody = Util.inputStream2String(is);
+            if (responseBody != null) {
+                response.setResponseBody(responseBody);
+            }
 
-		HttpMethod method = null;
+            // Now execute tests:
+            try {
+                TestSuite suite = TestUtil.getTestSuite(request, response);
+                if (suite != null) { // suite will be null if there is no associated script
+                    String testResult = TestUtil.execute(suite);
+                    response.setTestResult(testResult);
+                }
+            } catch (TestException ex) {
+                view.doError(Util.getStackTrace(ex));
+            }
 
-		String httpMethod = request.getMethod();
-		try{
-			if("GET".equals(httpMethod)){
-				method = new GetMethod(urlStr);
-			}
-			else if("HEAD".equals(httpMethod)){
-				method = new HeadMethod(urlStr);
-			}
-			else if("POST".equals(httpMethod)){
-				method = new PostMethod(urlStr);
-			}
-			else if("PUT".equals(httpMethod)){
-				method = new PutMethod(urlStr);
-			}
-			else if("DELETE".equals(httpMethod)){
-				method = new DeleteMethod(urlStr);
-			}
-			else if("OPTIONS".equals(httpMethod)){
-				method = new OptionsMethod(urlStr);
-			}
-			else if("TRACE".equals(httpMethod)){
-				method = new TraceMethod(urlStr);
-			}
-
-			// Get request headers
-			Map<String, String> header_data = request.getHeaders();
-			for(String key: header_data.keySet()){
-				String value = header_data.get(key);
-				Header header = new Header(key, value);
-				method.addRequestHeader(header);
-			}
-
-			// POST/PUT method specific logic
-			if(method instanceof EntityEnclosingMethod){
-
-				EntityEnclosingMethod eeMethod = (EntityEnclosingMethod)method;
-
-				// Create and set RequestEntity
-				ReqEntityBean bean = request.getBody();
-				if(bean != null){
-					try{
-
-						RequestEntity entity = new StringRequestEntity(
-								bean.getBody(), bean.getContentType(), bean.getCharSet());
-						eeMethod.setRequestEntity(entity);
-					}
-					catch(UnsupportedEncodingException ex){
-						view.doError(Util.getStackTrace(ex));
-						view.doEnd();
-						return;
-					}
-				}
-			}
-
-			client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
-					new DefaultHttpMethodRetryHandler());
-
-
-			int statusCode = client.executeMethod(method);
-
-			ResponseBean response = new ResponseBean();
-
-			response.setStatusCode(statusCode);
-			response.setStatusLine(method.getStatusLine().toString());
-
-			final Header[] responseHeaders = method.getResponseHeaders();
-			for(Header header: responseHeaders){
-				response.addHeader(header.getName(), header.getValue());
-			}
-
-			InputStream is = method.getResponseBodyAsStream();
-			String responseBody = Util.inputStream2String(is);
-			if(responseBody != null){
-				response.setResponseBody(responseBody);
-			}
-                        
-                        // Now execute tests:
-                        try{
-                            TestSuite suite = TestUtil.getTestSuite(request, response);
-                            if(suite != null){ // suite will be null if there is no associated script
-                                String testResult = TestUtil.execute(suite);
-                                response.setTestResult(testResult);
-                            }
-                        }
-                        catch(TestException ex){
-                            view.doError(Util.getStackTrace(ex));
-                        }
-
-			view.doResponse(response);
-		}
-		catch(HttpException ex){
-			view.doError(Util.getStackTrace(ex));
-		}
-		catch(IOException ex){
-			view.doError(Util.getStackTrace(ex));
-		}
-		catch (Exception ex) {
-			view.doError(Util.getStackTrace(ex));
-		} finally {
-			if(method != null) {
-				method.releaseConnection();
-			}
-			view.doEnd();
-		}
-	}
+            view.doResponse(response);
+        } catch (HttpException ex) {
+            view.doError(Util.getStackTrace(ex));
+        } catch (IOException ex) {
+            view.doError(Util.getStackTrace(ex));
+        } catch (Exception ex) {
+            view.doError(Util.getStackTrace(ex));
+        } finally {
+            if (method != null) {
+                httpclient.getConnectionManager().shutdown();
+            }
+            view.doEnd();
+        }
+    }
 }
