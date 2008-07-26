@@ -41,12 +41,12 @@ import org.wiztools.restclient.test.TestUtil;
  *
  * @author subwiz
  */
-public class NewHTTPRequestThread extends Thread {
+public class HTTPRequestThread extends Thread {
 
     private RequestBean request;
     private View view;
 
-    public NewHTTPRequestThread(final RequestBean request,
+    public HTTPRequestThread(final RequestBean request,
             final View view) {
         this.request = request;
         this.view = view;
