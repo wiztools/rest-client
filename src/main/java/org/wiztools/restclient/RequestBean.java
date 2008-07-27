@@ -27,6 +27,15 @@ public final class RequestBean implements Cloneable{
     private String testScript;
     private String sslTrustStore;
     private char[] sslTrustStorePassword;
+    private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
+
+    public HTTPVersion getHttpVersion() {
+        return httpVersion;
+    }
+
+    public void setHttpVersion(HTTPVersion httpVersion) {
+        this.httpVersion = httpVersion;
+    }
 
     public String getSslTrustStore() {
         return sslTrustStore;

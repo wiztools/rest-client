@@ -867,6 +867,9 @@ public class RESTView extends JPanel implements View {
         request.setSslTrustStore(jtf_ssl_truststore_file.getText());
         request.setSslTrustStorePassword(jpf_ssl_truststore_pwd.getPassword());
         
+        // HTTP version
+        request.setHttpVersion((HTTPVersion)jcb_http_version.getSelectedItem());
+        
         // Test script specific
         String testScript = jta_test_script.getText();
         testScript = testScript == null || testScript.trim().equals("")?
@@ -1236,6 +1239,9 @@ public class RESTView extends JPanel implements View {
         jtf_ssl_truststore_file.setText("");
         jpf_ssl_truststore_pwd.setText("");
         
+        // HTTP version
+        jcb_http_version.setSelectedItem(HTTPVersion.getDefault());
+        
         // Script
         jta_test_script.setText("");
     }
@@ -1345,6 +1351,14 @@ public class RESTView extends JPanel implements View {
                 }
                 if(sslTruststorePassword != null){
                     jpf_ssl_truststore_pwd.setText(new String(sslTruststorePassword));
+                }
+                
+                // HTTP Version
+                if(request.getHttpVersion() == HTTPVersion.HTTP_1_1){
+                    jcb_http_version.setSelectedItem(HTTPVersion.HTTP_1_1);
+                }
+                else if(request.getHttpVersion() == HTTPVersion.HTTP_1_0){
+                    jcb_http_version.setSelectedItem(HTTPVersion.HTTP_1_0);
                 }
                 
                 // Test script

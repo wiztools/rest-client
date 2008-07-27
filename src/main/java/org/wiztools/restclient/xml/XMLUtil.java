@@ -79,6 +79,13 @@ public final class XMLUtil {
             root.setAttributeNS(null, "version", RCConstants.VERSION);
 
             request = xmldoc.createElementNS(null, "request");
+            
+            // HTTP version
+            e = xmldoc.createElementNS(null, "http-version");
+            n = xmldoc.createTextNode(bean.getHttpVersion().versionNumber());
+            e.appendChild(n);
+            request.appendChild(e);
+            
             // creating the URL child element
             e = xmldoc.createElementNS(null, "URL");
             n = xmldoc.createTextNode(bean.getUrl().toString());
@@ -283,7 +290,12 @@ public final class XMLUtil {
             if(node.getNodeType() != Node.ELEMENT_NODE){
                 continue;
             }
-            if("URL".equals(nodeName)){
+            if("http-version".equals(nodeName)){
+                String t = node.getTextContent();
+                HTTPVersion httpVersion = "1.1".equals(t)? HTTPVersion.HTTP_1_1: HTTPVersion.HTTP_1_0;
+                requestBean.setHttpVersion(httpVersion);
+            }
+            else if("URL".equals(nodeName)){
                 URL url = new URL(node.getTextContent());
                 requestBean.setUrl(url);
             }
