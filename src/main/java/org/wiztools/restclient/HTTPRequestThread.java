@@ -34,6 +34,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.message.AbstractHttpMessage;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.params.BasicHttpParams;
 import org.wiztools.restclient.test.TestException;
 import org.wiztools.restclient.test.TestUtil;
 
@@ -80,8 +81,8 @@ public class HTTPRequestThread extends Thread {
                 httpclient.getCredentialsProvider().setCredentials(
                         new AuthScope(proxy.getHost(), proxy.getPort()),
                         new UsernamePasswordCredentials(proxy.getUsername(), new String(proxy.getPassword())));
-                httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyHost);
             }
+            httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyHost);
         }
         proxy.release();
 
@@ -122,6 +123,7 @@ public class HTTPRequestThread extends Thread {
             } else if ("TRACE".equals(httpMethod)) {
                 method = new HttpTrace(urlStr);
             }
+            method.setParams(new BasicHttpParams().setParameter(urlStr, url));
 
             // Get request headers
             Map<String, String> header_data = request.getHeaders();
@@ -156,7 +158,6 @@ public class HTTPRequestThread extends Thread {
             String trustStorePath = request.getSslTrustStore();
             char[] trustStorePassword = request.getSslTrustStorePassword();
             if(urlProtocol.equalsIgnoreCase("https") && !Util.isStrEmpty(trustStorePath)){
-                System.out.println("inside https");
                 KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
                 FileInputStream instream = new FileInputStream(new File(trustStorePath));
                 try{

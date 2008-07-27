@@ -114,6 +114,9 @@ public class RESTView extends JPanel implements View {
     private JButton jb_ssl_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JPasswordField jpf_ssl_truststore_pwd = new JPasswordField(auth_text_size);
     
+    // HTTP Version Combo box
+    JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
+    
     // Response
     private JScrollPane jsp_res_body = new JScrollPane();
     private JTextArea jta_response = new JTextArea();
@@ -355,7 +358,7 @@ public class RESTView extends JPanel implements View {
         JPanel jp_auth_encp = new JPanel();
         jp_auth_encp.setLayout(new FlowLayout(FlowLayout.LEFT));
         jp_auth_encp.add(jp_auth);
-        jtp.addTab("Authentication", jp_auth_encp);
+        jtp.addTab("Auth", jp_auth_encp);
         
         // SSL Tab
         JPanel jp_ssl = new JPanel();
@@ -393,14 +396,14 @@ public class RESTView extends JPanel implements View {
         jp_ssl_center.add(jp_ssl_center_flow);
         jp_ssl_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_truststore_pwd));
         jp_ssl.add(jp_ssl_center, BorderLayout.CENTER);
-        // SSL East
-        /*JPanel jp_ssl_east = new JPanel();
-        jp_ssl_east = new JPanel();
-        jp_ssl_east.setLayout(new GridLayout(2, 1));
-        jp_ssl_east.add(UIUtil.getFlowLayoutPanelLeftAligned(jb_ssl_browse));
-        jp_ssl_east.add(new JLabel());
-        jp_ssl.add(jp_ssl_east, BorderLayout.EAST);*/
         jtp.addTab("SSL", UIUtil.getFlowLayoutPanelLeftAligned("SSL Trust Store Configuration", jp_ssl));
+        
+        // Etc panel
+        JPanel jp_etc = new JPanel();
+        jp_etc.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jp_etc.add(new JLabel("HTTP Version: "));
+        jp_etc.add(jcb_http_version);
+        jtp.add("Etc.", jp_etc);
         
         // Test script panel
         JPanel jp_test = new JPanel();
@@ -1229,6 +1232,10 @@ public class RESTView extends JPanel implements View {
         jpf_auth_password.setText("");
         setUIReqAuthEnabled(false);
         
+        // SSL
+        jtf_ssl_truststore_file.setText("");
+        jpf_ssl_truststore_pwd.setText("");
+        
         // Script
         jta_test_script.setText("");
     }
@@ -1328,6 +1335,16 @@ public class RESTView extends JPanel implements View {
                 jtf_auth_username.setText(Util.getNullStrIfNull(request.getAuthUsername()));
                 if(request.getAuthPassword() != null){
                     jpf_auth_password.setText(new String(request.getAuthPassword()));
+                }
+                
+                // SSL
+                String sslTruststore = request.getSslTrustStore();
+                char[] sslTruststorePassword = request.getSslTrustStorePassword();
+                if(sslTruststore != null){
+                    jtf_ssl_truststore_file.setText(sslTruststore);
+                }
+                if(sslTruststorePassword != null){
+                    jpf_ssl_truststore_pwd.setText(new String(sslTruststorePassword));
                 }
                 
                 // Test script

@@ -42,7 +42,7 @@ public final class XMLUtil {
     
     private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
     
-    private static final String[] VERSIONS = new String[]{"2.0", RCConstants.VERSION};
+    private static final String[] VERSIONS = new String[]{"2.0", "2.1", RCConstants.VERSION};
     
     public static final String XML_MIME = "application/xml";
     public static final String XML_DEFAULT_ENCODING = "UTF-8";
@@ -153,6 +153,24 @@ public final class XMLUtil {
                     e.appendChild(n);
                     request.appendChild(e);
                 }
+            }
+            
+            // Creating SSL elements
+            String sslTruststore = bean.getSslTrustStore();
+            if(!Util.isStrEmpty(sslTruststore)){
+                // 1. Create truststore entry
+                e = xmldoc.createElementNS(null, "ssl-truststore");
+                n = xmldoc.createTextNode(sslTruststore);
+                e.appendChild(n);
+                request.appendChild(e);
+                
+                // 2. Create password entry
+                String sslPassword = new String(bean.getSslTrustStorePassword());
+                String encPassword = Base64.encodeObject(sslPassword);
+                e = xmldoc.createElementNS(null, "ssl-truststore-password");
+                n = xmldoc.createTextNode(encPassword);
+                e.appendChild(n);
+                request.appendChild(e);
             }
 
             // creating the headers child element
@@ -298,6 +316,14 @@ public final class XMLUtil {
             else if("auth-password".equals(nodeName)){
                 String password = (String) Base64.decodeToObject(node.getTextContent());
                 requestBean.setAuthPassword(password.toCharArray());
+            }
+            else if("ssl-truststore".equals(nodeName)){
+                String sslTrustStore = node.getTextContent();
+                requestBean.setSslTrustStore(sslTrustStore);
+            }
+            else if("ssl-truststore-password".equals(nodeName)){
+                String sslTrustStorePassword = (String) Base64.decodeToObject(node.getTextContent());
+                requestBean.setSslTrustStorePassword(sslTrustStorePassword.toCharArray());
             }
             else if("headers".equals(nodeName)){
                 Map<String, String> m = getHeadersFromHeaderNode(node);
