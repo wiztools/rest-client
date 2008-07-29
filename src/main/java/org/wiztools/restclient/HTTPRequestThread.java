@@ -15,6 +15,7 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolVersion;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpDelete;
@@ -35,6 +36,7 @@ import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.message.AbstractHttpMessage;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreProtocolPNames;
 import org.wiztools.restclient.test.TestException;
 import org.wiztools.restclient.test.TestUtil;
 
@@ -64,11 +66,19 @@ public class HTTPRequestThread extends Thread {
         String urlStr = url.toString();
 
         DefaultHttpClient httpclient = new DefaultHttpClient();
+        
+        // Set HTTP version
+        HTTPVersion httpVersion = request.getHttpVersion();
+        ProtocolVersion protocolVersion = 
+                httpVersion==HTTPVersion.HTTP_1_1? new ProtocolVersion("HTTP", 1, 1):
+                    new ProtocolVersion("HTTP", 1, 0);
+        httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+                protocolVersion);
 
         // Set request timeout (default 1 minute--60000 milliseconds)
         GlobalOptions options = GlobalOptions.getInstance();
         options.acquire();
-        httpclient.getParams().setLongParameter(ClientPNames.CONNECTION_MANAGER_TIMEOUT, options.getRequestTimeoutInMillis());
+        //httpclient.getParams().setLongParameter(ClientPNames.CO, options.getRequestTimeoutInMillis());
         options.release();
 
 
@@ -100,7 +110,7 @@ public class HTTPRequestThread extends Thread {
 
             // preemptive mode
             if (request.isAuthPreemptive()) {
-                httpclient.getParams().setBooleanParameter(ClientPNames.PREEMPTIVE_AUTHENTICATION, true);
+                //httpclient.getParams().setBooleanParameter(ClientPNames., true);
             }
         }
 
@@ -205,9 +215,9 @@ public class HTTPRequestThread extends Thread {
             }
 
             view.doResponse(response);
-        } catch (HttpException ex) {
+        } /*catch (HttpException ex) {
             view.doError(Util.getStackTrace(ex));
-        } catch (IOException ex) {
+        }*/ catch (IOException ex) {
             view.doError(Util.getStackTrace(ex));
         } catch (Exception ex) {
             view.doError(Util.getStackTrace(ex));
