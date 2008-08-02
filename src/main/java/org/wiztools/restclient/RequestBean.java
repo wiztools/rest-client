@@ -154,6 +154,9 @@ public final class RequestBean implements Cloneable{
         cloned.setAuthPreemptive(authPreemptive);
         cloned.setAuthRealm(authRealm);
         cloned.setAuthUsername(authUsername);
+        cloned.setSslTrustStore(sslTrustStore);
+        cloned.setSslTrustStorePassword(sslTrustStorePassword);
+        cloned.setHttpVersion(httpVersion);
         if(body != null){
             cloned.setBody((ReqEntityBean)body.clone());
         }
@@ -182,6 +185,9 @@ public final class RequestBean implements Cloneable{
             isEqual = isEqual && (this.authPreemptive == bean.authPreemptive);
             isEqual = isEqual && (this.authRealm == null? bean.authRealm == null: this.authRealm.equals(bean.authRealm));
             isEqual = isEqual && (this.authUsername == null? bean.authUsername == null: this.authUsername.equals(bean.authUsername));
+            isEqual = isEqual && (this.sslTrustStore == null? bean.sslTrustStore == null: this.sslTrustStore.equals(bean.sslTrustStore));
+            isEqual = isEqual && (this.sslTrustStorePassword == null? bean.sslTrustStorePassword == null: Arrays.equals(this.sslTrustStorePassword, bean.sslTrustStorePassword));
+            isEqual = isEqual && (this.httpVersion == null? bean.httpVersion == null: this.httpVersion == bean.httpVersion);
             isEqual = isEqual && (this.testScript == null? bean.testScript == null: this.testScript.equals(bean.testScript));
             isEqual = isEqual && (this.url == null? bean.url == null: this.url.equals(bean.url));
             return isEqual;
@@ -202,6 +208,9 @@ public final class RequestBean implements Cloneable{
         hash = 59 * hash + (this.authRealm != null ? this.authRealm.hashCode() : 0);
         hash = 59 * hash + (this.authUsername != null ? this.authUsername.hashCode() : 0);
         hash = 59 * hash + (this.authPassword != null ? this.authPassword.hashCode() : 0);
+        hash = 59 * hash + (this.sslTrustStore != null ? this.sslTrustStore.hashCode() : 0);
+        hash = 59 * hash + (this.sslTrustStorePassword != null ? this.sslTrustStorePassword.hashCode() : 0);
+        hash = 59 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
         hash = 59 * hash + (this.body != null ? this.body.hashCode() : 0);
         hash = 59 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
         return hash;

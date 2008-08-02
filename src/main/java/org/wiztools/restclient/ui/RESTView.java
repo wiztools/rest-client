@@ -630,7 +630,7 @@ public class RESTView extends JPanel implements View {
         return jtp;
     }
     
-    private JPanel initNorth(){
+    private JPanel initUIRequest(){
         JPanel jp = new JPanel();
         jp.setBorder(BorderFactory.createEmptyBorder(
                 BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH));
@@ -669,7 +669,7 @@ public class RESTView extends JPanel implements View {
         return jp;
     }
     
-    private JPanel initCenter(){
+    private JPanel initUIResponse(){
         JPanel jp = new JPanel();
         // Set top as 0:
         jp.setBorder(BorderFactory.createEmptyBorder(
@@ -694,7 +694,7 @@ public class RESTView extends JPanel implements View {
         return jp;
     }
     
-    private JPanel initSouth(){
+    private JPanel initUIStatusBar(){
         JPanel jp = new JPanel();
         jp.setBorder(BorderFactory.createBevelBorder(1));
         jp.setLayout(new GridLayout(1, 2));
@@ -741,12 +741,13 @@ public class RESTView extends JPanel implements View {
         
         // Adding the Center portion
         JSplitPane jsp_main = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        jsp_main.add(initNorth());
-        jsp_main.add(initCenter());
+        jsp_main.setDividerSize(5);
+        jsp_main.add(initUIRequest());
+        jsp_main.add(initUIResponse());
         this.add(jsp_main, BorderLayout.CENTER);
         
         // Now the South portion
-        this.add(initSouth(), BorderLayout.SOUTH);
+        this.add(initUIStatusBar(), BorderLayout.SOUTH);
     }
     
     void showSessionFrame(){
