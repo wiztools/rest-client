@@ -8,6 +8,7 @@ package org.wiztools.restclient.test;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import org.wiztools.restclient.HTTPVersion;
 import org.wiztools.restclient.RequestBean;
 
 /**
@@ -26,7 +27,33 @@ public class RoRequestBean {
     private final String authRealm;
     private final String authUsername;
     private final char[] authPassword;
+    private String sslTrustStore;
+    private char[] sslTrustStorePassword;
+    private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
 
+    public HTTPVersion getHttpVersion() {
+        return httpVersion;
+    }
+
+    public void setHttpVersion(HTTPVersion httpVersion) {
+        this.httpVersion = httpVersion;
+    }
+
+    public String getSslTrustStore() {
+        return sslTrustStore;
+    }
+
+    public void setSslTrustStore(String sslTrustStore) {
+        this.sslTrustStore = sslTrustStore;
+    }
+
+    public char[] getSslTrustStorePassword() {
+        return sslTrustStorePassword;
+    }
+
+    public void setSslTrustStorePassword(char[] sslTrustStorePassword) {
+        this.sslTrustStorePassword = sslTrustStorePassword;
+    }
     public String getAuthHost() {
         return authHost;
     }
@@ -83,5 +110,8 @@ public class RoRequestBean {
         authRealm = request.getAuthRealm();
         authUsername = request.getAuthUsername();
         authPassword = request.getAuthPassword();
+        sslTrustStore = request.getSslTrustStore();
+        sslTrustStorePassword = request.getSslTrustStorePassword();
+        httpVersion = request.getHttpVersion();
     }
 }
