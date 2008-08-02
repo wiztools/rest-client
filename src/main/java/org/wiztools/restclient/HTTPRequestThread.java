@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.security.KeyStore;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import junit.framework.TestSuite;
 import org.apache.http.Header;
@@ -26,6 +28,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.AuthPolicy;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.Scheme;
@@ -103,6 +106,19 @@ public class HTTPRequestThread extends Thread {
             String pwd = new String(request.getAuthPassword());
             String host = Util.isStrEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
             String realm = Util.isStrEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
+            
+            // Type of authentication
+            List<String> authPrefs = new ArrayList<String>(2);
+            List<String> authMethods = request.getAuthMethods();
+            for(String authMethod: authMethods){
+                if("BASIC".equals(authMethod)){
+                    authPrefs.add(AuthPolicy.BASIC);
+                }
+                else if("DIGEST".equals(authMethod)){
+                    authPrefs.add(AuthPolicy.DIGEST);
+                }
+            }
+            httpclient.getParams().setParameter("http.auth.scheme-pref", authPrefs);
 
             httpclient.getCredentialsProvider().setCredentials(
                     new AuthScope(host, urlPort, realm),
@@ -110,7 +126,7 @@ public class HTTPRequestThread extends Thread {
 
             // preemptive mode
             if (request.isAuthPreemptive()) {
-                //httpclient.getParams().setBooleanParameter(ClientPNames., true);
+                // httpclient.getParams().
             }
         }
 
