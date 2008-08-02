@@ -44,6 +44,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
@@ -738,8 +739,13 @@ public class RESTView extends JPanel implements View {
         
         this.setLayout(new BorderLayout());
         
-        this.add(initNorth(), BorderLayout.NORTH);
-        this.add(initCenter(), BorderLayout.CENTER);
+        // Adding the Center portion
+        JSplitPane jsp_main = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        jsp_main.add(initNorth());
+        jsp_main.add(initCenter());
+        this.add(jsp_main, BorderLayout.CENTER);
+        
+        // Now the South portion
         this.add(initSouth(), BorderLayout.SOUTH);
     }
     
