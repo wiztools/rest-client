@@ -40,6 +40,7 @@ import org.apache.http.message.AbstractHttpMessage;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpConnectionParams;
 import org.wiztools.restclient.test.TestException;
 import org.wiztools.restclient.test.TestUtil;
 
@@ -81,7 +82,7 @@ public class HTTPRequestThread extends Thread {
         // Set request timeout (default 1 minute--60000 milliseconds)
         GlobalOptions options = GlobalOptions.getInstance();
         options.acquire();
-        //httpclient.getParams().setLongParameter(ClientPNames.CO, options.getRequestTimeoutInMillis());
+        HttpConnectionParams.setConnectionTimeout(httpclient.getParams(), options.getRequestTimeoutInMillis());
         options.release();
 
 
