@@ -162,7 +162,7 @@ public final class TwoColumnTablePanel extends JPanel {
         JLabel jl_key = new JLabel("Key: ");
         JLabel jl_value = new JLabel("Value: ");
         final int TEXT_FIELD_SIZE = 12;
-        final JTextField jtf_key = new JTextField(TEXT_FIELD_SIZE - 2);
+        final JTextField jtf_key = new JTextField(TEXT_FIELD_SIZE);
         final JTextField jtf_value = new JTextField(TEXT_FIELD_SIZE);
         jl_key.setDisplayedMnemonic('k');
         jl_key.setLabelFor(jtf_key);

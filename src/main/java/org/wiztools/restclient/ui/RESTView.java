@@ -367,7 +367,7 @@ public class RESTView extends JPanel implements View {
         // SSL West
         JPanel jp_ssl_west = new JPanel();
         jp_ssl_west.setLayout(new GridLayout(2, 1));
-        jp_ssl_west.add(new JLabel("Trust store file:"));
+        jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Trust store file:")));
         jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Trust store password:")));
         jp_ssl.add(jp_ssl_west, BorderLayout.WEST);
         // SSL Center
