@@ -89,7 +89,7 @@ public class RESTView extends JPanel implements View {
     private Dimension d_jsp_req_body;
     
     private JScrollPane jsp_test_script;
-    private JTextArea jta_test_script = new JTextArea();
+    private ScriptEditor jta_test_script = new TextAreaScriptEditor();
     private JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
     private JButton jb_req_test_open = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JButton jb_req_test_run = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "wand.png"));
@@ -120,7 +120,7 @@ public class RESTView extends JPanel implements View {
     
     // Response
     private JScrollPane jsp_res_body = new JScrollPane();
-    private JTextArea jta_response = new JTextArea();
+    private ScriptEditor jta_response = new TextAreaScriptEditor();
     
     private JTable jt_res_headers = new JTable();
     
@@ -168,6 +168,14 @@ public class RESTView extends JPanel implements View {
     }
 
     protected RESTView(final RESTUserInterface ui){
+        this(ui, null, null);
+    }
+
+    public RESTView(final RESTUserInterface ui, ScriptEditor scriptEditor, ScriptEditor responseViewer) {
+        if (scriptEditor != null)
+            this.jta_test_script = scriptEditor;
+        if (responseViewer != null)
+            this.jta_response = responseViewer;
         this.rest_ui = ui;
         init();
         view = this;
@@ -508,7 +516,7 @@ public class RESTView extends JPanel implements View {
         jp_test_north.add(jb_req_test_quick);
         jp_test.add(jp_test_north, BorderLayout.NORTH);
         
-        jsp_test_script = new JScrollPane(jta_test_script);
+        jsp_test_script = new JScrollPane(jta_test_script.getEditorView());
         jp_test.add(jsp_test_script, BorderLayout.CENTER);
         jtp.addTab("Test Script", jp_test);
         
@@ -583,35 +591,36 @@ public class RESTView extends JPanel implements View {
         popupMenu.add(jmi_indentXml);
         
         // Attach popup menu
-        jta_response.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                showPopup(e);
-            }
-            
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                showPopup(e);
-            }
-            private void showPopup(final MouseEvent e) {
-                if("".equals(jta_response.getText().trim())){
-                    // No response body
-                    return;
+        if (jta_response.getEditorView() instanceof JTextArea) {
+            jta_response.getEditorView().addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    showPopup(e);
                 }
-                if (e.isPopupTrigger()) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                        }
-                    });
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    showPopup(e);
                 }
-            }
-        });
-        
+                private void showPopup(final MouseEvent e) {
+                    if("".equals(jta_response.getText().trim())){
+                        // No response body
+                        return;
+                    }
+                    if (e.isPopupTrigger()) {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                            }
+                        });
+                    }
+                }
+            });
+        }
         JPanel jp_body = new JPanel();
         jp_body.setLayout(new GridLayout(1,1));
         jta_response.setEditable(false);
-        jsp_res_body = new JScrollPane(jta_response);
+        jsp_res_body = new JScrollPane(jta_response.getEditorView());
         jp_body.add(jsp_res_body);
         JPanel jp_body_encp = new JPanel();
         jp_body_encp.setBorder(BorderFactory.createEmptyBorder());

@@ -1,25 +1,27 @@
 package org.wiztools.restclient.idea;
 
-import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.openapi.wm.ToolWindowAnchor;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.WindowManager;
-import com.intellij.openapi.util.IconLoader;
-import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.fileEditor.FileEditor;
+import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.IconLoader;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowAnchor;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.openapi.wm.WindowManager;
 import com.intellij.peer.PeerFactory;
+import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.GridConstraints;
-
-import javax.swing.*;
-
+import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.jetbrains.annotations.NotNull;
 import org.wiztools.restclient.ui.RESTMain;
+import org.wiztools.restclient.ui.ScriptEditor;
 
+import javax.swing.*;
 import java.awt.*;
 
 
@@ -91,7 +93,9 @@ public class RestClientProjectComponent implements ProjectComponent {
      */
     public void projectOpened() {
         JFrame jFrame = WindowManager.getInstance().getFrame(project);
-        restMain = new RESTMain(jFrame);
+        ScriptEditor scriptEditor=new GroovyScriptEditor(project);
+        ScriptEditor responseViewer=new ResponseViewerScriptEditor(project);
+        restMain = new RESTMain(jFrame,scriptEditor,responseViewer);
         registerRestClientToolWindow(project);
     }
 
@@ -112,7 +116,7 @@ public class RestClientProjectComponent implements ProjectComponent {
         ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
         ToolWindow toolWindow = toolWindowManager.registerToolWindow(TOOL_WINDOW_ID, false, ToolWindowAnchor.BOTTOM);
         ContentFactory contentFactory = PeerFactory.getInstance().getContentFactory();
-        Content content = contentFactory.createContent(constructPanel(restMain.getView()), "", false);
+        Content content = contentFactory.createContent(constructPanel(project, restMain.getView()), "", false);
         toolWindow.getContentManager().addContent(content);
         toolWindow.setIcon(icon);
     }
@@ -120,10 +124,11 @@ public class RestClientProjectComponent implements ProjectComponent {
     /**
      * construct tool window panel
      *
+     * @param project  project object
      * @param restView RESTView
      * @return restview
      */
-    public JPanel constructPanel(JPanel restView) {
+    private JPanel constructPanel(Project project, JPanel restView) {
         JPanel toolPanel = new JPanel();
         toolPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         toolPanel.add(ActionManager.getInstance().createActionToolbar("RESTClient Menu Bar", (ActionGroup) ActionManager.getInstance()

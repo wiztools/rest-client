@@ -179,7 +179,7 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.0-alpha4</version>
+            <version>4.0-alpha5-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

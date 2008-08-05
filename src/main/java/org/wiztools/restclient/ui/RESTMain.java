@@ -52,15 +52,17 @@ public class RESTMain implements RESTUserInterface {
     /**
      * This constructor is used for plugin initialization
      * @param frame
+     * @param scriptEditor script editor
+     * @param responseViewer response viewer
      */
-    public RESTMain(final JFrame frame){
+    public RESTMain(final JFrame frame, ScriptEditor scriptEditor, ScriptEditor responseViewer) {
         this.frame = frame;
-        init(true); // true means isPlugin==true
+        init(true, scriptEditor, responseViewer); // true means isPlugin==true
     }
     
     public RESTMain(final String title){
         frame = new JFrame(title);
-        init(false); // false means isPlugin==false
+        init(false, null, null); // false means isPlugin==false
     }
     
     @Override
@@ -277,14 +279,14 @@ public class RESTMain implements RESTUserInterface {
         frame.setJMenuBar(jmb);
     }
     
-    private void init(final boolean isPlugin){
+    private void init(final boolean isPlugin, ScriptEditor editor, ScriptEditor responseViewer) {
         // JFileChooser: Initialize
         jfc_request.addChoosableFileFilter(new RCFileFilter(FileType.REQUEST_EXT));
         jfc_response.addChoosableFileFilter(new RCFileFilter(FileType.RESPONSE_EXT));
         jfc_archive.addChoosableFileFilter(new RCFileFilter(FileType.ARCHIVE_EXT));
 
         // Set the view on the pane
-        view = new RESTView(this);
+        view = new RESTView(this, editor, responseViewer);
         // Create AboutDialog
         aboutDialog = new AboutDialog(frame);
         if(!isPlugin){
