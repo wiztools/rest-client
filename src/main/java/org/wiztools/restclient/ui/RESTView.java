@@ -89,7 +89,7 @@ public class RESTView extends JPanel implements View {
     private Dimension d_jsp_req_body;
     
     private JScrollPane jsp_test_script;
-    private ScriptEditor jta_test_script = new TextAreaScriptEditor();
+    private ScriptEditor jta_test_script = ScriptEditorFactory.getGroovyScriptEditor();
     private JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
     private JButton jb_req_test_open = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JButton jb_req_test_run = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "wand.png"));

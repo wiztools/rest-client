@@ -15,6 +15,9 @@ import jsyntaxpane.SyntaxKit;
  */
 class JSyntaxPaneScriptEditor implements ScriptEditor {
     
+    static final String GROOVY = "groovy";
+    static final String XML = "xml";
+    
     private JEditorPane jep = new JEditorPane();
     
     JSyntaxPaneScriptEditor(String type){
