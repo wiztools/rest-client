@@ -379,6 +379,12 @@ public final class XMLUtil {
             root.setAttributeNS(null, "version", RCConstants.VERSION);
 
             response = xmldoc.createElementNS(null, "response");
+            
+            // creating the execution time child element
+            e = xmldoc.createElementNS(null, "execution-time");
+            n = xmldoc.createTextNode(String.valueOf(bean.getExecutionTime()));
+            e.appendChild(n);
+            response.appendChild(e);
 
             // creating the status child element
             e = xmldoc.createElementNS(null, "status");
@@ -469,7 +475,10 @@ public final class XMLUtil {
             if(node.getNodeType() != Node.ELEMENT_NODE){
                 continue;
             }
-            if("status".equals(nodeName)){
+            if("execution-time".equals(nodeName)){
+                responseBean.setExecutionTime(Long.parseLong(node.getTextContent()));
+            }
+            else if("status".equals(nodeName)){
                 responseBean.setStatusLine(node.getTextContent());
                 NamedNodeMap nodeMap = node.getAttributes();
                 Node n = nodeMap.getNamedItem("code");
