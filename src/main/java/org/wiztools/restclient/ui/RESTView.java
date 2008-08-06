@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JEditorPane;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -80,7 +82,7 @@ public class RESTView extends JPanel implements View {
     private JTextField jtf_res_status = new JTextField();
     
     private JTextField jtf_body_content_type = new JTextField();
-    private JTextArea jta_req_body = new JTextArea();
+    private ScriptEditor jta_req_body = ScriptEditorFactory.getXMLScriptEditor();
     private JButton jb_body_content_type = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "edit.png"));
     private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JButton jb_body_params = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
@@ -120,7 +122,7 @@ public class RESTView extends JPanel implements View {
     
     // Response
     private JScrollPane jsp_res_body = new JScrollPane();
-    private ScriptEditor jta_response = new TextAreaScriptEditor();
+    private ScriptEditor jta_response = ScriptEditorFactory.getXMLScriptEditor();
     
     private JTable jt_res_headers = new JTable();
     
@@ -305,7 +307,7 @@ public class RESTView extends JPanel implements View {
         jp_body.add(jp_body_north, BorderLayout.NORTH);
         JPanel jp_body_center = new JPanel();
         jp_body_center.setLayout(new GridLayout(1, 1));
-        jsp_req_body = new JScrollPane(jta_req_body);
+        jsp_req_body = new JScrollPane(jta_req_body.getEditorView());
         jp_body_center.add(jsp_req_body);
         jp_body.add(jp_body_center, BorderLayout.CENTER);
         jtp.addTab("Body", jp_body);
@@ -536,6 +538,14 @@ public class RESTView extends JPanel implements View {
         }
     }
     
+    private void actionTextEditorSyntaxChange(final ScriptEditor editor, final TextEditorSyntax syntax){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                ((JSyntaxPaneScriptEditor)editor).setSyntax(syntax);
+            }
+        });
+    }
+    
     private JTabbedPane initJTPResponse(){
         JTabbedPane jtp = new JTabbedPane();
         
@@ -590,8 +600,34 @@ public class RESTView extends JPanel implements View {
         });
         popupMenu.add(jmi_indentXml);
         
+        // Syntax color change
+        JMenu jm_syntax = new JMenu("Syntax Color");
+        JMenuItem jmi_syntax_xml = new JMenuItem("XML");
+        jmi_syntax_xml.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                actionTextEditorSyntaxChange(jta_response, TextEditorSyntax.XML);
+            }
+        });
+        jm_syntax.add(jmi_syntax_xml);
+        JMenuItem jmi_syntax_json = new JMenuItem("JSON");
+        jmi_syntax_json.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                actionTextEditorSyntaxChange(jta_response, TextEditorSyntax.JSON);
+            }
+        });
+        jm_syntax.add(jmi_syntax_json);
+        JMenuItem jmi_syntax_none = new JMenuItem("None");
+        jmi_syntax_none.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                actionTextEditorSyntaxChange(jta_response, TextEditorSyntax.DEFAULT);
+            }
+        });
+        jm_syntax.add(jmi_syntax_none);
+        
+        popupMenu.add(jm_syntax);
+        
         // Attach popup menu
-        if (jta_response.getEditorView() instanceof JTextArea) {
+        if (jta_response.getEditorView() instanceof JEditorPane) {
             jta_response.getEditorView().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -1165,7 +1201,7 @@ public class RESTView extends JPanel implements View {
     private void setUIReqBodyEnabled(final boolean boo){
         setJTAReqBodyDimension();
                 
-        jta_req_body.setEnabled(boo);
+        jta_req_body.getEditorView().setEnabled(boo);
         jb_body_content_type.setEnabled(boo);
         jb_body_file.setEnabled(boo);
         jb_body_params.setEnabled(boo);
@@ -1178,7 +1214,7 @@ public class RESTView extends JPanel implements View {
         // This method will be invoked from calls that are running
         // inside SwingUtilities.invokeLater()
         if(d_jsp_req_body == null){
-            Dimension d = jta_req_body.getPreferredScrollableViewportSize();
+            Dimension d = ((JEditorPane)jta_req_body.getEditorView()).getPreferredScrollableViewportSize();
             d_jsp_req_body = d;
         }
         if(jsp_req_body != null){
