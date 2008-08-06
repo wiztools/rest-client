@@ -18,6 +18,15 @@ public class RoResponseBean {
     private final String statusLine;
     private final Map<String, String> headers;
     private final String responseBody;
+    private long executionTime;
+
+    public long getExecutionTime() {
+        return executionTime;
+    }
+
+    public void setExecutionTime(long executionTime) {
+        this.executionTime = executionTime;
+    }
 
     public Map<String, String> getHeaders() {
         return headers;
@@ -36,6 +45,7 @@ public class RoResponseBean {
     }
     
     public RoResponseBean(final ResponseBean response){
+        executionTime = response.getExecutionTime();
         statusCode = response.getStatusCode();
         statusLine = response.getStatusLine();
         headers = response.getHeaders();

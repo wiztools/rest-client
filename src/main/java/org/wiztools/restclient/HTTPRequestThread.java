@@ -202,9 +202,13 @@ public class HTTPRequestThread extends Thread {
             httpclient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler());
 
             // Now Execute:
+            long startTime = System.currentTimeMillis();
             HttpResponse http_res = httpclient.execute((HttpUriRequest) method);
+            long endTime = System.currentTimeMillis();
 
             ResponseBean response = new ResponseBean();
+            
+            response.setExecutionTime(endTime - startTime);
 
             response.setStatusCode(http_res.getStatusLine().getStatusCode());
             response.setStatusLine(http_res.getStatusLine().toString());
