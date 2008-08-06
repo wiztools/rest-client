@@ -928,7 +928,7 @@ public class RESTView extends JPanel implements View {
         setUIFromResponse(response);
         
         // Update status message
-        setStatusMessage("Response received.");
+        setStatusMessage("Response received in: " + response.getExecutionTime() + " ms");
         
         // Update Session View
         if(sessionFrame.isVisible()){
