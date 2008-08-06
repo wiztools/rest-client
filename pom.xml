@@ -187,5 +187,10 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
             <artifactId>groovy-all-minimal</artifactId>
             <version>1.5.4</version>
         </dependency>
+        <dependency>
+            <groupId>jsyntaxpane</groupId>
+            <artifactId>jsyntaxpane</artifactId>
+            <version>080717</version>
+        </dependency>
     </dependencies>
 </project>
