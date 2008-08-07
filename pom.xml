@@ -12,7 +12,7 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
     <groupId>org.wiztools.restclient</groupId>
     <artifactId>restclient</artifactId>
     <packaging>jar</packaging>
-    <version>2.2a1</version>
+    <version>2.2a2</version>
     <name>restclient</name>
     <url>http://rest-client.googlecode.com/</url>
     <description>
