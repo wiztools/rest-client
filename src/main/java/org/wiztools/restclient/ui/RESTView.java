@@ -505,7 +505,7 @@ public class RESTView extends JPanel implements View {
                     jsp_test_script.setPreferredSize(d);
                 }
                 catch(IOException ex){
-                    doError(Util.getStackTrace(ex));
+                    showError(Util.getStackTrace(ex));
                 }
             }
         });
@@ -560,7 +560,7 @@ public class RESTView extends JPanel implements View {
             view.doMessage("Test Result", testResult);
         }
         catch(TestException ex){
-            view.doError(Util.getStackTrace(ex));
+            view.showError(Util.getStackTrace(ex));
         }
     }
     
@@ -997,10 +997,14 @@ public class RESTView extends JPanel implements View {
     public void doError(final String error){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                messageDialog.showError(error);
+                showError(error);
             }
         });
         
+    }
+    
+    public void showError(final String error){
+        messageDialog.showError(error);
     }
     
     public void doMessage(final String title, final String message){

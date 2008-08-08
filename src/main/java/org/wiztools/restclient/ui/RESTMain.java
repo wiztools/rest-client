@@ -357,7 +357,7 @@ public class RESTMain implements RESTUserInterface {
                 e = ex;
             }
             if(e != null){
-                view.doError(Util.getStackTrace(e));
+                view.showError(Util.getStackTrace(e));
             }
         }
     }
@@ -377,7 +377,7 @@ public class RESTMain implements RESTUserInterface {
                 e = ex;
             }
             if(e != null){
-                view.doError(Util.getStackTrace(e));
+                view.showError(Util.getStackTrace(e));
             }
         }
     }
@@ -395,7 +395,7 @@ public class RESTMain implements RESTUserInterface {
                     view.setUIFromResponse(response);
                 }
                 else{
-                    view.doError("Unable to load archive! Check if valid archive!");
+                    view.showError("Unable to load archive! Check if valid archive!");
                 }
             }
             catch(IOException ex){
@@ -405,7 +405,7 @@ public class RESTMain implements RESTUserInterface {
                 e = ex;
             }
             if(e != null){
-                view.doError(Util.getStackTrace(e));
+                view.showError(Util.getStackTrace(e));
             }
         }
     }
@@ -536,10 +536,10 @@ public class RESTMain implements RESTUserInterface {
                     XMLUtil.writeRequestXML(request, f);
                 }
                 catch(IOException ex){
-                    view.doError(Util.getStackTrace(ex));
+                    view.showError(Util.getStackTrace(ex));
                 }
                 catch(XMLException ex){
-                    view.doError(Util.getStackTrace(ex));
+                    view.showError(Util.getStackTrace(ex));
                 }
             }
         }
@@ -564,10 +564,10 @@ public class RESTMain implements RESTUserInterface {
                     XMLUtil.writeResponseXML(response, f);
                 }
                 catch(IOException ex){
-                    view.doError(Util.getStackTrace(ex));
+                    view.showError(Util.getStackTrace(ex));
                 }
                 catch(XMLException ex){
-                    view.doError(Util.getStackTrace(ex));
+                    view.showError(Util.getStackTrace(ex));
                 }
             }
         }
@@ -588,7 +588,7 @@ public class RESTMain implements RESTUserInterface {
                     pw.print(response.getResponseBody());
                 }
                 catch(IOException ex){
-                    view.doError(Util.getStackTrace(ex));
+                    view.showError(Util.getStackTrace(ex));
                 }
                 finally{
                     if(pw != null){
@@ -627,7 +627,7 @@ public class RESTMain implements RESTUserInterface {
                     e = ex;
                 }
                 if(e != null){
-                    view.doError(Util.getStackTrace(e));
+                    view.showError(Util.getStackTrace(e));
                 }
             }
         }

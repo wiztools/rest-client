@@ -117,7 +117,7 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
                 jsp_in.setPreferredSize(d);
             }
             catch(IOException ex){
-                ui.getView().doError(Util.getStackTrace(ex));
+                ui.getView().showError(Util.getStackTrace(ex));
             }
         }
     }

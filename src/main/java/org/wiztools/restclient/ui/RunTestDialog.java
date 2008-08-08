@@ -151,10 +151,10 @@ public class RunTestDialog extends EscapableDialog {
             ui.getView().runClonedRequestTest(request, response);
         }
         catch(IOException ex){
-            ui.getView().doError(Util.getStackTrace(ex));
+            ui.getView().showError(Util.getStackTrace(ex));
         }
         catch(XMLException ex){
-            ui.getView().doError(Util.getStackTrace(ex));
+            ui.getView().showError(Util.getStackTrace(ex));
         }
     }
 
