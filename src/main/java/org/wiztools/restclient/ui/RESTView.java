@@ -557,7 +557,7 @@ public class RESTView extends JPanel implements View {
         try{
             TestSuite ts = TestUtil.getTestSuite(t_request, response);
             String testResult = TestUtil.execute(ts);
-            view.doMessage("Test Result", testResult);
+            view.showMessage("Test Result", testResult);
         }
         catch(TestException ex){
             view.showError(Util.getStackTrace(ex));
@@ -1007,7 +1007,7 @@ public class RESTView extends JPanel implements View {
         messageDialog.showError(error);
     }
     
-    public void doMessage(final String title, final String message){
+    public void showMessage(final String title, final String message){
         messageDialog.showMessage(title, message);
     }
     

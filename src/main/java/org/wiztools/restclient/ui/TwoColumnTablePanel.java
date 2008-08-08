@@ -82,7 +82,7 @@ public final class TwoColumnTablePanel extends JPanel {
                     }
                 }
 
-                rest_ui.getView().doMessage("Multi-insert Result", sb.toString());
+                rest_ui.getView().showMessage("Multi-insert Result", sb.toString());
             }
         };
         jd_multi = new KeyValMultiEntryDialog(rest_ui, callback);
