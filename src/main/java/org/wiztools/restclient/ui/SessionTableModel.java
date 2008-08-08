@@ -7,7 +7,6 @@ package org.wiztools.restclient.ui;
 
 import java.util.Collections;
 import java.util.Map;
-import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import org.wiztools.restclient.RequestBean;
 import org.wiztools.restclient.ResponseBean;
@@ -106,24 +105,14 @@ public class SessionTableModel extends AbstractTableModel implements ISessionVie
         return data;
     }
 
-    // These two methods are not invoked from SwingUtilities.invokeLater():
     @Override
     public void add(final RequestBean request, final ResponseBean response) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                insertRow(request.toString(), response.toString());
-            }
-        });
-        
+        insertRow(request.toString(), response.toString());
     }
 
     @Override
     public void clear() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                setData(Collections.EMPTY_MAP);
-            }
-        });
+        setData(Collections.EMPTY_MAP);
     }
 
 }

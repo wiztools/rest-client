@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import org.wiztools.restclient.GlobalOptions;
 import org.wiztools.restclient.ProxyConfig;
 import org.wiztools.restclient.Util;
@@ -52,32 +51,23 @@ class OptionsProxyPanel extends JPanel implements IOptionsPanel {
         jcb_enable.setMnemonic('e');
         jcb_enable.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        if(jcb_enable.isSelected()){
-                            toggleEnable(true);
-                        }
-                        else{
-                            toggleEnable(false);
-                        }
-                    }
-                });
-                        
+                if(jcb_enable.isSelected()){
+                    toggleEnable(true);
+                }
+                else{
+                    toggleEnable(false);
+                }
             }
         });
         jp_north.add(jcb_enable);
         jcb_auth_enable.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        if(jcb_auth_enable.isSelected()){
-                            toggleAuthEnable(true);
-                        }
-                        else{
-                            toggleAuthEnable(false);
-                        }
-                    }
-                });
+                if(jcb_auth_enable.isSelected()){
+                    toggleAuthEnable(true);
+                }
+                else{
+                    toggleAuthEnable(false);
+                }
             }
         });
         jp_north.add(jcb_auth_enable);

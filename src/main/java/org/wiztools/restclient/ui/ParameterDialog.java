@@ -13,7 +13,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -111,10 +110,6 @@ public class ParameterDialog extends EscapableDialog {
     }
     
     private void hideMe(){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                setVisible(false);
-            }
-        });
+        setVisible(false);
     }
 }

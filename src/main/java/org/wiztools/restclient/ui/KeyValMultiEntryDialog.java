@@ -21,7 +21,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.Util;
 
@@ -60,25 +59,16 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
         jb_file.setToolTipText("Load from file");
         jb_file.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        loadFromFile();
-                    }
-                });
-                
+                loadFromFile();
             }
         });
         jp_north.add(jb_file);
         jb_help.setToolTipText("Help");
         jb_help.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        JOptionPane.showMessageDialog(me,
-                                MessageI18N.getMessage("help.keyval.multi"),
-                                "Help", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                });
+                JOptionPane.showMessageDialog(me,
+                        MessageI18N.getMessage("help.keyval.multi"),
+                        "Help", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         jp_north.add(jb_help);
@@ -93,22 +83,14 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
         jb_add.setMnemonic('a');
         jb_add.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        add();
-                    }
-                });
+                add();
             }
         });
         jp_south.add(jb_add);
         jb_cancel.setMnemonic('c');
         jb_cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        me.setVisible(false);
-                    }
-                });
+                me.setVisible(false);
             }
         });
         jp_south.add(jb_cancel);
@@ -184,10 +166,6 @@ public class KeyValMultiEntryDialog extends EscapableDialog {
 
     @Override
     public void doEscape(AWTEvent event) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                me.setVisible(false);
-            }
-        });
+        me.setVisible(false);
     }
 }

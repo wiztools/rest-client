@@ -9,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -67,11 +66,7 @@ public class MessageDialog extends EscapableDialog {
     }
     
     private void hideDialog(){
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run(){
-                messageDialog.setVisible(false);
-            }
-        });
+        messageDialog.setVisible(false);
     }
     
     void showError(final String error){
@@ -79,16 +74,12 @@ public class MessageDialog extends EscapableDialog {
     }
     
     void showMessage(final String title, final String message){
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run(){
-                messageDialog.setTitle(title);
-                jta_error.setText(message);
-                jta_error.setCaretPosition(0);
-                messageDialog.setLocationRelativeTo(parent);
-                jb_ok.requestFocus();
-                messageDialog.setVisible(true);
-            }
-        });
+        messageDialog.setTitle(title);
+        jta_error.setText(message);
+        jta_error.setCaretPosition(0);
+        messageDialog.setLocationRelativeTo(parent);
+        jb_ok.requestFocus();
+        messageDialog.setVisible(true);
     }
     
     private javax.swing.JTextArea jta_error;

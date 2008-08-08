@@ -12,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 import javax.swing.JFrame;
 
 import org.wiztools.restclient.GlobalOptions;
@@ -67,22 +66,14 @@ public class OptionsDialog extends EscapableDialog {
         jb_ok.setMnemonic('o');
         jb_ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        actionOk();
-                    }
-                });
+                actionOk();
             }
         });
         JButton jb_cancel = new JButton("Cancel");
         jb_cancel.setMnemonic('c');
         jb_cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        actionCancel();
-                    }
-                });
+                actionCancel();
             }
         });
         jp_encp_south.add(jb_ok);
@@ -112,11 +103,7 @@ public class OptionsDialog extends EscapableDialog {
     
     @Override
     public void doEscape(AWTEvent event) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                actionCancel();
-            }
-        });
+        actionCancel();
     }
     
     private void actionOk(){
@@ -134,14 +121,10 @@ public class OptionsDialog extends EscapableDialog {
         
         if(errors.size() > 0){
             final String errStr = Util.getHTMLListFromList(errors);
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    JOptionPane.showMessageDialog(me,
-                            errStr,
-                            "Error in input.",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            });
+            JOptionPane.showMessageDialog(me,
+                    errStr,
+                    "Error in input.",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
         

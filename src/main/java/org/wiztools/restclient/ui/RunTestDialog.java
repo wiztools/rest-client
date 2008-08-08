@@ -17,7 +17,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import org.wiztools.restclient.FileType;
 import org.wiztools.restclient.ReqResBean;
 import org.wiztools.restclient.RequestBean;
@@ -66,17 +65,12 @@ public class RunTestDialog extends EscapableDialog {
         
         ActionListener al = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        if(jrb_archive.isSelected()){
-                            jb_archive_browse.setEnabled(true);
-                        }
-                        else{
-                            jb_archive_browse.setEnabled(false);
-                        }
-                    }
-                });
-                
+                if(jrb_archive.isSelected()){
+                    jb_archive_browse.setEnabled(true);
+                }
+                else{
+                    jb_archive_browse.setEnabled(false);
+                }
             }
         };
         jrb_archive.addActionListener(al);
@@ -97,16 +91,12 @@ public class RunTestDialog extends EscapableDialog {
         jb_archive_browse.setMnemonic('b');
         jb_archive_browse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        File f = ui.getOpenFile(FileChooserType.OPEN_ARCHIVE, me);
-                        if(f == null){ // Cancel pressed
-                            return;
-                        }
-                        archiveFile = f;
-                        jtf_archive.setText(archiveFile.getAbsolutePath());
-                    }
-                });
+                File f = ui.getOpenFile(FileChooserType.OPEN_ARCHIVE, me);
+                if(f == null){ // Cancel pressed
+                    return;
+                }
+                archiveFile = f;
+                jtf_archive.setText(archiveFile.getAbsolutePath());
             }
         });
         jp_center_file.add(jb_archive_browse);
@@ -119,11 +109,7 @@ public class RunTestDialog extends EscapableDialog {
         jb_next.setMnemonic('n');
         jb_next.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        jb_nextAction();
-                    }
-                });
+                jb_nextAction();
             }
         });
         jp_south.add(jb_next);
@@ -178,11 +164,7 @@ public class RunTestDialog extends EscapableDialog {
     }
     
     private void close(){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                me.setVisible(false);
-            }
-        });
+        me.setVisible(false);
     }
 
 }

@@ -169,11 +169,7 @@ public class RESTMain implements RESTUserInterface {
         jmi_clear_res.setMnemonic(KeyEvent.VK_C);
         jmi_clear_res.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        view.clearUIResponse();
-                    }
-                });
+                view.clearUIResponse();
             }
         });
         jm_edit.add(jmi_clear_res);
@@ -181,12 +177,8 @@ public class RESTMain implements RESTUserInterface {
         jmi_reset_all.setMnemonic('a');
         jmi_reset_all.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        view.clearUIResponse();
-                        view.clearUIRequest();
-                    }
-                });
+                view.clearUIResponse();
+                view.clearUIRequest();
             }
         });
         jm_edit.add(jmi_reset_all);
@@ -196,19 +188,15 @@ public class RESTMain implements RESTUserInterface {
         JMenuItem jmi_reset_to_last = new JMenuItem("Reset to Last Request-Response");
         jmi_reset_to_last.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        if(view.getLastRequest() != null && view.getLastResponse() != null){
-                            view.setUIToLastRequestResponse();
-                        }
-                        else{
-                            JOptionPane.showMessageDialog(frame,
-                                    "No Last Request-Response Available",
-                                    "No Last Request-Response Available",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                        }
-                    }
-                });
+                if(view.getLastRequest() != null && view.getLastResponse() != null){
+                    view.setUIToLastRequestResponse();
+                }
+                else{
+                    JOptionPane.showMessageDialog(frame,
+                            "No Last Request-Response Available",
+                            "No Last Request-Response Available",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
         jm_edit.add(jmi_reset_to_last);
@@ -221,11 +209,7 @@ public class RESTMain implements RESTUserInterface {
         jmi_session.setMnemonic('s');
         jmi_session.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        view.showSessionFrame();
-                    }
-                });
+                view.showSessionFrame();
             }
         });
         // Commenting it out for 2.x release. This will be the focus of 3.x release:
@@ -238,11 +222,7 @@ public class RESTMain implements RESTUserInterface {
                 if(passwordGenDialog == null){
                     passwordGenDialog = new PasswordGenDialog(frame);
                 }
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        passwordGenDialog.setVisible(true);
-                    }
-                });
+                passwordGenDialog.setVisible(true);
             }
         });
         jm_tools.add(jmi_pwd_gen);
@@ -310,14 +290,10 @@ public class RESTMain implements RESTUserInterface {
     }
     
     private void actionOpenOptionsDialog(ActionEvent event){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                if(optionsDialog == null){
-                    optionsDialog = new OptionsDialog(frame);
-                }
-                optionsDialog.setVisible(true);
-            }
-        });
+        if(optionsDialog == null){
+            optionsDialog = new OptionsDialog(frame);
+        }
+        optionsDialog.setVisible(true);
     }
     
     @Override
@@ -364,85 +340,74 @@ public class RESTMain implements RESTUserInterface {
     
     
     private void jmi_open_reqAction(){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                File f = getOpenFile(FileChooserType.OPEN_REQUEST);
-                if(f != null){
-                    Exception e = null;
-                    try{
-                        RequestBean request = XMLUtil.getRequestFromXMLFile(f);
-                        view.setUIFromRequest(request);
-                    }
-                    catch(IOException ex){
-                        e = ex;
-                    }
-                    catch(XMLException ex){
-                        e = ex;
-                    }
-                    catch(Base64.Base64Exception ex){
-                        e = ex;
-                    }
-                    if(e != null){
-                        view.doError(Util.getStackTrace(e));
-                    }
-                }
-        }});
+        File f = getOpenFile(FileChooserType.OPEN_REQUEST);
+        if(f != null){
+            Exception e = null;
+            try{
+                RequestBean request = XMLUtil.getRequestFromXMLFile(f);
+                view.setUIFromRequest(request);
+            }
+            catch(IOException ex){
+                e = ex;
+            }
+            catch(XMLException ex){
+                e = ex;
+            }
+            catch(Base64.Base64Exception ex){
+                e = ex;
+            }
+            if(e != null){
+                view.doError(Util.getStackTrace(e));
+            }
+        }
     }
     
     private void jmi_open_resAction(){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                File f = getOpenFile(FileChooserType.OPEN_RESPONSE);
-                if(f != null){
-                    Exception e = null;
-                    try{
-                        ResponseBean response = XMLUtil.getResponseFromXMLFile(f);
-                        view.setUIFromResponse(response);
-                    }
-                    catch(IOException ex){
-                        e = ex;
-                    }
-                    catch(XMLException ex){
-                        e = ex;
-                    }
-                    if(e != null){
-                        view.doError(Util.getStackTrace(e));
-                    }
-                }
+        File f = getOpenFile(FileChooserType.OPEN_RESPONSE);
+        if(f != null){
+            Exception e = null;
+            try{
+                ResponseBean response = XMLUtil.getResponseFromXMLFile(f);
+                view.setUIFromResponse(response);
             }
-        });
+            catch(IOException ex){
+                e = ex;
+            }
+            catch(XMLException ex){
+                e = ex;
+            }
+            if(e != null){
+                view.doError(Util.getStackTrace(e));
+            }
+        }
     }
     
     private void jmi_open_archiveAction(){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                File f = getOpenFile(FileChooserType.OPEN_ARCHIVE);
-                if(f != null){
-                    Exception e = null;
-                    try{
-                        ReqResBean encp = Util.getReqResArchive(f);
-                        RequestBean request = encp.getRequestBean();
-                        ResponseBean response = encp.getResponseBean();
-                        if(request != null && response != null){
-                            view.setUIFromRequest(request);
-                            view.setUIFromResponse(response);
-                        }
-                        else{
-                            view.doError("Unable to load archive! Check if valid archive!");
-                        }
-                    }
-                    catch(IOException ex){
-                        e = ex;
-                    }
-                    catch(XMLException ex){
-                        e = ex;
-                    }
-                    if(e != null){
-                        view.doError(Util.getStackTrace(e));
-                    }
+        File f = getOpenFile(FileChooserType.OPEN_ARCHIVE);
+        if(f != null){
+            Exception e = null;
+            try{
+                ReqResBean encp = Util.getReqResArchive(f);
+                RequestBean request = encp.getRequestBean();
+                ResponseBean response = encp.getResponseBean();
+                if(request != null && response != null){
+                    view.setUIFromRequest(request);
+                    view.setUIFromResponse(response);
+                }
+                else{
+                    view.doError("Unable to load archive! Check if valid archive!");
                 }
             }
-        });
+            catch(IOException ex){
+                e = ex;
+            }
+            catch(XMLException ex){
+                e = ex;
+            }
+            if(e != null){
+                view.doError(Util.getStackTrace(e));
+            }
+        }
     }
     
     // This method is invoked from SU.invokeLater
@@ -547,130 +512,125 @@ public class RESTMain implements RESTUserInterface {
     }
     
     private void actionSave(final FileChooserType type){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                if(type == FileChooserType.SAVE_REQUEST){
-                    RequestBean request = view.getLastRequest();
-                    
-                    if(request == null){
-                        JOptionPane.showMessageDialog(view,
-                                "No last request available.",
-                                "No Request",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+        if(type == FileChooserType.SAVE_REQUEST){
+            RequestBean request = view.getLastRequest();
 
-                    RequestBean uiRequest = view.getRequestFromUI();
-                    if(!request.equals(uiRequest)){
-                        if(!doSaveEvenIfUIChanged(DO_SAVE_UI_REQUEST)){
-                            return;
-                        }
-                        
-                    }
-                    
-                    File f = getSaveFile(FileChooserType.SAVE_REQUEST);
-                    if(f != null){
-                        try{
-                            XMLUtil.writeRequestXML(request, f);
-                        }
-                        catch(IOException ex){
-                            view.doError(Util.getStackTrace(ex));
-                        }
-                        catch(XMLException ex){
-                            view.doError(Util.getStackTrace(ex));
-                        }
-                    }
+            if(request == null){
+                JOptionPane.showMessageDialog(view,
+                        "No last request available.",
+                        "No Request",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            RequestBean uiRequest = view.getRequestFromUI();
+            if(!request.equals(uiRequest)){
+                if(!doSaveEvenIfUIChanged(DO_SAVE_UI_REQUEST)){
+                    return;
                 }
-                else if(type == FileChooserType.SAVE_RESPONSE){
-                    ResponseBean response = view.getLastResponse();
-                    if(response == null){
-                        JOptionPane.showMessageDialog(view,
-                                "No last response available.",
-                                "No Response",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    ResponseBean uiResponse = view.getResponseFromUI();
-                    if(!response.equals(uiResponse)){
-                        if(!doSaveEvenIfUIChanged(DO_SAVE_UI_RESPONSE)){
-                            return;
-                        }
-                    }
-                    File f = getSaveFile(FileChooserType.SAVE_RESPONSE);
-                    if(f != null){
-                        try{
-                            XMLUtil.writeResponseXML(response, f);
-                        }
-                        catch(IOException ex){
-                            view.doError(Util.getStackTrace(ex));
-                        }
-                        catch(XMLException ex){
-                            view.doError(Util.getStackTrace(ex));
-                        }
-                    }
+            }
+
+            File f = getSaveFile(FileChooserType.SAVE_REQUEST);
+            if(f != null){
+                try{
+                    XMLUtil.writeRequestXML(request, f);
                 }
-                else if(type == FileChooserType.SAVE_RESPONSE_BODY){
-                    ResponseBean response = view.getLastResponse();
-                    if(response == null){
-                        JOptionPane.showMessageDialog(view,
-                                "No last response available.",
-                                "No Response",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    File f = getSaveFile(FileChooserType.SAVE_RESPONSE_BODY);
-                    if(f != null){
-                        PrintWriter pw = null;
-                        try{
-                            pw = new PrintWriter(new FileWriter(f));
-                            pw.print(response.getResponseBody());
-                        }
-                        catch(IOException ex){
-                            view.doError(Util.getStackTrace(ex));
-                        }
-                        finally{
-                            if(pw != null){
-                                pw.close();
-                            }
-                        }
-                    }
+                catch(IOException ex){
+                    view.doError(Util.getStackTrace(ex));
                 }
-                else if(type == FileChooserType.SAVE_ARCHIVE){
-                    RequestBean request = view.getLastRequest();
-                    ResponseBean response = view.getLastResponse();
-                    if(request == null || response == null){
-                        JOptionPane.showMessageDialog(view,
-                                "No last request/response available.",
-                                "No Request/Response",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    RequestBean uiRequest = view.getRequestFromUI();
-                    ResponseBean uiResponse = view.getResponseFromUI();
-                    if((!request.equals(uiRequest)) || (!response.equals(uiResponse))){
-                        if(!doSaveEvenIfUIChanged(DO_SAVE_UI_ARCHIVE)){
-                            return;
-                        }
-                    }
-                    File f = getSaveFile(FileChooserType.SAVE_ARCHIVE);
-                    if(f != null){
-                        Exception e = null;
-                        try{
-                            Util.createReqResArchive(request, response, f);
-                        }
-                        catch(IOException ex){
-                            e = ex;
-                        }
-                        catch(XMLException ex){
-                            e = ex;
-                        }
-                        if(e != null){
-                            view.doError(Util.getStackTrace(e));
-                        }
+                catch(XMLException ex){
+                    view.doError(Util.getStackTrace(ex));
+                }
+            }
+        }
+        else if(type == FileChooserType.SAVE_RESPONSE){
+            ResponseBean response = view.getLastResponse();
+            if(response == null){
+                JOptionPane.showMessageDialog(view,
+                        "No last response available.",
+                        "No Response",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            ResponseBean uiResponse = view.getResponseFromUI();
+            if(!response.equals(uiResponse)){
+                if(!doSaveEvenIfUIChanged(DO_SAVE_UI_RESPONSE)){
+                    return;
+                }
+            }
+            File f = getSaveFile(FileChooserType.SAVE_RESPONSE);
+            if(f != null){
+                try{
+                    XMLUtil.writeResponseXML(response, f);
+                }
+                catch(IOException ex){
+                    view.doError(Util.getStackTrace(ex));
+                }
+                catch(XMLException ex){
+                    view.doError(Util.getStackTrace(ex));
+                }
+            }
+        }
+        else if(type == FileChooserType.SAVE_RESPONSE_BODY){
+            ResponseBean response = view.getLastResponse();
+            if(response == null){
+                JOptionPane.showMessageDialog(view,
+                        "No last response available.",
+                        "No Response",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            File f = getSaveFile(FileChooserType.SAVE_RESPONSE_BODY);
+            if(f != null){
+                PrintWriter pw = null;
+                try{
+                    pw = new PrintWriter(new FileWriter(f));
+                    pw.print(response.getResponseBody());
+                }
+                catch(IOException ex){
+                    view.doError(Util.getStackTrace(ex));
+                }
+                finally{
+                    if(pw != null){
+                        pw.close();
                     }
                 }
             }
-        });
+        }
+        else if(type == FileChooserType.SAVE_ARCHIVE){
+            RequestBean request = view.getLastRequest();
+            ResponseBean response = view.getLastResponse();
+            if(request == null || response == null){
+                JOptionPane.showMessageDialog(view,
+                        "No last request/response available.",
+                        "No Request/Response",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            RequestBean uiRequest = view.getRequestFromUI();
+            ResponseBean uiResponse = view.getResponseFromUI();
+            if((!request.equals(uiRequest)) || (!response.equals(uiResponse))){
+                if(!doSaveEvenIfUIChanged(DO_SAVE_UI_ARCHIVE)){
+                    return;
+                }
+            }
+            File f = getSaveFile(FileChooserType.SAVE_ARCHIVE);
+            if(f != null){
+                Exception e = null;
+                try{
+                    Util.createReqResArchive(request, response, f);
+                }
+                catch(IOException ex){
+                    e = ex;
+                }
+                catch(XMLException ex){
+                    e = ex;
+                }
+                if(e != null){
+                    view.doError(Util.getStackTrace(e));
+                }
+            }
+        }
     }
     
     private void shutdownCall(){

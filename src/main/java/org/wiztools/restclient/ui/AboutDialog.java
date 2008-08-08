@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -85,11 +84,7 @@ public class AboutDialog extends EscapableDialog {
     }
     
     public void hideMe(){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                me.setVisible(false);
-            }
-        });
+        me.setVisible(false);
     }
 
 }

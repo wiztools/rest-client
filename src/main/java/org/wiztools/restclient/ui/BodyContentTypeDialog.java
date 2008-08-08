@@ -20,7 +20,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -159,24 +158,20 @@ public class BodyContentTypeDialog extends EscapableDialog {
     }
     
     void hideMe(final boolean isOk){   
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                if(isOk){
-                    contentType = (String)jcb_content_type.getSelectedItem();
-                    charSet = (String)jcb_char_set.getSelectedItem();
-                    
-                    // Fire all listeners:
-                    for(ContentTypeCharSetChangeListener listener: listeners){
-                        listener.changed(contentType, charSet);
-                    }
-                }
-                else{
-                    jcb_content_type.setSelectedItem(me.contentType);
-                    jcb_char_set.setSelectedItem(me.charSet);
-                }
-                me.setVisible(false);
+        if(isOk){
+            contentType = (String)jcb_content_type.getSelectedItem();
+            charSet = (String)jcb_char_set.getSelectedItem();
+
+            // Fire all listeners:
+            for(ContentTypeCharSetChangeListener listener: listeners){
+                listener.changed(contentType, charSet);
             }
-        });
+        }
+        else{
+            jcb_content_type.setSelectedItem(me.contentType);
+            jcb_char_set.setSelectedItem(me.charSet);
+        }
+        me.setVisible(false);
     }
     
     String getContentType(){
@@ -185,14 +180,10 @@ public class BodyContentTypeDialog extends EscapableDialog {
     
     void setContentType(final String contentType){
         this.contentType = contentType;
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                jcb_content_type.setSelectedItem(contentType);
-                for(ContentTypeCharSetChangeListener listener: listeners){
-                    listener.changed(contentType, charSet);
-                }
-            }
-        });
+        jcb_content_type.setSelectedItem(contentType);
+        for(ContentTypeCharSetChangeListener listener: listeners){
+            listener.changed(contentType, charSet);
+        }
     }
     
     String getCharSet(){
@@ -201,14 +192,10 @@ public class BodyContentTypeDialog extends EscapableDialog {
     
     void setCharSet(final String charSet){
         this.charSet = charSet;
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                jcb_char_set.setSelectedItem(charSet);
-                for(ContentTypeCharSetChangeListener listener: listeners){
-                    listener.changed(contentType, charSet);
-                }
-            }
-        });
+        jcb_char_set.setSelectedItem(charSet);
+        for(ContentTypeCharSetChangeListener listener: listeners){
+            listener.changed(contentType, charSet);
+        }
     }
     
     private List<ContentTypeCharSetChangeListener> listeners = new ArrayList<ContentTypeCharSetChangeListener>();

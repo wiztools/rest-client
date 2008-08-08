@@ -23,7 +23,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
 import org.wiztools.restclient.Util;
 import org.wiztools.restclient.xml.Base64;
 
@@ -181,14 +180,10 @@ public class PasswordGenDialog extends EscapableDialog {
         // Check for null String in jtf_in
         final String inStr = jtf_in.getText();
         if(Util.isStrEmpty(inStr)){
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    JOptionPane.showMessageDialog(me,
-                        "No input entered.",
-                        "Error in input.",
-                        JOptionPane.ERROR_MESSAGE);
-                }
-            });
+            JOptionPane.showMessageDialog(me,
+                "No input entered.",
+                "Error in input.",
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
         // Get if it is encode or decode
@@ -201,22 +196,14 @@ public class PasswordGenDialog extends EscapableDialog {
                 result = (String)Base64.decodeToObject(inStr);
             }
             catch(Base64.Base64Exception ex){
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        JOptionPane.showMessageDialog(me,
-                            "Input string is not Base64 encoded.",
-                            "Error in input.",
-                            JOptionPane.ERROR_MESSAGE);
-                    }
-                });
+                JOptionPane.showMessageDialog(me,
+                    "Input string is not Base64 encoded.",
+                    "Error in input.",
+                    JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                jtf_out.setText(result);
-            }
-        });
+        jtf_out.setText(result);
     }
 
     @Override

@@ -34,7 +34,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
@@ -49,6 +48,7 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
 import org.wiztools.restclient.test.TestException;
@@ -217,17 +217,12 @@ public class RESTView extends JPanel implements View {
         
         ActionListener jrbAL = new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
-                            setUIReqBodyEnabled(true);
-                        }
-                        else{
-                            setUIReqBodyEnabled(false);
-                        }
-                    }
-                });
-                
+                if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
+                    setUIReqBodyEnabled(true);
+                }
+                else{
+                    setUIReqBodyEnabled(false);
+                }
             }
         };
         
@@ -276,11 +271,7 @@ public class RESTView extends JPanel implements View {
         jb_body_content_type.setToolTipText("Edit Content-type & Charset");
         jb_body_content_type.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        jd_body_content_type.setVisible(true);
-                    }
-                });
+                jd_body_content_type.setVisible(true);
             }
         });
         jp_body_north.add(jb_body_content_type);
@@ -349,11 +340,7 @@ public class RESTView extends JPanel implements View {
                         return;
                     }
                     if (e.isPopupTrigger()) {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                jpm_req_body.show(e.getComponent(), e.getX(), e.getY());
-                            }
-                        });
+                        jpm_req_body.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }
             });
@@ -442,20 +429,16 @@ public class RESTView extends JPanel implements View {
         jb_ssl_browse.setToolTipText("Open truststore file.");
         jb_ssl_browse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
-                        if(f == null){
-                            // do nothing--cancel pressed
-                        }
-                        else if(f.canRead()){
-                            jtf_ssl_truststore_file.setText(f.getAbsolutePath());
-                        }
-                        else{
-                            setStatusMessage("Truststore file cannot be read.");
-                        }
-                    }
-                });
+                File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
+                if(f == null){
+                    // do nothing--cancel pressed
+                }
+                else if(f.canRead()){
+                    jtf_ssl_truststore_file.setText(f.getAbsolutePath());
+                }
+                else{
+                    setStatusMessage("Truststore file cannot be read.");
+                }
             }
         });
         jp_ssl_center_flow.add(jb_ssl_browse);
@@ -487,51 +470,43 @@ public class RESTView extends JPanel implements View {
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        Dimension d = jsp_test_script.getPreferredSize();
-                        se_test_script.setText(templateTestScript);
-                        se_test_script.setCaretPosition(0);
-                        jsp_test_script.setPreferredSize(d);
-                    }
-                });
+                Dimension d = jsp_test_script.getPreferredSize();
+                se_test_script.setText(templateTestScript);
+                se_test_script.setCaretPosition(0);
+                jsp_test_script.setPreferredSize(d);
             }
         });
         jp_test_north.add(jb_req_test_template);
         jb_req_test_open.setToolTipText("Open Test Script From File");
         jb_req_test_open.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        String str = se_test_script.getText();
-                        if(!Util.isStrEmpty(str)){
-                            int ret = JOptionPane.showConfirmDialog(rest_ui.getFrame(), "Script already exists. Erase?", "Erase existing script?", JOptionPane.YES_NO_OPTION);
-                            if(ret == JOptionPane.NO_OPTION){
-                                return;
-                            }
-                        }
-                        File f = rest_ui.getOpenFile(FileChooserType.OPEN_TEST_SCRIPT);
-                        if(f == null){ // Cancel pressed
-                            return;
-                        }
-                        if(!f.canRead()){
-                            JOptionPane.showMessageDialog(rest_ui.getFrame(),
-                                    "IO Error (Read permission denied): " + f.getAbsolutePath(),
-                                    "IO Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-                        try{
-                            String testScript = Util.getStringFromFile(f);
-                            Dimension d = jsp_test_script.getPreferredSize();
-                            se_test_script.setText(testScript);
-                            se_test_script.setCaretPosition(0);
-                            jsp_test_script.setPreferredSize(d);
-                        }
-                        catch(IOException ex){
-                            doError(Util.getStackTrace(ex));
-                        }
+                String str = se_test_script.getText();
+                if(!Util.isStrEmpty(str)){
+                    int ret = JOptionPane.showConfirmDialog(rest_ui.getFrame(), "Script already exists. Erase?", "Erase existing script?", JOptionPane.YES_NO_OPTION);
+                    if(ret == JOptionPane.NO_OPTION){
+                        return;
                     }
-                });
+                }
+                File f = rest_ui.getOpenFile(FileChooserType.OPEN_TEST_SCRIPT);
+                if(f == null){ // Cancel pressed
+                    return;
+                }
+                if(!f.canRead()){
+                    JOptionPane.showMessageDialog(rest_ui.getFrame(),
+                            "IO Error (Read permission denied): " + f.getAbsolutePath(),
+                            "IO Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try{
+                    String testScript = Util.getStringFromFile(f);
+                    Dimension d = jsp_test_script.getPreferredSize();
+                    se_test_script.setText(testScript);
+                    se_test_script.setCaretPosition(0);
+                    jsp_test_script.setPreferredSize(d);
+                }
+                catch(IOException ex){
+                    doError(Util.getStackTrace(ex));
+                }
             }
         });
         jp_test_north.add(jb_req_test_open);
@@ -544,14 +519,10 @@ public class RESTView extends JPanel implements View {
                             "No script!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        if(jd_runTestDialog == null){
-                            jd_runTestDialog = new RunTestDialog(rest_ui);
-                        }
-                        jd_runTestDialog.setVisible(true);
-                    }
-                });
+                if(jd_runTestDialog == null){
+                    jd_runTestDialog = new RunTestDialog(rest_ui);
+                }
+                jd_runTestDialog.setVisible(true);
             }
         });
         jp_test_north.add(jb_req_test_run);
@@ -594,11 +565,7 @@ public class RESTView extends JPanel implements View {
     }
     
     private void actionTextEditorSyntaxChange(final ScriptEditor editor, final TextEditorSyntax syntax){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                ((JSyntaxPaneScriptEditor)editor).setSyntax(syntax);
-            }
-        });
+        ((JSyntaxPaneScriptEditor)editor).setSyntax(syntax);
     }
     
     private JTabbedPane initJTPResponse(){
@@ -633,13 +600,9 @@ public class RESTView extends JPanel implements View {
                 }
                 try {
                     final String indentedXML = XMLUtil.indentXML(resText);
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            se_response.setText(indentedXML);
-                            se_response.setCaretPosition(0);
-                            setStatusMessage("Indent XML: Success");
-                        }
-                    });
+                    se_response.setText(indentedXML);
+                    se_response.setCaretPosition(0);
+                    setStatusMessage("Indent XML: Success");
                 } catch (ParserConfigurationException ex) {
                     setStatusMessage("Indent XML: XML Parser Configuration Error.");
                 } catch (SAXException ex) {
@@ -699,11 +662,7 @@ public class RESTView extends JPanel implements View {
                         return;
                     }
                     if (e.isPopupTrigger()) {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                            }
-                        });
+                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }
             });
@@ -819,11 +778,7 @@ public class RESTView extends JPanel implements View {
         // Initialize parameter dialog
         ParameterView pv = new ParameterView(){
             public void setParameter(final String params) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        se_req_body.setText(params);
-                    }
-                });
+                se_req_body.setText(params);
             }
             
         };
@@ -988,11 +943,7 @@ public class RESTView extends JPanel implements View {
     private void jb_requestActionPerformed() {                                           
         RequestBean request = getRequestFromUI();
         if(request!=null){
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    clearUIResponse();
-                }
-            });
+            clearUIResponse();
             new HTTPRequestThread(request, view).start();
         }
     }                                          
@@ -1000,37 +951,42 @@ public class RESTView extends JPanel implements View {
     @Override
     public void doStart(RequestBean request){
         lastRequest = request;
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run(){
+        
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
                 jpb_status.setVisible(true);
                 jb_request.setEnabled(false);
+
+                // Update status message
+                setStatusMessage("Processing request...");
             }
         });
-        
-        // Update status message
-        setStatusMessage("Processing request...");
     }
     
     @Override
     public void doResponse(final ResponseBean response){
         lastResponse = response;
-        
-        // Update the UI:
-        setUIFromResponse(response);
-        
-        // Update status message
-        setStatusMessage("Response received in: " + response.getExecutionTime() + " ms");
-        
-        // Update Session View
-        if(sessionFrame.isVisible()){
-            sessionFrame.getSessionView().add(lastRequest, lastResponse);
-        }
+    
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                // Update the UI:
+                setUIFromResponse(response);
+
+                // Update status message
+                setStatusMessage("Response received in: " + response.getExecutionTime() + " ms");
+
+                // Update Session View
+                if(sessionFrame.isVisible()){
+                    sessionFrame.getSessionView().add(lastRequest, lastResponse);
+                }
+            }
+        });
     }
     
     @Override
     public void doEnd(){
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run(){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
                 jpb_status.setVisible(false);
                 jb_request.setEnabled(true);
             }
@@ -1039,7 +995,12 @@ public class RESTView extends JPanel implements View {
     
     @Override
     public void doError(final String error){
-        messageDialog.showError(error);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                messageDialog.showError(error);
+            }
+        });
+        
     }
     
     public void doMessage(final String title, final String message){
@@ -1068,13 +1029,9 @@ public class RESTView extends JPanel implements View {
             // Remove and add to bring it to the top
             // l.remove(item);
             // l.addFirst(item);
-            SwingUtilities.invokeLater(new Runnable(){
-                public void run(){
-                    // System.out.println("Removing and inserting at top");
-                    jcb_url.removeItem(item);
-                    jcb_url.insertItemAt(item, 0);
-                }
-            });
+            // System.out.println("Removing and inserting at top");
+            jcb_url.removeItem(item);
+            jcb_url.insertItemAt(item, 0);
         }
         else{ // Add new item
             if(((String)item).trim().length() != 0 ) {
@@ -1083,19 +1040,10 @@ public class RESTView extends JPanel implements View {
                     // Remove last item to give place
                     // to new one
                     //l.removeLast();
-                    SwingUtilities.invokeLater(new Runnable(){
-                        public void run(){
-                            jcb_url.removeItemAt(count - 1);
-                        }
-                    });
+                    jcb_url.removeItemAt(count - 1);
                 }
                 //l.addFirst(item);
-                SwingUtilities.invokeLater(new Runnable(){
-                    public void run(){
-                        // System.out.println("Inserting at top");
-                        jcb_url.insertItemAt(item, 0);
-                    }
-                });
+                jcb_url.insertItemAt(item, 0);
             }
         }
         // Use this to trigger request action on pressing Enter:
@@ -1103,16 +1051,12 @@ public class RESTView extends JPanel implements View {
     }
     
     private void auth_enableActionPerformed(final ActionEvent event){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                if(jcb_auth_basic.isSelected() || jcb_auth_digest.isSelected()){
-                    setUIReqAuthEnabled(true);
-                }
-                else{
-                    setUIReqAuthEnabled(false);
-                }
-            }
-        });
+        if(jcb_auth_basic.isSelected() || jcb_auth_digest.isSelected()){
+            setUIReqAuthEnabled(true);
+        }
+        else{
+            setUIReqAuthEnabled(false);
+        }
     }
     
     private void setUIReqAuthEnabled(final boolean boo){
@@ -1133,71 +1077,67 @@ public class RESTView extends JPanel implements View {
         if(!canSetReqBodyText()){
             return;
         }
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
-                if(f == null){ // Pressed cancel?
-                    return;
-                }
-                if(!f.canRead()){
-                    JOptionPane.showMessageDialog(rest_ui.getFrame(),
-                            "File not readable: " + f.getAbsolutePath(),
-                            "IO Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                // Determine the MIME type and set parameter
-                String contentType = Util.getMimeType(f);
-                String charset = null;
-                if(XMLUtil.XML_MIME.equals(contentType)){
-                    try{
-                        charset = XMLUtil.getDocumentCharset(f);
-                    }
-                    catch(IOException ex){
-                        // Do nothing!
-                    }
-                    catch(XMLException ex){
-                        // Do nothing!
-                    }
-                }
-                String oldContentType = jd_body_content_type.getContentType();
-                String oldCharset = jd_body_content_type.getCharSet();
-                if(!oldContentType.equals(contentType)){
-                    int contentTypeYesNo = JOptionPane.showConfirmDialog(view,
-                            "Change ContentType To: " + contentType + "?",
-                            "Change ContentType?", JOptionPane.YES_NO_OPTION);
-                    if(contentTypeYesNo == JOptionPane.YES_OPTION){
-                        jd_body_content_type.setContentType(contentType);
-                        if(charset != null){ // is XML file
-                            jd_body_content_type.setCharSet(charset);
-                        }
-                    }
-                }
-                // Only the charset has changed:
-                else if((charset != null) && (!oldCharset.equals(charset))){
-                    int charsetYesNo = JOptionPane.showConfirmDialog(view,
-                            "Change Charset To: " + charset + "?",
-                            "Change Charset?", JOptionPane.YES_NO_OPTION);
-                    if(charsetYesNo == JOptionPane.YES_OPTION){
-                        jd_body_content_type.setCharSet(charset);
-                    }
-                }
-                // Get text from file and set
-                try{
-                    String body = Util.getStringFromFile(f);
-                    se_req_body.setText(body);
-                    se_req_body.setCaretPosition(0);
-                }
-                catch(IOException ex){
-                    JOptionPane.showMessageDialog(rest_ui.getFrame(),
-                            "IO Error: " + ex.getMessage(),
-                            "IO Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    jd_body_content_type.setContentType(oldContentType);
-                    jd_body_content_type.setCharSet(oldCharset);
+        File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
+        if(f == null){ // Pressed cancel?
+            return;
+        }
+        if(!f.canRead()){
+            JOptionPane.showMessageDialog(rest_ui.getFrame(),
+                    "File not readable: " + f.getAbsolutePath(),
+                    "IO Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        // Determine the MIME type and set parameter
+        String contentType = Util.getMimeType(f);
+        String charset = null;
+        if(XMLUtil.XML_MIME.equals(contentType)){
+            try{
+                charset = XMLUtil.getDocumentCharset(f);
+            }
+            catch(IOException ex){
+                // Do nothing!
+            }
+            catch(XMLException ex){
+                // Do nothing!
+            }
+        }
+        String oldContentType = jd_body_content_type.getContentType();
+        String oldCharset = jd_body_content_type.getCharSet();
+        if(!oldContentType.equals(contentType)){
+            int contentTypeYesNo = JOptionPane.showConfirmDialog(view,
+                    "Change ContentType To: " + contentType + "?",
+                    "Change ContentType?", JOptionPane.YES_NO_OPTION);
+            if(contentTypeYesNo == JOptionPane.YES_OPTION){
+                jd_body_content_type.setContentType(contentType);
+                if(charset != null){ // is XML file
+                    jd_body_content_type.setCharSet(charset);
                 }
             }
-        });
+        }
+        // Only the charset has changed:
+        else if((charset != null) && (!oldCharset.equals(charset))){
+            int charsetYesNo = JOptionPane.showConfirmDialog(view,
+                    "Change Charset To: " + charset + "?",
+                    "Change Charset?", JOptionPane.YES_NO_OPTION);
+            if(charsetYesNo == JOptionPane.YES_OPTION){
+                jd_body_content_type.setCharSet(charset);
+            }
+        }
+        // Get text from file and set
+        try{
+            String body = Util.getStringFromFile(f);
+            se_req_body.setText(body);
+            se_req_body.setCaretPosition(0);
+        }
+        catch(IOException ex){
+            JOptionPane.showMessageDialog(rest_ui.getFrame(),
+                    "IO Error: " + ex.getMessage(),
+                    "IO Error",
+                    JOptionPane.ERROR_MESSAGE);
+            jd_body_content_type.setContentType(oldContentType);
+            jd_body_content_type.setCharSet(oldCharset);
+        }
     }
     
     private void jb_body_paramActionPerformed(ActionEvent event){
@@ -1205,12 +1145,8 @@ public class RESTView extends JPanel implements View {
             return;
         }
         checkAndSetParameterContentType();
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run(){
-                jd_req_paramDialog.setLocationRelativeTo(rest_ui.getFrame());
-                jd_req_paramDialog.setVisible(true);
-            }
-        });
+        jd_req_paramDialog.setLocationRelativeTo(rest_ui.getFrame());
+        jd_req_paramDialog.setVisible(true);
     }
     
     private boolean canSetReqBodyText(){
@@ -1243,12 +1179,8 @@ public class RESTView extends JPanel implements View {
                     "Parameter Content-type and Charset",
                     JOptionPane.YES_NO_OPTION);
             if(status == JOptionPane.YES_OPTION){
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        jd_body_content_type.setContentType(BodyContentTypeDialog.PARAM_CONTENT_TYPE);
-                        jd_body_content_type.setCharSet(BodyContentTypeDialog.PARAM_CHARSET);
-                    }
-                });
+                jd_body_content_type.setContentType(BodyContentTypeDialog.PARAM_CONTENT_TYPE);
+                jd_body_content_type.setCharSet(BodyContentTypeDialog.PARAM_CHARSET);
             }
         }
     }
@@ -1354,138 +1286,126 @@ public class RESTView extends JPanel implements View {
     }
     
     void setUIFromResponse(final ResponseBean response){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                // Clear first
-                clearUIResponse();
-                
-                // Response status line
-                jtf_res_status.setText(response.getStatusLine());
-                
-                // Response header
-                resHeaderTableModel.setHeaders(response.getHeaders());
-                
-                // Response body
-                Dimension d = jsp_res_body.getPreferredSize();
-                se_response.setText(response.getResponseBody());
-                jsp_res_body.setPreferredSize(d);
-                se_response.setCaretPosition(0);
-                
-                // Response test result
-                d = jsp_test_result.getPreferredSize();
-                jta_test_result.setText(response.getTestResult());
-                jsp_test_result.setPreferredSize(d);
-                jta_test_result.setCaretPosition(0);
-            }
-        });
+        // Clear first
+        clearUIResponse();
+
+        // Response status line
+        jtf_res_status.setText(response.getStatusLine());
+
+        // Response header
+        resHeaderTableModel.setHeaders(response.getHeaders());
+
+        // Response body
+        Dimension d = jsp_res_body.getPreferredSize();
+        se_response.setText(response.getResponseBody());
+        jsp_res_body.setPreferredSize(d);
+        se_response.setCaretPosition(0);
+
+        // Response test result
+        d = jsp_test_result.getPreferredSize();
+        jta_test_result.setText(response.getTestResult());
+        jsp_test_result.setPreferredSize(d);
+        jta_test_result.setCaretPosition(0);
     }
     
     void setUIFromRequest(final RequestBean request){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                // Clear first
-                clearUIRequest();
-                
-                // URL
-                jcb_url.setSelectedItem(request.getUrl().toString());
-                
-                // Method
-                String reqMethod = request.getMethod();
-                if("GET".equals(reqMethod)){
-                    jrb_req_get.setSelected(true);
-                }
-                else if("POST".equals(reqMethod)){
-                    jrb_req_post.setSelected(true);
-                }
-                else if("PUT".equals(reqMethod)){
-                    jrb_req_put.setSelected(true);
-                }
-                else if("DELETE".equals(reqMethod)){
-                    jrb_req_delete.setSelected(true);
-                }
-                else if("HEAD".equals(reqMethod)){
-                    jrb_req_head.setSelected(true);
-                }
-                else if("OPTIONS".equals(reqMethod)){
-                    jrb_req_options.setSelected(true);
-                }
-                else if("TRACE".equals(reqMethod)){
-                    jrb_req_trace.setSelected(true);
-                }
-                
-                // Headers
-                Map<String, String> headers = request.getHeaders();
-                jp_2col_req_headers.getTableModel().setData(headers);
-                
-                // Body
-                ReqEntityBean body = request.getBody();
-                if(body != null){
-                    if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
-                        setUIReqBodyEnabled(true);
-                    }
-                    jd_body_content_type.setContentType(body.getContentType());
-                    jd_body_content_type.setCharSet(body.getCharSet());
-                    se_req_body.setText(body.getBody());
-                    se_req_body.setCaretPosition(0);
-                }
-                
-                // Authentication
-                List<String> authMethods = request.getAuthMethods();
-                if(authMethods.size() > 0){
-                    setUIReqAuthEnabled(true);
-                }
-                for(String authMethod: authMethods){
-                    if("BASIC".equals(authMethod)){
-                        jcb_auth_basic.setSelected(true);
-                    }
-                    else if("DIGEST".equals(authMethod)){
-                        jcb_auth_digest.setSelected(true);
-                    }
-                }
-                jcb_auth_preemptive.setSelected(request.isAuthPreemptive());
-                jtf_auth_host.setText(Util.getNullStrIfNull(request.getAuthHost()));
-                jtf_auth_realm.setText(Util.getNullStrIfNull(request.getAuthRealm()));
-                jtf_auth_username.setText(Util.getNullStrIfNull(request.getAuthUsername()));
-                if(request.getAuthPassword() != null){
-                    jpf_auth_password.setText(new String(request.getAuthPassword()));
-                }
-                
-                // SSL
-                String sslTruststore = request.getSslTrustStore();
-                char[] sslTruststorePassword = request.getSslTrustStorePassword();
-                if(sslTruststore != null){
-                    jtf_ssl_truststore_file.setText(sslTruststore);
-                }
-                if(sslTruststorePassword != null){
-                    jpf_ssl_truststore_pwd.setText(new String(sslTruststorePassword));
-                }
-                
-                // HTTP Version
-                if(request.getHttpVersion() == HTTPVersion.HTTP_1_1){
-                    jcb_http_version.setSelectedItem(HTTPVersion.HTTP_1_1);
-                }
-                else if(request.getHttpVersion() == HTTPVersion.HTTP_1_0){
-                    jcb_http_version.setSelectedItem(HTTPVersion.HTTP_1_0);
-                }
-                
-                // Test script
-                Dimension d = jsp_test_script.getPreferredSize();
-                se_test_script.setText(request.getTestScript()==null?"":request.getTestScript());
-                se_test_script.setCaretPosition(0);
-                jsp_test_script.setPreferredSize(d);
+        // Clear first
+        clearUIRequest();
+
+        // URL
+        jcb_url.setSelectedItem(request.getUrl().toString());
+
+        // Method
+        String reqMethod = request.getMethod();
+        if("GET".equals(reqMethod)){
+            jrb_req_get.setSelected(true);
+        }
+        else if("POST".equals(reqMethod)){
+            jrb_req_post.setSelected(true);
+        }
+        else if("PUT".equals(reqMethod)){
+            jrb_req_put.setSelected(true);
+        }
+        else if("DELETE".equals(reqMethod)){
+            jrb_req_delete.setSelected(true);
+        }
+        else if("HEAD".equals(reqMethod)){
+            jrb_req_head.setSelected(true);
+        }
+        else if("OPTIONS".equals(reqMethod)){
+            jrb_req_options.setSelected(true);
+        }
+        else if("TRACE".equals(reqMethod)){
+            jrb_req_trace.setSelected(true);
+        }
+
+        // Headers
+        Map<String, String> headers = request.getHeaders();
+        jp_2col_req_headers.getTableModel().setData(headers);
+
+        // Body
+        ReqEntityBean body = request.getBody();
+        if(body != null){
+            if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
+                setUIReqBodyEnabled(true);
             }
-        });
+            jd_body_content_type.setContentType(body.getContentType());
+            jd_body_content_type.setCharSet(body.getCharSet());
+            se_req_body.setText(body.getBody());
+            se_req_body.setCaretPosition(0);
+        }
+
+        // Authentication
+        List<String> authMethods = request.getAuthMethods();
+        if(authMethods.size() > 0){
+            setUIReqAuthEnabled(true);
+        }
+        for(String authMethod: authMethods){
+            if("BASIC".equals(authMethod)){
+                jcb_auth_basic.setSelected(true);
+            }
+            else if("DIGEST".equals(authMethod)){
+                jcb_auth_digest.setSelected(true);
+            }
+        }
+        jcb_auth_preemptive.setSelected(request.isAuthPreemptive());
+        jtf_auth_host.setText(Util.getNullStrIfNull(request.getAuthHost()));
+        jtf_auth_realm.setText(Util.getNullStrIfNull(request.getAuthRealm()));
+        jtf_auth_username.setText(Util.getNullStrIfNull(request.getAuthUsername()));
+        if(request.getAuthPassword() != null){
+            jpf_auth_password.setText(new String(request.getAuthPassword()));
+        }
+
+        // SSL
+        String sslTruststore = request.getSslTrustStore();
+        char[] sslTruststorePassword = request.getSslTrustStorePassword();
+        if(sslTruststore != null){
+            jtf_ssl_truststore_file.setText(sslTruststore);
+        }
+        if(sslTruststorePassword != null){
+            jpf_ssl_truststore_pwd.setText(new String(sslTruststorePassword));
+        }
+
+        // HTTP Version
+        if(request.getHttpVersion() == HTTPVersion.HTTP_1_1){
+            jcb_http_version.setSelectedItem(HTTPVersion.HTTP_1_1);
+        }
+        else if(request.getHttpVersion() == HTTPVersion.HTTP_1_0){
+            jcb_http_version.setSelectedItem(HTTPVersion.HTTP_1_0);
+        }
+
+        // Test script
+        Dimension d = jsp_test_script.getPreferredSize();
+        se_test_script.setText(request.getTestScript()==null?"":request.getTestScript());
+        se_test_script.setCaretPosition(0);
+        jsp_test_script.setPreferredSize(d);
     }
     
     private Calendar statusLastUpdated;
     
     public void setStatusMessage(final String msg){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                jl_status.setText(" " + msg);
-                statusLastUpdated = Calendar.getInstance();
-            }
-        });
+        jl_status.setText(" " + msg);
+        statusLastUpdated = Calendar.getInstance();
     }
     
     public RequestBean getLastRequest() {

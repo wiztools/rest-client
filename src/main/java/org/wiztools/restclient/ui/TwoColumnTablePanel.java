@@ -23,7 +23,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -115,18 +114,14 @@ public final class TwoColumnTablePanel extends JPanel {
         JMenuItem jmi_delete = new JMenuItem("Delete");
         jmi_delete.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                SwingUtilities.invokeLater(new Runnable(){
-                    public void run(){
-                        int selectionCount = jt.getSelectedRowCount();
-                        if(selectionCount > 0){
-                            int[] rows = jt.getSelectedRows();
-                            Arrays.sort(rows);
-                            for(int i=rows.length-1; i>=0; i--){
-                                model.deleteRow(rows[i]);
-                            }
-                        }
+                int selectionCount = jt.getSelectedRowCount();
+                if(selectionCount > 0){
+                    int[] rows = jt.getSelectedRows();
+                    Arrays.sort(rows);
+                    for(int i=rows.length-1; i>=0; i--){
+                        model.deleteRow(rows[i]);
                     }
-                });
+                }
             }
         });
         popupMenu.add(jmi_delete);
@@ -203,27 +198,19 @@ public final class TwoColumnTablePanel extends JPanel {
                     return;
                 }
                 model.insertRow(key, value);
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        jtf_key.setText("");
-                        jtf_value.setText("");
-                        jtf_key.requestFocus();
-                    }
-                });
+                jtf_key.setText("");
+                jtf_value.setText("");
+                jtf_key.requestFocus();
             }
         });
         JButton jb_multi_insert = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
         jb_multi_insert.setToolTipText("Multi-insert");
         jb_multi_insert.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        if(jd_multi == null){
-                            initMultiEntryDialog();
-                        }
-                        jd_multi.setVisible(true);
-                    }
-                });
+                if(jd_multi == null){
+                    initMultiEntryDialog();
+                }
+                jd_multi.setVisible(true);
             }
         });
         jp_north.add(jl_key);
