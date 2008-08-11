@@ -12,9 +12,7 @@ import java.util.List;
 import java.util.Map;
 import junit.framework.TestSuite;
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
@@ -29,7 +27,6 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.AuthPolicy;
-import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
@@ -169,9 +166,8 @@ public class HTTPRequestThread extends Thread {
                 ReqEntityBean bean = request.getBody();
                 if (bean != null) {
                     try {
-
-                        HttpEntity entity = new StringEntity(
-                                bean.getBody(), bean.getCharSet());
+                        StringEntity entity = new StringEntity(bean.getBody());
+                        entity.setContentType(bean.getContentTypeCharsetFormatted());
                         eeMethod.setEntity(entity);
                     } catch (UnsupportedEncodingException ex) {
                         view.doError(Util.getStackTrace(ex));

@@ -190,7 +190,7 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
         <dependency>
             <groupId>jsyntaxpane</groupId>
             <artifactId>jsyntaxpane</artifactId>
-            <version>080717</version>
+            <version>0.9.0</version>
         </dependency>
     </dependencies>
 </project>

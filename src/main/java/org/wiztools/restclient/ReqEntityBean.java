@@ -40,6 +40,10 @@ public final class ReqEntityBean implements Cloneable{
         this.contentType = contentType;
     }
     
+    public String getContentTypeCharsetFormatted(){
+        return contentType + "; charset=" + charSet;
+    }
+    
     @Override
     public Object clone(){
         ReqEntityBean cloned = new ReqEntityBean(body, contentType, charSet);
