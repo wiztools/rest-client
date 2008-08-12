@@ -999,6 +999,7 @@ public class RESTView extends JPanel implements View {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 showError(error);
+                setStatusMessage("An error occurred during request.");
             }
         });
         
