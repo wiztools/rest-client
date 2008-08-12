@@ -10,6 +10,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -25,6 +29,7 @@ import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.ReqResBean;
 import org.wiztools.restclient.RequestBean;
 import org.wiztools.restclient.ResponseBean;
+import org.wiztools.restclient.TraceServer;
 import org.wiztools.restclient.Util;
 import org.wiztools.restclient.xml.Base64;
 import org.wiztools.restclient.xml.XMLException;
@@ -226,6 +231,56 @@ public class RESTMain implements RESTUserInterface {
             }
         });
         jm_tools.add(jmi_pwd_gen);
+        
+        jm_tools.addSeparator();
+        
+        // Trace Server
+        JMenuItem jmi_server_start = new JMenuItem("Start Trace Server @ port " + TraceServer.PORT);
+        jmi_server_start.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                try{
+                    TraceServer.start();
+                    view.setStatusMessage("Trace Server started.");
+                }
+                catch(Exception ex){
+                    view.showError(Util.getStackTrace(ex));
+                }
+            }
+        });
+        jm_tools.add(jmi_server_start);
+        
+        JMenuItem jmi_server_stop = new JMenuItem("Stop Trace Server");
+        jmi_server_stop.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                try{
+                    if(TraceServer.isRunning()){
+                        TraceServer.stop();
+                        view.setStatusMessage("Trace Server stopped.");
+                    }
+                }
+                catch(Exception ex){
+                    view.showError(Util.getStackTrace(ex));
+                }
+            }
+        });
+        jm_tools.add(jmi_server_stop);
+        
+        JMenuItem jmi_server_fill_url = new JMenuItem("Enter Server URL");
+        jmi_server_fill_url.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                RequestBean request = view.getRequestFromUI();
+                if(request == null){
+                    request = new RequestBean();
+                }
+                try {
+                    request.setUrl(new URL("http://localhost:" + TraceServer.PORT + "/"));
+                } catch (MalformedURLException ex) {
+                    assert true: ex;
+                }
+                view.setUIFromRequest(request);
+            }
+        });
+        jm_tools.add(jmi_server_fill_url);
         
         jm_tools.addSeparator();
         

@@ -834,6 +834,7 @@ public class RESTView extends JPanel implements View {
     }
     
     public RequestBean getRequestFromUI(){
+        correctRequestURL();
         List<String> errors = validateForRequest();
         if(errors.size()!=0){
             String errStr = Util.getHTMLListFromList(errors);
@@ -1213,6 +1214,23 @@ public class RESTView extends JPanel implements View {
         }
     }
     
+    // Checks if URL starts with http:// or https://
+    // If not, appends http:// to the hostname
+    // This is just a UI convenience method.
+    private void correctRequestURL(){
+        String str = (String)jcb_url.getSelectedItem();
+        if(Util.isStrEmpty(str)){
+            return;
+        }
+        else{
+            String t = str.toLowerCase();
+            if(!(t.startsWith("http://") || t.startsWith("https://"))){
+                str = "http://" + str;
+                jcb_url.setSelectedItem(str);
+            }
+        }
+    }
+    
     private List<String> validateForRequest(){
         List<String> errors = new ArrayList<String>();
         Object o = null;
@@ -1222,6 +1240,11 @@ public class RESTView extends JPanel implements View {
             errors.add("URL field is empty.");
         }
         else{
+            String t = str.toLowerCase();
+            if(!(t.startsWith("http://") || t.startsWith("https://"))){
+                str = "http://" + str;
+                jcb_url.setSelectedItem(str);
+            }
             try{
                 new URL(str);
             }
