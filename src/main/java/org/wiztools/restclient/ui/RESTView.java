@@ -835,7 +835,7 @@ public class RESTView extends JPanel implements View {
     
     public RequestBean getRequestFromUI(){
         correctRequestURL();
-        List<String> errors = validateForRequest();
+        /*List<String> errors = validateForRequest();
         if(errors.size()!=0){
             String errStr = Util.getHTMLListFromList(errors);
             JOptionPane.showMessageDialog(rest_ui.getFrame(),
@@ -843,7 +843,7 @@ public class RESTView extends JPanel implements View {
                 "Validation error",
                 JOptionPane.ERROR_MESSAGE);
             return null;
-        }
+        }*/
         
         RequestBean request = new RequestBean();
         boolean authEnabled = false;
@@ -878,7 +878,7 @@ public class RESTView extends JPanel implements View {
             request.setUrl(new URL(url));
         }
         catch(MalformedURLException ex){
-            assert true: "Should not come here as validation logic checks this.";
+            // URL is left null!
         }
         if(jrb_req_get.isSelected()){
             request.setMethod("GET");
@@ -943,9 +943,17 @@ public class RESTView extends JPanel implements View {
 
     private void jb_requestActionPerformed() {                                           
         RequestBean request = getRequestFromUI();
-        if(request!=null){
+        List<String> errors = validateRequest(request);
+        if(errors.size() == 0){
             clearUIResponse();
             new HTTPRequestThread(request, view).start();
+        }
+        else{
+            String errStr = Util.getHTMLListFromList(errors);
+            JOptionPane.showMessageDialog(rest_ui.getFrame(),
+                errStr,
+                "Validation error",
+                JOptionPane.ERROR_MESSAGE);
         }
     }                                          
 
@@ -1225,48 +1233,42 @@ public class RESTView extends JPanel implements View {
         }
         else{
             String t = str.toLowerCase();
-            if(!(t.startsWith("http://") || t.startsWith("https://"))){
+            if(!(t.startsWith("http://") 
+                    || t.startsWith("https://")
+                    || t.matches("^[a-z]+://.*"))){
                 str = "http://" + str;
                 jcb_url.setSelectedItem(str);
             }
         }
     }
     
-    private List<String> validateForRequest(){
+    private List<String> validateRequest(RequestBean request){
         List<String> errors = new ArrayList<String>();
-        Object o = null;
-        String str = null;
-        str = (String)jcb_url.getSelectedItem();
-        if(Util.isStrEmpty(str)){
-            errors.add("URL field is empty.");
+
+        // Check URL
+        if(request.getUrl() == null){
+            errors.add("URL is invalid.");
         }
-        else{
-            String t = str.toLowerCase();
-            if(!(t.startsWith("http://") || t.startsWith("https://"))){
-                str = "http://" + str;
-                jcb_url.setSelectedItem(str);
-            }
-            try{
-                new URL(str);
-            }
-            catch(MalformedURLException ex){
-                errors.add("URL is malformed.");
-            }
-        }
-        if(jcb_auth_basic.isSelected() || jcb_auth_digest.isSelected()){
-            if(Util.isStrEmpty(jtf_auth_username.getText())){
+        
+        // Auth check
+        if(request.getAuthMethods().size() > 0){
+            if(Util.isStrEmpty(request.getAuthUsername())){
                 errors.add("Username is empty.");
             }
-            if(Util.isStrEmpty(new String(jpf_auth_password.getPassword()))){
+            if(Util.isStrEmpty(new String(request.getAuthPassword()))){
                 errors.add("Password is empty.");
             }
         }
-        if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
+        
+        // Req Entity check
+        final String METHOD = request.getMethod();
+        if(METHOD.equals("POST") || METHOD.equals("PUT")){
             // Get request body
-            String req_body = se_req_body.getText();
+            ReqEntityBean reBean = request.getBody();
+            String req_body = reBean.getBody();
             if(!Util.isStrEmpty(req_body)){
-                String req_content_type = jd_body_content_type.getContentType();
-                String req_char_set = jd_body_content_type.getCharSet();
+                String req_content_type = reBean.getContentType();
+                String req_char_set = reBean.getCharSet();
                 if(Util.isStrEmpty(req_content_type)
                         || Util.isStrEmpty(req_char_set)){
                     errors.add("Body content is set, but `Content-type' and/or `Char-set' not set.");

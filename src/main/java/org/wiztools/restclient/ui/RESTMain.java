@@ -265,12 +265,18 @@ public class RESTMain implements RESTUserInterface {
         });
         jm_tools.add(jmi_server_stop);
         
-        JMenuItem jmi_server_fill_url = new JMenuItem("Enter Server URL");
+        JMenuItem jmi_server_fill_url = new JMenuItem("Insert Trace Server URL");
         jmi_server_fill_url.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 RequestBean request = view.getRequestFromUI();
-                if(request == null){
-                    request = new RequestBean();
+                if(request.getUrl() != null){
+                    int ret = JOptionPane.showConfirmDialog(frame,
+                            "URL field not empty. Overwrite?",
+                            "Request URL not empty",
+                            JOptionPane.YES_NO_OPTION);
+                    if(ret == JOptionPane.NO_OPTION){
+                        return;
+                    }
                 }
                 try {
                     request.setUrl(new URL("http://localhost:" + TraceServer.PORT + "/"));
