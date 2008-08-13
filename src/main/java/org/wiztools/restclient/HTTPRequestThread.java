@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import junit.framework.TestSuite;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -214,10 +215,13 @@ public class HTTPRequestThread extends Thread {
                 response.addHeader(header.getName(), header.getValue());
             }
 
-            InputStream is = http_res.getEntity().getContent();
-            String responseBody = Util.inputStream2String(is);
-            if (responseBody != null) {
-                response.setResponseBody(responseBody);
+            HttpEntity entity = http_res.getEntity();
+            if(entity != null){
+                InputStream is = entity.getContent();
+                String responseBody = Util.inputStream2String(is);
+                if (responseBody != null) {
+                    response.setResponseBody(responseBody);
+                }
             }
 
             // Now execute tests:

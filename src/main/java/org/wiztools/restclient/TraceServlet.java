@@ -68,43 +68,37 @@ public class TraceServlet extends HttpServlet {
     
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
-        request.setAttribute("rc:method", "GET");
         process(request, response);
     }
     
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
-        request.setAttribute("rc:method", "POST");
         process(request, response);
     }
     
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
-        request.setAttribute("rc:method", "PUT");
         process(request, response);
     }
     
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
-        request.setAttribute("rc:method", "DELETE");
         process(request, response);
     }
     
-    @Override
+    /*@Override
     public void doHead(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
-        request.setAttribute("rc:method", "HEAD");
+        System.out.println("doHead called!");
         process(request, response);
     }
     
     @Override
     public void doOptions(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
-        request.setAttribute("rc:method", "OPTIONS");
         process(request, response);
     }
     
     @Override
     public void doTrace(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
-        request.setAttribute("rc:method", "TRACE");
         process(request, response);
-    }
+    }*/
 }
