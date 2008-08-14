@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class TraceServlet extends HttpServlet {
     private void process(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
-        response.setContentType("text/plain");
+        response.setContentType("text/plain; charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.println("**RESTClient TraceServlet**");
         
