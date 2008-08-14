@@ -41,6 +41,9 @@ public class TraceServer {
                     port = t_port;
                 }
             }
+            else{ // System property not supplied, use default port
+                port = DEFAULT_PORT;
+            }
         }
         catch(NumberFormatException ex){
             LOG.warning(SYS_PROPERTY_PORT
