@@ -93,7 +93,9 @@ public final class ResponseBean implements Cloneable{
         if(o != null && o instanceof ResponseBean){
             final ResponseBean bean = (ResponseBean)o;
             boolean isEqual = true;
-            isEqual = isEqual && (this.executionTime == bean.executionTime);
+            // Do not check executionTime: because when constructing ResponseBean
+            // from the UI, it is not possible to get this value:
+            // isEqual = isEqual && (this.executionTime == bean.executionTime);
             isEqual = isEqual && (this.statusCode == bean.statusCode);
             isEqual = isEqual && (this.statusLine == null? bean.statusLine == null: this.statusLine.equals(bean.statusLine));
             isEqual = isEqual && (this.headers == null? bean.headers == null: this.headers.equals(bean.headers));
@@ -107,7 +109,7 @@ public final class ResponseBean implements Cloneable{
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + (int)this.executionTime;
+        // hash = 53 * hash + (int)this.executionTime;
         hash = 53 * hash + this.statusCode;
         hash = 53 * hash + (this.statusLine != null ? this.statusLine.hashCode() : 0);
         hash = 53 * hash + (this.headers != null ? this.headers.hashCode() : 0);
