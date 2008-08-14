@@ -190,7 +190,7 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all-minimal</artifactId>
-            <version>1.5.4</version>
+            <version>1.5.6</version>
         </dependency>
         <dependency>
             <groupId>jsyntaxpane</groupId>

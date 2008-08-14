@@ -1265,13 +1265,15 @@ public class RESTView extends JPanel implements View {
         if(METHOD.equals("POST") || METHOD.equals("PUT")){
             // Get request body
             ReqEntityBean reBean = request.getBody();
-            String req_body = reBean.getBody();
-            if(!Util.isStrEmpty(req_body)){
-                String req_content_type = reBean.getContentType();
-                String req_char_set = reBean.getCharSet();
-                if(Util.isStrEmpty(req_content_type)
-                        || Util.isStrEmpty(req_char_set)){
-                    errors.add("Body content is set, but `Content-type' and/or `Char-set' not set.");
+            if(reBean != null){
+                String req_body = reBean.getBody();
+                if(!Util.isStrEmpty(req_body)){
+                    String req_content_type = reBean.getContentType();
+                    String req_char_set = reBean.getCharSet();
+                    if(Util.isStrEmpty(req_content_type)
+                            || Util.isStrEmpty(req_char_set)){
+                        errors.add("Body content is set, but `Content-type' and/or `Char-set' not set.");
+                    }
                 }
             }
         }
