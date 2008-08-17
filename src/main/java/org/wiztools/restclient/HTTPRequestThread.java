@@ -14,11 +14,18 @@ import junit.framework.TestSuite;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
+import org.apache.http.auth.AuthScheme;
 import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.AuthState;
+import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
@@ -28,10 +35,12 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.AuthPolicy;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.message.AbstractHttpMessage;
@@ -39,6 +48,9 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
 import org.wiztools.restclient.test.TestException;
 import org.wiztools.restclient.test.TestUtil;
 
@@ -124,8 +136,12 @@ public class HTTPRequestThread extends Thread {
                     new UsernamePasswordCredentials(uid, pwd));
 
             // preemptive mode
+            // http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/module-client/src/examples/org/apache/http/examples/client/ClientPreemptiveBasicAuthentication.java
             if (request.isAuthPreemptive()) {
-                // httpclient.getParams().
+                BasicHttpContext localcontext = new BasicHttpContext();
+                BasicScheme basicAuth = new BasicScheme();
+                localcontext.setAttribute("preemptive-auth", basicAuth);
+                httpclient.addRequestInterceptor(new PreemptiveAuth(), 0);
             }
         }
 
@@ -248,5 +264,39 @@ public class HTTPRequestThread extends Thread {
             }
             view.doEnd();
         }
+    }
+    
+    static class PreemptiveAuth implements HttpRequestInterceptor {
+
+        public void process(
+                final HttpRequest request, 
+                final HttpContext context) throws HttpException, IOException {
+            
+            AuthState authState = (AuthState) context.getAttribute(
+                    ClientContext.TARGET_AUTH_STATE);
+            
+            // If no auth scheme avaialble yet, try to initialize it preemptively
+            if (authState.getAuthScheme() == null) {
+                AuthScheme authScheme = (AuthScheme) context.getAttribute(
+                        "preemptive-auth");
+                CredentialsProvider credsProvider = (CredentialsProvider) context.getAttribute(
+                        ClientContext.CREDS_PROVIDER);
+                HttpHost targetHost = (HttpHost) context.getAttribute(
+                        ExecutionContext.HTTP_TARGET_HOST);
+                if (authScheme != null) {
+                    Credentials creds = credsProvider.getCredentials(
+                            new AuthScope(
+                                    targetHost.getHostName(), 
+                                    targetHost.getPort()));
+                    if (creds == null) {
+                        throw new HttpException("No credentials for preemptive authentication");
+                    }
+                    authState.setAuthScheme(authScheme);
+                    authState.setCredentials(creds);
+                }
+            }
+            
+        }
+        
     }
 }
