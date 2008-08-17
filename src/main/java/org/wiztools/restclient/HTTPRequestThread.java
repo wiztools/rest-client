@@ -95,7 +95,6 @@ public class HTTPRequestThread extends Thread {
         HttpConnectionParams.setConnectionTimeout(httpclient.getParams(), options.getRequestTimeoutInMillis());
         options.release();
 
-
         // Set proxy
         ProxyConfig proxy = ProxyConfig.getInstance();
         proxy.acquire();
