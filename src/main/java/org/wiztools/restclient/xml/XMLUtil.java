@@ -101,7 +101,7 @@ public final class XMLUtil {
             // creating the auth-methods child element
             List<String> authMethods = bean.getAuthMethods();
             if(authMethods.size() > 0){
-                if (authMethods != null || authMethods.size() > 0) {
+                if (authMethods != null && authMethods.size() > 0) {
                     e = xmldoc.createElementNS(null, "auth-methods");
                     String methods = "";
                     for (String authMethod : authMethods) {
