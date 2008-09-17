@@ -35,7 +35,10 @@ import org.wiztools.restclient.xml.XMLUtil;
  *
  * @author schandran
  */
-public class Util {
+public final class Util {
+    
+    // private constructor so that no instance from outside can be created
+    private Util(){}
 
     public static boolean isStrEmpty(final String str) {
         if (str == null || "".equals(str.trim())) {

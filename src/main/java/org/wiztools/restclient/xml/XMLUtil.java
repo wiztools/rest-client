@@ -40,6 +40,8 @@ import org.xml.sax.SAXException;
  */
 public final class XMLUtil {
     
+    private XMLUtil(){}
+    
     private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
     
     private static final String[] VERSIONS = new String[]{"2.0", "2.1", "2.2a1", RCConstants.VERSION};
