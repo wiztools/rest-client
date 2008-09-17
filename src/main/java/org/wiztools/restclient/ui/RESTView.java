@@ -590,6 +590,10 @@ public class RESTView extends JPanel implements View {
         // Response body
         // First the pop-up menu for xml formatting:
         final JPopupMenu popupMenu = new JPopupMenu();
+        
+        JMenu jm_indent = new JMenu("Indent");
+        
+        // Indent XML
         JMenuItem jmi_indentXml = new JMenuItem("Indent XML");
         jmi_indentXml.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -616,7 +620,31 @@ public class RESTView extends JPanel implements View {
                 }
             }
         });
-        popupMenu.add(jmi_indentXml);
+        jm_indent.add(jmi_indentXml);
+        
+        // Indent JSON
+        JMenuItem jmi_indentJson = new JMenuItem("Indent JSON");
+        jmi_indentJson.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                String resText = se_response.getText();
+                if("".equals(resText.trim())){
+                    setStatusMessage("No response body!");
+                    return;
+                }
+                try{
+                    String indentedJSON = JSONUtil.indentJSON(resText);
+                    se_response.setText(indentedJSON);
+                    se_response.setCaretPosition(0);
+                    setStatusMessage("Indent JSON: Success");
+                }
+                catch(JSONUtil.JSONParseException ex){
+                    setStatusMessage("Indent JSON: Not a valid JSON text.");
+                }
+            };
+        });
+        jm_indent.add(jmi_indentJson);
+        
+        popupMenu.add(jm_indent);
         
         // Syntax color change
         JMenu jm_syntax = new JMenu("Syntax Color");
