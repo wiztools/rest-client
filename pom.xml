@@ -182,6 +182,11 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
             <version>6.1.11</version>
         </dependency>
         <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-asl</artifactId>
+            <version>0.9.3</version>
+        </dependency> 
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.0-beta1</version>
