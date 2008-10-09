@@ -51,6 +51,7 @@ public class HTTPRequestThreadTest {
     public void testPremptiveAuth() throws Exception{
         System.out.println("testPreemptiveAuth");
         RequestBean req = getRequestBean();
+        req.setMethod("GET");
         req.setAuthPreemptive(true);
         req.setAuthUsername("subhash");
         req.setAuthPassword("subhash".toCharArray());
@@ -58,10 +59,11 @@ public class HTTPRequestThreadTest {
         req.addAuthMethod("DIGEST");
         View view = new View() {
             public void doStart(RequestBean request) {
-                
+                System.out.println("Starting request...");
             }
 
             public void doResponse(ResponseBean response) {
+                System.out.println("in doResponse()...");
                 String body = response.getResponseBody();
                 if(!body.contains("Authorization: Basic c3ViaGFzaDpzdWJoYXNo")){
                     fail("Pre-emptive Authorization does not happen");
@@ -73,7 +75,7 @@ public class HTTPRequestThreadTest {
             }
 
             public void doError(String error) {
-                
+                System.out.println(error);
             }
         };
         HTTPRequestThread instance = new HTTPRequestThread(req, view);
@@ -110,7 +112,7 @@ public class HTTPRequestThreadTest {
             }
 
             public void doError(String error) {
-                //throw new UnsupportedOperationException("Not supported yet.");
+                System.out.println(error);
             }
         };
         
