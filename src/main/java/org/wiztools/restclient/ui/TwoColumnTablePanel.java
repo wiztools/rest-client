@@ -153,7 +153,7 @@ public final class TwoColumnTablePanel extends JPanel {
         jp.setLayout(new BorderLayout());
         
         JPanel jp_north = new JPanel();
-        jp_north.setLayout(new FlowLayout(FlowLayout.CENTER));
+        jp_north.setLayout(new FlowLayout(FlowLayout.LEFT));
         JLabel jl_key = new JLabel("Key: ");
         JLabel jl_value = new JLabel("Value: ");
         final int TEXT_FIELD_SIZE = 12;
