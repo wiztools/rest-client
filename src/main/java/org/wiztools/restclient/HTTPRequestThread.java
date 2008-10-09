@@ -78,6 +78,9 @@ public class HTTPRequestThread extends Thread {
         int urlPort = url.getPort()==-1?url.getDefaultPort():url.getPort();
         String urlProtocol = url.getProtocol();
         String urlStr = url.toString();
+        
+        // Needed for specifying HTTP pre-emptive authentication
+        HttpContext httpContext = null;
 
         DefaultHttpClient httpclient = new DefaultHttpClient();
         
@@ -141,6 +144,7 @@ public class HTTPRequestThread extends Thread {
                 BasicScheme basicAuth = new BasicScheme();
                 localcontext.setAttribute("preemptive-auth", basicAuth);
                 httpclient.addRequestInterceptor(new PreemptiveAuth(), 0);
+                httpContext = localcontext;
             }
         }
 
@@ -215,7 +219,8 @@ public class HTTPRequestThread extends Thread {
 
             // Now Execute:
             long startTime = System.currentTimeMillis();
-            HttpResponse http_res = httpclient.execute((HttpUriRequest) method);
+            HttpResponse http_res = httpclient.execute((HttpUriRequest) method,
+                    httpContext);
             long endTime = System.currentTimeMillis();
 
             ResponseBean response = new ResponseBean();
