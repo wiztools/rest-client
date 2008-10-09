@@ -5,13 +5,13 @@
 
 package org.wiztools.restclient;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mortbay.jetty.Server;
 import static org.junit.Assert.*;
 
 /**
@@ -22,6 +22,12 @@ public class HTTPRequestThreadTest {
 
     public HTTPRequestThreadTest() {
     }
+    
+    private RequestBean getRequestBean() throws MalformedURLException{
+        RequestBean request = new RequestBean();
+        request.setUrl(new URL("http://localhost:"+TraceServer.DEFAULT_PORT+"/"));
+        return request;
+    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -31,20 +37,47 @@ public class HTTPRequestThreadTest {
     public static void tearDownClass() throws Exception {
     }
     
-    private Server jServer;
-    private static final int PORT = 45327;
-
     @Before
     public void setUp() throws Exception {
-        jServer = new Server(PORT);
-        jServer.start();
+        TraceServer.start();
     }
 
     @After
     public void tearDown() throws Exception {
-        if(jServer != null){
-            jServer.stop();
-        }
+        TraceServer.stop();
+    }
+    
+    @Test
+    public void testPremptiveAuth() throws Exception{
+        System.out.println("testPreemptiveAuth");
+        RequestBean req = getRequestBean();
+        req.setAuthPreemptive(true);
+        req.setAuthUsername("subhash");
+        req.setAuthPassword("subhash".toCharArray());
+        req.addAuthMethod("GET");
+        req.addAuthMethod("DIGEST");
+        View view = new View() {
+            public void doStart(RequestBean request) {
+                
+            }
+
+            public void doResponse(ResponseBean response) {
+                String body = response.getResponseBody();
+                if(!body.contains("Authorization: Basic c3ViaGFzaDpzdWJoYXNo")){
+                    fail("Pre-emptive Authorization does not happen");
+                }
+            }
+
+            public void doEnd() {
+                
+            }
+
+            public void doError(String error) {
+                
+            }
+        };
+        HTTPRequestThread instance = new HTTPRequestThread(req, view);
+        instance.run();
     }
 
     /**
@@ -56,8 +89,7 @@ public class HTTPRequestThreadTest {
         
         final String contentType = "test/text";
         final String charset = "UTF-8";
-        RequestBean request = new RequestBean();
-        request.setUrl(new URL("http://localhost:"+PORT+"/"));
+        RequestBean request = getRequestBean();
         request.setMethod("POST");
         ReqEntityBean rBean = new ReqEntityBean("", contentType, charset);
         request.setBody(rBean);

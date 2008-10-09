@@ -18,8 +18,8 @@ public class TraceServer {
 
     private static final Logger LOG = Logger.getLogger(TraceServer.class.getName());
 
-    private static final String SYS_PROPERTY_PORT = "rc:trace-server-port";
-    private static final int DEFAULT_PORT = 10101;
+    public static final String SYS_PROPERTY_PORT = "rc:trace-server-port";
+    public static final int DEFAULT_PORT = 10101;
 
     public static final int PORT;
     private static final Server server;
