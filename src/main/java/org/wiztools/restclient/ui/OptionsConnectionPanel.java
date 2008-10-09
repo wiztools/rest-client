@@ -197,7 +197,8 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
     public void initOptions() {
         GlobalOptions options = GlobalOptions.getInstance();
         try{
-            ok_type = options.getProperty(PROP_PREFIX + "type");
+            String t = options.getProperty(PROP_PREFIX + "type");
+            ok_type = t==null? ok_type: t;
             ok_value = Integer.parseInt(options.getProperty(PROP_PREFIX + "value"));
             // ok_value is always stored in milli-secs, so convertion is necessary:
             if(SECONDS.equals(ok_type)){
