@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient.test;
 
 import java.util.List;
@@ -27,6 +22,7 @@ public class TestResultBean {
         this.message = message;
     }
     
+    @Override
     public String toString(){
         return message;
     }

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import junit.framework.TestFailure;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
@@ -78,6 +80,16 @@ public class TestUtil {
             throw new TestException("", ex);
         }
     }
+    
+    private static final int getLineNumber(String str){
+        Pattern p = Pattern.compile("\\(__GenRESTTestCase__:([0-9]+)\\)");
+        Matcher m = p.matcher(str);
+        if(m.find()){
+            String lineNumberStr = m.group(1);
+            return Integer.parseInt(lineNumberStr);
+        }
+        return 0;
+    }
 
     public static TestResultBean execute(final TestSuite suite){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -102,6 +114,7 @@ public class TestUtil {
 
                 TestFailureResultBean t = new TestFailureResultBean();
                 t.setExceptionMessage(failure.exceptionMessage());
+                t.setLineNumber(getLineNumber(failure.trace()));
                 l.add(t);
             }
             resultBean.setFailures(l);
@@ -115,6 +128,7 @@ public class TestUtil {
                 
                 TestFailureResultBean t = new TestFailureResultBean();
                 t.setExceptionMessage(error.exceptionMessage());
+                t.setLineNumber(getLineNumber(error.trace()));
                 l.add(t);
             }
             resultBean.setErrors(l);

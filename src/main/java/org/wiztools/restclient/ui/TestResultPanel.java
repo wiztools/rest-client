@@ -1,12 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -19,6 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
 import org.wiztools.restclient.test.TestFailureResultBean;
 import org.wiztools.restclient.test.TestResultBean;
@@ -42,6 +37,8 @@ public class TestResultPanel extends JPanel {
     private JTextArea jta_trace = new JTextArea();
     private JScrollPane jsp_jta_trace;
     
+    private JLabel jl_status = new JLabel();
+    
     private JLabel jl_icon = new JLabel();
     
     private Icon ICON_DEFAULT = UIUtil.getIconFromClasspath("org/wiztools/restclient/test/eye.png");
@@ -59,13 +56,14 @@ public class TestResultPanel extends JPanel {
     private void init(){
         JPanel jp = this;
         
-        jp.setLayout(new BorderLayout());
+        jp.setLayout(new BorderLayout(5, 5));
         
         // North
         JPanel jp_north = new JPanel();
-        jp_north.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jp_north.setLayout(new BorderLayout(5, 5));
         jl_icon.setIcon(ICON_DEFAULT);
-        jp_north.add(jl_icon);
+        jp_north.add(jl_icon, BorderLayout.WEST);
+        jp_north.add(jl_status, BorderLayout.CENTER);
         jp.add(jp_north, BorderLayout.NORTH);
         
         JTabbedPane jtp = new JTabbedPane();
@@ -154,6 +152,7 @@ public class TestResultPanel extends JPanel {
         jl_runCount.setText("");
         jl_failureCount.setText("");
         jl_errorCount.setText("");
+        jl_status.setText("");
     }
     
     public void setTestResult(TestResultBean result){
@@ -167,7 +166,10 @@ public class TestResultPanel extends JPanel {
         else{
             jl_icon.setIcon(ICON_SUCCESS);
         }
-        jl_icon.repaint();
+        
+        jl_status.setText(
+                "Tests run: " + runCount + ", Failures: " 
+                + failureCount + ", Errors: " + errorCount);
         
         jl_runCount.setText(String.valueOf(runCount));
         jl_failureCount.setText(String.valueOf(failureCount));
