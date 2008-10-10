@@ -52,6 +52,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
 import org.wiztools.restclient.test.TestException;
+import org.wiztools.restclient.test.TestResultBean;
 import org.wiztools.restclient.test.TestUtil;
 import org.wiztools.restclient.xml.XMLException;
 import org.wiztools.restclient.xml.XMLUtil;
@@ -126,8 +127,9 @@ public class RESTView extends JPanel implements View {
     
     private JTable jt_res_headers = new JTable();
     
-    private JScrollPane jsp_test_result;
-    private JTextArea jta_test_result = new JTextArea();
+    //private JScrollPane jsp_test_result;
+    //private JTextArea jta_test_result = new JTextArea();
+    private TestResultPanel jp_testResultPanel = new TestResultPanel();
 
     private TwoColumnTablePanel jp_2col_req_headers;
     
@@ -556,8 +558,8 @@ public class RESTView extends JPanel implements View {
         t_request.setTestScript(se_test_script.getText());
         try{
             TestSuite ts = TestUtil.getTestSuite(t_request, response);
-            String testResult = TestUtil.execute(ts);
-            view.showMessage("Test Result", testResult);
+            TestResultBean testResult = TestUtil.execute(ts);
+            view.showMessage("Test Result", testResult.toString());
         }
         catch(TestException ex){
             view.showError(Util.getStackTrace(ex));
@@ -709,9 +711,7 @@ public class RESTView extends JPanel implements View {
         // Test result
         JPanel jp_test_result = new JPanel();
         jp_test_result.setLayout(new GridLayout(1, 1));
-        jta_test_result.setEditable(false);
-        jsp_test_result = new JScrollPane(jta_test_result);
-        jp_test_result.add(jsp_test_result);
+        jp_test_result.add(jp_testResultPanel);
         jtp.addTab("Test Result", jp_test_result);
         
         return jtp;
@@ -856,8 +856,8 @@ public class RESTView extends JPanel implements View {
         for(int i=0; i<headers.length; i++){
             response.addHeader(headers[i][0], headers[i][1]);
         }
-        String testResult = Util.isStrEmpty(jta_test_result.getText())? null: jta_test_result.getText();
-        response.setTestResult(testResult);
+        //String testResult = Util.isStrEmpty(jta_test_result.getText())? null: jta_test_result.getText();
+        //response.setTestResult(testResult);
         return response;
     }
     
@@ -1054,7 +1054,7 @@ public class RESTView extends JPanel implements View {
         se_response.setText("");
         ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
         model.setHeaders(null);
-        jta_test_result.setText("");
+        jp_testResultPanel.clear();
     }
     
     private void jcb_urlActionPerformed(final ActionEvent event){
@@ -1362,10 +1362,7 @@ public class RESTView extends JPanel implements View {
         se_response.setCaretPosition(0);
 
         // Response test result
-        d = jsp_test_result.getPreferredSize();
-        jta_test_result.setText(response.getTestResult());
-        jsp_test_result.setPreferredSize(d);
-        jta_test_result.setCaretPosition(0);
+        jp_testResultPanel.setTestResult(response.getTestResult());
     }
     
     void setUIFromRequest(final RequestBean request){

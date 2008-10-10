@@ -3,6 +3,7 @@ package org.wiztools.restclient;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.wiztools.restclient.test.TestResultBean;
 
 /**
  *
@@ -14,7 +15,7 @@ public final class ResponseBean implements Cloneable{
     private String statusLine;
     private Map<String, String> headers;
     private String responseBody;
-    private String testResult;
+    private TestResultBean testResult;
     private long executionTime;
 
     public long getExecutionTime() {
@@ -61,11 +62,11 @@ public final class ResponseBean implements Cloneable{
         this.statusLine = statusLine;
     }
     
-    public String getTestResult() {
+    public TestResultBean getTestResult() {
         return testResult;
     }
 
-    public void setTestResult(String testResult) {
+    public void setTestResult(TestResultBean testResult) {
         this.testResult = testResult;
     }
     

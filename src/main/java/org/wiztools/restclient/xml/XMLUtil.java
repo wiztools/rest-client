@@ -420,7 +420,7 @@ public final class XMLUtil {
             }
             
             // test result
-            String testResult = bean.getTestResult();
+            String testResult = bean.getTestResult().toString();
             if(testResult != null){
                 e = xmldoc.createElementNS(null, "test-result");
                 n = xmldoc.createTextNode(testResult);
@@ -497,7 +497,7 @@ public final class XMLUtil {
                 responseBean.setResponseBody(node.getTextContent());
             }
             else if("test-result".equals(nodeName)){
-                responseBean.setTestResult(node.getTextContent());
+                //responseBean.setTestResult(node.getTextContent()); TODO
             }
             else{
                 throw new XMLException("Unrecognized element found: <" + nodeName + ">");

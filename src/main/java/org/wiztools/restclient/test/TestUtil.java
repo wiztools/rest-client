@@ -6,7 +6,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Logger;
+import junit.framework.TestFailure;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
@@ -75,12 +79,50 @@ public class TestUtil {
         }
     }
 
-    public static String execute(final TestSuite suite){
+    public static TestResultBean execute(final TestSuite suite){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         TestRunner runner = new TestRunner(new PrintStream(baos));
         TestResult result = runner.doRun(suite);
+        
+        TestResultBean resultBean = new TestResultBean();
+        
+        final int runCount = result.runCount();
+        final int failureCount = result.failureCount();
+        final int errorCount = result.errorCount();
+        
+        resultBean.setRunCount(runCount);
+        resultBean.setFailureCount(failureCount);
+        resultBean.setErrorCount(errorCount);
+        
+        if(failureCount > 0){
+            List<TestFailureResultBean> l = new ArrayList<TestFailureResultBean>();
+            Enumeration<TestFailure> failures = result.failures();
+            while(failures.hasMoreElements()){
+                TestFailure failure = failures.nextElement();
+
+                TestFailureResultBean t = new TestFailureResultBean();
+                t.setExceptionMessage(failure.exceptionMessage());
+                l.add(t);
+            }
+            resultBean.setFailures(l);
+        }
+        
+        if(errorCount > 0){
+            List<TestFailureResultBean> l = new ArrayList<TestFailureResultBean>();
+            Enumeration<TestFailure> errors = result.errors();
+            while(errors.hasMoreElements()){
+                TestFailure error = errors.nextElement();
+                
+                TestFailureResultBean t = new TestFailureResultBean();
+                t.setExceptionMessage(error.exceptionMessage());
+                l.add(t);
+            }
+            resultBean.setErrors(l);
+        }
 
         byte[] bresult = baos.toByteArray();
-        return new String(bresult);
+        resultBean.setMessage(new String(bresult));
+
+        return resultBean;
     }
 }

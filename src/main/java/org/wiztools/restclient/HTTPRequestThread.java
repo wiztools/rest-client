@@ -52,6 +52,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.wiztools.restclient.test.TestException;
+import org.wiztools.restclient.test.TestResultBean;
 import org.wiztools.restclient.test.TestUtil;
 
 /**
@@ -248,7 +249,7 @@ public class HTTPRequestThread extends Thread {
             try {
                 TestSuite suite = TestUtil.getTestSuite(request, response);
                 if (suite != null) { // suite will be null if there is no associated script
-                    String testResult = TestUtil.execute(suite);
+                    TestResultBean testResult = TestUtil.execute(suite);
                     response.setTestResult(testResult);
                 }
             } catch (TestException ex) {
