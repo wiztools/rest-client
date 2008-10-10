@@ -32,6 +32,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.wiztools.restclient.test.TestFailureResultBean;
+import org.wiztools.restclient.test.TestResultBean;
 import org.xml.sax.SAXException;
 
 /**
@@ -420,11 +422,75 @@ public final class XMLUtil {
             }
             
             // test result
-            String testResult = bean.getTestResult().toString();
+            TestResultBean testResult = bean.getTestResult();
             if(testResult != null){
                 e = xmldoc.createElementNS(null, "test-result");
-                n = xmldoc.createTextNode(testResult);
-                e.appendChild(n);
+                
+                // Counts:
+                Element e_runCount = xmldoc.createElementNS(null, "run-count");
+                Element e_failureCount = xmldoc.createElementNS(null, "failure-count");
+                Element e_errorCount = xmldoc.createElementNS(null, "error-count");
+                n = xmldoc.createTextNode(String.valueOf(testResult.getRunCount()));
+                e_runCount.appendChild(n);
+                n = xmldoc.createTextNode(String.valueOf(testResult.getFailureCount()));
+                e_failureCount.appendChild(n);
+                n = xmldoc.createTextNode(String.valueOf(testResult.getErrorCount()));
+                e_errorCount.appendChild(n);
+                
+                e.appendChild(e_runCount);
+                e.appendChild(e_failureCount);
+                e.appendChild(e_errorCount);
+                
+                // Failures:
+                if(testResult.getFailureCount() > 0){
+                    Element e_failures = xmldoc.createElementNS(null, "failures");
+                    List<TestFailureResultBean> l = testResult.getFailures();
+                    for(TestFailureResultBean b: l){
+                        Element e_failure = xmldoc.createElementNS(null, "failure");
+                        Element e_message = xmldoc.createElementNS(null, "message");
+                        Element e_line = xmldoc.createElementNS(null, "line-number");
+                        
+                        Node nn = xmldoc.createTextNode(b.getExceptionMessage());
+                        e_message.appendChild(nn);
+                        nn = xmldoc.createTextNode(String.valueOf(b.getLineNumber()));
+                        e_line.appendChild(nn);
+                        
+                        e_failure.appendChild(e_message);
+                        e_failure.appendChild(e_line);
+                        
+                        e_failures.appendChild(e_failure);
+                    }
+                    e.appendChild(e_failures);
+                }
+                
+                // Errors:
+                if(testResult.getErrorCount() > 0){
+                    Element e_errors = xmldoc.createElementNS(null, "errors");
+                    List<TestFailureResultBean> l = testResult.getErrors();
+                    for(TestFailureResultBean b: l){
+                        Element e_error = xmldoc.createElementNS(null, "error");
+                        Element e_message = xmldoc.createElementNS(null, "message");
+                        Element e_line = xmldoc.createElementNS(null, "line-number");
+                        
+                        Node nn = xmldoc.createTextNode(b.getExceptionMessage());
+                        e_message.appendChild(nn);
+                        nn = xmldoc.createTextNode(String.valueOf(b.getLineNumber()));
+                        e_line.appendChild(nn);
+                        
+                        e_error.appendChild(e_message);
+                        e_error.appendChild(e_line);
+                        
+                        e_errors.appendChild(e_error);
+                    }
+                    e.appendChild(e_errors);
+                }
+                
+                // Trace:
+                Element e_trace = xmldoc.createElementNS(null, "trace");
+                n = xmldoc.createTextNode(testResult.toString());
+                e_trace.appendChild(n);
+                e.appendChild(e_trace);
+                
                 response.appendChild(e);
             }
 
@@ -498,6 +564,32 @@ public final class XMLUtil {
             }
             else if("test-result".equals(nodeName)){
                 //responseBean.setTestResult(node.getTextContent()); TODO
+                TestResultBean testResultBean = new TestResultBean();
+                // TODO
+                NodeList nnll = node.getChildNodes();
+                int count = nnll.getLength();
+                for(int j=0; j<count; j++){
+                    Node nn = nnll.item(j);
+                    if(nn.getNodeType() != Node.ELEMENT_NODE){
+                        continue;
+                    }
+                    if("run-count".equals(nn.getNodeName())){
+                        //throw new XMLException("<headers> element should contain only <header> elements");
+                    }
+                    else if("failure-count".equals(nn.getNodeName())){
+                        //throw new XMLException("<headers> element should contain only <header> elements");
+                    }
+                    else if("error-count".equals(nn.getNodeName())){
+                        //throw new XMLException("<headers> element should contain only <header> elements");
+                    }
+                    else if("failures".equals(nn.getNodeName())){
+                        //throw new XMLException("<headers> element should contain only <header> elements");
+                    }
+                    else if("errors".equals(nn.getNodeName())){
+                        //throw new XMLException("<headers> element should contain only <header> elements");
+                    }
+                }
+                responseBean.setTestResult(testResultBean);
             }
             else{
                 throw new XMLException("Unrecognized element found: <" + nodeName + ">");

@@ -13,7 +13,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
 import org.wiztools.restclient.test.TestFailureResultBean;
 import org.wiztools.restclient.test.TestResultBean;
@@ -156,6 +155,9 @@ public class TestResultPanel extends JPanel {
     }
     
     public void setTestResult(TestResultBean result){
+        if(result == null){
+            return;
+        }
         int runCount = result.getRunCount();
         int failureCount = result.getFailureCount();
         int errorCount = result.getErrorCount();
