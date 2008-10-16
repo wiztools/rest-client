@@ -36,6 +36,7 @@ import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.AuthPolicy;
 import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
@@ -63,6 +64,10 @@ public class HTTPRequestThread extends Thread {
 
     private RequestBean request;
     private View view;
+    
+    private boolean interruptedShutdown = false;
+    
+    private DefaultHttpClient httpclient;
 
     public HTTPRequestThread(final RequestBean request,
             final View view) {
@@ -83,7 +88,7 @@ public class HTTPRequestThread extends Thread {
         // Needed for specifying HTTP pre-emptive authentication
         HttpContext httpContext = null;
 
-        DefaultHttpClient httpclient = new DefaultHttpClient();
+        httpclient = new DefaultHttpClient();
         
         // Set HTTP version
         HTTPVersion httpVersion = request.getHttpVersion();
@@ -260,15 +265,33 @@ public class HTTPRequestThread extends Thread {
         } /*catch (HttpException ex) {
             view.doError(Util.getStackTrace(ex));
         }*/ catch (IOException ex) {
-            view.doError(Util.getStackTrace(ex));
+            if(!interruptedShutdown){
+                view.doError(Util.getStackTrace(ex));
+            }
+            else{
+                view.doCancelled();
+            }
         } catch (Exception ex) {
-            view.doError(Util.getStackTrace(ex));
+            if(!interruptedShutdown){
+                view.doError(Util.getStackTrace(ex));
+            }
+            else{
+                view.doCancelled();
+            }
         } finally {
-            if (method != null) {
+            if (method != null && !interruptedShutdown) {
                 httpclient.getConnectionManager().shutdown();
             }
             view.doEnd();
         }
+    }
+    
+    @Override
+    public void interrupt(){
+        ClientConnectionManager conMgr = httpclient.getConnectionManager();
+        interruptedShutdown = true;
+        conMgr.shutdown();
+        super.interrupt();
     }
     
     static class PreemptiveAuth implements HttpRequestInterceptor {

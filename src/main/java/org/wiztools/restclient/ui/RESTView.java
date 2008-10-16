@@ -37,6 +37,7 @@ import javax.swing.JTextField;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JEditorPane;
 import javax.swing.JMenu;
@@ -63,6 +64,9 @@ import org.xml.sax.SAXException;
  * @author Subhash
  */
 public class RESTView extends JPanel implements View {
+    
+    private ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
+    private ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
     
     private JRadioButton jrb_req_get = new JRadioButton("GET");
     private JRadioButton jrb_req_post = new JRadioButton("POST");
@@ -145,6 +149,8 @@ public class RESTView extends JPanel implements View {
     private final RESTUserInterface rest_ui;
     
     public static final int BORDER_WIDTH = 5;
+    
+    private HTTPRequestThread requestThread;
     
     // Cache the last request and response
     private RequestBean lastRequest;
@@ -739,7 +745,7 @@ public class RESTView extends JPanel implements View {
             }
         });
         jp_north.add(jcb_url, BorderLayout.CENTER);
-        jb_request = new JButton(UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png"));
+        jb_request = new JButton(icon_go);
         jb_request.setToolTipText("Go!");
         jb_request.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -969,19 +975,26 @@ public class RESTView extends JPanel implements View {
         return request;
     }
 
-    private void jb_requestActionPerformed() {                                           
-        RequestBean request = getRequestFromUI();
-        List<String> errors = validateRequest(request);
-        if(errors.size() == 0){
-            clearUIResponse();
-            new HTTPRequestThread(request, view).start();
+    private void jb_requestActionPerformed() {
+        if(jb_request.getIcon() == icon_go){
+            RequestBean request = getRequestFromUI();
+            List<String> errors = validateRequest(request);
+            if(errors.size() == 0){
+                clearUIResponse();
+                requestThread = new HTTPRequestThread(request, view);
+                requestThread.start();
+            }
+            else{
+                String errStr = Util.getHTMLListFromList(errors);
+                JOptionPane.showMessageDialog(rest_ui.getFrame(),
+                    errStr,
+                    "Validation error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
-        else{
-            String errStr = Util.getHTMLListFromList(errors);
-            JOptionPane.showMessageDialog(rest_ui.getFrame(),
-                errStr,
-                "Validation error",
-                JOptionPane.ERROR_MESSAGE);
+        else if(jb_request.getIcon() == icon_stop){
+            requestThread.interrupt();
+            jb_request.setIcon(icon_go);
         }
     }                                          
 
@@ -992,7 +1005,9 @@ public class RESTView extends JPanel implements View {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 jpb_status.setVisible(true);
-                jb_request.setEnabled(false);
+                // jb_request.setEnabled(false);
+                jb_request.setIcon(icon_stop);
+                jb_request.setToolTipText("Stop!");
 
                 // Update status message
                 setStatusMessage("Processing request...");
@@ -1021,11 +1036,22 @@ public class RESTView extends JPanel implements View {
     }
     
     @Override
+    public void doCancelled(){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                setStatusMessage("Request cancelled!");
+            }
+        });
+    }
+    
+    @Override
     public void doEnd(){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 jpb_status.setVisible(false);
-                jb_request.setEnabled(true);
+                // jb_request.setEnabled(true);
+                jb_request.setIcon(icon_go);
+                jb_request.setToolTipText("Go!");
             }
         });
     }

@@ -7,6 +7,7 @@ package org.wiztools.restclient;
 public interface View {
     public void doStart(RequestBean request);
     public void doResponse(ResponseBean response);
+    public void doCancelled();
     public void doEnd();
     public void doError(String error);
 }
