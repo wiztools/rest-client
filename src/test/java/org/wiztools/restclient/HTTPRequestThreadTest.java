@@ -77,6 +77,10 @@ public class HTTPRequestThreadTest {
             public void doError(String error) {
                 System.out.println(error);
             }
+
+            public void doCancelled() {
+                
+            }
         };
         HTTPRequestThread instance = new HTTPRequestThread(req, view);
         instance.run();
@@ -113,6 +117,10 @@ public class HTTPRequestThreadTest {
 
             public void doError(String error) {
                 System.out.println(error);
+            }
+
+            public void doCancelled() {
+                
             }
         };
         
