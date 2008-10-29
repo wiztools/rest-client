@@ -615,16 +615,10 @@ public class RESTView extends JPanel implements View {
                     se_response.setText(indentedXML);
                     se_response.setCaretPosition(0);
                     setStatusMessage("Indent XML: Success");
-                } catch (ParserConfigurationException ex) {
+                } catch (XMLException ex) {
                     setStatusMessage("Indent XML: XML Parser Configuration Error.");
-                } catch (SAXException ex) {
-                    setStatusMessage("Indent XML: Not an XML.");
                 } catch (IOException ex) {
                     setStatusMessage("Indent XML: IOError while processing XML.");
-                } catch (TransformerConfigurationException ex) {
-                    setStatusMessage("Indent XML: TransformerConfiguration error.");
-                } catch (TransformerException ex) {
-                    setStatusMessage("Indent XML: XML transformation error.");
                 }
             }
         });

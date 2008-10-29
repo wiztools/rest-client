@@ -2,6 +2,9 @@ package org.wiztools.restclient.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.logging.Level;
+import nu.xom.ParsingException;
+import nu.xom.ValidityException;
 import org.wiztools.restclient.*;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,6 +29,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import nu.xom.Builder;
+import nu.xom.Serializer;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -674,26 +679,19 @@ public final class XMLUtil {
     }
     
     public static String indentXML(final String in) 
-            throws ParserConfigurationException,
-            SAXException,
-            IOException,
-            TransformerConfigurationException,
-            TransformerException{
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document doc = docBuilder.parse(new ByteArrayInputStream(in.getBytes("UTF-8")));
-        Source source = new DOMSource(doc);
-        
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Result result = new StreamResult(new OutputStreamWriter(baos));
-        
-        TransformerFactory factory = TransformerFactory.newInstance();
-        factory.setAttribute("indent-number", 4);
-        Transformer transformer = factory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-        transformer.setOutputProperty(OutputKeys.INDENT,"yes");
-        transformer.transform(source, result);
-        byte[] arr = baos.toByteArray();
-        
-        return new String(arr);
+            throws XMLException, IOException{
+        try {
+            Builder parser = new Builder();
+            nu.xom.Document doc = parser.build(in, null);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Serializer serializer = new Serializer(baos);
+            serializer.setIndent(4);
+            serializer.setMaxLength(69);
+            serializer.write(doc);
+            return new String(baos.toByteArray());
+        } catch (ParsingException ex) {
+            // LOG.log(Level.SEVERE, null, ex);
+            throw new XMLException("XML indentation failed.", ex);
+        }
     }
 }
