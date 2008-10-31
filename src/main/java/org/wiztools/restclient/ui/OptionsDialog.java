@@ -28,6 +28,7 @@ public class OptionsDialog extends EscapableDialog {
     
     private OptionsConnectionPanel jp_conn_panel;
     private OptionsProxyPanel jp_proxy_panel;
+    private OptionsFontPanel jp_font_panel;
     
     public OptionsDialog(JFrame f){
         super(f, true);
@@ -43,6 +44,8 @@ public class OptionsDialog extends EscapableDialog {
         jp_conn_panel.initOptions();
         jp_proxy_panel = new OptionsProxyPanel();
         jp_proxy_panel.initOptions();
+        jp_font_panel = new OptionsFontPanel();
+        jp_font_panel.initOptions();
         
         // Tabbed pane
         JTabbedPane jtp = new JTabbedPane();
@@ -51,6 +54,7 @@ public class OptionsDialog extends EscapableDialog {
         
         jtp.addTab("Connection", UIUtil.getFlowLayoutPanelLeftAligned("Request Timeout", jp_conn_panel));
         jtp.addTab("Proxy", UIUtil.getFlowLayoutPanelLeftAligned(jp_proxy_panel));
+        jtp.addTab("Font", UIUtil.getFlowLayoutPanelLeftAligned(jp_font_panel));
         
         // Encapsulating
         JPanel jp_encp = new JPanel();
@@ -97,6 +101,7 @@ public class OptionsDialog extends EscapableDialog {
     private void writeProperties(){
         jp_conn_panel.shutdownOptions();
         jp_proxy_panel.shutdownOptions();
+        jp_font_panel.shutdownOptions();
         
         GlobalOptions.getInstance().writeProperties();
     }
@@ -131,6 +136,7 @@ public class OptionsDialog extends EscapableDialog {
         // Save the options
         jp_conn_panel.saveOptions();
         jp_proxy_panel.saveOptions();
+        jp_font_panel.saveOptions();
         
         me.setVisible(false);
     }
@@ -138,6 +144,7 @@ public class OptionsDialog extends EscapableDialog {
     private void actionCancel(){
         jp_conn_panel.revertOptions();
         jp_proxy_panel.revertOptions();
+        jp_font_panel.revertOptions();
         
         // Finally, hide:
         me.setVisible(false);
