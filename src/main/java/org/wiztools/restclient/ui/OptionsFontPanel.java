@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -37,6 +38,8 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
             "Response Body", "Test Script"};
     private JComboBox jcb_textarea = new JComboBox(TEXTAREAS);
     
+    private JButton jb_default = new JButton("Restore Default");
+    
     private JList jl_font, jl_fontSize;
     private JLabel jl_preview = new JLabel("WizTools.org RESTClient");
     
@@ -47,25 +50,24 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
         // North Panel
         JPanel jp_north = new JPanel();
         jp_north.setLayout(new FlowLayout(FlowLayout.LEFT));
-        jp_north.add(jcb_textarea);
-        final JCheckBox jcb_all = new JCheckBox("All share one font.");
-        jcb_all.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                if(jcb_all.isSelected()){
-                    jcb_textarea.setEnabled(false);
-                }
-                else{
-                    jcb_textarea.setEnabled(true);
-                }
+        JLabel jl = new JLabel("Font for Request Body & Response Body");
+        jp_north.add(jl);
+        jb_default.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                jl_font.setSelectedValue(Font.DIALOG, true);
+                jl_fontSize.setSelectedValue("12", true);
             }
         });
-        jp_north.add(jcb_all);
+        jp_north.add(jb_default);
         jp.add(jp_north, BorderLayout.NORTH);
         
         // Center Panel
         ListSelectionListener previewListner = new Preview();
         
-        Dimension d = new Dimension(200, 100);
+        final int _W = 200;
+        final int _H = 100;
+        
+        Dimension d = new Dimension(_W, _H);
         JPanel jp_center = new JPanel();
         jp_center.setLayout(new GridLayout(1, 2));
         String[] fontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
@@ -90,7 +92,7 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
         jp_south.setLayout(new FlowLayout(FlowLayout.CENTER));
         jp_south.add(jl_preview);
         jp_south.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        jp_south.setPreferredSize(new Dimension(500, 40));
+        jp_south.setPreferredSize(new Dimension(_W, _H / 2));
         jp.add(jp_south, BorderLayout.SOUTH);
     }
 
