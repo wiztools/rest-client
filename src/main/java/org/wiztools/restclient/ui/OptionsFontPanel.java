@@ -10,6 +10,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -20,12 +21,15 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.wiztools.restclient.GlobalOptions;
 
 /**
  *
  * @author subwiz
  */
 public class OptionsFontPanel extends JPanel implements IOptionsPanel {
+    
+    private static final Logger LOG = Logger.getLogger(OptionsFontPanel.class.getName());
     
     private static final String PROP_PREFIX = "font.options.";
     
@@ -92,12 +96,32 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
 
     @Override
     public void initOptions() {
-        
+        Font f = null;
+        String fontName = GlobalOptions.getInstance().getProperty(PROP_PREFIX + "font");
+        String fontSizeStr = GlobalOptions.getInstance().getProperty(PROP_PREFIX + "fontSize");
+        int fontSize = 12;
+        if(fontSizeStr != null){
+            try{
+                fontSize = Integer.parseInt(fontSizeStr);
+            }
+            catch(NumberFormatException ex){
+                // leave the default font size of 12
+            }
+        } // else leave default font size of 12
+        if(fontName == null){
+            LOG.info("Font configuration not available in configuration. Reverting to default font.");
+            f = new Font(Font.DIALOG, Font.PLAIN, 12);
+        }
+        else{
+            f = new Font(fontName, Font.PLAIN, fontSize);
+        }
+        UIRegistry.getInstance().view.setTextAreaFont(f);
     }
 
     @Override
     public void shutdownOptions() {
-        
+        GlobalOptions.getInstance().setProperty(PROP_PREFIX + "font", (String)jl_font.getSelectedValue());
+        GlobalOptions.getInstance().setProperty(PROP_PREFIX + "fontSize", (String)jl_fontSize.getSelectedValue());
     }
 
     @Override
@@ -107,17 +131,28 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
 
     @Override
     public boolean saveOptions() {
+        String fontName= (String)jl_font.getSelectedValue();
+        String fontSizeStr = (String)jl_fontSize.getSelectedValue();
+        int fontSize = Integer.parseInt(fontSizeStr);
+        Font f = new Font(fontName, Font.PLAIN, fontSize);
+        UIRegistry.getInstance().view.setTextAreaFont(f);
         return true;
     }
 
     @Override
     public boolean revertOptions() {
+        Font f = UIRegistry.getInstance().view.getTextAreaFont();
+        jl_font.setSelectedValue(f.getFamily(), true);
+        jl_fontSize.setSelectedValue(f.getSize(), true);
         return true;
     }
     
     class Preview implements ListSelectionListener{
 
         public void valueChanged(ListSelectionEvent arg0) {
+            if(jl_font.getSelectedValue()==null || jl_fontSize.getSelectedValue()==null){
+                return;
+            }
             String fontName = (String)jl_font.getSelectedValue();
             int fontSize = Integer.parseInt((String)jl_fontSize.getSelectedValue());
             Font f = new Font(fontName, Font.PLAIN, fontSize);

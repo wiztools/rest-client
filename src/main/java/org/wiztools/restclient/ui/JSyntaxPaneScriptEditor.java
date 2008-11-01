@@ -1,9 +1,8 @@
 package org.wiztools.restclient.ui;
 
+import java.awt.Font;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
-import javax.swing.text.EditorKit;
-import jsyntaxpane.SyntaxKit;
 
 /**
  *
@@ -17,48 +16,38 @@ class JSyntaxPaneScriptEditor implements ScriptEditor {
     private static final String XML = "xml";
     private static final String JSON = "javascript";
     
-    private final EditorKit defaultEditorKit;
-    
-    private SyntaxKit groovySyntaxKit;
-    private SyntaxKit xmlSyntaxKit;
-    private SyntaxKit jsonSyntaxKit;
-    
     JSyntaxPaneScriptEditor(TextEditorSyntax syntax){
-        defaultEditorKit = jep.getEditorKit();
+        jsyntaxpane.DefaultSyntaxKit.initKit();
         if(syntax == TextEditorSyntax.GROOVY){
-            groovySyntaxKit = new SyntaxKit(GROOVY);
-            jep.setEditorKit(groovySyntaxKit);
+            jep.setContentType("text/groovy");
         }
         else if(syntax == TextEditorSyntax.XML){
-            xmlSyntaxKit = new SyntaxKit(XML);
-            jep.setEditorKit(xmlSyntaxKit);
+            jep.setContentType("text/xml");
         }
         else if(syntax == TextEditorSyntax.JSON){
-            jsonSyntaxKit = new SyntaxKit(JSON);
-            jep.setEditorKit(jsonSyntaxKit);
+            jep.setContentType("text/json");
         }
     }
     
     public void setSyntax(TextEditorSyntax syntax){
         String text = jep.getText();
+        Font f = jep.getFont();
         if(syntax == TextEditorSyntax.GROOVY){
-            groovySyntaxKit = groovySyntaxKit==null? new SyntaxKit(GROOVY): groovySyntaxKit;
-            jep.setEditorKit(groovySyntaxKit);
+            jep.setContentType("text/groovy");
         }
         else if(syntax == TextEditorSyntax.XML){
-            xmlSyntaxKit = xmlSyntaxKit==null? new SyntaxKit(XML): xmlSyntaxKit;
-            jep.setEditorKit(xmlSyntaxKit);
+            jep.setContentType("text/xml");
         }
         else if(syntax == TextEditorSyntax.JSON){
-            jsonSyntaxKit = jsonSyntaxKit==null? new SyntaxKit(JSON): jsonSyntaxKit;
-            jep.setEditorKit(jsonSyntaxKit);
+            jep.setContentType("text/json");
         }
         else if(syntax == TextEditorSyntax.DEFAULT){
-            jep.setEditorKit(defaultEditorKit);
+            jep.setContentType("text/plain");
         }
         jep.validate();
         jep.setText(text);
         jep.setCaretPosition(0);
+        jep.setFont(f);
     }
 
     public JComponent getEditorView() {

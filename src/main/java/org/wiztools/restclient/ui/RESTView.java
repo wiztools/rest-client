@@ -1,12 +1,10 @@
 package org.wiztools.restclient.ui;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,7 +45,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
@@ -57,7 +54,6 @@ import org.wiztools.restclient.test.TestResultBean;
 import org.wiztools.restclient.test.TestUtil;
 import org.wiztools.restclient.xml.XMLException;
 import org.wiztools.restclient.xml.XMLUtil;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -1260,8 +1256,6 @@ public class RESTView extends JPanel implements View {
         // The TextArea was re-drawing to a bigger size
         // when large text was placed. This check is for
         // avoiding that.
-        // This method will be invoked from calls that are running
-        // inside SwingUtilities.invokeLater()
         if(d_jsp_req_body == null){
             Dimension d = ((JEditorPane)se_req_body.getEditorView()).getPreferredScrollableViewportSize();
             d_jsp_req_body = d;
@@ -1491,6 +1485,15 @@ public class RESTView extends JPanel implements View {
 
     public ResponseBean getLastResponse() {
         return lastResponse;
+    }
+    
+    public Font getTextAreaFont(){
+        return se_req_body.getEditorView().getFont();
+    }
+    
+    public void setTextAreaFont(final Font f){
+        se_req_body.getEditorView().setFont(f);
+        se_response.getEditorView().setFont(f);
     }
     
     private class StatusClearerThread extends Thread{

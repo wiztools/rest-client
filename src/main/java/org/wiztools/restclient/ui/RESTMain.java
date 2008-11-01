@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -329,6 +327,7 @@ public class RESTMain implements RESTUserInterface {
 
         // Set the view on the pane
         view = new RESTView(this, editor, responseViewer);
+        UIRegistry.getInstance().view = view;
         // Create AboutDialog
         aboutDialog = new AboutDialog(frame);
         if(!isPlugin){
