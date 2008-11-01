@@ -12,10 +12,6 @@ class JSyntaxPaneScriptEditor implements ScriptEditor {
     
     private JEditorPane jep = new JEditorPane();
     
-    private static final String GROOVY = "groovy";
-    private static final String XML = "xml";
-    private static final String JSON = "javascript";
-    
     JSyntaxPaneScriptEditor(TextEditorSyntax syntax){
         jsyntaxpane.DefaultSyntaxKit.initKit();
         if(syntax == TextEditorSyntax.GROOVY){
@@ -25,7 +21,7 @@ class JSyntaxPaneScriptEditor implements ScriptEditor {
             jep.setContentType("text/xml");
         }
         else if(syntax == TextEditorSyntax.JSON){
-            jep.setContentType("text/json");
+            jep.setContentType("text/javascript");
         }
     }
     
@@ -39,7 +35,7 @@ class JSyntaxPaneScriptEditor implements ScriptEditor {
             jep.setContentType("text/xml");
         }
         else if(syntax == TextEditorSyntax.JSON){
-            jep.setContentType("text/json");
+            jep.setContentType("text/javascript");
         }
         else if(syntax == TextEditorSyntax.DEFAULT){
             jep.setContentType("text/plain");

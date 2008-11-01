@@ -65,7 +65,7 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
         // Center Panel
         ListSelectionListener previewListner = new Preview();
         
-        Dimension d = new Dimension(250, 80);
+        Dimension d = new Dimension(200, 100);
         JPanel jp_center = new JPanel();
         jp_center.setLayout(new GridLayout(1, 2));
         String[] fontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
@@ -114,6 +114,8 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
         }
         else{
             f = new Font(fontName, Font.PLAIN, fontSize);
+            jl_font.setSelectedValue(f.getFamily(), true);
+            jl_fontSize.setSelectedValue(String.valueOf(f.getSize()), true);
         }
         UIRegistry.getInstance().view.setTextAreaFont(f);
     }
@@ -143,13 +145,13 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
     public boolean revertOptions() {
         Font f = UIRegistry.getInstance().view.getTextAreaFont();
         jl_font.setSelectedValue(f.getFamily(), true);
-        jl_fontSize.setSelectedValue(f.getSize(), true);
+        jl_fontSize.setSelectedValue(String.valueOf(f.getSize()), true);
         return true;
     }
     
     class Preview implements ListSelectionListener{
 
-        public void valueChanged(ListSelectionEvent arg0) {
+        public void valueChanged(ListSelectionEvent evt) {
             if(jl_font.getSelectedValue()==null || jl_fontSize.getSelectedValue()==null){
                 return;
             }
