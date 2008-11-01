@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -33,10 +31,6 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
     private static final Logger LOG = Logger.getLogger(OptionsFontPanel.class.getName());
     
     private static final String PROP_PREFIX = "font.options.";
-    
-    private static final String[] TEXTAREAS = new String[]{"Request Body",
-            "Response Body", "Test Script"};
-    private JComboBox jcb_textarea = new JComboBox(TEXTAREAS);
     
     private JButton jb_default = new JButton("Restore Default");
     
