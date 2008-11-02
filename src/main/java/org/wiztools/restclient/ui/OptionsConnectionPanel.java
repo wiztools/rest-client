@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -76,6 +77,7 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
         jp_encp.setLayout(new BorderLayout());
         jp_encp.add(jp_label_grid, BorderLayout.WEST);
         jp_encp.add(jp_input_grid, BorderLayout.CENTER);
+        jp_encp.setBorder(BorderFactory.createTitledBorder("Request Timeout"));
     }
     
     int getTimeoutInMillis(){

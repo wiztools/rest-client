@@ -6,7 +6,12 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -23,12 +28,14 @@ import org.wiztools.restclient.Util;
  */
 public class OptionsDialog extends EscapableDialog {
     
+    private static final Logger LOG = Logger.getLogger(OptionsDialog.class.getName());
+    
     private final JFrame frame;
     private final OptionsDialog me;
     
-    private OptionsConnectionPanel jp_conn_panel;
-    private OptionsProxyPanel jp_proxy_panel;
-    private OptionsFontPanel jp_font_panel;
+    private Map<String, IOptionsPanel> panels = new LinkedHashMap<String, IOptionsPanel>();
+    
+    private static final ResourceBundle rb = ResourceBundle.getBundle("org.wiztools.restclient.uioptionsdialog");
     
     public OptionsDialog(JFrame f){
         super(f, true);
@@ -40,21 +47,37 @@ public class OptionsDialog extends EscapableDialog {
     private void init(){
         this.setTitle("Options");
         
-        jp_conn_panel = new OptionsConnectionPanel();
-        jp_conn_panel.initOptions();
-        jp_proxy_panel = new OptionsProxyPanel();
-        jp_proxy_panel.initOptions();
-        jp_font_panel = new OptionsFontPanel();
-        jp_font_panel.initOptions();
+        String t = rb.getString("panel");
+        String[] arr = t.split(",");
+        for(String s: arr){
+            String[] arrt = s.split(":");
+            try {
+                LOG.info("OptionsPanel adding: " + arrt[1]);
+                panels.put(arrt[0], (IOptionsPanel) Class.forName(arrt[1]).newInstance());
+            } catch (ClassNotFoundException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+            } catch(InstantiationException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+            } catch(IllegalAccessException ex){
+                LOG.log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        // Call the init of all the panels:
+        for(String key: panels.keySet()){
+            IOptionsPanel p = panels.get(key);
+            p.initOptions();
+        }
         
         // Tabbed pane
         JTabbedPane jtp = new JTabbedPane();
         jtp.setBorder(BorderFactory.createEmptyBorder(
                 RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
         
-        jtp.addTab("Connection", UIUtil.getFlowLayoutPanelLeftAligned("Request Timeout", jp_conn_panel));
-        jtp.addTab("Proxy", UIUtil.getFlowLayoutPanelLeftAligned(jp_proxy_panel));
-        jtp.addTab("Font", UIUtil.getFlowLayoutPanelLeftAligned(jp_font_panel));
+        // Add all to tab:
+        for(String key: panels.keySet()){
+            jtp.addTab(key, UIUtil.getFlowLayoutPanelLeftAligned((JPanel)panels.get(key)));
+        }
         
         // Encapsulating
         JPanel jp_encp = new JPanel();
@@ -99,9 +122,9 @@ public class OptionsDialog extends EscapableDialog {
     }
     
     private void writeProperties(){
-        jp_conn_panel.shutdownOptions();
-        jp_proxy_panel.shutdownOptions();
-        jp_font_panel.shutdownOptions();
+        for(String key: panels.keySet()){
+            panels.get(key).shutdownOptions();
+        }
         
         GlobalOptions.getInstance().writeProperties();
     }
@@ -114,14 +137,11 @@ public class OptionsDialog extends EscapableDialog {
     private void actionOk(){
         List<String> errors = new ArrayList<String>();
         
-        List<String> t = jp_conn_panel.validateInput();
-        if(t != null){
-            errors.addAll(t);
-        }
-        
-        t = jp_proxy_panel.validateInput();
-        if(t != null){
-            errors.addAll(t);
+        for(String key: panels.keySet()){
+            List<String> t = panels.get(key).validateInput();
+            if(t != null){
+                errors.addAll(t);
+            }
         }
         
         if(errors.size() > 0){
@@ -134,17 +154,18 @@ public class OptionsDialog extends EscapableDialog {
         }
         
         // Save the options
-        jp_conn_panel.saveOptions();
-        jp_proxy_panel.saveOptions();
-        jp_font_panel.saveOptions();
-        
+        for(String key: panels.keySet()){
+            panels.get(key).saveOptions();
+        }
+
         me.setVisible(false);
     }
     
     private void actionCancel(){
-        jp_conn_panel.revertOptions();
-        jp_proxy_panel.revertOptions();
-        jp_font_panel.revertOptions();
+        // Revert all the options
+        for(String key: panels.keySet()){
+            panels.get(key).revertOptions();
+        }
         
         // Finally, hide:
         me.setVisible(false);
