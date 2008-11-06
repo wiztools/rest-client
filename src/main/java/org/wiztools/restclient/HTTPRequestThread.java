@@ -40,7 +40,8 @@ import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.AbstractHttpEntity;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
@@ -192,7 +193,7 @@ public class HTTPRequestThread extends Thread {
                 ReqEntityBean bean = request.getBody();
                 if (bean != null) {
                     try {
-                        StringEntity entity = new StringEntity(bean.getBody());
+                        AbstractHttpEntity entity = new ByteArrayEntity(bean.getBody().getBytes(bean.getCharSet()));
                         entity.setContentType(bean.getContentTypeCharsetFormatted());
                         eeMethod.setEntity(entity);
                     } catch (UnsupportedEncodingException ex) {
