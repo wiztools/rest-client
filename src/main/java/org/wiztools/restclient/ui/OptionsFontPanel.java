@@ -110,9 +110,10 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
         }
         else{
             f = new Font(fontName, Font.PLAIN, fontSize);
-            jl_font.setSelectedValue(f.getFamily(), true);
-            jl_fontSize.setSelectedValue(String.valueOf(f.getSize()), true);
         }
+        jl_font.setSelectedValue(f.getFamily(), true);
+        jl_fontSize.setSelectedValue(String.valueOf(f.getSize()), true);
+        
         UIRegistry.getInstance().view.setTextAreaFont(f);
     }
 

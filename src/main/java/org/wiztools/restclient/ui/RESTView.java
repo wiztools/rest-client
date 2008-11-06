@@ -34,6 +34,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
@@ -60,6 +62,7 @@ import org.wiztools.restclient.xml.XMLUtil;
  * @author Subhash
  */
 public class RESTView extends JPanel implements View {
+    private static final Logger LOG = Logger.getLogger(RESTView.class.getName());
     
     private ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
     private ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
@@ -815,6 +818,24 @@ public class RESTView extends JPanel implements View {
                 jtf_body_content_type.setText(RESTView.getFormattedContentType(contentType, charSet));
             }
         });
+        
+        // Set the font of ScriptEditors:
+        String fontName = GlobalOptions.getInstance().getProperty("font.options.font");
+        String fontSizeStr = GlobalOptions.getInstance().getProperty("font.options.fontSize");
+        int fontSize = 12; // Default font size is 12
+        if(fontSizeStr != null){
+            try{
+                fontSize = Integer.parseInt(fontSizeStr);
+            }
+            catch(NumberFormatException ex){
+                LOG.log(Level.WARNING, "Font size property is not a number: " + fontSizeStr);
+            }
+        }
+        if(fontName != null){
+            Font f = new Font(fontName, Font.PLAIN, fontSize);
+            se_req_body.getEditorView().setFont(f);
+            se_response.getEditorView().setFont(f);
+        }
         
         this.setLayout(new BorderLayout());
         
