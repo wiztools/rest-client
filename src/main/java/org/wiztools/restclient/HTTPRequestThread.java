@@ -5,11 +5,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import junit.framework.TestSuite;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -19,6 +21,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolException;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.auth.AuthScheme;
 import org.apache.http.auth.AuthScope;
@@ -45,6 +48,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.client.DefaultRedirectHandler;
 import org.apache.http.message.AbstractHttpMessage;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.params.BasicHttpParams;
@@ -62,6 +66,8 @@ import org.wiztools.restclient.test.TestUtil;
  * @author subwiz
  */
 public class HTTPRequestThread extends Thread {
+    
+    private static final Logger LOG = Logger.getLogger(HTTPRequestThread.class.getName());
 
     private RequestBean request;
     private View view;
@@ -222,7 +228,17 @@ public class HTTPRequestThread extends Thread {
                 httpclient.getConnectionManager().getSchemeRegistry().register(sch);
             }
 
+            // How to handle retries and redirects:
             httpclient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler());
+            httpclient.setRedirectHandler(new DefaultRedirectHandler(){
+                @Override
+                public URI getLocationURI(HttpResponse response, HttpContext context) throws ProtocolException {
+                    URI uri = super.getLocationURI(response, context);
+                    LOG.info("Redirect response status: " + response.getStatusLine());
+                    LOG.info("Redirect: " + uri);
+                    return uri;
+                }
+            });
 
             // Now Execute:
             long startTime = System.currentTimeMillis();
