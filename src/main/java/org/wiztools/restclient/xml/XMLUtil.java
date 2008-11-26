@@ -1,15 +1,13 @@
 package org.wiztools.restclient.xml;
 
-import java.io.ByteArrayInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.logging.Level;
 import nu.xom.ParsingException;
-import nu.xom.ValidityException;
 import org.wiztools.restclient.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -17,631 +15,511 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import nu.xom.Attribute;
 import nu.xom.Builder;
+import nu.xom.Document;
+import nu.xom.Element;
 import nu.xom.Serializer;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.wiztools.restclient.test.TestFailureResultBean;
 import org.wiztools.restclient.test.TestResultBean;
-import org.xml.sax.SAXException;
 
 /**
  *
  * @author rsubramanian
  */
 public final class XMLUtil {
-    
-    private XMLUtil(){}
-    
+
+    private XMLUtil() {
+    }
     private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
-    
     private static final String[] VERSIONS = new String[]{
-        "2.0", "2.1", "2.2a1", "2.2a2", "2.2", RCConstants.VERSION};
-    
+        "2.0", "2.1", "2.2a1", "2.2a2", "2.2", RCConstants.VERSION
+    };
     public static final String XML_MIME = "application/xml";
     public static final String XML_DEFAULT_ENCODING = "UTF-8";
-    
-    static{
+
+
+    static {
         // Sort the version array for binary search
         Arrays.sort(VERSIONS);
     }
-    
-    private static void checkIfVersionValid(final Node versionNode) throws XMLException{
-        if(versionNode == null){
+
+    private static void checkIfVersionValid(final String restVersion)
+            throws XMLException {
+        if (restVersion == null) {
             throw new XMLException("Attribute `version' not available for root element <rest-client>");
         }
-        int res = Arrays.binarySearch(VERSIONS, versionNode.getNodeValue());
-        if(res == -1){
-            throw new XMLException("Version not supported");                
+        int res = Arrays.binarySearch(VERSIONS, restVersion);
+        if (res == -1) {
+            throw new XMLException("Version not supported");
         }
     }
 
     public static Document request2XML(final RequestBean bean)
             throws XMLException {
-        try{
-            Document xmldoc = null;
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            DOMImplementation impl = builder.getDOMImplementation();
-            Element e = null;
-            Element request = null;
-            Node n = null;
-            Element subChild = null;
+        try {
 
-            xmldoc = impl.createDocument(null, "rest-client", null);
-            Element root = xmldoc.getDocumentElement();
-            root.setAttributeNS(null, "version", RCConstants.VERSION);
+            Element reqRootElement = new Element("rest-client");
+            // set version attributes to rest-client root tag
+            Attribute versionAttributes = new Attribute("version", RCConstants.VERSION);
+            reqRootElement.addAttribute(versionAttributes);
 
-            request = xmldoc.createElementNS(null, "request");
-            
-            // HTTP version
-            e = xmldoc.createElementNS(null, "http-version");
-            n = xmldoc.createTextNode(bean.getHttpVersion().versionNumber());
-            e.appendChild(n);
-            request.appendChild(e);
-            
-            // creating the URL child element
-            e = xmldoc.createElementNS(null, "URL");
-            n = xmldoc.createTextNode(bean.getUrl().toString());
-            e.appendChild(n);
-            request.appendChild(e);
+            Element reqChildElement = new Element("request");
+            Element reqChildSubElement = null;
+            Element reqChildSubSubElement = null;
+
+            // HTTP Version
+            reqChildSubElement = new Element("http-version");
+            reqChildSubElement.appendChild(bean.getHttpVersion().versionNumber());
+            reqChildElement.appendChild(reqChildSubElement);
+
+            // creating the URL child element 
+            reqChildSubElement = new Element("URL");
+            reqChildSubElement.appendChild(bean.getUrl().toString());
+            reqChildElement.appendChild(reqChildSubElement);
 
             // creating the method child element
-            e = xmldoc.createElementNS(null, "method");
-            n = xmldoc.createTextNode(bean.getMethod());
-            e.appendChild(n);
-            request.appendChild(e);
+            reqChildSubElement = new Element("method");
+            reqChildSubElement.appendChild(bean.getMethod());
+            reqChildElement.appendChild(reqChildSubElement);
 
             // creating the auth-methods child element
             List<String> authMethods = bean.getAuthMethods();
-            if(authMethods.size() > 0){
+            if (authMethods.size() > 0) {
                 if (authMethods != null && authMethods.size() > 0) {
-                    e = xmldoc.createElementNS(null, "auth-methods");
+                    reqChildSubElement = new Element("auth-methods");
                     String methods = "";
                     for (String authMethod : authMethods) {
                         methods = methods + authMethod + ",";
                     }
-                    String authenticationMethod = methods.substring(0, methods.length()==0?0:methods.length()-1);
-                    n = xmldoc.createTextNode(authenticationMethod);
-                    e.appendChild(n);
-                    request.appendChild(e);
+                    String authenticationMethod = methods.substring(0, methods.length() == 0 ? 0 : methods.length() - 1);
+                    reqChildSubElement.appendChild(authenticationMethod);
+                    reqChildElement.appendChild(reqChildSubElement);
                 }
-
-
                 // creating the auth-preemptive child element
                 Boolean authPreemptive = bean.isAuthPreemptive();
                 if (authPreemptive != null) {
-                    e = xmldoc.createElementNS(null, "auth-preemptive");
-                    n = xmldoc.createTextNode(authPreemptive.toString());
-                    e.appendChild(n);
-                    request.appendChild(e);
+                    reqChildSubElement = new Element("auth-preemptive");
+                    reqChildSubElement.appendChild(authPreemptive.toString());
+                    reqChildElement.appendChild(reqChildSubElement);
                 }
-
                 // creating the auth-host child element
                 String authHost = bean.getAuthHost();
                 if (authHost != null) {
-                    e = xmldoc.createElementNS(null, "auth-host");
-                    n = xmldoc.createTextNode(authHost);
-                    e.appendChild(n);
-                    request.appendChild(e);
+                    reqChildSubElement = new Element("auth-host");
+                    reqChildSubElement.appendChild(authHost);
+                    reqChildElement.appendChild(reqChildSubElement);
                 }
-
                 // creating the auth-realm child element
                 String authRealm = bean.getAuthRealm();
                 if (authRealm != null) {
-                    e = xmldoc.createElementNS(null, "auth-realm");
-                    n = xmldoc.createTextNode(authRealm);
-                    e.appendChild(n);
-                    request.appendChild(e);
+                    reqChildSubElement = new Element("auth-realm");
+                    reqChildSubElement.appendChild(authRealm);
+                    reqChildElement.appendChild(reqChildSubElement);
                 }
-
                 // creating the auth-username child element
                 String authUsername = bean.getAuthUsername();
                 if (authUsername != null) {
-                    e = xmldoc.createElementNS(null, "auth-username");
-                    n = xmldoc.createTextNode(authUsername);
-                    e.appendChild(n);
-                    request.appendChild(e);
+                    reqChildSubElement = new Element("auth-username");
+                    reqChildSubElement.appendChild(authUsername);
+                    reqChildElement.appendChild(reqChildSubElement);
                 }
-
                 // creating the auth-password child element
                 String authPassword = null;
-                if(bean.getAuthPassword() != null){
+                if (bean.getAuthPassword() != null) {
                     authPassword = new String(bean.getAuthPassword());
-                    e = xmldoc.createElementNS(null, "auth-password");
                     String encPassword = Base64.encodeObject(authPassword);
-                    n = xmldoc.createTextNode(encPassword);
-                    e.appendChild(n);
-                    request.appendChild(e);
+
+                    reqChildSubElement = new Element("auth-password");
+                    reqChildSubElement.appendChild(encPassword);
+                    reqChildElement.appendChild(reqChildSubElement);
                 }
             }
-            
+
             // Creating SSL elements
             String sslTruststore = bean.getSslTrustStore();
-            if(!Util.isStrEmpty(sslTruststore)){
+            if (!Util.isStrEmpty(sslTruststore)) {
                 // 1. Create truststore entry
-                e = xmldoc.createElementNS(null, "ssl-truststore");
-                n = xmldoc.createTextNode(sslTruststore);
-                e.appendChild(n);
-                request.appendChild(e);
-                
+                reqChildSubElement = new Element("ssl-truststore");
+                reqChildSubElement.appendChild(sslTruststore);
+                reqChildElement.appendChild(reqChildSubElement);
+
                 // 2. Create password entry
                 String sslPassword = new String(bean.getSslTrustStorePassword());
                 String encPassword = Base64.encodeObject(sslPassword);
-                e = xmldoc.createElementNS(null, "ssl-truststore-password");
-                n = xmldoc.createTextNode(encPassword);
-                e.appendChild(n);
-                request.appendChild(e);
+                reqChildSubElement = new Element("ssl-truststore-password");
+                reqChildSubElement.appendChild(encPassword);
+                reqChildElement.appendChild(reqChildSubElement);
             }
 
             // creating the headers child element
             Map<String, String> headers = bean.getHeaders();
             if (!headers.isEmpty()) {
-                e = xmldoc.createElementNS(null, "headers");
+                reqChildSubElement = new Element("headers");
                 for (String key : headers.keySet()) {
                     String value = headers.get(key);
-                    subChild = xmldoc.createElementNS(null, "header");
-                    subChild.setAttributeNS(null, "key", key);
-                    subChild.setAttributeNS(null, "value", value);
-                    e.appendChild(subChild);
+                    reqChildSubSubElement = new Element("header");
+                    reqChildSubSubElement.addAttribute(new Attribute("key", key));
+                    reqChildSubSubElement.addAttribute(new Attribute("value", value));
+                    reqChildSubElement.appendChild(reqChildSubSubElement);
                 }
-                request.appendChild(e);
+                reqChildElement.appendChild(reqChildSubElement);
             }
 
             // creating the body child element
             ReqEntityBean rBean = bean.getBody();
             if (rBean != null) {
-                e = xmldoc.createElementNS(null, "body");
+                reqChildSubElement = new Element("body");
                 String contentType = rBean.getContentType();
                 String charSet = rBean.getCharSet();
                 String body = rBean.getBody();
-                e.setAttributeNS(null, "content-type", contentType);
-                e.setAttributeNS(null, "charset", charSet);
-                n = xmldoc.createTextNode(body);
-                e.appendChild(n);
-                request.appendChild(e);
+                reqChildSubElement.addAttribute(new Attribute("content-type", contentType));
+                reqChildSubElement.addAttribute(new Attribute("charset", charSet));
+                reqChildSubElement.appendChild(body);
+                reqChildElement.appendChild(reqChildSubElement);
             }
             // creating the test-script child element
             String testScript = bean.getTestScript();
             if (testScript != null) {
-                e = xmldoc.createElementNS(null, "test-script");
-                n = xmldoc.createTextNode(testScript);
-                e.appendChild(n);
-                request.appendChild(e);
-            }
-            
-            root.appendChild(request);
 
-            return xmldoc;
-        }
-        catch(ParserConfigurationException ex){
+                reqChildSubElement = new Element("test-script");
+                reqChildSubElement.appendChild(testScript);
+                reqChildElement.appendChild(reqChildSubElement);
+            }
+            reqRootElement.appendChild(reqChildElement);
+
+            Document xomDocument = new Document(reqRootElement);
+
+            return xomDocument;
+        } catch (Exception ex) {
             throw new XMLException(ex.getMessage(), ex);
         }
     }
-    
-    private static Map<String, String> getHeadersFromHeaderNode(final Node node) throws XMLException{
+
+    private static Map<String, String> getHeadersFromHeaderNode(final Element node)
+            throws XMLException {
         Map<String, String> m = new LinkedHashMap<String, String>();
-        
-        NodeList llHeader = node.getChildNodes();
-        int maxHeader = llHeader.getLength();
-        for(int j=0; j<maxHeader; j++){
-            Node headerNode = llHeader.item(j);
-            if(headerNode.getNodeType() != Node.ELEMENT_NODE){
-                continue;
-            }
-            if(!"header".equals(headerNode.getNodeName())){
+
+        for (int i = 0; i < node.getChildElements().size(); i++) {
+            Element headerElement =  node.getChildElements().get(i) ;
+            if (!"header".equals(headerElement.getQualifiedName())) {
                 throw new XMLException("<headers> element should contain only <header> elements");
             }
-            NamedNodeMap nodeMap = headerNode.getAttributes();
-            Node key = nodeMap.getNamedItem("key");
-            Node value = nodeMap.getNamedItem("value");
-            m.put(key.getNodeValue(), value.getNodeValue());
+
+            m.put(headerElement.getAttributeValue("key"),
+                    headerElement.getAttributeValue("value"));
+
         }
-        
         return m;
     }
 
     public static RequestBean xml2Request(final Document doc)
             throws MalformedURLException, XMLException {
         RequestBean requestBean = new RequestBean();
-        
-        // Get the rootNode
-        Node rootNode = doc.getFirstChild();
-        
-        if(!"rest-client".equals(rootNode.getNodeName())){
+
+        // get the rootNode
+        Element rootNode = doc.getRootElement();
+
+        if (!"rest-client".equals(rootNode.getQualifiedName())) {
             throw new XMLException("Root node is not <rest-client>");
         }
-        NamedNodeMap nodeMapVerAttr = rootNode.getAttributes();
-        Node versionNode = nodeMapVerAttr.getNamedItem("version");
-        checkIfVersionValid(versionNode);
-        
-        // Get the requestNode
-        NodeList llRequest = rootNode.getChildNodes();
-        int size = llRequest.getLength();
-        int reqNodeCount = 0;
-        Node requestNode = null;
-        for(int i=0; i<size; i++){
-            Node tNode = llRequest.item(i);
-            if(tNode.getNodeType() == Node.ELEMENT_NODE){
-                requestNode = tNode;
-                reqNodeCount++;
-            }
-        }
-        if(reqNodeCount != 1){
+
+        // checking correct rest version
+        checkIfVersionValid(rootNode.getAttributeValue("version"));
+
+        // assign rootnode to current node and also finding 'request' node
+        Element tNode = null;
+        Element requestNode = null;
+
+        // if more than two request element is present then throw the exception 
+        if (rootNode.getChildElements().size() != 1) {
             throw new XMLException("There can be only one child node for root node: <request>");
         }
-        if(!"request".equals(requestNode.getNodeName())){
+        // minimum one request element is present in xml 
+        if (rootNode.getFirstChildElement("request") == null) {
             throw new XMLException("The child node of <rest-client> should be <request>");
         }
-        
-        // Process other nodes
-        NodeList ll = requestNode.getChildNodes();
-        int max = ll.getLength();
-        for(int i=0; i<max; i++){
-            Node node = ll.item(i);
-            String nodeName = node.getNodeName();
-            LOG.fine(nodeName + " : " + node.getNodeType());
-            if(node.getNodeType() != Node.ELEMENT_NODE){
-                continue;
-            }
-            if("http-version".equals(nodeName)){
-                String t = node.getTextContent();
-                HTTPVersion httpVersion = "1.1".equals(t)? HTTPVersion.HTTP_1_1: HTTPVersion.HTTP_1_0;
+        requestNode = rootNode.getFirstChildElement("request");
+        for (int i = 0; i < requestNode.getChildElements().size(); i++) {
+            tNode = requestNode.getChildElements().get(i);
+            String nodeName = tNode.getQualifiedName();
+            if ("http-version".equals(nodeName)) {
+                String t = tNode.getValue();
+                HTTPVersion httpVersion = "1.1".equals(t) ? HTTPVersion.HTTP_1_1 : HTTPVersion.HTTP_1_0;
                 requestBean.setHttpVersion(httpVersion);
-            }
-            else if("URL".equals(nodeName)){
-                URL url = new URL(node.getTextContent());
+            } else if ("URL".equals(nodeName)) {
+                URL url = new URL(tNode.getValue());
                 requestBean.setUrl(url);
-            }
-            else if("method".equals(nodeName)){
-                requestBean.setMethod(node.getTextContent());
-            }
-            else if("auth-methods".equals(nodeName)){
-                String[] authenticationMethods = node.getTextContent().split(",");
+            } else if ("method".equals(nodeName)) {
+                requestBean.setMethod(tNode.getValue());
+            } else if ("auth-methods".equals(nodeName)) {
+                String[] authenticationMethods = tNode.getValue().split(",");
                 for (int j = 0; j < authenticationMethods.length; j++) {
                     requestBean.addAuthMethod(authenticationMethods[j]);
                 }
-            }
-            else if("auth-preemptive".equals(nodeName)){
-                if (node.getTextContent().equals("true")) {
+            } else if ("auth-preemptive".equals(nodeName)) {
+                if (tNode.getValue().equals("true")) {
                     requestBean.setAuthPreemptive(true);
-                }
-                else{
+                } else {
                     requestBean.setAuthPreemptive(false);
                 }
-            }
-            else if("auth-host".equals(nodeName)){
-                requestBean.setAuthHost(node.getTextContent());
-            }
-            else if("auth-realm".equals(nodeName)){
-                requestBean.setAuthRealm(node.getTextContent());
-            }
-            else if("auth-username".equals(nodeName)){
-                requestBean.setAuthUsername(node.getTextContent());
-            }
-            else if("auth-password".equals(nodeName)){
-                String password = (String) Base64.decodeToObject(node.getTextContent());
+            } else if ("auth-host".equals(nodeName)) {
+                requestBean.setAuthHost(tNode.getValue());
+            } else if ("auth-realm".equals(nodeName)) {
+                requestBean.setAuthRealm(tNode.getValue());
+            } else if ("auth-username".equals(nodeName)) {
+                requestBean.setAuthUsername(tNode.getValue());
+            } else if ("auth-password".equals(nodeName)) {
+                String password = (String) Base64.decodeToObject(tNode.getValue());
                 requestBean.setAuthPassword(password.toCharArray());
-            }
-            else if("ssl-truststore".equals(nodeName)){
-                String sslTrustStore = node.getTextContent();
+            } else if ("ssl-truststore".equals(nodeName)) {
+                String sslTrustStore = tNode.getValue();
                 requestBean.setSslTrustStore(sslTrustStore);
-            }
-            else if("ssl-truststore-password".equals(nodeName)){
-                String sslTrustStorePassword = (String) Base64.decodeToObject(node.getTextContent());
+            } else if ("ssl-truststore-password".equals(nodeName)) {
+                String sslTrustStorePassword = (String) Base64.decodeToObject(tNode.getValue());
                 requestBean.setSslTrustStorePassword(sslTrustStorePassword.toCharArray());
-            }
-            else if("headers".equals(nodeName)){
-                Map<String, String> m = getHeadersFromHeaderNode(node);
-                for(String key: m.keySet()){
+            } else if ("headers".equals(nodeName)) {
+                Map<String, String> m = getHeadersFromHeaderNode(tNode);
+                for (String key : m.keySet()) {
                     requestBean.addHeader(key, m.get(key));
                 }
-            }
-            else if("body".equals(nodeName)){
-                NamedNodeMap nodeMap = node.getAttributes();
-                Node contentType = nodeMap.getNamedItem("content-type");
-                Node charSet = nodeMap.getNamedItem("charset");
-                requestBean.setBody(new ReqEntityBean(node.getTextContent(), contentType.getNodeValue(),
-                        charSet.getNodeValue()));
-            }
-            else if("test-script".equals(nodeName)){
-                requestBean.setTestScript(node.getTextContent());
-            }
-            else{
+            } else if ("body".equals(nodeName)) {
+                requestBean.setBody(new ReqEntityBean(tNode.getValue(), tNode.getAttributeValue("content-type"),
+                        tNode.getAttributeValue("charset")));
+            } else if ("test-script".equals(nodeName)) {
+                requestBean.setTestScript(tNode.getValue());
+            } else {
                 throw new XMLException("Invalid element encountered: <" + nodeName + ">");
             }
         }
-
         return requestBean;
     }
 
     public static Document response2XML(final ResponseBean bean)
             throws XMLException {
 
-        try{
-            Document xmldoc = null;
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            DOMImplementation impl = builder.getDOMImplementation();
-            Element e = null;
-            Node n = null;
-            Element response = null;
-            Element subChild = null;
+        try {
 
-            xmldoc = impl.createDocument(null, "rest-client", null);
-            Element root = xmldoc.getDocumentElement();
-            root.setAttributeNS(null, "version", RCConstants.VERSION);
+            Element respRootElement = new Element("rest-client");
+            Element respChildElement = new Element("response");
+            Element respChildSubElement = null;
+            Element respChildSubSubElement = null;
 
-            response = xmldoc.createElementNS(null, "response");
-            
-            // creating the execution time child element
-            e = xmldoc.createElementNS(null, "execution-time");
-            n = xmldoc.createTextNode(String.valueOf(bean.getExecutionTime()));
-            e.appendChild(n);
-            response.appendChild(e);
+            // set version attributes to rest-client root tag
+            Attribute versionAttributes = new Attribute("version", RCConstants.VERSION);
+            respRootElement.addAttribute(versionAttributes);
 
-            // creating the status child element
-            e = xmldoc.createElementNS(null, "status");
-            e.setAttributeNS(null, "code", String.valueOf(bean.getStatusCode()));
-            n = xmldoc.createTextNode(bean.getStatusLine());
-            e.appendChild(n);
-            response.appendChild(e);
+            // adding first sub child element - execution-time and append to response child element
+            respChildSubElement = new Element("execution-time");
+            respChildSubElement.appendChild(String.valueOf(bean.getExecutionTime()));
+            respChildElement.appendChild(respChildSubElement);
 
-            // creating the headers child element
-            Map<String, String> headers = bean.getHeaders();
-            if (!headers.isEmpty()) {
-                e = xmldoc.createElementNS(null, "headers");
-                for (String key : headers.keySet()) {
-                    String value = headers.get(key);
-                    subChild = xmldoc.createElementNS(null, "header");
-                    subChild.setAttributeNS(null, "key", key);
-                    subChild.setAttributeNS(null, "value", value);
-                    e.appendChild(subChild);
+            // adding second sub child element - status and code attributes and append to response child element
+            respChildSubElement = new Element("status");
+            Attribute codeAttributes = new Attribute("code", String.valueOf(bean.getStatusCode()));
+            respChildSubElement.addAttribute(codeAttributes);
+            respChildSubElement.appendChild(bean.getStatusLine());
+            respChildElement.appendChild(respChildSubElement);
+
+            // adding third sub child element - headers
+            Map<String, String> xomHeaders = bean.getHeaders();
+            if (!xomHeaders.isEmpty()) {
+                Attribute keyAttribute = null;
+                Attribute valueAttribute = null;
+                // creating sub child-child element 
+                respChildSubElement = new Element("headers");
+                for (String key : xomHeaders.keySet()) {
+                    String value = xomHeaders.get(key);
+                    respChildSubSubElement = new Element("header");
+                    keyAttribute = new Attribute("key", key);
+                    valueAttribute = new Attribute("value", value);
+                    respChildSubSubElement.addAttribute(keyAttribute);
+                    respChildSubSubElement.addAttribute(valueAttribute);
+                    respChildSubElement.appendChild(respChildSubSubElement);
                 }
-                response.appendChild(e);
+                // add response child element - headers
+                respChildElement.appendChild(respChildSubElement);
             }
 
-            //creating the body child element
-            String responseBody = bean.getResponseBody();
-            if (responseBody != null) {
-                e = xmldoc.createElementNS(null, "body");
-                n = xmldoc.createTextNode(responseBody);
-                e.appendChild(n);
-                response.appendChild(e);
+            String xomResponseBody = bean.getResponseBody();
+            if (xomResponseBody != null) {
+                //creating the body child element and append to response child element
+                respChildSubElement = new Element("body");
+                respChildSubElement.appendChild(xomResponseBody);
+                respChildElement.appendChild(respChildSubElement);
             }
-            
-            // test result
-            TestResultBean testResult = bean.getTestResult();
-            if(testResult != null){
-                e = xmldoc.createElementNS(null, "test-result");
-                
+            // test result 
+            TestResultBean xomTestResult = bean.getTestResult();
+            if (xomTestResult != null) {
+                //creating the test-result child element
+                respChildSubElement = new Element("test-result");
+
                 // Counts:
-                Element e_runCount = xmldoc.createElementNS(null, "run-count");
-                Element e_failureCount = xmldoc.createElementNS(null, "failure-count");
-                Element e_errorCount = xmldoc.createElementNS(null, "error-count");
-                n = xmldoc.createTextNode(String.valueOf(testResult.getRunCount()));
-                e_runCount.appendChild(n);
-                n = xmldoc.createTextNode(String.valueOf(testResult.getFailureCount()));
-                e_failureCount.appendChild(n);
-                n = xmldoc.createTextNode(String.valueOf(testResult.getErrorCount()));
-                e_errorCount.appendChild(n);
-                
-                e.appendChild(e_runCount);
-                e.appendChild(e_failureCount);
-                e.appendChild(e_errorCount);
-                
-                // Failures:
-                if(testResult.getFailureCount() > 0){
-                    Element e_failures = xmldoc.createElementNS(null, "failures");
-                    List<TestFailureResultBean> l = testResult.getFailures();
-                    for(TestFailureResultBean b: l){
-                        Element e_failure = xmldoc.createElementNS(null, "failure");
-                        Element e_message = xmldoc.createElementNS(null, "message");
-                        Element e_line = xmldoc.createElementNS(null, "line-number");
-                        
-                        Node nn = xmldoc.createTextNode(b.getExceptionMessage());
-                        e_message.appendChild(nn);
-                        nn = xmldoc.createTextNode(String.valueOf(b.getLineNumber()));
-                        e_line.appendChild(nn);
-                        
+                Element e_runCount = new Element("run-coun");
+                e_runCount.appendChild(String.valueOf(xomTestResult.getRunCount()));
+                Element e_failureCount = new Element("failure-coun");
+                e_failureCount.appendChild(String.valueOf(xomTestResult.getFailureCount()));
+                Element e_errorCount = new Element("error-coun");
+                e_errorCount.appendChild(String.valueOf(xomTestResult.getErrorCount()));
+                respChildSubElement.appendChild(e_runCount);
+                respChildSubElement.appendChild(e_failureCount);
+                respChildSubElement.appendChild(e_errorCount);
+
+                // Failures
+                if (xomTestResult.getFailureCount() > 0) {
+                    Element e_failures = new Element("failures");
+                    List<TestFailureResultBean> l = xomTestResult.getFailures();
+                    for (TestFailureResultBean b : l) {
+                        Element e_message = new Element("message");
+                        e_message.appendChild(b.getExceptionMessage());
+                        Element e_line = new Element("line-number");
+                        e_line.appendChild(String.valueOf(b.getLineNumber()));
+                        Element e_failure = new Element("failure");
                         e_failure.appendChild(e_message);
                         e_failure.appendChild(e_line);
-                        
                         e_failures.appendChild(e_failure);
                     }
-                    e.appendChild(e_failures);
+                    respChildSubElement.appendChild(e_failures);
                 }
-                
-                // Errors:
-                if(testResult.getErrorCount() > 0){
-                    Element e_errors = xmldoc.createElementNS(null, "errors");
-                    List<TestFailureResultBean> l = testResult.getErrors();
-                    for(TestFailureResultBean b: l){
-                        Element e_error = xmldoc.createElementNS(null, "error");
-                        Element e_message = xmldoc.createElementNS(null, "message");
-                        Element e_line = xmldoc.createElementNS(null, "line-number");
-                        
-                        Node nn = xmldoc.createTextNode(b.getExceptionMessage());
-                        e_message.appendChild(nn);
-                        nn = xmldoc.createTextNode(String.valueOf(b.getLineNumber()));
-                        e_line.appendChild(nn);
-                        
+
+                //Errors
+                if (xomTestResult.getFailureCount() > 0) {
+                    Element e_errors = new Element("errors");
+                    List<TestFailureResultBean> l = xomTestResult.getErrors();
+                    for (TestFailureResultBean b : l) {
+                        Element e_message = new Element("message");
+                        e_message.appendChild(b.getExceptionMessage());
+                        Element e_line = new Element("line-number");
+                        e_line.appendChild(String.valueOf(b.getLineNumber()));
+                        Element e_error = new Element("error");
                         e_error.appendChild(e_message);
                         e_error.appendChild(e_line);
-                        
                         e_errors.appendChild(e_error);
                     }
-                    e.appendChild(e_errors);
+                    respChildSubElement.appendChild(e_errors);
                 }
-                
-                // Trace:
-                Element e_trace = xmldoc.createElementNS(null, "trace");
-                n = xmldoc.createTextNode(testResult.toString());
-                e_trace.appendChild(n);
-                e.appendChild(e_trace);
-                
-                response.appendChild(e);
+                // Trace
+                Element e_trace = new Element("trace");
+                e_trace.appendChild(xomTestResult.toString());
+                respChildSubElement.appendChild(e_trace);
+
+                respChildElement.appendChild(respChildSubElement);
             }
 
-            root.appendChild(response);
+            respRootElement.appendChild(respChildElement);
 
-            return xmldoc;
-        }
-        catch(ParserConfigurationException ex){
+            Document xomDocument = new Document(respRootElement);
+
+            return xomDocument;
+
+        } catch (Exception ex) {
             throw new XMLException(ex.getMessage(), ex);
         }
     }
 
-    public static ResponseBean xml2Response(final Document doc) throws XMLException {
+    public static ResponseBean xml2Response(final Document doc)
+            throws XMLException {
         ResponseBean responseBean = new ResponseBean();
-        
-        // Get the rootNode
-        Node rootNode = doc.getFirstChild();
-        if(!"rest-client".equals(rootNode.getNodeName())){
-            throw new XMLException("The root node must be <rest-client>");
+
+        // get the rootNode
+        Element rootNode = doc.getRootElement();
+
+        if (!"rest-client".equals(rootNode.getQualifiedName())) {
+            throw new XMLException("Root node is not <rest-client>");
         }
-        NamedNodeMap nodeMapVerAttr = rootNode.getAttributes();
-        Node nodeVersion = nodeMapVerAttr.getNamedItem("version");
-        checkIfVersionValid(nodeVersion);
-        
-        // Get the responseNode
-        NodeList llResponse = rootNode.getChildNodes();
-        int size = llResponse.getLength();
-        int resNodeCount = 0;
-        Node responseNode = null;
-        for(int i=0; i<size; i++){
-            Node tNode = llResponse.item(i);
-            if(tNode.getNodeType() == Node.ELEMENT_NODE){
-                responseNode = tNode;
-                resNodeCount++;
-            }
-        }
-        if(resNodeCount != 1){
+
+        // checking correct rest version
+        checkIfVersionValid(rootNode.getAttributeValue("version"));
+
+        // assign rootnode to current node and also finding 'response' node
+        Element tNode = null;
+        Element responseNode = null;
+
+        // if more than two request element is present then throw the exception
+        if (rootNode.getChildElements().size() != 1) {
             throw new XMLException("There can be only one child node for root node: <response>");
         }
-        if(!"response".equals(responseNode.getNodeName())){
+        // minimum one response element is present in xml
+        if (rootNode.getFirstChildElement("response") == null) {
             throw new XMLException("The child node of <rest-client> should be <response>");
         }
-        
-        // Process other nodes
-        NodeList ll = responseNode.getChildNodes();
-        int max = ll.getLength();
-        for(int i=0; i < max; i++){
-            Node node = ll.item(i);
-            String nodeName = node.getNodeName();
-            LOG.fine(nodeName + " : " + node.getNodeType());
-            if(node.getNodeType() != Node.ELEMENT_NODE){
-                continue;
-            }
-            if("execution-time".equals(nodeName)){
-                responseBean.setExecutionTime(Long.parseLong(node.getTextContent()));
-            }
-            else if("status".equals(nodeName)){
-                responseBean.setStatusLine(node.getTextContent());
-                NamedNodeMap nodeMap = node.getAttributes();
-                Node n = nodeMap.getNamedItem("code");
-                responseBean.setStatusCode(Integer.parseInt(n.getNodeValue()));
-            }
-            else if("headers".equals(nodeName)){
-                Map<String, String> m = getHeadersFromHeaderNode(node);
-                for(String key: m.keySet()){
+        responseNode = rootNode.getFirstChildElement("response");
+        for (int i = 0; i < responseNode.getChildElements().size(); i++) {
+            tNode = responseNode.getChildElements().get(i);
+            String nodeName = tNode.getQualifiedName();
+
+            if ("execution-time".equals(nodeName)) {
+                responseBean.setExecutionTime(Long.parseLong(tNode.getValue()));
+            } else if ("status".equals(nodeName)) {
+                responseBean.setStatusLine(tNode.getValue());
+                responseBean.setStatusCode(Integer.parseInt(tNode.getAttributeValue("code")));
+            } else if ("headers".equals(nodeName)) {
+                Map<String, String> m = getHeadersFromHeaderNode(tNode);
+                for (String key : m.keySet()) {
                     responseBean.addHeader(key, m.get(key));
                 }
-            }
-            else if("body".equals(nodeName)){
-                responseBean.setResponseBody(node.getTextContent());
-            }
-            else if("test-result".equals(nodeName)){
+            } else if ("body".equals(nodeName)) {
+                responseBean.setResponseBody(tNode.getValue());
+            } else if ("test-result".equals(nodeName)) {
                 //responseBean.setTestResult(node.getTextContent()); TODO
                 TestResultBean testResultBean = new TestResultBean();
-                // TODO
-                NodeList nnll = node.getChildNodes();
-                int count = nnll.getLength();
-                for(int j=0; j<count; j++){
-                    Node nn = nnll.item(j);
-                    if(nn.getNodeType() != Node.ELEMENT_NODE){
-                        continue;
-                    }
-                    if("run-count".equals(nn.getNodeName())){
-                        //throw new XMLException("<headers> element should contain only <header> elements");
-                    }
-                    else if("failure-count".equals(nn.getNodeName())){
-                        //throw new XMLException("<headers> element should contain only <header> elements");
-                    }
-                    else if("error-count".equals(nn.getNodeName())){
-                        //throw new XMLException("<headers> element should contain only <header> elements");
-                    }
-                    else if("failures".equals(nn.getNodeName())){
-                        //throw new XMLException("<headers> element should contain only <header> elements");
-                    }
-                    else if("errors".equals(nn.getNodeName())){
-                        //throw new XMLException("<headers> element should contain only <header> elements");
+
+                for (int j = 0; j < tNode.getChildCount(); j++) {
+                    String nn = tNode.getQualifiedName();
+                    if ("run-count".equals(nn)) {
+                        throw new XMLException("<headers> element should contain only <header> elements");
+                    } else if ("failure-count".equals(nn)) {
+                        throw new XMLException("<headers> element should contain only <header> elements");
+                    } else if ("error-count".equals(nn)) {
+                        throw new XMLException("<headers> element should contain only <header> elements");
+                    } else if ("failures".equals(nn)) {
+                        throw new XMLException("<headers> element should contain only <header> elements");
+                    } else if ("errors".equals(nn)) {
+                        throw new XMLException("<headers> element should contain only <header> elements");
                     }
                 }
                 responseBean.setTestResult(testResultBean);
-            }
-            else{
+            } else {
                 throw new XMLException("Unrecognized element found: <" + nodeName + ">");
             }
         }
-
         return responseBean;
     }
 
     public static void writeXML(final Document doc, final File f)
             throws IOException, XMLException {
-        try{
-            DOMSource domSource = new DOMSource(doc);
-            FileOutputStream out = new FileOutputStream(f);
-            StreamResult streamResult = new StreamResult(out);
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer serializer = tf.newTransformer();
-            serializer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-            serializer.transform(domSource, streamResult);
+
+        try {
+            OutputStream out = new FileOutputStream(f);
+            out = new BufferedOutputStream(out);
+            Serializer serializer = new Serializer(out, "UTF-8");
+            serializer.setIndent(1);
+            serializer.setMaxLength(69);
+            serializer.write(doc);
             out.close();
-        }
-        catch(TransformerConfigurationException ex){
-            throw new XMLException(ex.getMessage(), ex);
-        }
-        catch(TransformerException ex){
+        } catch (IOException ex) {
             throw new XMLException(ex.getMessage(), ex);
         }
     }
 
-    public static Document getDocumentFromFile(final File f) throws IOException,
-            XMLException {
+    public static Document xomGetDocumentFromFile(final File f)
+            throws IOException, XMLException {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(f);
+            Builder parser = new Builder();
+            Document doc = parser.build(f);
             return doc;
-        } catch (ParserConfigurationException ex) {
+        } catch (ParsingException ex) {
             throw new XMLException(ex.getMessage(), ex);
-        } catch (SAXException ex) {
+        } catch (IOException ex) {
             throw new XMLException(ex.getMessage(), ex);
         }
+
     }
-    
-    public static String getDocumentCharset(final File f) throws IOException, XMLException{
-        Document doc = getDocumentFromFile(f);
-        return doc.getXmlEncoding();
+
+    public static String getDocumentCharset(final File f)
+            throws IOException, XMLException {
+        Document doc = xomGetDocumentFromFile(f);
+        return doc.toXML();
     }
 
     public static void writeRequestXML(final RequestBean bean, final File f)
@@ -657,32 +535,33 @@ public final class XMLUtil {
     }
 
     /*public static void writeXMLRequest(final File f, RequestBean bean)
-            throws IOException, XMLException {
-        Document doc = getDocumentFromFile(f);
-        bean = xml2Request(doc);
+    throws IOException, XMLException {
+    Document doc = getDocumentFromFile(f);
+    bean = xml2Request(doc);
     }*/
 
     /*public static void writeXMLResponse(final File f, ResponseBean bean)
-            throws IOException, XMLException {
-        Document doc = getDocumentFromFile(f);
-        bean = xml2Response(doc);
+    throws IOException, XMLException {
+    Document doc = getDocumentFromFile(f);
+    bean = xml2Response(doc);
     }*/
-
-    public static RequestBean getRequestFromXMLFile(final File f) throws IOException, XMLException {
-        Document doc = getDocumentFromFile(f);
+    public static RequestBean getRequestFromXMLFile(final File f)
+            throws IOException, XMLException {
+        Document doc = xomGetDocumentFromFile(f);
         return xml2Request(doc);
     }
-    
-    public static ResponseBean getResponseFromXMLFile(final File f) throws IOException, XMLException{
-        Document doc = getDocumentFromFile(f);
+
+    public static ResponseBean getResponseFromXMLFile(final File f)
+            throws IOException, XMLException {
+        Document doc = xomGetDocumentFromFile(f);
         return xml2Response(doc);
     }
-    
-    public static String indentXML(final String in) 
-            throws XMLException, IOException{
+
+    public static String indentXML(final String in)
+            throws XMLException, IOException {
         try {
             Builder parser = new Builder();
-            nu.xom.Document doc = parser.build(in, null);
+            Document doc = parser.build(in, null);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Serializer serializer = new Serializer(baos);
             serializer.setIndent(4);
