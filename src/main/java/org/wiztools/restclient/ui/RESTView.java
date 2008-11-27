@@ -1,5 +1,6 @@
 package org.wiztools.restclient.ui;
 
+import com.jidesoft.swing.AutoCompletion;
 import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -737,6 +738,9 @@ public class RESTView extends JPanel implements View {
                 jcb_urlActionPerformed(evt);
             }
         });
+        // AutoCompleteDecorator.decorate(jcb_url);
+        AutoCompletion ac = new AutoCompletion(jcb_url);
+        ac.setStrict(false);
         jp_north.add(jcb_url, BorderLayout.CENTER);
         jb_request = new JButton(icon_go);
         jb_request.setToolTipText("Go!");

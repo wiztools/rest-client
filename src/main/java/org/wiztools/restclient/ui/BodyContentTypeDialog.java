@@ -20,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  *
@@ -147,6 +148,10 @@ public class BodyContentTypeDialog extends EscapableDialog {
         JPanel jp_encp = new JPanel();
         jp_encp.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jp_encp.add(jp);
+
+        // Auto-completion decoration
+        AutoCompleteDecorator.decorate(jcb_char_set);
+        AutoCompleteDecorator.decorate(jcb_content_type);
         
         this.setContentPane(jp_encp);
         this.pack();

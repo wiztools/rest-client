@@ -324,14 +324,14 @@ public final class XMLUtil {
             respChildElement.appendChild(respChildSubElement);
 
             // adding third sub child element - headers
-            Map<String, String> xomHeaders = bean.getHeaders();
-            if (!xomHeaders.isEmpty()) {
+            Map<String, String> headers = bean.getHeaders();
+            if (!headers.isEmpty()) {
                 Attribute keyAttribute = null;
                 Attribute valueAttribute = null;
                 // creating sub child-child element 
                 respChildSubElement = new Element("headers");
-                for (String key : xomHeaders.keySet()) {
-                    String value = xomHeaders.get(key);
+                for (String key : headers.keySet()) {
+                    String value = headers.get(key);
                     respChildSubSubElement = new Element("header");
                     keyAttribute = new Attribute("key", key);
                     valueAttribute = new Attribute("value", value);
@@ -343,34 +343,34 @@ public final class XMLUtil {
                 respChildElement.appendChild(respChildSubElement);
             }
 
-            String xomResponseBody = bean.getResponseBody();
-            if (xomResponseBody != null) {
+            String responseBody = bean.getResponseBody();
+            if (responseBody != null) {
                 //creating the body child element and append to response child element
                 respChildSubElement = new Element("body");
-                respChildSubElement.appendChild(xomResponseBody);
+                respChildSubElement.appendChild(responseBody);
                 respChildElement.appendChild(respChildSubElement);
             }
             // test result 
-            TestResultBean xomTestResult = bean.getTestResult();
-            if (xomTestResult != null) {
+            TestResultBean testResult = bean.getTestResult();
+            if (testResult != null) {
                 //creating the test-result child element
                 respChildSubElement = new Element("test-result");
 
                 // Counts:
                 Element e_runCount = new Element("run-coun");
-                e_runCount.appendChild(String.valueOf(xomTestResult.getRunCount()));
+                e_runCount.appendChild(String.valueOf(testResult.getRunCount()));
                 Element e_failureCount = new Element("failure-coun");
-                e_failureCount.appendChild(String.valueOf(xomTestResult.getFailureCount()));
+                e_failureCount.appendChild(String.valueOf(testResult.getFailureCount()));
                 Element e_errorCount = new Element("error-coun");
-                e_errorCount.appendChild(String.valueOf(xomTestResult.getErrorCount()));
+                e_errorCount.appendChild(String.valueOf(testResult.getErrorCount()));
                 respChildSubElement.appendChild(e_runCount);
                 respChildSubElement.appendChild(e_failureCount);
                 respChildSubElement.appendChild(e_errorCount);
 
                 // Failures
-                if (xomTestResult.getFailureCount() > 0) {
+                if (testResult.getFailureCount() > 0) {
                     Element e_failures = new Element("failures");
-                    List<TestFailureResultBean> l = xomTestResult.getFailures();
+                    List<TestFailureResultBean> l = testResult.getFailures();
                     for (TestFailureResultBean b : l) {
                         Element e_message = new Element("message");
                         e_message.appendChild(b.getExceptionMessage());
@@ -385,9 +385,9 @@ public final class XMLUtil {
                 }
 
                 //Errors
-                if (xomTestResult.getFailureCount() > 0) {
+                if (testResult.getFailureCount() > 0) {
                     Element e_errors = new Element("errors");
-                    List<TestFailureResultBean> l = xomTestResult.getErrors();
+                    List<TestFailureResultBean> l = testResult.getErrors();
                     for (TestFailureResultBean b : l) {
                         Element e_message = new Element("message");
                         e_message.appendChild(b.getExceptionMessage());
@@ -402,7 +402,7 @@ public final class XMLUtil {
                 }
                 // Trace
                 Element e_trace = new Element("trace");
-                e_trace.appendChild(xomTestResult.toString());
+                e_trace.appendChild(testResult.toString());
                 respChildSubElement.appendChild(e_trace);
 
                 respChildElement.appendChild(respChildSubElement);
