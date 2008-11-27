@@ -129,13 +129,7 @@ public class XMLUtilTest {
         System.out.println("getResponseFromXMLFile");
         File f = new File("src/test/resources/resFromXml.rcs");
 
-        ResponseBean expResult = new ResponseBean();
-        expResult.setStatusLine("HTTP/1.1 200 OK");
-        expResult.setStatusCode(200);
-        expResult.addHeader("Content-Type", "text/plain; charset=utf-8");
-        expResult.addHeader("Transfer-Encoding", "chunked");
-        expResult.addHeader("Server", "Jetty");
-        expResult.setResponseBody("**RESTClient TraceServlet**");
+        ResponseBean expResult = getDefaultResponseBean();
         
         ResponseBean result = XMLUtil.getResponseFromXMLFile(f);
         assertEquals(expResult, result);
