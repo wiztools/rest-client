@@ -6,32 +6,8 @@
 <headers>
 <header key="Content-Type" value="text/plain; charset=utf-8"/>
 <header key="Transfer-Encoding" value="chunked"/>
-<header key="Server" value="Jetty(6.1.x)"/>
+<header key="Server" value="Jetty"/>
 </headers>
-<body>**RESTClient TraceServlet**
-
-*Method*
-	POST
-
-*Path Info*
-	/
-
-*Headers*
-	key1: value1
-	Content-Length: 9
-	Content-Type: text/plain; charset=UTF-8
-	Host: localhost:10101
-	Connection: Keep-Alive
-	User-Agent: Apache-HttpClient/4.0-beta1 (java 1.4)
-	Expect: 100-continue
-
-*Query String*
-	null
-
-*Parameters*
-
-*Body*
-	Body Text
-</body>
+<body>**RESTClient TraceServlet**</body>
 </response>
 </rest-client>
