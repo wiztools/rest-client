@@ -6,6 +6,7 @@
 package org.wiztools.restclient.xml;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import nu.xom.Document;
 import org.junit.After;
@@ -43,6 +44,31 @@ public class XMLUtilTest {
     public void tearDown() {
     }
 
+    private RequestBean getDefaultRequestBean() throws MalformedURLException{
+        RequestBean expResult = new RequestBean();
+        expResult.setUrl(new URL("http://localhost:10101/"));
+        expResult.setMethod("POST");
+        expResult.addHeader("key1", "value1");
+        expResult.setBody(new ReqEntityBean("Body Text", "text/plain", "UTF-8"));
+        expResult.addAuthMethod("BASIC");
+        expResult.setAuthPreemptive(true);
+        expResult.setAuthRealm("realm");
+        expResult.setAuthUsername("username");
+        expResult.setAuthPassword("password".toCharArray());
+        return expResult;
+    }
+
+    private ResponseBean getDefaultResponseBean(){
+        ResponseBean expResult = new ResponseBean();
+        expResult.setStatusLine("HTTP/1.1 200 OK");
+        expResult.setStatusCode(200);
+        expResult.addHeader("Content-Type", "text/plain; charset=utf-8");
+        expResult.addHeader("Transfer-Encoding", "chunked");
+        expResult.addHeader("Server", "Jetty");
+        expResult.setResponseBody("**RESTClient TraceServlet**");
+        return expResult;
+    }
+
     /**
      * Test of getDocumentCharset method, of class XMLUtil.
      */
@@ -58,24 +84,28 @@ public class XMLUtilTest {
     /**
      * Test of writeRequestXML method, of class XMLUtil.
      */
-    /*@Test
+    @Test
     public void testWriteRequestXML() throws Exception {
         System.out.println("writeRequestXML");
-        RequestBean bean = null;
-        File f = null;
+        RequestBean bean = getDefaultRequestBean();
+        File f = File.createTempFile("prefix", ".rcq");
         XMLUtil.writeRequestXML(bean, f);
-    }*/
+        RequestBean expResult = XMLUtil.getRequestFromXMLFile(f);
+        assertEquals(expResult, bean);
+    }
 
     /**
      * Test of writeResponseXML method, of class XMLUtil.
      */
-    /*@Test
+    @Test
     public void testWriteResponseXML() throws Exception {
         System.out.println("writeResponseXML");
-        ResponseBean bean = null;
-        File f = null;
+        ResponseBean bean = getDefaultResponseBean();
+        File f = File.createTempFile("prefix", ".rcs");
         XMLUtil.writeResponseXML(bean, f);
-    }*/
+        ResponseBean expResult = XMLUtil.getResponseFromXMLFile(f);
+        assertEquals(expResult, bean);
+    }
 
     /**
      * Test of getRequestFromXMLFile method, of class XMLUtil.
@@ -85,16 +115,7 @@ public class XMLUtilTest {
         System.out.println("getRequestFromXMLFile");
         File f = new File("src/test/resources/reqFromXml.rcq");
 
-        RequestBean expResult = new RequestBean();
-        expResult.setUrl(new URL("http://localhost:10101/"));
-        expResult.setMethod("POST");
-        expResult.addHeader("key1", "value1");
-        expResult.setBody(new ReqEntityBean("Body Text", "text/plain", "UTF-8"));
-        expResult.addAuthMethod("BASIC");
-        expResult.setAuthPreemptive(true);
-        expResult.setAuthRealm("realm");
-        expResult.setAuthUsername("username");
-        expResult.setAuthPassword("password".toCharArray());
+        RequestBean expResult = getDefaultRequestBean();
         
         RequestBean result = XMLUtil.getRequestFromXMLFile(f);
         assertEquals(expResult, result);
