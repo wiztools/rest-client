@@ -221,7 +221,18 @@ public final class RequestBean implements Cloneable{
         StringBuilder sb = new StringBuilder();
         sb.append("@Request[");
         sb.append(url).append(", ");
-        sb.append(method);
+        sb.append(method).append(", ");
+        sb.append(headers.toString()).append(", ");
+        sb.append(body).append(", ");
+        sb.append(authMethods).append(", ");
+        sb.append(authPreemptive).append(", ");
+        sb.append(authHost).append(", ");
+        sb.append(authRealm).append(", ");
+        sb.append(authUsername).append(", ");
+        // sb.append(authPassword).append(", ");
+        sb.append(sslTrustStore).append(", ");
+        // sb.append(sslTrustStorePassword).append(", ");
+        sb.append(httpVersion).append(", ");
         sb.append("]");
         return sb.toString();
     }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<rest-client version="2.2">
+<request>
+<http-version>1.1</http-version>
+<URL>http://localhost:10101/</URL>
+<method>POST</method>
+<auth-methods>BASIC</auth-methods>
+<auth-preemptive>true</auth-preemptive>
+<auth-realm>realm</auth-realm>
+<auth-username>username</auth-username>
+<auth-password>rO0ABXQACHBhc3N3b3Jk</auth-password>
+<headers>
+<header key="key1" value="value1"/>
+</headers>
+<body charset="UTF-8" content-type="text/plain">Body Text</body>
+</request>
+</rest-client>

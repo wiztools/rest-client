@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<rest-client version="2.2">
+<response>
+<execution-time>287</execution-time>
+<status code="200">HTTP/1.1 200 OK</status>
+<headers>
+<header key="Content-Type" value="text/plain; charset=utf-8"/>
+<header key="Transfer-Encoding" value="chunked"/>
+<header key="Server" value="Jetty(6.1.x)"/>
+</headers>
+<body>**RESTClient TraceServlet**
+
+*Method*
+	POST
+
+*Path Info*
+	/
+
+*Headers*
+	key1: value1
+	Content-Length: 9
+	Content-Type: text/plain; charset=UTF-8
+	Host: localhost:10101
+	Connection: Keep-Alive
+	User-Agent: Apache-HttpClient/4.0-beta1 (java 1.4)
+	Expect: 100-continue
+
+*Query String*
+	null
+
+*Parameters*
+
+*Body*
+	Body Text
+</body>
+</response>
+</rest-client>

@@ -55,7 +55,7 @@ public final class XMLUtil {
         }
     }
 
-    public static Document request2XML(final RequestBean bean)
+    private static Document request2XML(final RequestBean bean)
             throws XMLException {
         try {
 
@@ -85,41 +85,41 @@ public final class XMLUtil {
 
             // creating the auth-methods child element
             List<String> authMethods = bean.getAuthMethods();
-            if (authMethods.size() > 0) {
-                if (authMethods != null && authMethods.size() > 0) {
-                    reqChildSubElement = new Element("auth-methods");
-                    String methods = "";
-                    for (String authMethod : authMethods) {
-                        methods = methods + authMethod + ",";
-                    }
-                    String authenticationMethod = methods.substring(0, methods.length() == 0 ? 0 : methods.length() - 1);
-                    reqChildSubElement.appendChild(authenticationMethod);
-                    reqChildElement.appendChild(reqChildSubElement);
+            if (authMethods == null || authMethods.size() > 0) {
+                
+                reqChildSubElement = new Element("auth-methods");
+                String methods = "";
+                for (String authMethod : authMethods) {
+                    methods = methods + authMethod + ",";
                 }
+                String authenticationMethod = methods.substring(0, methods.length() == 0 ? 0 : methods.length() - 1);
+                reqChildSubElement.appendChild(authenticationMethod);
+                reqChildElement.appendChild(reqChildSubElement);
+
                 // creating the auth-preemptive child element
-                Boolean authPreemptive = bean.isAuthPreemptive();
-                if (authPreemptive != null) {
-                    reqChildSubElement = new Element("auth-preemptive");
-                    reqChildSubElement.appendChild(authPreemptive.toString());
-                    reqChildElement.appendChild(reqChildSubElement);
-                }
+                boolean authPreemptive = bean.isAuthPreemptive();
+                
+                reqChildSubElement = new Element("auth-preemptive");
+                reqChildSubElement.appendChild(new Boolean(authPreemptive).toString());
+                reqChildElement.appendChild(reqChildSubElement);
+                
                 // creating the auth-host child element
                 String authHost = bean.getAuthHost();
-                if (authHost != null) {
+                if (!Util.isStrEmpty(authHost)) {
                     reqChildSubElement = new Element("auth-host");
                     reqChildSubElement.appendChild(authHost);
                     reqChildElement.appendChild(reqChildSubElement);
                 }
                 // creating the auth-realm child element
                 String authRealm = bean.getAuthRealm();
-                if (authRealm != null) {
+                if (!Util.isStrEmpty(authRealm)) {
                     reqChildSubElement = new Element("auth-realm");
                     reqChildSubElement.appendChild(authRealm);
                     reqChildElement.appendChild(reqChildSubElement);
                 }
                 // creating the auth-username child element
                 String authUsername = bean.getAuthUsername();
-                if (authUsername != null) {
+                if (!Util.isStrEmpty(authUsername)) {
                     reqChildSubElement = new Element("auth-username");
                     reqChildSubElement.appendChild(authUsername);
                     reqChildElement.appendChild(reqChildSubElement);
@@ -128,11 +128,13 @@ public final class XMLUtil {
                 String authPassword = null;
                 if (bean.getAuthPassword() != null) {
                     authPassword = new String(bean.getAuthPassword());
-                    String encPassword = Base64.encodeObject(authPassword);
+                    if(!Util.isStrEmpty(authPassword)){
+                        String encPassword = Base64.encodeObject(authPassword);
 
-                    reqChildSubElement = new Element("auth-password");
-                    reqChildSubElement.appendChild(encPassword);
-                    reqChildElement.appendChild(reqChildSubElement);
+                        reqChildSubElement = new Element("auth-password");
+                        reqChildSubElement.appendChild(encPassword);
+                        reqChildElement.appendChild(reqChildSubElement);
+                    }
                 }
             }
 
@@ -213,7 +215,7 @@ public final class XMLUtil {
         return m;
     }
 
-    public static RequestBean xml2Request(final Document doc)
+    private static RequestBean xml2Request(final Document doc)
             throws MalformedURLException, XMLException {
         RequestBean requestBean = new RequestBean();
 
@@ -295,7 +297,7 @@ public final class XMLUtil {
         return requestBean;
     }
 
-    public static Document response2XML(final ResponseBean bean)
+    private static Document response2XML(final ResponseBean bean)
             throws XMLException {
 
         try {
@@ -417,7 +419,7 @@ public final class XMLUtil {
         }
     }
 
-    public static ResponseBean xml2Response(final Document doc)
+    private static ResponseBean xml2Response(final Document doc)
             throws XMLException {
         ResponseBean responseBean = new ResponseBean();
 
@@ -486,15 +488,15 @@ public final class XMLUtil {
         return responseBean;
     }
 
-    public static void writeXML(final Document doc, final File f)
+    private static void writeXML(final Document doc, final File f)
             throws IOException, XMLException {
 
         try {
             OutputStream out = new FileOutputStream(f);
             out = new BufferedOutputStream(out);
             Serializer serializer = new Serializer(out, "UTF-8");
-            serializer.setIndent(1);
-            serializer.setMaxLength(69);
+            serializer.setIndent(2);
+            serializer.setMaxLength(69); // Line break is at 69th column
             serializer.write(doc);
             out.close();
         } catch (IOException ex) {
@@ -502,7 +504,7 @@ public final class XMLUtil {
         }
     }
 
-    public static Document xomGetDocumentFromFile(final File f)
+    private static Document getDocumentFromFile(final File f)
             throws IOException, XMLException {
         try {
             Builder parser = new Builder();
@@ -518,8 +520,8 @@ public final class XMLUtil {
 
     public static String getDocumentCharset(final File f)
             throws IOException, XMLException {
-        Document doc = xomGetDocumentFromFile(f);
-        return doc.toXML();
+        Document doc = getDocumentFromFile(f);
+        return "UTF-8"; // TODO Find dynamic way to find this
     }
 
     public static void writeRequestXML(final RequestBean bean, final File f)
@@ -534,26 +536,15 @@ public final class XMLUtil {
         writeXML(doc, f);
     }
 
-    /*public static void writeXMLRequest(final File f, RequestBean bean)
-    throws IOException, XMLException {
-    Document doc = getDocumentFromFile(f);
-    bean = xml2Request(doc);
-    }*/
-
-    /*public static void writeXMLResponse(final File f, ResponseBean bean)
-    throws IOException, XMLException {
-    Document doc = getDocumentFromFile(f);
-    bean = xml2Response(doc);
-    }*/
     public static RequestBean getRequestFromXMLFile(final File f)
             throws IOException, XMLException {
-        Document doc = xomGetDocumentFromFile(f);
+        Document doc = getDocumentFromFile(f);
         return xml2Request(doc);
     }
 
     public static ResponseBean getResponseFromXMLFile(final File f)
             throws IOException, XMLException {
-        Document doc = xomGetDocumentFromFile(f);
+        Document doc = getDocumentFromFile(f);
         return xml2Response(doc);
     }
 
