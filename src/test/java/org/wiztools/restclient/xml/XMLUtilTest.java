@@ -8,7 +8,6 @@ package org.wiztools.restclient.xml;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import nu.xom.Document;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
