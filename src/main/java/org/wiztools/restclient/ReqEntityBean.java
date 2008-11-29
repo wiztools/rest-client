@@ -41,7 +41,7 @@ public final class ReqEntityBean implements Cloneable{
     }
     
     public String getContentTypeCharsetFormatted(){
-        return contentType + "; charset=" + charSet;
+        return Util.getFormattedContentType(contentType, charSet);
     }
     
     @Override

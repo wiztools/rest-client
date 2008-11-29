@@ -240,7 +240,12 @@ public final class Util {
         }
         return encpBean;
     }
-    
+
+    /**
+     * Parses the HTTP response status line, and returns the status code.
+     * @param statusLine
+     * @return The status code from HTTP response status line.
+     */
     public static final int getStatusCodeFromStatusLine(final String statusLine){
         int retVal = -1;
         final String STATUS_PATTERN = "[^\\s]+\\s([0-9]{3})\\s.*";
@@ -251,15 +256,15 @@ public final class Util {
         }
         return retVal;
     }
+
+    /**
+     * Method formats content-type and charset for use as HTTP header value
+     * @param contentType
+     * @param charset
+     * @return The formatted content-type and charset.
+     */
+    public static final String getFormattedContentType(final String contentType, final String charset){
+        String charsetFormatted = Util.isStrEmpty(charset)? "": "; charset=" + charset;
+        return contentType + charsetFormatted;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-

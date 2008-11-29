@@ -195,10 +195,6 @@ public class RESTView extends JPanel implements View {
         new StatusClearerThread().start();
     }
     
-    private static String getFormattedContentType(final String contentType, final String charset){
-        return "Content-Type: " + contentType + "; charset=" + charset;
-    }
-    
     private JTabbedPane initJTPRequest(){
         JTabbedPane jtp = new JTabbedPane();
         
@@ -271,7 +267,7 @@ public class RESTView extends JPanel implements View {
         jtf_body_content_type.setEditable(false);
         jtf_body_content_type.setColumns(24);
         jtf_body_content_type.setToolTipText("Selected Content-type & Charset");
-        jtf_body_content_type.setText(getFormattedContentType(
+        jtf_body_content_type.setText(Util.getFormattedContentType(
                 jd_body_content_type.getContentType(),
                 jd_body_content_type.getCharSet()));
         jp_body_north.add(jtf_body_content_type);
@@ -819,7 +815,7 @@ public class RESTView extends JPanel implements View {
         jd_body_content_type = new BodyContentTypeDialog(rest_ui.getFrame());
         jd_body_content_type.addContentTypeCharSetChangeListener(new ContentTypeCharSetChangeListener() {
             public void changed(String contentType, String charSet) {
-                jtf_body_content_type.setText(RESTView.getFormattedContentType(contentType, charSet));
+                jtf_body_content_type.setText(Util.getFormattedContentType(contentType, charSet));
             }
         });
         
