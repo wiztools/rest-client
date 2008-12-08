@@ -51,6 +51,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+import javax.xml.stream.XMLStreamException;
 import junit.framework.TestSuite;
 import org.wiztools.restclient.test.TestException;
 import org.wiztools.restclient.test.TestResultBean;
@@ -1178,6 +1179,8 @@ public class RESTView extends JPanel implements View {
                 // Do nothing!
             }
             catch(XMLException ex){
+                // Do nothing!
+            } catch (XMLStreamException ex ) {
                 // Do nothing!
             }
         }

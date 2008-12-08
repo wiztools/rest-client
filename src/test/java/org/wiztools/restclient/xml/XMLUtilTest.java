@@ -77,6 +77,7 @@ public class XMLUtilTest {
         File f = new File("src/test/resources/reqFromXml.rcq");
         String expResult = "UTF-8";
         String result = XMLUtil.getDocumentCharset(f);
+        System.out.println("encoding attribute: " + result ) ;
         assertEquals(expResult, result);
     }
 

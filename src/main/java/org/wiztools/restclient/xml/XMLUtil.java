@@ -1,10 +1,10 @@
 package org.wiztools.restclient.xml;
 
+import org.wiztools.restclient.*;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import nu.xom.ParsingException;
-import org.wiztools.restclient.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,11 +15,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.events.StartDocument;
+import javax.xml.stream.events.XMLEvent;
+import javax.xml.stream.XMLStreamException;
 import nu.xom.Attribute;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Serializer;
+import nu.xom.ParsingException;
 import org.wiztools.restclient.test.TestFailureResultBean;
 import org.wiztools.restclient.test.TestResultBean;
 
@@ -36,9 +42,7 @@ public final class XMLUtil {
         "2.0", "2.1", "2.2a1", "2.2a2", "2.2", RCConstants.VERSION
     };
     public static final String XML_MIME = "application/xml";
-    public static final String XML_DEFAULT_ENCODING = "UTF-8";
-
-
+    
     static {
         // Sort the version array for binary search
         Arrays.sort(VERSIONS);
@@ -86,7 +90,7 @@ public final class XMLUtil {
             // creating the auth-methods child element
             List<String> authMethods = bean.getAuthMethods();
             if (authMethods == null || authMethods.size() > 0) {
-                
+
                 reqChildSubElement = new Element("auth-methods");
                 String methods = "";
                 for (String authMethod : authMethods) {
@@ -98,11 +102,11 @@ public final class XMLUtil {
 
                 // creating the auth-preemptive child element
                 boolean authPreemptive = bean.isAuthPreemptive();
-                
+
                 reqChildSubElement = new Element("auth-preemptive");
                 reqChildSubElement.appendChild(new Boolean(authPreemptive).toString());
                 reqChildElement.appendChild(reqChildSubElement);
-                
+
                 // creating the auth-host child element
                 String authHost = bean.getAuthHost();
                 if (!Util.isStrEmpty(authHost)) {
@@ -128,7 +132,7 @@ public final class XMLUtil {
                 String authPassword = null;
                 if (bean.getAuthPassword() != null) {
                     authPassword = new String(bean.getAuthPassword());
-                    if(!Util.isStrEmpty(authPassword)){
+                    if (!Util.isStrEmpty(authPassword)) {
                         String encPassword = Base64.encodeObject(authPassword);
 
                         reqChildSubElement = new Element("auth-password");
@@ -203,7 +207,7 @@ public final class XMLUtil {
         Map<String, String> m = new LinkedHashMap<String, String>();
 
         for (int i = 0; i < node.getChildElements().size(); i++) {
-            Element headerElement =  node.getChildElements().get(i) ;
+            Element headerElement = node.getChildElements().get(i);
             if (!"header".equals(headerElement.getQualifiedName())) {
                 throw new XMLException("<headers> element should contain only <header> elements");
             }
@@ -489,12 +493,13 @@ public final class XMLUtil {
     }
 
     private static void writeXML(final Document doc, final File f)
-            throws IOException, XMLException {
+            throws IOException, XMLException, XMLStreamException {
 
         try {
             OutputStream out = new FileOutputStream(f);
             out = new BufferedOutputStream(out);
-            Serializer serializer = new Serializer(out, "UTF-8");
+            // getDocumentCharset(f) - to retrieve the charset encoding attribute
+            Serializer serializer = new Serializer(out, getDocumentCharset(f));
             serializer.setIndent(2);
             serializer.setMaxLength(69); // Line break is at 69th column
             serializer.write(doc);
@@ -519,19 +524,23 @@ public final class XMLUtil {
     }
 
     public static String getDocumentCharset(final File f)
-            throws IOException, XMLException {
-        Document doc = getDocumentFromFile(f);
-        return "UTF-8"; // TODO Find dynamic way to find this
+            throws IOException, XMLException, XMLStreamException {
+        // using stax to get xml factory objects and read the input file
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        XMLEventReader reader = inputFactory.createXMLEventReader(new FileInputStream(f));
+        XMLEvent event = reader.nextEvent();
+        StartDocument document = (StartDocument) event;
+        return document.getCharacterEncodingScheme(); // dynamic way to find encodingscheme name
     }
 
     public static void writeRequestXML(final RequestBean bean, final File f)
-            throws IOException, XMLException {
+            throws IOException, XMLException, XMLStreamException {
         Document doc = request2XML(bean);
         writeXML(doc, f);
     }
 
     public static void writeResponseXML(final ResponseBean bean, final File f)
-            throws IOException, XMLException {
+            throws IOException, XMLException, XMLStreamException {
         Document doc = response2XML(bean);
         writeXML(doc, f);
     }

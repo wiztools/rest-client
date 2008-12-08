@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import javax.xml.stream.XMLStreamException;
 import org.wiztools.restclient.xml.XMLException;
 import org.wiztools.restclient.xml.XMLUtil;
 
@@ -143,7 +144,7 @@ public final class Util {
     }
 
     public static void createReqResArchive(RequestBean request, ResponseBean response, File zipFile)
-            throws IOException, XMLException {
+            throws IOException, XMLException, XMLStreamException {
         File requestFile = File.createTempFile("req-", ".xml");
         File responseFile = File.createTempFile("res-", ".xml");
         XMLUtil.writeRequestXML(request, requestFile);

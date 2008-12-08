@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
+import javax.xml.stream.XMLStreamException;
 import org.wiztools.restclient.FileType;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.ReqResBean;
@@ -601,6 +602,9 @@ public class RESTMain implements RESTUserInterface {
                 catch(XMLException ex){
                     view.showError(Util.getStackTrace(ex));
                 }
+                catch(XMLStreamException ex){
+                    view.showError(Util.getStackTrace(ex));
+                }
             }
         }
         else if(type == FileChooserType.SAVE_RESPONSE){
@@ -627,6 +631,9 @@ public class RESTMain implements RESTUserInterface {
                     view.showError(Util.getStackTrace(ex));
                 }
                 catch(XMLException ex){
+                    view.showError(Util.getStackTrace(ex));
+                }
+                catch(XMLStreamException ex){
                     view.showError(Util.getStackTrace(ex));
                 }
             }
@@ -686,6 +693,10 @@ public class RESTMain implements RESTUserInterface {
                 catch(XMLException ex){
                     e = ex;
                 }
+                catch(XMLStreamException ex){
+                    view.showError(Util.getStackTrace(ex));
+                }
+
                 if(e != null){
                     view.showError(Util.getStackTrace(e));
                 }
