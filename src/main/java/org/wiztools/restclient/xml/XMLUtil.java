@@ -493,7 +493,7 @@ public final class XMLUtil {
     }
 
     private static void writeXML(final Document doc, final File f)
-            throws IOException, XMLException, XMLStreamException {
+            throws IOException, XMLException {
 
         try {
             OutputStream out = new FileOutputStream(f);
@@ -524,23 +524,27 @@ public final class XMLUtil {
     }
 
     public static String getDocumentCharset(final File f)
-            throws IOException, XMLException, XMLStreamException {
-        // using stax to get xml factory objects and read the input file
-        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-        XMLEventReader reader = inputFactory.createXMLEventReader(new FileInputStream(f));
-        XMLEvent event = reader.nextEvent();
-        StartDocument document = (StartDocument) event;
-        return document.getCharacterEncodingScheme(); // dynamic way to find encodingscheme name
+            throws IOException, XMLException {
+        try {
+            // using stax to get xml factory objects and read the input file
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            XMLEventReader reader = inputFactory.createXMLEventReader(new FileInputStream(f));
+            XMLEvent event = reader.nextEvent();
+            StartDocument document = (StartDocument) event;
+            return document.getCharacterEncodingScheme(); // dynamic way to find encodingscheme name
+        } catch (XMLStreamException ex) {
+            throw new XMLException(ex.getMessage(), ex);
+        }
     }
 
     public static void writeRequestXML(final RequestBean bean, final File f)
-            throws IOException, XMLException, XMLStreamException {
+            throws IOException, XMLException {
         Document doc = request2XML(bean);
         writeXML(doc, f);
     }
 
     public static void writeResponseXML(final ResponseBean bean, final File f)
-            throws IOException, XMLException, XMLStreamException {
+            throws IOException, XMLException {
         Document doc = response2XML(bean);
         writeXML(doc, f);
     }
