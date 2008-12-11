@@ -525,15 +525,29 @@ public final class XMLUtil {
 
     public static String getDocumentCharset(final File f)
             throws IOException, XMLException {
+        XMLEventReader reader = null;
         try {
             // using stax to get xml factory objects and read the input file
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            XMLEventReader reader = inputFactory.createXMLEventReader(new FileInputStream(f));
+            reader = inputFactory.createXMLEventReader(new FileInputStream(f));
             XMLEvent event = reader.nextEvent();
+            // Always the first element is StartDocument
+            // even if the XML does not have explicit declaration:
             StartDocument document = (StartDocument) event;
-            return document.getCharacterEncodingScheme(); // dynamic way to find encodingscheme name
-        } catch (XMLStreamException ex) {
+            return document.getCharacterEncodingScheme();
+        }
+        catch (XMLStreamException ex) {
             throw new XMLException(ex.getMessage(), ex);
+        }
+        finally{
+            if(reader != null){
+                try{
+                    reader.close();
+                }
+                catch(XMLStreamException ex){
+                    LOG.warning(ex.getMessage());
+                }
+            }
         }
     }
 

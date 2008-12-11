@@ -8,6 +8,7 @@ package org.wiztools.restclient.xml;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -74,11 +75,36 @@ public class XMLUtilTest {
     @Test
     public void testGetDocumentCharset() throws Exception {
         System.out.println("getDocumentCharset");
-        File f = new File("src/test/resources/reqFromXml.rcq");
-        String expResult = "UTF-8";
-        String result = XMLUtil.getDocumentCharset(f);
-        System.out.println("encoding attribute: " + result ) ;
-        assertEquals(expResult, result);
+
+        // When document complies to standard:
+        {
+            File f = new File("src/test/resources/org/wiztools/restclient/xml/charset1.xml");
+            String expResult = "UTF-8";
+            String result = XMLUtil.getDocumentCharset(f);
+            System.out.println("encoding attribute: " + result ) ;
+            assertEquals(expResult, result);
+        }
+
+        // When document does not have encoding attribute:
+        {
+            File f = new File("src/test/resources/org/wiztools/restclient/xml/charset2.xml");
+            String expResult = Charset.defaultCharset().displayName();
+            System.out.println("expResult: " + expResult);
+            String result = XMLUtil.getDocumentCharset(f);
+            System.out.println("encoding attribute: " + result ) ;
+            assertEquals(expResult, result);
+        }
+
+        // When document does not have XML declaration:
+        {
+            File f = new File("src/test/resources/org/wiztools/restclient/xml/charset3.xml");
+            String expResult = Charset.defaultCharset().displayName();
+            System.out.println("expResult: " + expResult);
+            String result = XMLUtil.getDocumentCharset(f);
+            System.out.println("encoding attribute: " + result ) ;
+            assertEquals(expResult, result);
+        }
+
     }
 
     /**
