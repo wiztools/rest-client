@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @author Subhash
  */
-public final class GlobalOptions {
+public final class GlobalOptions implements IGlobalOptions {
     
     private static Logger LOG = Logger.getLogger(GlobalOptions.class.getName());
     
