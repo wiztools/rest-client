@@ -19,8 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JFrame;
 
-import org.wiztools.restclient.GlobalOptions;
+import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.Util;
+import org.wiztools.restclient.di.DIFramework;
 
 /**
  *
@@ -126,7 +127,7 @@ public class OptionsDialog extends EscapableDialog {
             panels.get(key).shutdownOptions();
         }
         
-        GlobalOptions.getInstance().writeProperties();
+        DIFramework.getInstance(IGlobalOptions.class).writeProperties();
     }
     
     @Override

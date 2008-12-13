@@ -40,7 +40,10 @@ public final class GlobalOptions implements IGlobalOptions {
         this.requestTimeoutInMillis = requestTimeoutInMillis;
     }
     
-    private GlobalOptions(){
+    public GlobalOptions(){
+        // Load default properties:
+        prop.setProperty("request-timeout-in-millis", "60000");
+
         if(!CONF_DIR.exists()){
             LOG.info("Configuration directory does not exist. Creating...");
             CONF_DIR.mkdir();
@@ -87,11 +90,4 @@ public final class GlobalOptions implements IGlobalOptions {
         lock.unlock();
     }
     
-    public static GlobalOptions getInstance(){
-        if(me == null){
-            me = new GlobalOptions();
-        }
-        return me;
-    }
-
 }

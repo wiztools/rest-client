@@ -28,7 +28,7 @@ public class DIFramework {
                 ht.put(c.getName(), o);
             }
             else{
-                LOG.info("Object already available in cache: " + c.getName());
+                LOG.finest("Object already available in cache: " + c.getName());
             }
             return o;
         }

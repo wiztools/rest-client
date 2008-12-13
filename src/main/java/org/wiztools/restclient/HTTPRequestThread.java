@@ -57,6 +57,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
+import org.wiztools.restclient.di.DIFramework;
 import org.wiztools.restclient.test.TestException;
 import org.wiztools.restclient.test.TestResultBean;
 import org.wiztools.restclient.test.TestUtil;
@@ -106,9 +107,10 @@ public class HTTPRequestThread extends Thread {
                 protocolVersion);
 
         // Set request timeout (default 1 minute--60000 milliseconds)
-        GlobalOptions options = GlobalOptions.getInstance();
+        IGlobalOptions options = DIFramework.getInstance(IGlobalOptions.class);
         options.acquire();
-        HttpConnectionParams.setConnectionTimeout(httpclient.getParams(), options.getRequestTimeoutInMillis());
+        HttpConnectionParams.setConnectionTimeout(httpclient.getParams(),
+                Integer.parseInt(options.getProperty("request-timeout-in-millis")));
         options.release();
 
         // Set proxy

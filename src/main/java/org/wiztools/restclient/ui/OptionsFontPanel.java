@@ -20,7 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.wiztools.restclient.GlobalOptions;
+import org.wiztools.restclient.IGlobalOptions;
+import org.wiztools.restclient.di.DIFramework;
 
 /**
  *
@@ -93,8 +94,8 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
     @Override
     public void initOptions() {
         Font f = null;
-        String fontName = GlobalOptions.getInstance().getProperty(PROP_PREFIX + "font");
-        String fontSizeStr = GlobalOptions.getInstance().getProperty(PROP_PREFIX + "fontSize");
+        String fontName = DIFramework.getInstance(IGlobalOptions.class).getProperty(PROP_PREFIX + "font");
+        String fontSizeStr = DIFramework.getInstance(IGlobalOptions.class).getProperty(PROP_PREFIX + "fontSize");
         int fontSize = 12;
         if(fontSizeStr != null){
             try{
@@ -119,8 +120,8 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
 
     @Override
     public void shutdownOptions() {
-        GlobalOptions.getInstance().setProperty(PROP_PREFIX + "font", (String)jl_font.getSelectedValue());
-        GlobalOptions.getInstance().setProperty(PROP_PREFIX + "fontSize", (String)jl_fontSize.getSelectedValue());
+        DIFramework.getInstance(IGlobalOptions.class).setProperty(PROP_PREFIX + "font", (String)jl_font.getSelectedValue());
+        DIFramework.getInstance(IGlobalOptions.class).setProperty(PROP_PREFIX + "fontSize", (String)jl_fontSize.getSelectedValue());
     }
 
     @Override
