@@ -52,7 +52,10 @@ public final class ReqEntityBean implements Cloneable{
     
     @Override
     public boolean equals(Object o){
-        if(o != null && o instanceof ReqEntityBean){
+        if(this == o){
+            return true;
+        }
+        if(o instanceof ReqEntityBean){
             ReqEntityBean bean = (ReqEntityBean)o;
             boolean isEqual = true;
             isEqual = isEqual && (this.body == null? bean.body == null: this.body.equals(bean.body));
@@ -60,9 +63,7 @@ public final class ReqEntityBean implements Cloneable{
             isEqual = isEqual && (this.contentType == null? bean.contentType == null: this.contentType.equals(bean.contentType));
             return isEqual;
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
     @Override

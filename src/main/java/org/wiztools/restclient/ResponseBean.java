@@ -91,7 +91,10 @@ public final class ResponseBean implements Cloneable{
     
     @Override
     public boolean equals(Object o){
-        if(o != null && o instanceof ResponseBean){
+        if(this == o){
+            return true;
+        }
+        if(o instanceof ResponseBean){
             final ResponseBean bean = (ResponseBean)o;
             boolean isEqual = true;
             // Do not check executionTime: because when constructing ResponseBean

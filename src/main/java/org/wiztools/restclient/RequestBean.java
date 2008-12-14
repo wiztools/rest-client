@@ -173,7 +173,10 @@ public final class RequestBean implements Cloneable{
     
     @Override
     public boolean equals(Object o){
-        if(o != null && o instanceof RequestBean){
+        if(this == o){
+            return true;
+        }
+        if(o instanceof RequestBean){
             final RequestBean bean = (RequestBean)o;
             boolean isEqual = true;
             isEqual = isEqual && (this.method == null? bean.method == null: this.method.equals(bean.method));
@@ -192,9 +195,7 @@ public final class RequestBean implements Cloneable{
             isEqual = isEqual && (this.url == null? bean.url == null: this.url.equals(bean.url));
             return isEqual;
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
     @Override
