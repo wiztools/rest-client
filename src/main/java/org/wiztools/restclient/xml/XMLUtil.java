@@ -156,6 +156,12 @@ public final class XMLUtil {
                 reqChildSubElement = new Element("ssl-truststore-password");
                 reqChildSubElement.appendChild(encPassword);
                 reqChildElement.appendChild(reqChildSubElement);
+
+                // 3. Create Hostname Verifier entry
+                String sslHostnameVerifier = bean.getSslHostNameVerifier().name();
+                reqChildSubElement = new Element("ssl-hostname-verifier");
+                reqChildSubElement.appendChild(sslHostnameVerifier);
+                reqChildElement.appendChild(reqChildSubElement);
             }
 
             // creating the headers child element
@@ -284,6 +290,11 @@ public final class XMLUtil {
             } else if ("ssl-truststore-password".equals(nodeName)) {
                 String sslTrustStorePassword = (String) Base64.decodeToObject(tNode.getValue());
                 requestBean.setSslTrustStorePassword(sslTrustStorePassword.toCharArray());
+            } else if("ssl-hostname-verifier".equals(nodeName)){
+                String sslHostnameVerifierStr = tNode.getValue();
+                LOG.info("sslHostNameVerifier: " + sslHostnameVerifierStr);
+                SSLHostnameVerifier sslHostnameVerifier = SSLHostnameVerifier.valueOf(sslHostnameVerifierStr);
+                requestBean.setSslHostNameVerifier(sslHostnameVerifier);
             } else if ("headers".equals(nodeName)) {
                 Map<String, String> m = getHeadersFromHeaderNode(tNode);
                 for (String key : m.keySet()) {

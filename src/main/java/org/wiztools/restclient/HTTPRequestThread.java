@@ -43,6 +43,7 @@ import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
@@ -226,6 +227,20 @@ public class HTTPRequestThread extends Thread {
                 }
                 
                 SSLSocketFactory socketFactory = new SSLSocketFactory(trustStore);
+                SSLHostnameVerifier verifier = request.getSslHostNameVerifier();
+                X509HostnameVerifier hcVerifier = null;
+                switch(verifier){
+                    case STRICT:
+                        hcVerifier = SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
+                        break;
+                    case BROWSER_COMPATIBLE:
+                        hcVerifier = SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
+                        break;
+                    case ALLOW_ALL:
+                        hcVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+                        break;
+                }
+                socketFactory.setHostnameVerifier(hcVerifier);
                 Scheme sch = new Scheme(urlProtocol, socketFactory, urlPort);
                 httpclient.getConnectionManager().getSchemeRegistry().register(sch);
             }

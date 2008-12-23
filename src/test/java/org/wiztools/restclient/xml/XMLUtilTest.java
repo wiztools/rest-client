@@ -131,6 +131,7 @@ public class XMLUtilTest {
     /**
      * Test of getRequestFromXMLFile method, of class XMLUtil.
      */
+    //TODO Fix
     @Test
     public void testGetRequestFromXMLFile() throws Exception {
         System.out.println("getRequestFromXMLFile");

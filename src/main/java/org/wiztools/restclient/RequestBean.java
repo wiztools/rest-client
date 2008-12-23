@@ -27,6 +27,7 @@ public final class RequestBean implements Cloneable{
     private String testScript;
     private String sslTrustStore;
     private char[] sslTrustStorePassword;
+    private SSLHostnameVerifier sslHostNameVerifier;
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
 
     public HTTPVersion getHttpVersion() {
@@ -51,6 +52,14 @@ public final class RequestBean implements Cloneable{
 
     public void setSslTrustStorePassword(char[] sslKeyStorePassword) {
         this.sslTrustStorePassword = sslKeyStorePassword;
+    }
+
+    public SSLHostnameVerifier getSslHostNameVerifier() {
+        return sslHostNameVerifier;
+    }
+
+    public void setSslHostNameVerifier(SSLHostnameVerifier sslHostNameVerifier) {
+        this.sslHostNameVerifier = sslHostNameVerifier;
     }
     
     public String getTestScript() {
@@ -170,7 +179,7 @@ public final class RequestBean implements Cloneable{
         cloned.setUrl(url);
         return cloned;
     }
-    
+
     @Override
     public boolean equals(Object o){
         if(this == o){
@@ -190,6 +199,7 @@ public final class RequestBean implements Cloneable{
             isEqual = isEqual && (this.authUsername == null? bean.authUsername == null: this.authUsername.equals(bean.authUsername));
             isEqual = isEqual && (this.sslTrustStore == null? bean.sslTrustStore == null: this.sslTrustStore.equals(bean.sslTrustStore));
             isEqual = isEqual && (this.sslTrustStorePassword == null? bean.sslTrustStorePassword == null: Arrays.equals(this.sslTrustStorePassword, bean.sslTrustStorePassword));
+            isEqual = isEqual && (this.sslHostNameVerifier == null? bean.sslHostNameVerifier == null: this.sslHostNameVerifier == bean.sslHostNameVerifier);
             isEqual = isEqual && (this.httpVersion == null? bean.httpVersion == null: this.httpVersion == bean.httpVersion);
             isEqual = isEqual && (this.testScript == null? bean.testScript == null: this.testScript.equals(bean.testScript));
             isEqual = isEqual && (this.url == null? bean.url == null: this.url.equals(bean.url));
@@ -198,25 +208,28 @@ public final class RequestBean implements Cloneable{
         return false;
     }
 
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 59 * hash + (this.url != null ? this.url.hashCode() : 0);
-        hash = 59 * hash + (this.method != null ? this.method.hashCode() : 0);
-        hash = 59 * hash + (this.authPreemptive ? 1 : 0);
-        hash = 59 * hash + (this.authMethods != null ? this.authMethods.hashCode() : 0);
-        hash = 59 * hash + (this.authHost != null ? this.authHost.hashCode() : 0);
-        hash = 59 * hash + (this.authRealm != null ? this.authRealm.hashCode() : 0);
-        hash = 59 * hash + (this.authUsername != null ? this.authUsername.hashCode() : 0);
-        hash = 59 * hash + (this.authPassword != null ? this.authPassword.hashCode() : 0);
-        hash = 59 * hash + (this.sslTrustStore != null ? this.sslTrustStore.hashCode() : 0);
-        hash = 59 * hash + (this.sslTrustStorePassword != null ? this.sslTrustStorePassword.hashCode() : 0);
-        hash = 59 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
-        hash = 59 * hash + (this.body != null ? this.body.hashCode() : 0);
-        hash = 59 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
+        int hash = 7;
+        hash = 61 * hash + (this.url != null ? this.url.hashCode() : 0);
+        hash = 61 * hash + (this.method != null ? this.method.hashCode() : 0);
+        hash = 61 * hash + (this.authPreemptive ? 1 : 0);
+        hash = 61 * hash + (this.authMethods != null ? this.authMethods.hashCode() : 0);
+        hash = 61 * hash + (this.authHost != null ? this.authHost.hashCode() : 0);
+        hash = 61 * hash + (this.authRealm != null ? this.authRealm.hashCode() : 0);
+        hash = 61 * hash + (this.authUsername != null ? this.authUsername.hashCode() : 0);
+        hash = 61 * hash + (this.authPassword != null ? this.authPassword.hashCode() : 0);
+        hash = 61 * hash + (this.headers != null ? this.headers.hashCode() : 0);
+        hash = 61 * hash + (this.body != null ? this.body.hashCode() : 0);
+        hash = 61 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
+        hash = 61 * hash + (this.sslTrustStore != null ? this.sslTrustStore.hashCode() : 0);
+        hash = 61 * hash + (this.sslTrustStorePassword != null ? this.sslTrustStorePassword.hashCode() : 0);
+        hash = 61 * hash + (this.sslHostNameVerifier != null ? this.sslHostNameVerifier.hashCode() : 0);
+        hash = 61 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
@@ -230,10 +243,12 @@ public final class RequestBean implements Cloneable{
         sb.append(authHost).append(", ");
         sb.append(authRealm).append(", ");
         sb.append(authUsername).append(", ");
-        // sb.append(authPassword).append(", ");
+        sb.append(authPassword==null?"null": new String(authPassword).replaceAll(".", "X")).append(", ");
         sb.append(sslTrustStore).append(", ");
-        // sb.append(sslTrustStorePassword).append(", ");
+        sb.append(sslTrustStorePassword==null?"null": new String(sslTrustStorePassword).replaceAll(".", "X")).append(", ");
+        sb.append(sslHostNameVerifier).append(", ");
         sb.append(httpVersion).append(", ");
+        sb.append(testScript);
         sb.append("]");
         return sb.toString();
     }
