@@ -292,7 +292,6 @@ public final class XMLUtil {
                 requestBean.setSslTrustStorePassword(sslTrustStorePassword.toCharArray());
             } else if("ssl-hostname-verifier".equals(nodeName)){
                 String sslHostnameVerifierStr = tNode.getValue();
-                LOG.info("sslHostNameVerifier: " + sslHostnameVerifierStr);
                 SSLHostnameVerifier sslHostnameVerifier = SSLHostnameVerifier.valueOf(sslHostnameVerifierStr);
                 requestBean.setSslHostNameVerifier(sslHostnameVerifier);
             } else if ("headers".equals(nodeName)) {

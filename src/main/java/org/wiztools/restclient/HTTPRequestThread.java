@@ -239,6 +239,9 @@ public class HTTPRequestThread extends Thread {
                     case ALLOW_ALL:
                         hcVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
                         break;
+                    default:
+                        hcVerifier = SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
+                        break;
                 }
                 socketFactory.setHostnameVerifier(hcVerifier);
                 Scheme sch = new Scheme(urlProtocol, socketFactory, urlPort);
