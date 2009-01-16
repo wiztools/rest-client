@@ -359,9 +359,7 @@ public class HTTPRequestThread extends Thread {
                     authState.setAuthScheme(authScheme);
                     authState.setCredentials(creds);
                 }
-            }
-            
-        }
-        
-    }
+            } // if ends
+        } // process() method ends
+    } // Inner class ends
 }
