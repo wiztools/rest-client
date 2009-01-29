@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
+import org.wiztools.restclient.RCConstants;
 import org.wiztools.restclient.FileType;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.ReqResBean;

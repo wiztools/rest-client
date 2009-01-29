@@ -5,9 +5,12 @@
     <groupId>org.wiztools.restclient</groupId>
     <artifactId>restclient</artifactId>
     <packaging>pom</packaging>
-    <version>2.3-SNAPSHOT</version>
+    <version>2.3</version>
     <name>restclient</name>
     <url>http://rest-client.googlecode.com/</url>
+    <properties>
+        <restclientVersion>${project.version}</restclientVersion>
+    </properties>
     <description>
         RESTClient is a Java platform client application to test RESTful webservices.
     </description>
@@ -49,65 +52,6 @@
             <timezone>+1</timezone>
         </developer>
     </developers>
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>RELEASE</version>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-            <!--plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.wiztools.restclient.Main</mainClass>
-                            <packageName>org.wiztools.restclient</packageName>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix/>
-                        </manifest>
-                        <manifestEntries>
-                            <mode>development</mode>
-                            <url>${pom.url}</url>
-                            <SplashScreen-Image>org/wiztools/restclient/Splash.png</SplashScreen-Image>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin-->
-            <plugin>
-                <!--groupId>org.apache.maven.plugins</groupId-->
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.wiztools.restclient.Main</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <mode>development</mode>
-                            <url>${pom.url}</url>
-                            <SplashScreen-Image>org/wiztools/restclient/Splash.png</SplashScreen-Image>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>package</phase> <!-- append to the packaging phase. -->
-                        <goals>
-                            <goal>attached</goal> <!-- goals == mojos -->
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
     <reporting>
         <plugins>
             <plugin>
@@ -127,14 +71,6 @@
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>1.0.0</version>
             </plugin>
-            <!--plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-            </plugin-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>changelog-maven-plugin</artifactId>

@@ -1,4 +1,4 @@
-package org.wiztools.restclient;
+package org.wiztools.restclient.cli;
 
 import com.sampullara.cli.Args;
 import com.sampullara.cli.Argument;
@@ -6,6 +6,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.wiztools.restclient.View;
+import org.wiztools.restclient.RequestBean;
+import org.wiztools.restclient.ResponseBean;
+import org.wiztools.restclient.HTTPRequestThread;
 import org.wiztools.restclient.xml.XMLException;
 import org.wiztools.restclient.xml.XMLUtil;
 

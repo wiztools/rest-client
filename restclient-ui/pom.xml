@@ -3,15 +3,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.wiztools.restclient</groupId>
-        <artifactId>restclient-ui</artifactId>
-        <version>1</version>
+        <artifactId>restclient</artifactId>
+        <version>2.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wiztools.restclient</groupId>
-    <artifactId>restclient</artifactId>
+    <artifactId>restclient-ui</artifactId>
     <packaging>jar</packaging>
     <version>2.3-SNAPSHOT</version>
-    <name>restclient</name>
+    <name>restclient-ui</name>
     <url>http://rest-client.googlecode.com/</url>
     <description>
         RESTClient is a Java platform client application to test RESTful webservices.
@@ -76,25 +76,6 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
-            <!--plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.wiztools.restclient.Main</mainClass>
-                            <packageName>org.wiztools.restclient</packageName>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix/>
-                        </manifest>
-                        <manifestEntries>
-                            <mode>development</mode>
-                            <url>${pom.url}</url>
-                            <SplashScreen-Image>org/wiztools/restclient/Splash.png</SplashScreen-Image>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin-->
             <plugin>
                 <!--groupId>org.apache.maven.plugins</groupId-->
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -104,7 +85,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>org.wiztools.restclient.Main</mainClass>
+                            <mainClass>org.wiztools.restclient.ui.Main</mainClass>
                         </manifest>
                         <manifestEntries>
                             <mode>development</mode>
@@ -181,6 +162,11 @@
         </plugins>
     </reporting>
     <dependencies>
+        <dependency>
+            <groupId>org.wiztools.restclient</groupId>
+            <artifactId>restclient-lib</artifactId>
+            <version>${restclientVersion}</version>
+        </dependency>
         <dependency>
             <groupId>com.google.code.cli-parser</groupId>
             <artifactId>cli</artifactId>
