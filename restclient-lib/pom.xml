@@ -73,7 +73,6 @@
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty</artifactId>
             <version>6.1.11</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

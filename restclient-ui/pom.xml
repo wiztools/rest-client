@@ -81,11 +81,6 @@
             <version>0.9.4</version>
         </dependency>
         <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty</artifactId>
-            <version>6.1.11</version>
-        </dependency>
-        <dependency>
             <groupId>jsyntaxpane</groupId>
             <artifactId>jsyntaxpane</artifactId>
             <version>0.9.4</version>

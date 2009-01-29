@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient;
 
 import java.util.logging.Logger;
 import org.mortbay.jetty.Server;
