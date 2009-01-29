@@ -13,7 +13,6 @@
     <packaging>jar</packaging>
     <version>2.3-SNAPSHOT</version>
     <name>restclient-cli</name>
-    <url>http://rest-client.googlecode.com/</url>
     <build>
         <plugins>
             <plugin>
