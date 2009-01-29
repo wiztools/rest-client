@@ -184,6 +184,11 @@ $ mvn assembly:assembly -DdescriptorId=jar-with-dependencies
     </reporting>
     <dependencies>
         <dependency>
+            <groupId>com.google.code.cli-parser</groupId>
+            <artifactId>cli</artifactId>
+            <version>7</version>
+        </dependency>
+        <dependency>
             <groupId>com.jidesoft</groupId>
             <artifactId>jide-oss</artifactId>
             <version>2.4.6</version>
