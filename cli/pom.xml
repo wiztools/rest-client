@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.wiztools.restclient</groupId>
+        <artifactId>restclient</artifactId>
+        <version>1</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.wiztools.restclient</groupId>
+    <artifactId>restclient-cli</artifactId>
+    <packaging>jar</packaging>
+    <version>${project.version}</version>
+    <name>restclient</name>
+    <url>http://rest-client.googlecode.com/</url>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>RELEASE</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <!--plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.wiztools.restclient.Main</mainClass>
+                            <packageName>org.wiztools.restclient</packageName>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix/>
+                        </manifest>
+                        <manifestEntries>
+                            <mode>development</mode>
+                            <url>${pom.url}</url>
+                            <SplashScreen-Image>org/wiztools/restclient/Splash.png</SplashScreen-Image>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin-->
+            <plugin>
+                <!--groupId>org.apache.maven.plugins</groupId-->
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.wiztools.restclient.cli.Main</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <mode>development</mode>
+                            <url>${pom.url}</url>
+                            <SplashScreen-Image>org/wiztools/restclient/Splash.png</SplashScreen-Image>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>attached</goal> <!-- goals == mojos -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.cli-parser</groupId>
+            <artifactId>cli</artifactId>
+            <version>7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wiztools.restclient</groupId>
+            <artifactId>restclient-lib</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>
