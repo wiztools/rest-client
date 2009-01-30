@@ -1,9 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package org.wiztools.restclient;
+package org.wiztools.restclient.server;
 
 import java.util.logging.Logger;
 import org.mortbay.jetty.Server;

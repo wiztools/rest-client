@@ -100,6 +100,7 @@
         </plugins>
     </reporting>
     <modules>
+        <module>restclient-server</module>
         <module>restclient-lib</module>
         <module>restclient-ui</module>
         <module>restclient-cli</module>

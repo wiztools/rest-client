@@ -12,7 +12,7 @@
     <artifactId>restclient-cli</artifactId>
     <packaging>jar</packaging>
     <version>2.3-SNAPSHOT</version>
-    <name>restclient-cli</name>
+    <name>${project.artifactId}</name>
     <build>
         <plugins>
             <plugin>
