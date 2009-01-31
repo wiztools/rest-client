@@ -1,4 +1,4 @@
-package org.wiztools.restclient.test;
+package org.wiztools.restclient;
 
 import org.wiztools.restclient.ReqEntityBean;
 
@@ -24,7 +24,7 @@ public class RoReqEntityBean {
         return contentType;
     }
     
-    public RoReqEntityBean(final ReqEntityBean requestEntity){
+    public RoReqEntityBean(final ReqEntity requestEntity){
         contentType = requestEntity.getContentType();
         charSet = requestEntity.getCharSet();
         body = requestEntity.getBody();

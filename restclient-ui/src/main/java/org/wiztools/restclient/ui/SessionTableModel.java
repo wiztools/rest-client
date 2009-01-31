@@ -8,8 +8,8 @@ package org.wiztools.restclient.ui;
 import java.util.Collections;
 import java.util.Map;
 import javax.swing.table.AbstractTableModel;
-import org.wiztools.restclient.RequestBean;
-import org.wiztools.restclient.ResponseBean;
+import org.wiztools.restclient.Request;
+import org.wiztools.restclient.Response;
 
 /**
  *
@@ -106,7 +106,7 @@ public class SessionTableModel extends AbstractTableModel implements ISessionVie
     }
 
     @Override
-    public void add(final RequestBean request, final ResponseBean response) {
+    public void add(final Request request, final Response response) {
         insertRow(request.toString(), response.toString());
     }
 

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.wiztools.restclient.test;
+package org.wiztools.restclient;
 
 import java.net.URL;
 import java.util.List;
@@ -94,7 +94,7 @@ public class RoRequestBean {
         return url;
     }
     
-    public RoRequestBean(final RequestBean request){
+    public RoRequestBean(final Request request){
         url = request.getUrl();
         method = request.getMethod();
         headers = request.getHeaders();

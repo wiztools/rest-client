@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author schandran
  */
-public final class RequestBean implements Cloneable{
+public final class RequestBean implements Request{
     
     private URL url;
     private String method;
@@ -23,7 +23,7 @@ public final class RequestBean implements Cloneable{
     private String authUsername;
     private char[] authPassword;
     private Map<String, String> headers;
-    private ReqEntityBean body;
+    private ReqEntity body;
     private String testScript;
     private String sslTrustStore;
     private char[] sslTrustStorePassword;
@@ -70,11 +70,11 @@ public final class RequestBean implements Cloneable{
         this.testScript = testScript;
     }
 
-    public ReqEntityBean getBody() {
+    public ReqEntity getBody() {
         return body;
     }
     
-    public void setBody(final ReqEntityBean body){
+    public void setBody(final ReqEntity body){
         this.body = body;
     }
     

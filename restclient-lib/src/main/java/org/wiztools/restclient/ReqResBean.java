@@ -6,22 +6,22 @@ package org.wiztools.restclient;
  */
 public final class ReqResBean implements Cloneable{
     
-    private RequestBean requestBean;
-    private ResponseBean responseBean;
+    private Request requestBean;
+    private Response responseBean;
 
-    public RequestBean getRequestBean() {
+    public Request getRequestBean() {
         return requestBean;
     }
 
-    public void setRequestBean(RequestBean requestBean) {
+    public void setRequestBean(Request requestBean) {
         this.requestBean = requestBean;
     }
 
-    public ResponseBean getResponseBean() {
+    public Response getResponseBean() {
         return responseBean;
     }
 
-    public void setResponseBean(ResponseBean responseBean) {
+    public void setResponseBean(Response responseBean) {
         this.responseBean = responseBean;
     }
     
@@ -29,12 +29,12 @@ public final class ReqResBean implements Cloneable{
     public Object clone(){
         ReqResBean cloned = new ReqResBean();
         if(requestBean != null){
-            RequestBean clonedRequestBean = (RequestBean)requestBean.clone();
+            Request clonedRequestBean = (Request)requestBean.clone();
             cloned.requestBean = clonedRequestBean;
         }
         if(responseBean != null){
-            ResponseBean clonedResponseBean = (ResponseBean)responseBean.clone();
-            cloned.responseBean = clonedResponseBean;
+            //Response clonedResponseBean = (Response)responseBean.clone();
+            //cloned.responseBean = clonedResponseBean;
         }
         return cloned;
     }

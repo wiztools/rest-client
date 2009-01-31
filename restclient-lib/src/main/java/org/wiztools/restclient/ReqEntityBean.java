@@ -4,7 +4,7 @@ package org.wiztools.restclient;
  *
  * @author schandran
  */
-public final class ReqEntityBean implements Cloneable{
+public final class ReqEntityBean implements ReqEntity{
     
     private String contentType;
     private String charSet;

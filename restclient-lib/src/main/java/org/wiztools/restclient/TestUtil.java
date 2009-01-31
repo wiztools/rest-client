@@ -1,4 +1,4 @@
-package org.wiztools.restclient.test;
+package org.wiztools.restclient;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.util.GroovyTestSuite;
@@ -29,7 +29,7 @@ public class TestUtil {
     
     private static final Logger LOG = Logger.getLogger(TestUtil.class.getName());
     
-    public static TestSuite getTestSuite(final RequestBean request, final ResponseBean response)
+    public static TestSuite getTestSuite(final Request request, final Response response)
             throws TestException{
         final String script = request.getTestScript();
         if(Util.isStrEmpty(script)){
@@ -91,7 +91,7 @@ public class TestUtil {
         return 0;
     }
 
-    public static TestResultBean execute(final TestSuite suite){
+    public static org.wiztools.restclient.TestResult execute(final TestSuite suite){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         TestRunner runner = new TestRunner(new PrintStream(baos));
         TestResult result = runner.doRun(suite);
@@ -107,7 +107,7 @@ public class TestUtil {
         resultBean.setErrorCount(errorCount);
         
         if(failureCount > 0){
-            List<TestFailureResultBean> l = new ArrayList<TestFailureResultBean>();
+            List<TestFailureResult> l = new ArrayList<TestFailureResult>();
             Enumeration<TestFailure> failures = result.failures();
             while(failures.hasMoreElements()){
                 TestFailure failure = failures.nextElement();
@@ -121,7 +121,7 @@ public class TestUtil {
         }
         
         if(errorCount > 0){
-            List<TestFailureResultBean> l = new ArrayList<TestFailureResultBean>();
+            List<TestFailureResult> l = new ArrayList<TestFailureResult>();
             Enumeration<TestFailure> errors = result.errors();
             while(errors.hasMoreElements()){
                 TestFailure error = errors.nextElement();

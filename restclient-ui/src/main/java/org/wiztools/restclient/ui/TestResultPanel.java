@@ -14,8 +14,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.AbstractTableModel;
-import org.wiztools.restclient.test.TestFailureResultBean;
-import org.wiztools.restclient.test.TestResultBean;
+import org.wiztools.restclient.TestFailureResult;
+import org.wiztools.restclient.TestResult;
 
 /**
  *
@@ -154,7 +154,7 @@ public class TestResultPanel extends JPanel {
         jl_status.setText("");
     }
     
-    public void setTestResult(TestResultBean result){
+    public void setTestResult(TestResult result){
         if(result == null){
             return;
         }
@@ -190,7 +190,7 @@ public class TestResultPanel extends JPanel {
         
         private Object[] failures;
         
-        public void setData(List<TestFailureResultBean> failures){
+        public void setData(List<TestFailureResult> failures){
             if(failures != null){
                 this.failures = failures.toArray();
             }
@@ -219,7 +219,7 @@ public class TestResultPanel extends JPanel {
         }
 
         public Object getValueAt(int rowIndex, int columnIndex) {
-            TestFailureResultBean bean = (TestFailureResultBean)failures[rowIndex];
+            TestFailureResult bean = (TestFailureResult)failures[rowIndex];
             if(columnIndex == 0){
                 return bean.getExceptionMessage();
             }

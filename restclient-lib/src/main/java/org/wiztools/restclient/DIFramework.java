@@ -1,4 +1,4 @@
-package org.wiztools.restclient.di;
+package org.wiztools.restclient;
 
 import java.util.Hashtable;
 import java.util.ResourceBundle;
@@ -20,10 +20,19 @@ public class DIFramework {
     private static final ResourceBundle rb = ResourceBundle.getBundle("difw");
 
     public static <T> T getInstance(Class<T> c) throws DIException{
+        return getInstance(c, false);
+    }
+
+    public static <T> T getInstance(Class<T> c, boolean newInstance) throws DIException{
+        System.out.println("CLASS: " + c.getName());
         try{
+            final String implClassStr = rb.getString(c.getName());
+            System.out.println("IMPL CLASS: " + implClassStr);
+            if(newInstance){
+                return (T) Class.forName(implClassStr).newInstance();
+            }
             T o = (T)ht.get(c.getName());
             if(o == null){
-                String implClassStr = rb.getString(c.getName());
                 o = (T) Class.forName(implClassStr).newInstance();
                 ht.put(c.getName(), o);
             }

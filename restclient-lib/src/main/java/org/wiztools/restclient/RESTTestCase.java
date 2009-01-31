@@ -1,4 +1,4 @@
-package org.wiztools.restclient.test;
+package org.wiztools.restclient;
 
 import groovy.util.GroovyTestCase;
 

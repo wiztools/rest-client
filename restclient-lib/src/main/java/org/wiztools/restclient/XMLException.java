@@ -1,4 +1,4 @@
-package org.wiztools.restclient.xml;
+package org.wiztools.restclient;
 
 /**
  *

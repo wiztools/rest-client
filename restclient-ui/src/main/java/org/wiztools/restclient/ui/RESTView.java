@@ -52,12 +52,12 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
-import org.wiztools.restclient.di.DIFramework;
-import org.wiztools.restclient.test.TestException;
-import org.wiztools.restclient.test.TestResultBean;
-import org.wiztools.restclient.test.TestUtil;
-import org.wiztools.restclient.xml.XMLException;
-import org.wiztools.restclient.xml.XMLUtil;
+import org.wiztools.restclient.DIFramework;
+import org.wiztools.restclient.TestException;
+import org.wiztools.restclient.TestResult;
+import org.wiztools.restclient.TestUtil;
+import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.XMLUtil;
 
 /**
  *
@@ -151,12 +151,13 @@ public class RESTView extends JPanel implements View {
     private final RESTUserInterface rest_ui;
     
     public static final int BORDER_WIDTH = 5;
-    
-    private HTTPRequestThread requestThread;
+
+    // RequestThread
+    private Thread requestThread;
     
     // Cache the last request and response
-    private RequestBean lastRequest;
-    private ResponseBean lastResponse;
+    private Request lastRequest;
+    private Response lastResponse;
     
     // Load templateTestScript:
     private static final String templateTestScript;
@@ -559,12 +560,12 @@ public class RESTView extends JPanel implements View {
         return jtp;
     }
     
-    void runClonedRequestTest(RequestBean request, ResponseBean response){
+    void runClonedRequestTest(Request request, Response response){
         RequestBean t_request = (RequestBean)request.clone();
         t_request.setTestScript(se_test_script.getText());
         try{
             TestSuite ts = TestUtil.getTestSuite(t_request, response);
-            TestResultBean testResult = TestUtil.execute(ts);
+            TestResult testResult = TestUtil.execute(ts);
             view.showMessage("Test Result", testResult.toString());
         }
         catch(TestException ex){
@@ -867,7 +868,7 @@ public class RESTView extends JPanel implements View {
         }
     }
     
-    ResponseBean getResponseFromUI(){
+    Response getResponseFromUI(){
         ResponseBean response = new ResponseBean();
         response.setResponseBody(se_response.getText());
         String statusLine = jtf_res_status.getText();
@@ -882,7 +883,7 @@ public class RESTView extends JPanel implements View {
         return response;
     }
     
-    public RequestBean getRequestFromUI(){
+    public Request getRequestFromUI(){
         correctRequestURL();
         /*List<String> errors = validateForRequest();
         if(errors.size()!=0){
@@ -993,11 +994,24 @@ public class RESTView extends JPanel implements View {
 
     private void jb_requestActionPerformed() {
         if(jb_request.getIcon() == icon_go){
-            RequestBean request = getRequestFromUI();
+            final Request request = getRequestFromUI();
             List<String> errors = validateRequest(request);
             if(errors.size() == 0){
                 clearUIResponse();
-                requestThread = new HTTPRequestThread(request, view);
+                final RequestExecuter executer = DIFramework.getInstance(RequestExecuter.class, true);
+                // Execute the request:
+                requestThread = new Thread(){
+                    @Override
+                    public void run(){
+                        executer.execute(request, view);
+                    }
+
+                    @Override
+                    public void interrupt(){
+                        executer.abortExecution();
+                        super.interrupt();
+                    }
+                };
                 requestThread.start();
             }
             else{
@@ -1015,7 +1029,7 @@ public class RESTView extends JPanel implements View {
     }                                          
 
     @Override
-    public void doStart(RequestBean request){
+    public void doStart(Request request){
         lastRequest = request;
         
         SwingUtilities.invokeLater(new Runnable() {
@@ -1032,7 +1046,7 @@ public class RESTView extends JPanel implements View {
     }
     
     @Override
-    public void doResponse(final ResponseBean response){
+    public void doResponse(final Response response){
         lastResponse = response;
     
         SwingUtilities.invokeLater(new Runnable() {
@@ -1310,7 +1324,7 @@ public class RESTView extends JPanel implements View {
         }
     }
     
-    private List<String> validateRequest(RequestBean request){
+    private List<String> validateRequest(Request request){
         List<String> errors = new ArrayList<String>();
 
         // Check URL
@@ -1332,7 +1346,7 @@ public class RESTView extends JPanel implements View {
         final String METHOD = request.getMethod();
         if(METHOD.equals("POST") || METHOD.equals("PUT")){
             // Get request body
-            ReqEntityBean reBean = request.getBody();
+            ReqEntity reBean = request.getBody();
             if(reBean != null){
                 String req_body = reBean.getBody();
                 if(!Util.isStrEmpty(req_body)){
@@ -1386,7 +1400,7 @@ public class RESTView extends JPanel implements View {
         se_test_script.setText("");
     }
     
-    void setUIFromResponse(final ResponseBean response){
+    void setUIFromResponse(final Response response){
         // Clear first
         clearUIResponse();
 
@@ -1406,7 +1420,7 @@ public class RESTView extends JPanel implements View {
         jp_testResultPanel.setTestResult(response.getTestResult());
     }
     
-    void setUIFromRequest(final RequestBean request){
+    void setUIFromRequest(final Request request){
         // Clear first
         clearUIRequest();
 
@@ -1442,7 +1456,7 @@ public class RESTView extends JPanel implements View {
         jp_2col_req_headers.getTableModel().setData(headers);
 
         // Body
-        ReqEntityBean body = request.getBody();
+        ReqEntity body = request.getBody();
         if(body != null){
             if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
                 setUIReqBodyEnabled(true);
@@ -1510,11 +1524,11 @@ public class RESTView extends JPanel implements View {
         statusLastUpdated = Calendar.getInstance();
     }
     
-    public RequestBean getLastRequest() {
+    public Request getLastRequest() {
         return lastRequest;
     }
 
-    public ResponseBean getLastResponse() {
+    public Response getLastResponse() {
         return lastResponse;
     }
     

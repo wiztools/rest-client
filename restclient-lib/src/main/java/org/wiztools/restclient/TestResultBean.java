@@ -1,4 +1,4 @@
-package org.wiztools.restclient.test;
+package org.wiztools.restclient;
 
 import java.util.List;
 
@@ -6,12 +6,12 @@ import java.util.List;
  *
  * @author NEWUSER
  */
-public class TestResultBean {
+class TestResultBean implements TestResult {
     private int runCount;
     private int failureCount;
     private int errorCount;
-    private List<TestFailureResultBean> failures;
-    private List<TestFailureResultBean> errors;
+    private List<TestFailureResult> failures;
+    private List<TestFailureResult> errors;
     private String message;
     
     public String getMessage(){
@@ -35,11 +35,11 @@ public class TestResultBean {
         this.errorCount = errorCount;
     }
 
-    public List<TestFailureResultBean> getErrors() {
+    public List<TestFailureResult> getErrors() {
         return errors;
     }
 
-    public void setErrors(List<TestFailureResultBean> errors) {
+    public void setErrors(List<TestFailureResult> errors) {
         this.errors = errors;
     }
 
@@ -51,11 +51,11 @@ public class TestResultBean {
         this.failureCount = failureCount;
     }
 
-    public List<TestFailureResultBean> getFailures() {
+    public List<TestFailureResult> getFailures() {
         return failures;
     }
 
-    public void setFailures(List<TestFailureResultBean> failures) {
+    public void setFailures(List<TestFailureResult> failures) {
         this.failures = failures;
     }
 

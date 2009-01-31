@@ -24,7 +24,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import org.wiztools.restclient.Util;
-import org.wiztools.restclient.xml.Base64;
+import org.wiztools.restclient.Base64;
 
 /**
  *

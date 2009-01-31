@@ -1,4 +1,4 @@
-package org.wiztools.restclient.xml;
+package org.wiztools.restclient;
 
 // Slightly modified to include an static inner Exception class
 // Base64Exception -- Subhash.

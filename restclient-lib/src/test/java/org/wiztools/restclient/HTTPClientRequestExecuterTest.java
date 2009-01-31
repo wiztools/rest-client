@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient;
 
 import java.net.MalformedURLException;
@@ -14,15 +9,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.wiztools.restclient.server.TraceServer;
-import org.wiztools.restclient.server.TraceServlet;
 
 /**
  *
  * @author subwiz
  */
-public class HTTPRequestThreadTest {
+public class HTTPClientRequestExecuterTest {
 
-    public HTTPRequestThreadTest() {
+    public HTTPClientRequestExecuterTest() {
     }
     
     private RequestBean getRequestBean() throws MalformedURLException{
@@ -60,11 +54,11 @@ public class HTTPRequestThreadTest {
         req.addAuthMethod("GET");
         req.addAuthMethod("DIGEST");
         View view = new View() {
-            public void doStart(RequestBean request) {
+            public void doStart(Request request) {
                 System.out.println("Starting request...");
             }
 
-            public void doResponse(ResponseBean response) {
+            public void doResponse(Response response) {
                 System.out.println("in doResponse()...");
                 String body = response.getResponseBody();
                 if(!body.contains("Authorization: Basic c3ViaGFzaDpzdWJoYXNo")){
@@ -84,8 +78,10 @@ public class HTTPRequestThreadTest {
                 
             }
         };
-        HTTPRequestThread instance = new HTTPRequestThread(req, view);
-        instance.run();
+
+        // Execute:
+        RequestExecuter executer = DIFramework.getInstance(RequestExecuter.class);
+        executer.execute(req, view);
     }
 
     /**
@@ -104,11 +100,11 @@ public class HTTPRequestThreadTest {
         
         View view = new View() {
 
-            public void doStart(RequestBean request) {
+            public void doStart(Request request) {
                 //throw new UnsupportedOperationException("Not supported yet.");
             }
 
-            public void doResponse(ResponseBean response) {
+            public void doResponse(Response response) {
                 System.out.println(response);
                 //throw new UnsupportedOperationException("Not supported yet.");
             }
@@ -126,12 +122,9 @@ public class HTTPRequestThreadTest {
             }
         };
         
-        // jServer.
-        
-        HTTPRequestThread instance = new HTTPRequestThread(request, view);
-        instance.run();
-        // TODO review the generated test code and remove the default call to fail.
-        // fail("The test case is a prototype.");
+        // Execute:
+        RequestExecuter executer = DIFramework.getInstance(RequestExecuter.class);
+        executer.execute(request, view);
     }
 
 }

@@ -22,17 +22,17 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
-import org.wiztools.restclient.RCConstants;
 import org.wiztools.restclient.FileType;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.ReqResBean;
 import org.wiztools.restclient.RequestBean;
-import org.wiztools.restclient.ResponseBean;
 import org.wiztools.restclient.Util;
 import org.wiztools.restclient.server.TraceServer;
-import org.wiztools.restclient.xml.Base64;
-import org.wiztools.restclient.xml.XMLException;
-import org.wiztools.restclient.xml.XMLUtil;
+import org.wiztools.restclient.Base64;
+import org.wiztools.restclient.Request;
+import org.wiztools.restclient.Response;
+import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.XMLUtil;
 
 /**
  *
@@ -267,7 +267,7 @@ public class RESTMain implements RESTUserInterface {
         JMenuItem jmi_server_fill_url = new JMenuItem("Insert Trace Server URL");
         jmi_server_fill_url.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                RequestBean request = view.getRequestFromUI();
+                RequestBean request = (RequestBean) view.getRequestFromUI();
                 if(request.getUrl() != null){
                     int ret = JOptionPane.showConfirmDialog(frame,
                             "URL field not empty. Overwrite?",
@@ -405,7 +405,7 @@ public class RESTMain implements RESTUserInterface {
         if(f != null){
             Exception e = null;
             try{
-                RequestBean request = XMLUtil.getRequestFromXMLFile(f);
+                Request request = XMLUtil.getRequestFromXMLFile(f);
                 view.setUIFromRequest(request);
             }
             catch(IOException ex){
@@ -428,7 +428,7 @@ public class RESTMain implements RESTUserInterface {
         if(f != null){
             Exception e = null;
             try{
-                ResponseBean response = XMLUtil.getResponseFromXMLFile(f);
+                Response response = XMLUtil.getResponseFromXMLFile(f);
                 view.setUIFromResponse(response);
             }
             catch(IOException ex){
@@ -449,8 +449,8 @@ public class RESTMain implements RESTUserInterface {
             Exception e = null;
             try{
                 ReqResBean encp = Util.getReqResArchive(f);
-                RequestBean request = encp.getRequestBean();
-                ResponseBean response = encp.getResponseBean();
+                Request request = encp.getRequestBean();
+                Response response = encp.getResponseBean();
                 if(request != null && response != null){
                     view.setUIFromRequest(request);
                     view.setUIFromResponse(response);
@@ -574,7 +574,7 @@ public class RESTMain implements RESTUserInterface {
     
     private void actionSave(final FileChooserType type){
         if(type == FileChooserType.SAVE_REQUEST){
-            RequestBean request = view.getLastRequest();
+            Request request = view.getLastRequest();
 
             if(request == null){
                 JOptionPane.showMessageDialog(view,
@@ -584,7 +584,7 @@ public class RESTMain implements RESTUserInterface {
                 return;
             }
 
-            RequestBean uiRequest = view.getRequestFromUI();
+            Request uiRequest = view.getRequestFromUI();
             if(!request.equals(uiRequest)){
                 if(!doSaveEvenIfUIChanged(DO_SAVE_UI_REQUEST)){
                     return;
@@ -605,7 +605,7 @@ public class RESTMain implements RESTUserInterface {
             }
         }
         else if(type == FileChooserType.SAVE_RESPONSE){
-            ResponseBean response = view.getLastResponse();
+            Response response = view.getLastResponse();
             if(response == null){
                 JOptionPane.showMessageDialog(view,
                         "No last response available.",
@@ -613,7 +613,7 @@ public class RESTMain implements RESTUserInterface {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            ResponseBean uiResponse = view.getResponseFromUI();
+            Response uiResponse = view.getResponseFromUI();
             if(!response.equals(uiResponse)){
                 if(!doSaveEvenIfUIChanged(DO_SAVE_UI_RESPONSE)){
                     return;
@@ -633,7 +633,7 @@ public class RESTMain implements RESTUserInterface {
             }
         }
         else if(type == FileChooserType.SAVE_RESPONSE_BODY){
-            ResponseBean response = view.getLastResponse();
+            Response response = view.getLastResponse();
             if(response == null){
                 JOptionPane.showMessageDialog(view,
                         "No last response available.",
@@ -659,8 +659,8 @@ public class RESTMain implements RESTUserInterface {
             }
         }
         else if(type == FileChooserType.SAVE_ARCHIVE){
-            RequestBean request = view.getLastRequest();
-            ResponseBean response = view.getLastResponse();
+            Request request = view.getLastRequest();
+            Response response = view.getLastResponse();
             if(request == null || response == null){
                 JOptionPane.showMessageDialog(view,
                         "No last request/response available.",
@@ -668,8 +668,8 @@ public class RESTMain implements RESTUserInterface {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            RequestBean uiRequest = view.getRequestFromUI();
-            ResponseBean uiResponse = view.getResponseFromUI();
+            Request uiRequest = view.getRequestFromUI();
+            Response uiResponse = view.getResponseFromUI();
             if((!request.equals(uiRequest)) || (!response.equals(uiResponse))){
                 if(!doSaveEvenIfUIChanged(DO_SAVE_UI_ARCHIVE)){
                     return;

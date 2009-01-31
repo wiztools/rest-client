@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import org.wiztools.restclient.IGlobalOptions;
-import org.wiztools.restclient.di.DIFramework;
+import org.wiztools.restclient.DIFramework;
 
 /**
  *

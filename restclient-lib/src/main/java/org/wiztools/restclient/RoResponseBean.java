@@ -3,10 +3,9 @@
  * and open the template in the editor.
  */
 
-package org.wiztools.restclient.test;
+package org.wiztools.restclient;
 
 import java.util.Map;
-import org.wiztools.restclient.ResponseBean;
 
 /**
  *
@@ -44,7 +43,7 @@ public class RoResponseBean {
         return statusLine;
     }
     
-    public RoResponseBean(final ResponseBean response){
+    public RoResponseBean(final Response response){
         executionTime = response.getExecutionTime();
         statusCode = response.getStatusCode();
         statusLine = response.getStatusLine();

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.wiztools.restclient.test;
+package org.wiztools.restclient;
 
 /**
  *

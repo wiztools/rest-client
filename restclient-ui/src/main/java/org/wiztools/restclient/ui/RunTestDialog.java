@@ -19,10 +19,10 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import org.wiztools.restclient.FileType;
 import org.wiztools.restclient.ReqResBean;
-import org.wiztools.restclient.RequestBean;
-import org.wiztools.restclient.ResponseBean;
+import org.wiztools.restclient.Request;
+import org.wiztools.restclient.Response;
 import org.wiztools.restclient.Util;
-import org.wiztools.restclient.xml.XMLException;
+import org.wiztools.restclient.XMLException;
 
 /**
  *
@@ -125,8 +125,8 @@ public class RunTestDialog extends EscapableDialog {
     
     private void jb_nextAction(){
         try{
-            RequestBean request = null;
-            ResponseBean response = null;
+            Request request = null;
+            Response response = null;
             if(jrb_archive.isSelected()){
                 if(archiveFile == null){
                     JOptionPane.showMessageDialog(ui.getFrame(),

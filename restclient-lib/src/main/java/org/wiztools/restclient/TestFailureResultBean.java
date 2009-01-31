@@ -1,15 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package org.wiztools.restclient.test;
+package org.wiztools.restclient;
 
 /**
  *
- * @author NEWUSER
+ * @author subwiz
  */
-public class TestFailureResultBean {
+class TestFailureResultBean implements TestFailureResult {
     private int lineNumber;
     private String exceptionMessage;
 

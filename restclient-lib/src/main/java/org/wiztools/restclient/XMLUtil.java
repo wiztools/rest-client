@@ -1,6 +1,5 @@
-package org.wiztools.restclient.xml;
+package org.wiztools.restclient;
 
-import org.wiztools.restclient.*;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -26,8 +25,6 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Serializer;
 import nu.xom.ParsingException;
-import org.wiztools.restclient.test.TestFailureResultBean;
-import org.wiztools.restclient.test.TestResultBean;
 
 /**
  *
@@ -59,7 +56,7 @@ public final class XMLUtil {
         }
     }
 
-    private static Document request2XML(final RequestBean bean)
+    private static Document request2XML(final Request bean)
             throws XMLException {
         try {
 
@@ -179,7 +176,7 @@ public final class XMLUtil {
             }
 
             // creating the body child element
-            ReqEntityBean rBean = bean.getBody();
+            ReqEntity rBean = bean.getBody();
             if (rBean != null) {
                 reqChildSubElement = new Element("body");
                 String contentType = rBean.getContentType();
@@ -225,7 +222,7 @@ public final class XMLUtil {
         return m;
     }
 
-    private static RequestBean xml2Request(final Document doc)
+    private static Request xml2Request(final Document doc)
             throws MalformedURLException, XMLException {
         RequestBean requestBean = new RequestBean();
 
@@ -311,7 +308,7 @@ public final class XMLUtil {
         return requestBean;
     }
 
-    private static Document response2XML(final ResponseBean bean)
+    private static Document response2XML(final Response bean)
             throws XMLException {
 
         try {
@@ -365,7 +362,7 @@ public final class XMLUtil {
                 respChildElement.appendChild(respChildSubElement);
             }
             // test result 
-            TestResultBean testResult = bean.getTestResult();
+            TestResult testResult = bean.getTestResult();
             if (testResult != null) {
                 //creating the test-result child element
                 respChildSubElement = new Element("test-result");
@@ -384,8 +381,8 @@ public final class XMLUtil {
                 // Failures
                 if (testResult.getFailureCount() > 0) {
                     Element e_failures = new Element("failures");
-                    List<TestFailureResultBean> l = testResult.getFailures();
-                    for (TestFailureResultBean b : l) {
+                    List<TestFailureResult> l = testResult.getFailures();
+                    for (TestFailureResult b : l) {
                         Element e_message = new Element("message");
                         e_message.appendChild(b.getExceptionMessage());
                         Element e_line = new Element("line-number");
@@ -401,8 +398,8 @@ public final class XMLUtil {
                 //Errors
                 if (testResult.getFailureCount() > 0) {
                     Element e_errors = new Element("errors");
-                    List<TestFailureResultBean> l = testResult.getErrors();
-                    for (TestFailureResultBean b : l) {
+                    List<TestFailureResult> l = testResult.getErrors();
+                    for (TestFailureResult b : l) {
                         Element e_message = new Element("message");
                         e_message.appendChild(b.getExceptionMessage());
                         Element e_line = new Element("line-number");
@@ -433,7 +430,7 @@ public final class XMLUtil {
         }
     }
 
-    private static ResponseBean xml2Response(final Document doc)
+    private static Response xml2Response(final Document doc)
             throws XMLException {
         ResponseBean responseBean = new ResponseBean();
 
@@ -561,25 +558,25 @@ public final class XMLUtil {
         }
     }
 
-    public static void writeRequestXML(final RequestBean bean, final File f)
+    public static void writeRequestXML(final Request bean, final File f)
             throws IOException, XMLException {
         Document doc = request2XML(bean);
         writeXML(doc, f);
     }
 
-    public static void writeResponseXML(final ResponseBean bean, final File f)
+    public static void writeResponseXML(final Response bean, final File f)
             throws IOException, XMLException {
         Document doc = response2XML(bean);
         writeXML(doc, f);
     }
 
-    public static RequestBean getRequestFromXMLFile(final File f)
+    public static Request getRequestFromXMLFile(final File f)
             throws IOException, XMLException {
         Document doc = getDocumentFromFile(f);
         return xml2Request(doc);
     }
 
-    public static ResponseBean getResponseFromXMLFile(final File f)
+    public static Response getResponseFromXMLFile(final File f)
             throws IOException, XMLException {
         Document doc = getDocumentFromFile(f);
         return xml2Response(doc);

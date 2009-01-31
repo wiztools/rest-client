@@ -1,4 +1,4 @@
-package org.wiztools.restclient.xml;
+package org.wiztools.restclient;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -9,10 +9,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.wiztools.restclient.ReqEntityBean;
 import static org.junit.Assert.*;
-import org.wiztools.restclient.RequestBean;
-import org.wiztools.restclient.ResponseBean;
 
 /**
  *
@@ -111,7 +108,7 @@ public class XMLUtilTest {
         RequestBean bean = getDefaultRequestBean();
         File f = File.createTempFile("prefix", ".rcq");
         XMLUtil.writeRequestXML(bean, f);
-        RequestBean expResult = XMLUtil.getRequestFromXMLFile(f);
+        Request expResult = XMLUtil.getRequestFromXMLFile(f);
         assertEquals(expResult, bean);
     }
 
@@ -124,7 +121,7 @@ public class XMLUtilTest {
         ResponseBean bean = getDefaultResponseBean();
         File f = File.createTempFile("prefix", ".rcs");
         XMLUtil.writeResponseXML(bean, f);
-        ResponseBean expResult = XMLUtil.getResponseFromXMLFile(f);
+        Response expResult = XMLUtil.getResponseFromXMLFile(f);
         assertEquals(expResult, bean);
     }
 
@@ -138,7 +135,7 @@ public class XMLUtilTest {
 
         RequestBean expResult = getDefaultRequestBean();
         
-        RequestBean result = XMLUtil.getRequestFromXMLFile(f);
+        Request result = XMLUtil.getRequestFromXMLFile(f);
         assertEquals(expResult, result);
     }
 
@@ -152,7 +149,7 @@ public class XMLUtilTest {
 
         ResponseBean expResult = getDefaultResponseBean();
         
-        ResponseBean result = XMLUtil.getResponseFromXMLFile(f);
+        Response result = XMLUtil.getResponseFromXMLFile(f);
         assertEquals(expResult, result);
     }
 

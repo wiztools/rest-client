@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.wiztools.restclient.View;
-import org.wiztools.restclient.RequestBean;
-import org.wiztools.restclient.ResponseBean;
-import org.wiztools.restclient.HTTPRequestThread;
-import org.wiztools.restclient.xml.XMLException;
-import org.wiztools.restclient.xml.XMLUtil;
+import org.wiztools.restclient.Request;
+import org.wiztools.restclient.Response;
+import org.wiztools.restclient.RequestExecuter;
+import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.XMLUtil;
+import org.wiztools.restclient.DIFramework;
 
 /**
  *
@@ -32,11 +33,11 @@ public class CliMain {
             this.reqFile = reqFile;
         }
 
-        public void doStart(RequestBean request) {
+        public void doStart(Request request) {
             System.out.println("Starting: " + reqFile.getAbsolutePath());
         }
 
-        public void doResponse(ResponseBean response) {
+        public void doResponse(Response response) {
             String reqFileName = reqFile.getName();
             String outFilePrefix = null;
             if(reqFileName.endsWith(".rcq")){
@@ -112,10 +113,11 @@ public class CliMain {
                 File f = new File(param);
                 if(f.canRead()){
                     try{
-                        RequestBean request = XMLUtil.getRequestFromXMLFile(f);
+                        Request request = XMLUtil.getRequestFromXMLFile(f);
                         View view = new CliView(outDir, f);
-                        // Run not as a thread, but sequentially:
-                        new HTTPRequestThread(request, view).run();
+                        // Execute:
+                        RequestExecuter executer = DIFramework.getInstance(RequestExecuter.class, true);
+                        executer.execute(request, view);
                     }
                     catch(IOException ex){
                         ex.printStackTrace(System.err);

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import junit.framework.TestSuite;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -58,50 +57,38 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
-import org.wiztools.restclient.di.DIFramework;
-import org.wiztools.restclient.test.TestException;
-import org.wiztools.restclient.test.TestResultBean;
-import org.wiztools.restclient.test.TestUtil;
 
 /**
  *
  * @author subwiz
  */
-public class HTTPRequestThread extends Thread {
-    
-    private static final Logger LOG = Logger.getLogger(HTTPRequestThread.class.getName());
+class HTTPClientRequestExecuter implements RequestExecuter {
 
-    private RequestBean request;
-    private View view;
-    
-    private boolean interruptedShutdown = false;
-    
+    private static final Logger LOG = Logger.getLogger(HTTPClientRequestExecuter.class.getName());
+
     private DefaultHttpClient httpclient;
 
-    public HTTPRequestThread(final RequestBean request,
-            final View view) {
-        this.request = request;
-        this.view = view;
-    }
+    private boolean interruptedShutdown = false;
 
-    @Override
-    public void run() {
-        view.doStart(request);
+    public void execute(Request request, View... views) {
+        for(View view: views){
+            view.doStart(request);
+        }
 
         URL url = request.getUrl();
         String urlHost = url.getHost();
         int urlPort = url.getPort()==-1?url.getDefaultPort():url.getPort();
         String urlProtocol = url.getProtocol();
         String urlStr = url.toString();
-        
+
         // Needed for specifying HTTP pre-emptive authentication
         HttpContext httpContext = null;
 
         httpclient = new DefaultHttpClient();
-        
+
         // Set HTTP version
         HTTPVersion httpVersion = request.getHttpVersion();
-        ProtocolVersion protocolVersion = 
+        ProtocolVersion protocolVersion =
                 httpVersion==HTTPVersion.HTTP_1_1? new ProtocolVersion("HTTP", 1, 1):
                     new ProtocolVersion("HTTP", 1, 0);
         httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
@@ -135,7 +122,7 @@ public class HTTPRequestThread extends Thread {
             String pwd = new String(request.getAuthPassword());
             String host = Util.isStrEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
             String realm = Util.isStrEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
-            
+
             // Type of authentication
             List<String> authPrefs = new ArrayList<String>(2);
             List<String> authMethods = request.getAuthMethods();
@@ -199,20 +186,22 @@ public class HTTPRequestThread extends Thread {
                 HttpEntityEnclosingRequest eeMethod = (HttpEntityEnclosingRequest) method;
 
                 // Create and set RequestEntity
-                ReqEntityBean bean = request.getBody();
+                ReqEntity bean = request.getBody();
                 if (bean != null) {
                     try {
                         AbstractHttpEntity entity = new ByteArrayEntity(bean.getBody().getBytes(bean.getCharSet()));
                         entity.setContentType(bean.getContentTypeCharsetFormatted());
                         eeMethod.setEntity(entity);
                     } catch (UnsupportedEncodingException ex) {
-                        view.doError(Util.getStackTrace(ex));
-                        view.doEnd();
+                        for(View view: views){
+                            view.doError(Util.getStackTrace(ex));
+                            view.doEnd();
+                        }
                         return;
                     }
                 }
             }
-            
+
             // SSL
             String trustStorePath = request.getSslTrustStore();
             char[] trustStorePassword = request.getSslTrustStorePassword();
@@ -225,7 +214,7 @@ public class HTTPRequestThread extends Thread {
                 finally{
                     instream.close();
                 }
-                
+
                 SSLSocketFactory socketFactory = new SSLSocketFactory(trustStore);
                 SSLHostnameVerifier verifier = request.getSslHostNameVerifier();
                 X509HostnameVerifier hcVerifier = null;
@@ -267,7 +256,7 @@ public class HTTPRequestThread extends Thread {
             long endTime = System.currentTimeMillis();
 
             ResponseBean response = new ResponseBean();
-            
+
             response.setExecutionTime(endTime - startTime);
 
             response.setStatusCode(http_res.getStatusLine().getStatusCode());
@@ -289,57 +278,69 @@ public class HTTPRequestThread extends Thread {
 
             // Now execute tests:
             try {
-                TestSuite suite = TestUtil.getTestSuite(request, response);
+                junit.framework.TestSuite suite = TestUtil.getTestSuite(request, response);
                 if (suite != null) { // suite will be null if there is no associated script
-                    TestResultBean testResult = TestUtil.execute(suite);
+                    TestResult testResult = TestUtil.execute(suite);
                     response.setTestResult(testResult);
                 }
             } catch (TestException ex) {
-                view.doError(Util.getStackTrace(ex));
+                for(View view: views){
+                    view.doError(Util.getStackTrace(ex));
+                }
             }
 
-            view.doResponse(response);
+            for(View view: views){
+                view.doResponse(response);
+            }
         } /*catch (HttpException ex) {
             view.doError(Util.getStackTrace(ex));
         }*/ catch (IOException ex) {
             if(!interruptedShutdown){
-                view.doError(Util.getStackTrace(ex));
+                for(View view: views){
+                    view.doError(Util.getStackTrace(ex));
+                }
             }
             else{
-                view.doCancelled();
+                for(View view: views){
+                    view.doCancelled();
+                }
             }
         } catch (Exception ex) {
             if(!interruptedShutdown){
-                view.doError(Util.getStackTrace(ex));
+                for(View view: views){
+                    view.doError(Util.getStackTrace(ex));
+                }
             }
             else{
-                view.doCancelled();
+                for(View view: views){
+                    view.doCancelled();
+                }
             }
         } finally {
             if (method != null && !interruptedShutdown) {
                 httpclient.getConnectionManager().shutdown();
             }
-            view.doEnd();
+            for(View view: views){
+                view.doEnd();
+            }
         }
     }
-    
-    @Override
-    public void interrupt(){
+
+    public void abortExecution(){
         ClientConnectionManager conMgr = httpclient.getConnectionManager();
         interruptedShutdown = true;
         conMgr.shutdown();
-        super.interrupt();
     }
     
-    static class PreemptiveAuth implements HttpRequestInterceptor {
+    private static final class PreemptiveAuth implements HttpRequestInterceptor {
 
         public void process(
-                final HttpRequest request, 
+                final HttpRequest request,
                 final HttpContext context) throws HttpException, IOException {
-            
+
             AuthState authState = (AuthState) context.getAttribute(
                     ClientContext.TARGET_AUTH_STATE);
-            
+
             // If no auth scheme avaialble yet, try to initialize it preemptively
             if (authState.getAuthScheme() == null) {
                 AuthScheme authScheme = (AuthScheme) context.getAttribute(
@@ -351,7 +352,7 @@ public class HTTPRequestThread extends Thread {
                 if (authScheme != null) {
                     Credentials creds = credsProvider.getCredentials(
                             new AuthScope(
-                                    targetHost.getHostName(), 
+                                    targetHost.getHostName(),
                                     targetHost.getPort()));
                     if (creds == null) {
                         throw new HttpException("No credentials for preemptive authentication");

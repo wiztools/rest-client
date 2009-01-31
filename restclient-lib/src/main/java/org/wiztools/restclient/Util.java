@@ -28,8 +28,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import org.wiztools.restclient.xml.XMLException;
-import org.wiztools.restclient.xml.XMLUtil;
+import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.XMLUtil;
 
 /**
  *
@@ -142,7 +142,7 @@ public final class Util {
         return type;
     }
 
-    public static void createReqResArchive(RequestBean request, ResponseBean response, File zipFile)
+    public static void createReqResArchive(Request request, Response response, File zipFile)
             throws IOException, XMLException {
         File requestFile = File.createTempFile("req-", ".xml");
         File responseFile = File.createTempFile("res-", ".xml");
@@ -217,12 +217,12 @@ public final class Util {
                     dest.close();
 
                     if (entry.getName().equals("request.rcq")) {
-                        RequestBean reqBean = XMLUtil.getRequestFromXMLFile(tmpFile);
+                        Request reqBean = XMLUtil.getRequestFromXMLFile(tmpFile);
                         encpBean.setRequestBean(reqBean);
                         isReqRead = true;
                     }
                     else if(entry.getName().equals("response.rcs")){
-                        ResponseBean resBean = XMLUtil.getResponseFromXMLFile(tmpFile);
+                        Response resBean = XMLUtil.getResponseFromXMLFile(tmpFile);
                         encpBean.setResponseBean(resBean);
                         isResRead = true;
                     }

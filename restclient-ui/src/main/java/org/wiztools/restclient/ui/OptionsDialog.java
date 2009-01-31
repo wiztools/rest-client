@@ -21,7 +21,7 @@ import javax.swing.JFrame;
 
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.Util;
-import org.wiztools.restclient.di.DIFramework;
+import org.wiztools.restclient.DIFramework;
 
 /**
  *
