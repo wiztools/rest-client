@@ -4,7 +4,7 @@
 
 // The test class name should end with `Test'--this is a convention:
 public class TemplateClassTest 
-    extends org.wiztools.restclient.test.RESTTestCase{
+    extends org.wiztools.restclient.RESTTestCase{
 
   // Test method names should start with `test':
   public void testStatus(){
