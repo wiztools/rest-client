@@ -1,6 +1,7 @@
 package org.wiztools.restclient;
 
 import java.util.Hashtable;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -17,18 +18,22 @@ public class Implementation {
      */
     private static final Hashtable<String, Object> ht = new Hashtable<String, Object>();
 
-    private static final ResourceBundle rb = ResourceBundle.getBundle("difw");
+    private static final ResourceBundle rb = ResourceBundle.getBundle("org.wiztools.restclient.implementation");
 
     public static <T> T of(Class<T> c) throws ImplementationLoadException{
-        return of(c, false);
-    }
-
-    public static <T> T of(Class<T> c, boolean newInstance) throws ImplementationLoadException{
-        System.out.println("CLASS: " + c.getName());
         try{
-            final String implClassStr = rb.getString(c.getName());
-            System.out.println("IMPL CLASS: " + implClassStr);
-            if(newInstance){
+            final String className = c.getName();
+            final String implClassStr = rb.getString(className);
+            // Default class creation behavior:
+            boolean isSingleton = false;
+            try{
+                String isSingletonStr = rb.getString(className + ".singleton");
+                isSingleton = Boolean.getBoolean(isSingletonStr);
+            }
+            catch(MissingResourceException ex){
+                LOG.finest("Singleton property not set for class: " + className);
+            }
+            if(!isSingleton){
                 return (T) Class.forName(implClassStr).newInstance();
             }
             T o = (T)ht.get(c.getName());

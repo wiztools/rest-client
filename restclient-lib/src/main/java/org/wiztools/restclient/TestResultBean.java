@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  *
- * @author NEWUSER
+ * @author subwiz
  */
 class TestResultBean implements TestResult {
     private int runCount;
@@ -12,6 +12,7 @@ class TestResultBean implements TestResult {
     private int errorCount;
     private List<TestFailureResult> failures;
     private List<TestFailureResult> errors;
+
     private String message;
     
     public String getMessage(){
@@ -65,5 +66,47 @@ class TestResultBean implements TestResult {
 
     public void setRunCount(int runCount) {
         this.runCount = runCount;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TestResult other = (TestResult) obj;
+        if (this.runCount != other.getRunCount()) {
+            return false;
+        }
+        if (this.failureCount != other.getFailureCount()) {
+            return false;
+        }
+        if (this.errorCount != other.getErrorCount()) {
+            return false;
+        }
+        if (this.failures != other.getFailures() && (this.failures == null || !this.failures.equals(other.getFailures()))) {
+            return false;
+        }
+        if (this.errors != other.getErrors() && (this.errors == null || !this.errors.equals(other.getErrors()))) {
+            return false;
+        }
+        if ((this.message == null) ? (other.getMessage() != null) : !this.message.equals(other.getMessage())) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + this.runCount;
+        hash = 59 * hash + this.failureCount;
+        hash = 59 * hash + this.errorCount;
+        hash = 59 * hash + (this.failures != null ? this.failures.hashCode() : 0);
+        hash = 59 * hash + (this.errors != null ? this.errors.hashCode() : 0);
+        hash = 59 * hash + (this.message != null ? this.message.hashCode() : 0);
+        return hash;
     }
 }

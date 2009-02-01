@@ -116,7 +116,7 @@ public class CliMain {
                         Request request = XMLUtil.getRequestFromXMLFile(f);
                         View view = new CliView(outDir, f);
                         // Execute:
-                        RequestExecuter executer = Implementation.of(RequestExecuter.class, true);
+                        RequestExecuter executer = Implementation.of(RequestExecuter.class);
                         executer.execute(request, view);
                     }
                     catch(IOException ex){

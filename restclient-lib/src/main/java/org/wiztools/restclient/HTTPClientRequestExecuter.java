@@ -69,6 +69,7 @@ class HTTPClientRequestExecuter implements RequestExecuter {
     private DefaultHttpClient httpclient;
 
     private boolean interruptedShutdown = false;
+    private boolean isRequestCompleted = false;
 
     public void execute(Request request, View... views) {
         for(View view: views){
@@ -323,13 +324,19 @@ class HTTPClientRequestExecuter implements RequestExecuter {
             for(View view: views){
                 view.doEnd();
             }
+            isRequestCompleted = true;
         }
     }
 
     public void abortExecution(){
-        ClientConnectionManager conMgr = httpclient.getConnectionManager();
-        interruptedShutdown = true;
-        conMgr.shutdown();
+        if(!isRequestCompleted){
+            ClientConnectionManager conMgr = httpclient.getConnectionManager();
+            interruptedShutdown = true;
+            conMgr.shutdown();
+        }
+        else{
+            LOG.info("Request already completed. Doing nothing.");
+        }
     }
     
     private static final class PreemptiveAuth implements HttpRequestInterceptor {

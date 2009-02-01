@@ -93,17 +93,17 @@ public final class ResponseBean implements Response{
         if(this == o){
             return true;
         }
-        if(o instanceof ResponseBean){
-            final ResponseBean bean = (ResponseBean)o;
+        if(o instanceof Response){
+            final Response bean = (Response)o;
             boolean isEqual = true;
             // Do not check executionTime: because when constructing ResponseBean
             // from the UI, it is not possible to get this value:
             // isEqual = isEqual && (this.executionTime == bean.executionTime);
-            isEqual = isEqual && (this.statusCode == bean.statusCode);
-            isEqual = isEqual && (this.statusLine == null? bean.statusLine == null: this.statusLine.equals(bean.statusLine));
-            isEqual = isEqual && (this.headers == null? bean.headers == null: this.headers.equals(bean.headers));
-            isEqual = isEqual && (this.responseBody == null? bean.responseBody == null: this.responseBody.equals(bean.responseBody));
-            isEqual = isEqual && (this.testResult == null? bean.testResult == null: this.testResult.equals(bean.testResult));
+            isEqual = isEqual && (this.statusCode == bean.getStatusCode());
+            isEqual = isEqual && (this.statusLine == null? bean.getStatusLine() == null: this.statusLine.equals(bean.getStatusLine()));
+            isEqual = isEqual && (this.headers == null? bean.getHeaders() == null: this.headers.equals(bean.getHeaders()));
+            isEqual = isEqual && (this.responseBody == null? bean.getResponseBody() == null: this.responseBody.equals(bean.getResponseBody()));
+            isEqual = isEqual && (this.testResult == null? bean.getTestResult() == null: this.testResult.equals(bean.getTestResult()));
             return isEqual;
         }
         return false;

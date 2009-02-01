@@ -998,7 +998,7 @@ class RESTView extends JPanel implements View {
             List<String> errors = validateRequest(request);
             if(errors.size() == 0){
                 clearUIResponse();
-                final RequestExecuter executer = Implementation.of(RequestExecuter.class, true);
+                final RequestExecuter executer = Implementation.of(RequestExecuter.class);
                 // Execute the request:
                 requestThread = new Thread(){
                     @Override

@@ -185,24 +185,24 @@ public final class RequestBean implements Request{
         if(this == o){
             return true;
         }
-        if(o instanceof RequestBean){
-            final RequestBean bean = (RequestBean)o;
+        if(o instanceof Request){
+            final Request bean = (Request)o;
             boolean isEqual = true;
-            isEqual = isEqual && (this.method == null? bean.method == null: this.method.equals(bean.method));
-            isEqual = isEqual && (this.headers == null? bean.headers == null: this.headers.equals(bean.headers));
-            isEqual = isEqual && (this.body == null? bean.body == null: this.body.equals(bean.body));
-            isEqual = isEqual && (this.authHost == null? bean.authHost == null: this.authHost.equals(bean.authHost));
-            isEqual = isEqual && (this.authMethods == null? bean.authMethods == null: this.authMethods.equals(bean.authMethods));
-            isEqual = isEqual && (this.authPassword == null? bean.authPassword == null: Arrays.equals(this.authPassword, bean.authPassword));
-            isEqual = isEqual && (this.authPreemptive == bean.authPreemptive);
-            isEqual = isEqual && (this.authRealm == null? bean.authRealm == null: this.authRealm.equals(bean.authRealm));
-            isEqual = isEqual && (this.authUsername == null? bean.authUsername == null: this.authUsername.equals(bean.authUsername));
-            isEqual = isEqual && (this.sslTrustStore == null? bean.sslTrustStore == null: this.sslTrustStore.equals(bean.sslTrustStore));
-            isEqual = isEqual && (this.sslTrustStorePassword == null? bean.sslTrustStorePassword == null: Arrays.equals(this.sslTrustStorePassword, bean.sslTrustStorePassword));
-            isEqual = isEqual && (this.sslHostNameVerifier == null? bean.sslHostNameVerifier == null: this.sslHostNameVerifier == bean.sslHostNameVerifier);
-            isEqual = isEqual && (this.httpVersion == null? bean.httpVersion == null: this.httpVersion == bean.httpVersion);
-            isEqual = isEqual && (this.testScript == null? bean.testScript == null: this.testScript.equals(bean.testScript));
-            isEqual = isEqual && (this.url == null? bean.url == null: this.url.equals(bean.url));
+            isEqual = isEqual && (this.method == null? bean.getMethod() == null: this.method.equals(bean.getMethod()));
+            isEqual = isEqual && (this.headers == null? bean.getHeaders() == null: this.headers.equals(bean.getHeaders()));
+            isEqual = isEqual && (this.body == null? bean.getBody() == null: this.body.equals(bean.getBody()));
+            isEqual = isEqual && (this.authHost == null? bean.getAuthHost() == null: this.authHost.equals(bean.getAuthHost()));
+            isEqual = isEqual && (this.authMethods == null? bean.getAuthMethods() == null: this.authMethods.equals(bean.getAuthMethods()));
+            isEqual = isEqual && (this.authPassword == null? bean.getAuthPassword() == null: Arrays.equals(this.authPassword, bean.getAuthPassword()));
+            isEqual = isEqual && (this.authPreemptive == bean.isAuthPreemptive());
+            isEqual = isEqual && (this.authRealm == null? bean.getAuthRealm() == null: this.authRealm.equals(bean.getAuthRealm()));
+            isEqual = isEqual && (this.authUsername == null? bean.getAuthUsername() == null: this.authUsername.equals(bean.getAuthUsername()));
+            isEqual = isEqual && (this.sslTrustStore == null? bean.getSslTrustStore() == null: this.sslTrustStore.equals(bean.getSslTrustStore()));
+            isEqual = isEqual && (this.sslTrustStorePassword == null? bean.getSslTrustStorePassword() == null: Arrays.equals(this.sslTrustStorePassword, bean.getSslTrustStorePassword()));
+            isEqual = isEqual && (this.sslHostNameVerifier == null? bean.getSslHostNameVerifier() == null: this.sslHostNameVerifier == bean.getSslHostNameVerifier());
+            isEqual = isEqual && (this.httpVersion == null? bean.getHttpVersion() == null: this.httpVersion == bean.getHttpVersion());
+            isEqual = isEqual && (this.testScript == null? bean.getTestScript() == null: this.testScript.equals(bean.getTestScript()));
+            isEqual = isEqual && (this.url == null? bean.getUrl() == null: this.url.equals(bean.getUrl()));
             return isEqual;
         }
         return false;
