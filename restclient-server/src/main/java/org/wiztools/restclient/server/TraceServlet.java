@@ -50,12 +50,18 @@ public class TraceServlet extends HttpServlet {
         }
         
         out.println("\n*Body*");
-        BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-        String str = null;
-        while((str = br.readLine())!=null){
-            out.println("\t" + str);
+        BufferedReader br = null;
+        try{
+            br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            String str = null;
+            while((str = br.readLine())!=null){
+                out.println("\t" + str);
+            }
         }
-        br.close();
+        finally{
+            if(br != null)
+                br.close();
+        }
         
         out.flush();
         out.close();

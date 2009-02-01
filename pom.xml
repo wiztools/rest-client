@@ -65,6 +65,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <targetJdk>1.5</targetJdk>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

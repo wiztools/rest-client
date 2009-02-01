@@ -4,12 +4,12 @@ package org.wiztools.restclient;
  * This is the interface used to execute the HTTP request. For getting the
  * default implementation for this interface, use the Implementation class:
  *
- * {@code
+ * <pre>
  * import org.wiztools.restclient.RequestExecuter;
  * import org.wiztools.restclient.Implementation;
  *
  * RequestExecuter executer = Implementation.of(RequestExecuter.class);
- * }
+ * </pre>
  * @author subwiz
  */
 public interface RequestExecuter {
@@ -26,7 +26,7 @@ public interface RequestExecuter {
      * Use this method to abort a request in progress. The recommended way to
      * use this:
      *
-     * {@code
+     * <pre>
      * import org.wiztools.restclient.Request;
      * import org.wiztools.restclient.View;
      * import org.wiztools.restclient.RequestExecuter;
@@ -52,7 +52,7 @@ public interface RequestExecuter {
      *
      * // to interrupt in later stage:
      * t.interrupt();
-     * }
+     * </pre>
      */
     void abortExecution();
 }
