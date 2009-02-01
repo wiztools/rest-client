@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import org.wiztools.restclient.IGlobalOptions;
-import org.wiztools.restclient.DIFramework;
+import org.wiztools.restclient.Implementation;
 
 /**
  *
@@ -33,7 +33,7 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
     private JRadioButton jrb_millisecs = new JRadioButton(MILLISECONDS);
     private JFormattedTextField jftf_timeout = new JFormattedTextField(
             Integer.parseInt(
-            DIFramework.getInstance(IGlobalOptions.class)
+            Implementation.of(IGlobalOptions.class)
             .getProperty("request-timeout-in-millis")));
     
     // Holds the previous selection for convertion between units:
@@ -42,7 +42,7 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
     // Last okyed
     private String ok_type = MILLISECONDS;
     private Integer ok_value = Integer.parseInt(
-            DIFramework.getInstance(IGlobalOptions.class)
+            Implementation.of(IGlobalOptions.class)
             .getProperty("request-timeout-in-millis"));
 
     public OptionsConnectionPanel() {
@@ -174,7 +174,7 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
         }
         ok_value = reqTimeout;
         
-        IGlobalOptions options = DIFramework.getInstance(IGlobalOptions.class);
+        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
         options.acquire();
         options.setProperty("request-timeout-in-millis", String.valueOf(reqTimeout));
         options.release();
@@ -203,7 +203,7 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
 
     @Override
     public void initOptions() {
-        IGlobalOptions options = DIFramework.getInstance(IGlobalOptions.class);
+        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
         try{
             String t = options.getProperty(PROP_PREFIX + "type");
             ok_type = t==null? ok_type: t;
@@ -226,7 +226,7 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
 
     @Override
     public void shutdownOptions() {
-        IGlobalOptions options = DIFramework.getInstance(IGlobalOptions.class);
+        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
         options.setProperty(PROP_PREFIX + "type", ok_type);
         options.setProperty(PROP_PREFIX + "value", String.valueOf(ok_value));
     }

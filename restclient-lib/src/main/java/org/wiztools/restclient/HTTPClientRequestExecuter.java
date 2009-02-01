@@ -95,7 +95,7 @@ class HTTPClientRequestExecuter implements RequestExecuter {
                 protocolVersion);
 
         // Set request timeout (default 1 minute--60000 milliseconds)
-        IGlobalOptions options = DIFramework.getInstance(IGlobalOptions.class);
+        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
         options.acquire();
         HttpConnectionParams.setConnectionTimeout(httpclient.getParams(),
                 Integer.parseInt(options.getProperty("request-timeout-in-millis")));

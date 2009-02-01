@@ -80,7 +80,7 @@ public class HTTPClientRequestExecuterTest {
         };
 
         // Execute:
-        RequestExecuter executer = DIFramework.getInstance(RequestExecuter.class);
+        RequestExecuter executer = Implementation.of(RequestExecuter.class);
         executer.execute(req, view);
     }
 
@@ -123,7 +123,7 @@ public class HTTPClientRequestExecuterTest {
         };
         
         // Execute:
-        RequestExecuter executer = DIFramework.getInstance(RequestExecuter.class);
+        RequestExecuter executer = Implementation.of(RequestExecuter.class);
         executer.execute(request, view);
     }
 

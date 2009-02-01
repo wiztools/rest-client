@@ -8,9 +8,9 @@ import java.util.logging.Logger;
  *
  * @author subwiz
  */
-public class DIFramework {
+public class Implementation {
 
-    private static final Logger LOG = Logger.getLogger(DIFramework.class.getName());
+    private static final Logger LOG = Logger.getLogger(Implementation.class.getName());
 
     /**
      * This is the variable holding the object cache
@@ -19,11 +19,11 @@ public class DIFramework {
 
     private static final ResourceBundle rb = ResourceBundle.getBundle("difw");
 
-    public static <T> T getInstance(Class<T> c) throws DIException{
-        return getInstance(c, false);
+    public static <T> T of(Class<T> c) throws ImplementationLoadException{
+        return of(c, false);
     }
 
-    public static <T> T getInstance(Class<T> c, boolean newInstance) throws DIException{
+    public static <T> T of(Class<T> c, boolean newInstance) throws ImplementationLoadException{
         System.out.println("CLASS: " + c.getName());
         try{
             final String implClassStr = rb.getString(c.getName());
@@ -42,13 +42,13 @@ public class DIFramework {
             return o;
         }
         catch(ClassNotFoundException ex){
-            throw new DIException(ex);
+            throw new ImplementationLoadException(ex);
         }
         catch(InstantiationException ex){
-            throw new DIException(ex);
+            throw new ImplementationLoadException(ex);
         }
         catch(IllegalAccessException ex){
-            throw new DIException(ex);
+            throw new ImplementationLoadException(ex);
         }
     }
 }

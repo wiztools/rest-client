@@ -52,7 +52,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
-import org.wiztools.restclient.DIFramework;
+import org.wiztools.restclient.Implementation;
 import org.wiztools.restclient.TestException;
 import org.wiztools.restclient.TestResult;
 import org.wiztools.restclient.TestUtil;
@@ -825,8 +825,8 @@ public class RESTView extends JPanel implements View {
         });
         
         // Set the font of ScriptEditors:
-        String fontName = DIFramework.getInstance(IGlobalOptions.class).getProperty("font.options.font");
-        String fontSizeStr = DIFramework.getInstance(IGlobalOptions.class).getProperty("font.options.fontSize");
+        String fontName = Implementation.of(IGlobalOptions.class).getProperty("font.options.font");
+        String fontSizeStr = Implementation.of(IGlobalOptions.class).getProperty("font.options.fontSize");
         int fontSize = 12; // Default font size is 12
         if(fontSizeStr != null){
             try{
@@ -998,7 +998,7 @@ public class RESTView extends JPanel implements View {
             List<String> errors = validateRequest(request);
             if(errors.size() == 0){
                 clearUIResponse();
-                final RequestExecuter executer = DIFramework.getInstance(RequestExecuter.class, true);
+                final RequestExecuter executer = Implementation.of(RequestExecuter.class, true);
                 // Execute the request:
                 requestThread = new Thread(){
                     @Override

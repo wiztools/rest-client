@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ProxyConfig;
 import org.wiztools.restclient.Util;
-import org.wiztools.restclient.DIFramework;
+import org.wiztools.restclient.Implementation;
 
 /**
  *
@@ -233,7 +233,7 @@ class OptionsProxyPanel extends JPanel implements IOptionsPanel {
 
     @Override
     public void initOptions() {
-        IGlobalOptions options = DIFramework.getInstance(IGlobalOptions.class);
+        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
         ProxyConfig proxy = ProxyConfig.getInstance();
         
         proxy.acquire();
@@ -254,7 +254,7 @@ class OptionsProxyPanel extends JPanel implements IOptionsPanel {
 
     @Override
     public void shutdownOptions() {
-        IGlobalOptions options = DIFramework.getInstance(IGlobalOptions.class);
+        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
         ProxyConfig proxy = ProxyConfig.getInstance();
         
         proxy.acquire();

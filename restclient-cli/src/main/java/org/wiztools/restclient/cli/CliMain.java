@@ -12,7 +12,7 @@ import org.wiztools.restclient.Response;
 import org.wiztools.restclient.RequestExecuter;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.XMLUtil;
-import org.wiztools.restclient.DIFramework;
+import org.wiztools.restclient.Implementation;
 
 /**
  *
@@ -116,7 +116,7 @@ public class CliMain {
                         Request request = XMLUtil.getRequestFromXMLFile(f);
                         View view = new CliView(outDir, f);
                         // Execute:
-                        RequestExecuter executer = DIFramework.getInstance(RequestExecuter.class, true);
+                        RequestExecuter executer = Implementation.of(RequestExecuter.class, true);
                         executer.execute(request, view);
                     }
                     catch(IOException ex){
