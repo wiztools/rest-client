@@ -15,7 +15,7 @@ import java.util.Map;
 public final class RequestBean implements Request{
     
     private URL url;
-    private String method;
+    private HTTPMethod method;
     private boolean authPreemptive;
     private List<String> authMethods;
     private String authHost;
@@ -134,11 +134,11 @@ public final class RequestBean implements Request{
         this.headers.put(key, value);
     }
 
-    public String getMethod() {
+    public HTTPMethod getMethod() {
         return method;
     }
 
-    public void setMethod(String method) {
+    public void setMethod(final HTTPMethod method) {
         this.method = method;
     }
 

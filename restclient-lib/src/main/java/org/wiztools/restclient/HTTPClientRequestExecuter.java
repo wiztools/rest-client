@@ -154,22 +154,30 @@ class HTTPClientRequestExecuter implements RequestExecuter {
 
         AbstractHttpMessage method = null;
 
-        String httpMethod = request.getMethod();
+        final HTTPMethod httpMethod = request.getMethod();
         try {
-            if ("GET".equals(httpMethod)) {
-                method = new HttpGet(urlStr);
-            } else if ("HEAD".equals(httpMethod)) {
-                method = new HttpHead(urlStr);
-            } else if ("POST".equals(httpMethod)) {
-                method = new HttpPost(urlStr);
-            } else if ("PUT".equals(httpMethod)) {
-                method = new HttpPut(urlStr);
-            } else if ("DELETE".equals(httpMethod)) {
-                method = new HttpDelete(urlStr);
-            } else if ("OPTIONS".equals(httpMethod)) {
-                method = new HttpOptions(urlStr);
-            } else if ("TRACE".equals(httpMethod)) {
-                method = new HttpTrace(urlStr);
+            switch(httpMethod){
+                case GET:
+                    method = new HttpGet(urlStr);
+                    break;
+                case POST:
+                    method = new HttpPost(urlStr);
+                    break;
+                case PUT:
+                    method = new HttpPut(urlStr);
+                    break;
+                case DELETE:
+                    method = new HttpDelete(urlStr);
+                    break;
+                case HEAD:
+                    method = new HttpHead(urlStr);
+                    break;
+                case OPTIONS:
+                    method = new HttpOptions(urlStr);
+                    break;
+                case TRACE:
+                    method = new HttpTrace(urlStr);
+                    break;
             }
             method.setParams(new BasicHttpParams().setParameter(urlStr, url));
 

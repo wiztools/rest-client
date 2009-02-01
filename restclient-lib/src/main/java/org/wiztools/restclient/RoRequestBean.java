@@ -1,15 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient;
 
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import org.wiztools.restclient.HTTPVersion;
-import org.wiztools.restclient.RequestBean;
 
 /**
  *
@@ -18,7 +11,7 @@ import org.wiztools.restclient.RequestBean;
 public class RoRequestBean {
     
     private final URL url;
-    private final String method;
+    private final HTTPMethod method;
     private final Map<String, String> headers;
     private final RoReqEntityBean body;
     private final List<String> authMethods;
@@ -86,7 +79,7 @@ public class RoRequestBean {
         return headers;
     }
 
-    public String getMethod() {
+    public HTTPMethod getMethod() {
         return method;
     }
 

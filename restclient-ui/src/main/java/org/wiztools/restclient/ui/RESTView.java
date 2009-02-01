@@ -931,25 +931,25 @@ class RESTView extends JPanel implements View {
             // URL is left null!
         }
         if(jrb_req_get.isSelected()){
-            request.setMethod("GET");
+            request.setMethod(HTTPMethod.GET);
         }
         else if(jrb_req_head.isSelected()){
-            request.setMethod("HEAD");
+            request.setMethod(HTTPMethod.HEAD);
         }
         else if(jrb_req_post.isSelected()){
-            request.setMethod("POST");
+            request.setMethod(HTTPMethod.POST);
         }
         else if(jrb_req_put.isSelected()){
-            request.setMethod("PUT");
+            request.setMethod(HTTPMethod.PUT);
         }
         else if(jrb_req_delete.isSelected()){
-            request.setMethod("DELETE");
+            request.setMethod(HTTPMethod.DELETE);
         }
         else if(jrb_req_options.isSelected()){
-            request.setMethod("OPTIONS");
+            request.setMethod(HTTPMethod.OPTIONS);
         }
         else if(jrb_req_trace.isSelected()){
-            request.setMethod("TRACE");
+            request.setMethod(HTTPMethod.TRACE);
         }
         
         // Get request headers
@@ -1343,8 +1343,8 @@ class RESTView extends JPanel implements View {
         }
         
         // Req Entity check
-        final String METHOD = request.getMethod();
-        if(METHOD.equals("POST") || METHOD.equals("PUT")){
+        final HTTPMethod METHOD = request.getMethod();
+        if(METHOD == HTTPMethod.POST || METHOD == HTTPMethod.PUT){
             // Get request body
             ReqEntity reBean = request.getBody();
             if(reBean != null){
@@ -1428,27 +1428,29 @@ class RESTView extends JPanel implements View {
         jcb_url.setSelectedItem(request.getUrl().toString());
 
         // Method
-        String reqMethod = request.getMethod();
-        if("GET".equals(reqMethod)){
-            jrb_req_get.setSelected(true);
-        }
-        else if("POST".equals(reqMethod)){
-            jrb_req_post.setSelected(true);
-        }
-        else if("PUT".equals(reqMethod)){
-            jrb_req_put.setSelected(true);
-        }
-        else if("DELETE".equals(reqMethod)){
-            jrb_req_delete.setSelected(true);
-        }
-        else if("HEAD".equals(reqMethod)){
-            jrb_req_head.setSelected(true);
-        }
-        else if("OPTIONS".equals(reqMethod)){
-            jrb_req_options.setSelected(true);
-        }
-        else if("TRACE".equals(reqMethod)){
-            jrb_req_trace.setSelected(true);
+        final HTTPMethod reqMethod = request.getMethod();
+        switch(reqMethod){
+            case GET:
+                jrb_req_get.setSelected(true);
+                break;
+            case POST:
+                jrb_req_post.setSelected(true);
+                break;
+            case PUT:
+                jrb_req_put.setSelected(true);
+                break;
+            case DELETE:
+                jrb_req_delete.setSelected(true);
+                break;
+            case HEAD:
+                jrb_req_head.setSelected(true);
+                break;
+            case OPTIONS:
+                jrb_req_options.setSelected(true);
+                break;
+            case TRACE:
+                jrb_req_trace.setSelected(true);
+                break;
         }
 
         // Headers

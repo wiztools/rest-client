@@ -81,7 +81,7 @@ public final class XMLUtil {
 
             // creating the method child element
             reqChildSubElement = new Element("method");
-            reqChildSubElement.appendChild(bean.getMethod());
+            reqChildSubElement.appendChild(bean.getMethod().name());
             reqChildElement.appendChild(reqChildSubElement);
 
             // creating the auth-methods child element
@@ -260,7 +260,7 @@ public final class XMLUtil {
                 URL url = new URL(tNode.getValue());
                 requestBean.setUrl(url);
             } else if ("method".equals(nodeName)) {
-                requestBean.setMethod(tNode.getValue());
+                requestBean.setMethod(HTTPMethod.get(tNode.getValue()));
             } else if ("auth-methods".equals(nodeName)) {
                 String[] authenticationMethods = tNode.getValue().split(",");
                 for (int j = 0; j < authenticationMethods.length; j++) {

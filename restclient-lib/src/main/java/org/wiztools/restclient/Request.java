@@ -26,7 +26,7 @@ public interface Request extends Cloneable {
 
     HTTPVersion getHttpVersion();
 
-    String getMethod();
+    HTTPMethod getMethod();
 
     SSLHostnameVerifier getSslHostNameVerifier();
 

@@ -47,7 +47,7 @@ public class HTTPClientRequestExecuterTest {
     public void testPremptiveAuth() throws Exception{
         System.out.println("testPreemptiveAuth");
         RequestBean req = getRequestBean();
-        req.setMethod("GET");
+        req.setMethod(HTTPMethod.GET);
         req.setAuthPreemptive(true);
         req.setAuthUsername("subhash");
         req.setAuthPassword("subhash".toCharArray());
@@ -94,7 +94,7 @@ public class HTTPClientRequestExecuterTest {
         final String contentType = "test/text";
         final String charset = "UTF-8";
         RequestBean request = getRequestBean();
-        request.setMethod("POST");
+        request.setMethod(HTTPMethod.POST);
         ReqEntityBean rBean = new ReqEntityBean("", contentType, charset);
         request.setBody(rBean);
         
