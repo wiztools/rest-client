@@ -4,6 +4,6 @@ package org.wiztools.restclient.ui;
  *
  * @author schandran
  */
-public interface ParameterView {
+interface ParameterView {
     public void setParameter(String params);
 }

@@ -30,7 +30,7 @@ import org.wiztools.restclient.Base64;
  *
  * @author Subhash
  */
-public class PasswordGenDialog extends EscapableDialog {
+class PasswordGenDialog extends EscapableDialog {
     
     private static final String helpText;
     

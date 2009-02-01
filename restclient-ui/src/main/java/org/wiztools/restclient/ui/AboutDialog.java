@@ -19,7 +19,7 @@ import javax.swing.JTextPane;
  *
  * @author schandran
  */
-public class AboutDialog extends EscapableDialog {
+class AboutDialog extends EscapableDialog {
 
     private Frame frame;
     private AboutDialog me;

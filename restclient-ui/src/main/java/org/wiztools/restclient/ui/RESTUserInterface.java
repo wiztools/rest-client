@@ -13,7 +13,7 @@ import javax.swing.JFrame;
  *
  * @author subwiz
  */
-public interface RESTUserInterface {
+interface RESTUserInterface {
 
     public JFrame getFrame();
 

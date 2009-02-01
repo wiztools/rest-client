@@ -1,15 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient.ui;
 
 /**
  *
  * @author subwiz
  */
-public final class ScriptEditorFactory {
+final class ScriptEditorFactory {
 
     public static ScriptEditor getGroovyScriptEditor(){
         return new JSyntaxPaneScriptEditor(TextEditorSyntax.GROOVY);

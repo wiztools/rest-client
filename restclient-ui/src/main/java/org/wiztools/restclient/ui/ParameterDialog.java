@@ -18,7 +18,7 @@ import javax.swing.JPanel;
  *
  * @author schandran
  */
-public class ParameterDialog extends EscapableDialog {
+class ParameterDialog extends EscapableDialog {
     
     private final ParameterView view;
     private TwoColumnTablePanel jp_2col_center;

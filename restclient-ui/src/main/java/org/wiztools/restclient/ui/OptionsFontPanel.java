@@ -27,7 +27,7 @@ import org.wiztools.restclient.Implementation;
  *
  * @author subwiz
  */
-public class OptionsFontPanel extends JPanel implements IOptionsPanel {
+class OptionsFontPanel extends JPanel implements IOptionsPanel {
     
     private static final Logger LOG = Logger.getLogger(OptionsFontPanel.class.getName());
     

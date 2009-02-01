@@ -26,7 +26,7 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
  *
  * @author schandran
  */
-public class BodyContentTypeDialog extends EscapableDialog {
+class BodyContentTypeDialog extends EscapableDialog {
     
     private static final String[] contentTypeArr;
     public static final String DEFAULT_CONTENT_TYPE = "text/plain";

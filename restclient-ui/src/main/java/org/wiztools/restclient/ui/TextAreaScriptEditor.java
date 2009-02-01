@@ -5,7 +5,7 @@ import javax.swing.*;
 /**
  *  textarea script editor
  */
-public class TextAreaScriptEditor implements ScriptEditor {
+class TextAreaScriptEditor implements ScriptEditor {
     private JTextArea textArea = new JTextArea();
 
     /**

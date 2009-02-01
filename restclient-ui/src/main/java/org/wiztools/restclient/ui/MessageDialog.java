@@ -14,7 +14,7 @@ import javax.swing.JTextArea;
  *
  * @author  schandran
  */
-public class MessageDialog extends EscapableDialog {
+class MessageDialog extends EscapableDialog {
     
     private MessageDialog messageDialog;
     private java.awt.Frame parent;

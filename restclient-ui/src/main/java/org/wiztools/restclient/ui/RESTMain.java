@@ -38,7 +38,7 @@ import org.wiztools.restclient.XMLUtil;
  *
  * @author schandran
  */
-public class RESTMain implements RESTUserInterface {
+class RESTMain implements RESTUserInterface {
     
     private RESTView view;
     private AboutDialog aboutDialog;

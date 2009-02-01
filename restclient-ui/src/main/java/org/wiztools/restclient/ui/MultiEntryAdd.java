@@ -7,6 +7,6 @@ import java.util.Map;
  *
  * @author Subhash
  */
-public interface MultiEntryAdd {
+interface MultiEntryAdd {
     public void add(Map<String, String> keyValuePair, List<String> invalidLines);
 }

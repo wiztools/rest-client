@@ -13,7 +13,7 @@ import javax.swing.JPanel;
  *
  * @author Subhash
  */
-public final class UIUtil {
+final class UIUtil {
     
     private UIUtil(){}
     

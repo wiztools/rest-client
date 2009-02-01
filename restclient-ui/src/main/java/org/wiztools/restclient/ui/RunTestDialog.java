@@ -28,7 +28,7 @@ import org.wiztools.restclient.XMLException;
  *
  * @author Subhash
  */
-public class RunTestDialog extends EscapableDialog {
+class RunTestDialog extends EscapableDialog {
     
     private JButton jb_next = new JButton("Next");
     private JButton jb_cancel = new JButton("Cancel");

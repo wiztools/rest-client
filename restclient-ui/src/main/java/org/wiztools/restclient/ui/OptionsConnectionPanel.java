@@ -20,7 +20,7 @@ import org.wiztools.restclient.Implementation;
  *
  * @author Subhash
  */
-public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
+class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
     private static final Logger LOG = Logger.getLogger(OptionsConnectionPanel.class.getName());
     
     private static final String PROP_PREFIX = "conn.options.";

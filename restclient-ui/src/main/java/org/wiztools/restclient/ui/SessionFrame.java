@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient.ui;
 
 import java.awt.BorderLayout;
@@ -20,7 +15,7 @@ import javax.swing.WindowConstants;
  *
  * @author subwiz
  */
-public class SessionFrame extends JFrame {
+class SessionFrame extends JFrame {
     
     private final SessionFrame me;
     

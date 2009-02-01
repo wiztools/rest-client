@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient.ui;
 
 import java.util.Collections;
@@ -15,7 +10,7 @@ import org.wiztools.restclient.Response;
  *
  * @author subwiz
  */
-public class SessionTableModel extends AbstractTableModel implements ISessionView{
+class SessionTableModel extends AbstractTableModel implements ISessionView{
 
     private final String[] colNames;
     private Object[][] data = new String[0][0];

@@ -63,7 +63,7 @@ import org.wiztools.restclient.XMLUtil;
  *
  * @author Subhash
  */
-public class RESTView extends JPanel implements View {
+class RESTView extends JPanel implements View {
     private static final Logger LOG = Logger.getLogger(RESTView.class.getName());
     
     private ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");

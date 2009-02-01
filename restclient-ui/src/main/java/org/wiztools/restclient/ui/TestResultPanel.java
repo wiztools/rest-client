@@ -21,7 +21,7 @@ import org.wiztools.restclient.TestResult;
  *
  * @author NEWUSER
  */
-public class TestResultPanel extends JPanel {
+class TestResultPanel extends JPanel {
     
     private JLabel jl_runCount = new JLabel("");
     private JLabel jl_failureCount = new JLabel("");

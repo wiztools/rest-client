@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author schandran
  */
-public class TwoColumnTableModel extends AbstractTableModel {
+class TwoColumnTableModel extends AbstractTableModel {
 
     private final String[] colNames;
     private Object[][] data = new String[0][0];

@@ -5,7 +5,7 @@ import javax.swing.*;
 /**
  *
  */
-public interface ScriptEditor {
+interface ScriptEditor {
 
     /**
      * view component for test script editor

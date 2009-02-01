@@ -27,7 +27,7 @@ import org.wiztools.restclient.Implementation;
  *
  * @author schandran
  */
-public class OptionsDialog extends EscapableDialog {
+class OptionsDialog extends EscapableDialog {
     
     private static final Logger LOG = Logger.getLogger(OptionsDialog.class.getName());
     

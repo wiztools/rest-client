@@ -28,7 +28,7 @@ import org.wiztools.restclient.Util;
  *
  * @author Subhash
  */
-public class KeyValMultiEntryDialog extends EscapableDialog {
+class KeyValMultiEntryDialog extends EscapableDialog {
 
     private JButton jb_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JButton jb_help = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "question.png"));

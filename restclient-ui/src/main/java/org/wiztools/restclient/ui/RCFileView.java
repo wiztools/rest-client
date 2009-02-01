@@ -9,7 +9,7 @@ import org.wiztools.restclient.FileType;
  *
  * @author Subhash
  */
-public class RCFileView extends FileView {
+class RCFileView extends FileView {
     @Override
     public String getTypeDescription(final File f){
         String path = f.getAbsolutePath();

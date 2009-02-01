@@ -28,7 +28,7 @@ import javax.swing.JTextField;
  *
  * @author schandran
  */
-public final class TwoColumnTablePanel extends JPanel {
+final class TwoColumnTablePanel extends JPanel {
 
     private RESTUserInterface rest_ui;
     

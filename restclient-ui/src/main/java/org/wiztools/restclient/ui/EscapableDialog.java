@@ -16,7 +16,7 @@ import javax.swing.JDialog;
  *
  * @author schandran
  */
-public abstract class EscapableDialog extends JDialog implements KeyListener, ContainerListener {
+abstract class EscapableDialog extends JDialog implements KeyListener, ContainerListener {
     
     private final Frame _frame;
 

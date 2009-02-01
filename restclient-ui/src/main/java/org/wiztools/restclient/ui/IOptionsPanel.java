@@ -6,7 +6,7 @@ import java.util.List;
  *
  * @author Subhash
  */
-public interface IOptionsPanel {
+interface IOptionsPanel {
     /**
      * Method for loading last saved option values from persistent storage.
      */
