@@ -85,12 +85,12 @@ public final class XMLUtil {
             reqChildElement.appendChild(reqChildSubElement);
 
             // creating the auth-methods child element
-            List<String> authMethods = bean.getAuthMethods();
+            List<HTTPAuthMethod> authMethods = bean.getAuthMethods();
             if (authMethods == null || authMethods.size() > 0) {
 
                 reqChildSubElement = new Element("auth-methods");
                 String methods = "";
-                for (String authMethod : authMethods) {
+                for (HTTPAuthMethod authMethod : authMethods) {
                     methods = methods + authMethod + ",";
                 }
                 String authenticationMethod = methods.substring(0, methods.length() == 0 ? 0 : methods.length() - 1);
@@ -264,7 +264,7 @@ public final class XMLUtil {
             } else if ("auth-methods".equals(nodeName)) {
                 String[] authenticationMethods = tNode.getValue().split(",");
                 for (int j = 0; j < authenticationMethods.length; j++) {
-                    requestBean.addAuthMethod(authenticationMethods[j]);
+                    requestBean.addAuthMethod(HTTPAuthMethod.get(authenticationMethods[j]));
                 }
             } else if ("auth-preemptive".equals(nodeName)) {
                 if (tNode.getValue().equals("true")) {

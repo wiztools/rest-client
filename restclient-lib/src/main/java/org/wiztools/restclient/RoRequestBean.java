@@ -14,7 +14,7 @@ public class RoRequestBean {
     private final HTTPMethod method;
     private final Map<String, String> headers;
     private final RoReqEntityBean body;
-    private final List<String> authMethods;
+    private final List<HTTPAuthMethod> authMethods;
     private final boolean authPreemptive;
     private final String authHost;
     private final String authRealm;
@@ -51,7 +51,7 @@ public class RoRequestBean {
         return authHost;
     }
 
-    public List<String> getAuthMethods() {
+    public List<HTTPAuthMethod> getAuthMethods() {
         return authMethods;
     }
 

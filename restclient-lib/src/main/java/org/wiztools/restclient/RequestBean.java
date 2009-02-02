@@ -17,7 +17,7 @@ public final class RequestBean implements Request{
     private URL url;
     private HTTPMethod method;
     private boolean authPreemptive;
-    private List<String> authMethods;
+    private List<HTTPAuthMethod> authMethods;
     private String authHost;
     private String authRealm;
     private String authUsername;
@@ -86,11 +86,11 @@ public final class RequestBean implements Request{
         this.authPreemptive = authPreemptive;
     }
 
-    public List<String> getAuthMethods() {
+    public List<HTTPAuthMethod> getAuthMethods() {
         return Collections.unmodifiableList(authMethods);
     }
 
-    public void addAuthMethod(final String authMethod) {
+    public void addAuthMethod(final HTTPAuthMethod authMethod) {
         this.authMethods.add(authMethod);
     }
 
@@ -152,7 +152,7 @@ public final class RequestBean implements Request{
     
     public RequestBean(){
         headers = new LinkedHashMap();
-        authMethods = new ArrayList<String>();
+        authMethods = new ArrayList<HTTPAuthMethod>();
     }
     
     @Override

@@ -899,11 +899,11 @@ class RESTView extends JPanel implements View {
         boolean authEnabled = false;
         
         if(jcb_auth_basic.isSelected()){
-            request.addAuthMethod("BASIC");
+            request.addAuthMethod(HTTPAuthMethod.BASIC);
             authEnabled = true;
         }
         if(jcb_auth_digest.isSelected()){
-            request.addAuthMethod("DIGEST");
+            request.addAuthMethod(HTTPAuthMethod.DIGEST);
             authEnabled = true;
         }
         
@@ -1470,16 +1470,18 @@ class RESTView extends JPanel implements View {
         }
 
         // Authentication
-        List<String> authMethods = request.getAuthMethods();
+        List<HTTPAuthMethod> authMethods = request.getAuthMethods();
         if(authMethods.size() > 0){
             setUIReqAuthEnabled(true);
         }
-        for(String authMethod: authMethods){
-            if("BASIC".equals(authMethod)){
-                jcb_auth_basic.setSelected(true);
-            }
-            else if("DIGEST".equals(authMethod)){
-                jcb_auth_digest.setSelected(true);
+        for(HTTPAuthMethod authMethod: authMethods){
+            switch(authMethod){
+                case BASIC:
+                    jcb_auth_basic.setSelected(true);
+                    break;
+                case DIGEST:
+                    jcb_auth_digest.setSelected(true);
+                    break;
             }
         }
         jcb_auth_preemptive.setSelected(request.isAuthPreemptive());

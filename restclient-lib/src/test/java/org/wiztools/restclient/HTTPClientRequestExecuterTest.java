@@ -51,8 +51,8 @@ public class HTTPClientRequestExecuterTest {
         req.setAuthPreemptive(true);
         req.setAuthUsername("subhash");
         req.setAuthPassword("subhash".toCharArray());
-        req.addAuthMethod("GET");
-        req.addAuthMethod("DIGEST");
+        req.addAuthMethod(HTTPAuthMethod.BASIC);
+        req.addAuthMethod(HTTPAuthMethod.DIGEST);
         View view = new View() {
             public void doStart(Request request) {
                 System.out.println("Starting request...");

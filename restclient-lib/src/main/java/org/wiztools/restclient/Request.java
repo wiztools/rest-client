@@ -12,7 +12,7 @@ public interface Request extends Cloneable {
 
     String getAuthHost();
 
-    List<String> getAuthMethods();
+    List<HTTPAuthMethod> getAuthMethods();
 
     char[] getAuthPassword();
 

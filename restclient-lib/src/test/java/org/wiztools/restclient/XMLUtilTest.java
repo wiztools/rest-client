@@ -42,7 +42,7 @@ public class XMLUtilTest {
         expResult.setMethod(HTTPMethod.POST);
         expResult.addHeader("key1", "value1");
         expResult.setBody(new ReqEntityBean("Body Text", "text/plain", "UTF-8"));
-        expResult.addAuthMethod("BASIC");
+        expResult.addAuthMethod(HTTPAuthMethod.BASIC);
         expResult.setAuthPreemptive(true);
         expResult.setAuthRealm("realm");
         expResult.setAuthUsername("username");

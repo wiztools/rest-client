@@ -126,13 +126,15 @@ class HTTPClientRequestExecuter implements RequestExecuter {
 
             // Type of authentication
             List<String> authPrefs = new ArrayList<String>(2);
-            List<String> authMethods = request.getAuthMethods();
-            for(String authMethod: authMethods){
-                if("BASIC".equals(authMethod)){
-                    authPrefs.add(AuthPolicy.BASIC);
-                }
-                else if("DIGEST".equals(authMethod)){
-                    authPrefs.add(AuthPolicy.DIGEST);
+            List<HTTPAuthMethod> authMethods = request.getAuthMethods();
+            for(HTTPAuthMethod authMethod: authMethods){
+                switch(authMethod){
+                    case BASIC:
+                        authPrefs.add(AuthPolicy.BASIC);
+                        break;
+                    case DIGEST:
+                        authPrefs.add(AuthPolicy.DIGEST);
+                        break;
                 }
             }
             httpclient.getParams().setParameter("http.auth.scheme-pref", authPrefs);
