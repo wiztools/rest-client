@@ -13,12 +13,18 @@ import org.wiztools.restclient.RequestExecuter;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.XMLUtil;
 import org.wiztools.restclient.Implementation;
+import org.wiztools.restclient.TestResult;
 
 /**
  *
  * @author subwiz
  */
 public class CliMain {
+
+    private static int runCount;
+    private static int failureCount;
+    private static int errorCount;
+
     private static class CliCommand{
         @Argument(value = "output", alias = "o", description = "This is the output file", required = true)
         private File outDir;
@@ -59,6 +65,12 @@ public class CliMain {
                             break;
                         }
                     }
+                }
+                TestResult testResult = response.getTestResult();
+                if(testResult != null){
+                    failureCount += testResult.getFailureCount();
+                    errorCount += testResult.getErrorCount();
+                    runCount += testResult.getRunCount();
                 }
                 XMLUtil.writeResponseXML(response, resFile);
             }
@@ -129,6 +141,13 @@ public class CliMain {
                 else{
                     System.err.println("No read access: " + f.getAbsolutePath());
                 }
+            }
+            // Print summary of tests:
+            if(runCount > 0){
+                System.out.println();
+                System.out.println("Total tests executed: " + runCount);
+                System.out.println("Total failures:       " + failureCount);
+                System.out.println("Total errors:         " + errorCount);
             }
         }
         if(errors.size() > 0){

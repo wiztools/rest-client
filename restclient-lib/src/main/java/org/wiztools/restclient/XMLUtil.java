@@ -507,8 +507,6 @@ public final class XMLUtil {
             out = new BufferedOutputStream(out);
             // getDocumentCharset(f) - to retrieve the charset encoding attribute
             Serializer serializer = new Serializer(out, getDocumentCharset(f));
-            serializer.setIndent(2);
-            serializer.setMaxLength(69); // Line break is at 69th column
             serializer.write(doc);
             out.close();
         } catch (IOException ex) {
