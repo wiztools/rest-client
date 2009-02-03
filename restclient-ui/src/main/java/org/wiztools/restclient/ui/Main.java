@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.logging.Logger;
 import org.wiztools.restclient.RCConstants;
-import org.wiztools.restclient.ui.RESTMain;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 

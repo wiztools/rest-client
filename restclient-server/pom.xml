@@ -10,7 +10,7 @@
     <groupId>org.wiztools.restclient</groupId>
     <artifactId>restclient-server</artifactId>
     <packaging>jar</packaging>
-    <version>2.3-SNAPSHOT</version>
+    <version>2.3-b1</version>
     <name>${project.artifactId}</name>
     <build>
         <plugins>
