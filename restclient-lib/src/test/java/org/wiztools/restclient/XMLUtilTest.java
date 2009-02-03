@@ -153,4 +153,18 @@ public class XMLUtilTest {
         assertEquals(expResult, result);
     }
 
+    /**
+     * Test to verify if the write operation of Request corrupts
+     * the content of the test script.
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testIntegrityOfTestScript() throws Exception{
+        File f = new File("src/test/resources/resTestScriptIntegrity.rcq");
+        Request req = XMLUtil.getRequestFromXMLFile(f);
+        File outFile = File.createTempFile("abc", "xyz");
+        XMLUtil.writeRequestXML(req, outFile);
+        Request req1 = XMLUtil.getRequestFromXMLFile(outFile);
+        assertEquals(req.getTestScript(), req1.getTestScript());
+    }
 }
