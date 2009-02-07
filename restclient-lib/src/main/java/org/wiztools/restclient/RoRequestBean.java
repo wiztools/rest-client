@@ -8,7 +8,7 @@ import java.util.Map;
  *
  * @author schandran
  */
-public class RoRequestBean {
+public class RoRequestBean implements Request {
     
     private final URL url;
     private final HTTPMethod method;
@@ -22,6 +22,7 @@ public class RoRequestBean {
     private final char[] authPassword;
     private String sslTrustStore;
     private char[] sslTrustStorePassword;
+    SSLHostnameVerifier sslHostNameVerifier;
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
 
     public HTTPVersion getHttpVersion() {
@@ -106,5 +107,19 @@ public class RoRequestBean {
         sslTrustStore = request.getSslTrustStore();
         sslTrustStorePassword = request.getSslTrustStorePassword();
         httpVersion = request.getHttpVersion();
+        sslHostNameVerifier = request.getSslHostNameVerifier();
+    }
+
+    public SSLHostnameVerifier getSslHostNameVerifier() {
+        return sslHostNameVerifier;
+    }
+
+    public String getTestScript() {
+        return null;
+    }
+
+    @Override
+    public Object clone(){
+        return null;
     }
 }

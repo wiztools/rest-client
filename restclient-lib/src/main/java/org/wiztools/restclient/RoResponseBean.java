@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient;
 
 import java.util.Map;
@@ -11,7 +6,7 @@ import java.util.Map;
  *
  * @author schandran
  */
-public class RoResponseBean {
+public class RoResponseBean implements Response {
     
     private final int statusCode;
     private final String statusLine;
@@ -49,5 +44,14 @@ public class RoResponseBean {
         statusLine = response.getStatusLine();
         headers = response.getHeaders();
         responseBody = response.getResponseBody();
+    }
+
+    public TestResult getTestResult() {
+        return null;
+    }
+
+    @Override
+    public Object clone(){
+        return null;
     }
 }

@@ -1,12 +1,10 @@
 package org.wiztools.restclient;
 
-import org.wiztools.restclient.ReqEntityBean;
-
 /**
  *
  * @author schandran
  */
-public class RoReqEntityBean {
+public class RoReqEntityBean implements ReqEntity {
     
     private final String contentType;
     private final String charSet;
@@ -28,5 +26,14 @@ public class RoReqEntityBean {
         contentType = requestEntity.getContentType();
         charSet = requestEntity.getCharSet();
         body = requestEntity.getBody();
+    }
+
+    public String getContentTypeCharsetFormatted() {
+        return Util.getFormattedContentType(contentType, charSet);
+    }
+
+    @Override
+    public Object clone(){
+        return null;
     }
 }
