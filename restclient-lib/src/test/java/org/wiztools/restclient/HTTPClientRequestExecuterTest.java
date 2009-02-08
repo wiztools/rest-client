@@ -127,4 +127,19 @@ public class HTTPClientRequestExecuterTest {
         executer.execute(request, view);
     }
 
+    @Test
+    public void testMultipleExecution() throws Exception{
+        try{
+            RequestBean request = getRequestBean();
+            RequestExecuter executer = Implementation.of(RequestExecuter.class);
+            View view = new ViewAdapter();
+            executer.execute(request, view);
+            // Second execution should throw exception:
+            executer.execute(request, view);
+            fail("Multiple execution not allowed for same RequestExecuter object!");
+        }
+        catch(MultipleRequestInSameRequestExecuterException ex){
+            // This is the success path.
+        }
+    }
 }
