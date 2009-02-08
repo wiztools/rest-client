@@ -34,8 +34,8 @@ public interface RequestExecuter {
      *
      * ...
      * 
-     * final Request = ...;
-     * final View = ...;
+     * final Request request = ...;
+     * final View view = ...;
      * final RequestExecuter executer = Implementation.of(RequestExecuter.class);
      * Thread t = new Thread(){
      *      @Override

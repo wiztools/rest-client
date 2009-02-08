@@ -71,7 +71,23 @@ class HTTPClientRequestExecuter implements RequestExecuter {
     private boolean interruptedShutdown = false;
     private boolean isRequestCompleted = false;
 
+    /*
+     * This instance variable is for avoiding multiple execution of requests
+     * on the same RequestExecuter object. We know it is not the perfect solution
+     * (as it does not synchronize access to shared variable), but is
+     * fine for finding this type of error during development phase.
+     */
+    private boolean isRequestStarted = false;
+
     public void execute(Request request, View... views) {
+        // Verify if this is the first call to this object:
+        if(isRequestStarted){
+            throw new MultipleRequestInSameRequestExecuterException(
+                    "A RequestExecuter object can be used only once!");
+        }
+        isRequestStarted = true;
+
+        // Proceed with execution:
         for(View view: views){
             view.doStart(request);
         }
