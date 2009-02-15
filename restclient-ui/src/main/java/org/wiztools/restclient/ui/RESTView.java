@@ -873,7 +873,7 @@ class RESTView extends JPanel implements View {
     
     Response getResponseFromUI(){
         ResponseBean response = new ResponseBean();
-        response.setResponseBody(se_response.getText());
+        response.setResponseBody(unindentedResponseBody);
         String statusLine = jtf_res_status.getText();
         response.setStatusLine(statusLine);
         response.setStatusCode(Util.getStatusCodeFromStatusLine(statusLine));
@@ -1420,7 +1420,6 @@ class RESTView extends JPanel implements View {
         unindentedResponseBody = response.getResponseBody();
         IGlobalOptions options = Implementation.of(IGlobalOptions.class);
         String indentStr = options.getProperty("response.body.indent");
-        LOG.info("\n\n\n\n indentStr: " + indentStr);
         boolean indent = indentStr==null? false: (indentStr.equals("true")? true: false);
         if(indent){
             boolean isXml = false;
@@ -1432,7 +1431,7 @@ class RESTView extends JPanel implements View {
                     if("application/xml".equals(contentType) || "text/xml".equals(contentType)){
                         isXml = true;
                     }
-                    else if("".endsWith(contentType)){
+                    else if("application/json".endsWith(contentType)){
                         isJson = true;
                     }
                     break;
