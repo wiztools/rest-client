@@ -28,7 +28,7 @@ public class Implementation {
             boolean isSingleton = false;
             try{
                 String isSingletonStr = rb.getString(className + ".singleton");
-                isSingleton = Boolean.getBoolean(isSingletonStr);
+                isSingleton = Boolean.parseBoolean(isSingletonStr);
             }
             catch(MissingResourceException ex){
                 LOG.finest("Singleton property not set for class: " + className);
@@ -40,9 +40,10 @@ public class Implementation {
             if(o == null){
                 o = (T) Class.forName(implClassStr).newInstance();
                 ht.put(c.getName(), o);
+                LOG.finest("Class created, and put into cache: " + o.getClass().getName());
             }
             else{
-                LOG.finest("Object already available in cache: " + c.getName());
+                LOG.finest("Object already available in cache: " + className);
             }
             return o;
         }

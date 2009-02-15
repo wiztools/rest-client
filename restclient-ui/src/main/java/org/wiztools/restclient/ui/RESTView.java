@@ -154,6 +154,9 @@ class RESTView extends JPanel implements View {
 
     // RequestThread
     private Thread requestThread;
+
+    // This is the "pure" response body:
+    private String unindentedResponseBody;
     
     // Cache the last request and response
     private Request lastRequest;
@@ -1106,6 +1109,7 @@ class RESTView extends JPanel implements View {
     }
     
     void clearUIResponse(){
+        unindentedResponseBody = null;
         jtf_res_status.setText("");
         se_response.setText("");
         ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
@@ -1412,7 +1416,64 @@ class RESTView extends JPanel implements View {
 
         // Response body
         Dimension d = jsp_res_body.getPreferredSize();
-        se_response.setText(response.getResponseBody());
+        //// Set the unindentedResponseBody:
+        unindentedResponseBody = response.getResponseBody();
+        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        String indentStr = options.getProperty("response.body.indent");
+        LOG.info("\n\n\n\n indentStr: " + indentStr);
+        boolean indent = indentStr==null? false: (indentStr.equals("true")? true: false);
+        if(indent){
+            boolean isXml = false;
+            boolean isJson = false;
+            Map<String, String> headers = response.getHeaders();
+            for(String key: headers.keySet()){
+                if("content-type".equalsIgnoreCase(key)){
+                    String contentType = headers.get(key);
+                    if("application/xml".equals(contentType) || "text/xml".equals(contentType)){
+                        isXml = true;
+                    }
+                    else if("".endsWith(contentType)){
+                        isJson = true;
+                    }
+                    break;
+                }
+            }
+            final String responseBody = response.getResponseBody();
+            if(isXml){
+                try{
+                    String indentedResponseBody = XMLUtil.indentXML(responseBody);
+                    se_response.setText(indentedResponseBody);
+                }
+                catch(IOException ex){
+                    setStatusMessage("XML indentation failed.");
+                    LOG.warning(ex.getMessage());
+                    se_response.setText(responseBody);
+                }
+                catch(XMLException ex){
+                    setStatusMessage("XML indentation failed.");
+                    LOG.warning(ex.getMessage());
+                    se_response.setText(responseBody);
+                }
+            }
+            else if(isJson){
+                try{
+                    String indentedResponseBody = JSONUtil.indentJSON(responseBody);
+                    se_response.setText(indentedResponseBody);
+                }
+                catch(JSONUtil.JSONParseException ex){
+                    setStatusMessage("JSON indentation failed.");
+                    LOG.warning(ex.getMessage());
+                    se_response.setText(responseBody);
+                }
+            }
+            else{
+                setStatusMessage("Response body neither XML nor JSON. No indentation.");
+                se_response.setText(responseBody);
+            }
+        }
+        else{
+            se_response.setText(response.getResponseBody());
+        }
         jsp_res_body.setPreferredSize(d);
         se_response.setCaretPosition(0);
 
