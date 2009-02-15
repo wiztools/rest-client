@@ -53,7 +53,7 @@ class OptionsDialog extends EscapableDialog {
         for(String s: arr){
             String[] arrt = s.split(":");
             try {
-                LOG.info("OptionsPanel adding: " + arrt[1]);
+                LOG.finest("OptionsPanel adding: " + arrt[1]);
                 panels.put(arrt[0], (IOptionsPanel) Class.forName(arrt[1]).newInstance());
             } catch (ClassNotFoundException ex) {
                 LOG.log(Level.SEVERE, null, ex);

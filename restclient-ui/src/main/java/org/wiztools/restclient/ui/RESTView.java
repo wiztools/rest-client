@@ -155,7 +155,11 @@ class RESTView extends JPanel implements View {
     // RequestThread
     private Thread requestThread;
 
-    // This is the "pure" response body:
+    /*
+     * unindentedResponseBody holds the unindented version of the response body
+     * text which is shown in UI currently. This variable should be carefully
+     * be dealt with, as wrong handling could make this value stale.
+     */
     private String unindentedResponseBody;
     
     // Cache the last request and response

@@ -22,6 +22,7 @@ class OptionsEtcPanel extends JPanel implements IOptionsPanel{
     OptionsEtcPanel(){
         JPanel jp = this;
         jp.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jcb.setMnemonic('a');
         jp.add(jcb);
     }
 
