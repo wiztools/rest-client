@@ -52,11 +52,9 @@ class OptionsEtcPanel extends JPanel implements IOptionsPanel{
     public boolean saveOptions() {
         IGlobalOptions options = Implementation.of(IGlobalOptions.class);
         if(jcb.isSelected()){
-            LOG.info("INDENT_KEY to: " + String.valueOf(true));
             options.setProperty(INDENT_KEY, String.valueOf(true));
         }
         else{
-            LOG.info("INDENT_KEY to: " + String.valueOf(false));
             options.setProperty(INDENT_KEY, String.valueOf(false));
         }
         return true;
