@@ -22,6 +22,8 @@ import org.wiztools.restclient.TestResult;
  * @author NEWUSER
  */
 class TestResultPanel extends JPanel {
+
+    private TestResult lastTestResult;
     
     private JLabel jl_runCount = new JLabel("");
     private JLabel jl_failureCount = new JLabel("");
@@ -46,7 +48,7 @@ class TestResultPanel extends JPanel {
     
     private static final Font BOLD_FONT = new Font(Font.DIALOG, Font.PLAIN, 18);
     
-    public TestResultPanel(){
+    TestResultPanel(){
         super();
         
         init();
@@ -146,7 +148,7 @@ class TestResultPanel extends JPanel {
         jp.add(jtp, BorderLayout.CENTER);
     }
     
-    public void clear(){
+    void clear(){
         jl_icon.setIcon(ICON_DEFAULT);
         jl_runCount.setText("");
         jl_failureCount.setText("");
@@ -154,10 +156,11 @@ class TestResultPanel extends JPanel {
         jl_status.setText("");
     }
     
-    public void setTestResult(TestResult result){
+    void setTestResult(TestResult result){
         if(result == null){
             return;
         }
+        lastTestResult = result;
         int runCount = result.getRunCount();
         int failureCount = result.getFailureCount();
         int errorCount = result.getErrorCount();
@@ -184,6 +187,10 @@ class TestResultPanel extends JPanel {
         jta_trace.setText(result.toString());
         jta_trace.setCaretPosition(0);
         jsp_jta_trace.setPreferredSize(d);
+    }
+
+    TestResult getTestResult(){
+        return lastTestResult;
     }
     
     class FailureTableModel extends AbstractTableModel{
