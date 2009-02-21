@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.wiztools.restclient.Implementation;
@@ -84,10 +85,10 @@ public class RESTClientTask extends Task {
             log("============================================================");
         }
         catch(IOException ex){
-            log(ex, runCount);
+            log(ex, Project.MSG_ERR);
         }
         catch(XMLException ex){
-            log(ex, runCount);
+            log(ex, Project.MSG_ERR);
         }
     }
 
@@ -121,10 +122,10 @@ public class RESTClientTask extends Task {
                 XMLUtil.writeResponseXML(response, responseFile);
             }
             catch(IOException ex){
-                
+                log(ex, Project.MSG_ERR);
             }
             catch(XMLException ex){
-                
+                log(ex, Project.MSG_ERR);
             }
         }
 
@@ -137,7 +138,7 @@ public class RESTClientTask extends Task {
         }
 
         public void doError(String error) {
-            log(error);
+            log(error, Project.MSG_WARN);
         }
     }
 }
