@@ -29,7 +29,7 @@ public class RESTClientTask extends Task {
      * test output files need to be generated.
      */
     private String destdir;
-    private List<FileSet> fileSetList = new ArrayList<FileSet>();
+    private List<FileSet> filesets = new ArrayList<FileSet>();
 
     private int runCount;
     private int failureCount;
@@ -61,7 +61,7 @@ public class RESTClientTask extends Task {
 
         // Execute request for each file:
         try{
-            for(FileSet fileSet: fileSetList){
+            for(FileSet fileSet: filesets){
                 DirectoryScanner ds = fileSet.getDirectoryScanner(getProject());
                 File dir = fileSet.getDir(getProject());
                 String[] includedFiles = ds.getIncludedFiles();
@@ -92,8 +92,8 @@ public class RESTClientTask extends Task {
         }
     }
 
-    public void addConfiguredFileSet(FileSet fileSet){
-        fileSetList.add(fileSet);
+    public void addConfiguredFileset(FileSet fileset){
+        filesets.add(fileset);
     }
 
     private class RESTClientAntView implements View{
