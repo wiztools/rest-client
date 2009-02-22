@@ -59,6 +59,8 @@ public class RESTClientTask extends Task {
             throw new BuildException("`destdir' attribute points not to a directory.");
         }
 
+        log("Responses will be stored in this directory: " + responseDir.getAbsolutePath(), Project.MSG_INFO);
+
         // Execute request for each file:
         try{
             for(FileSet fileSet: filesets){
@@ -77,12 +79,12 @@ public class RESTClientTask extends Task {
                 }
             }
             // Print the summary of test results:
-            log("============================================================");
-            log("**WizTools.org RESTClient Test Results**\n");
-            log("Total tests run:    " + runCount);
-            log("Total tests failed: " + failureCount);
-            log("Total test errors:  " + errorCount);
-            log("============================================================");
+            log("============================================================", Project.MSG_INFO);
+            log("**WizTools.org RESTClient Test Results**\n", Project.MSG_INFO);
+            log("Total tests run:    " + runCount, Project.MSG_INFO);
+            log("Total tests failed: " + failureCount, Project.MSG_INFO);
+            log("Total test errors:  " + errorCount, Project.MSG_INFO);
+            log("============================================================", Project.MSG_INFO);
         }
         catch(IOException ex){
             log(ex, Project.MSG_ERR);
@@ -107,7 +109,7 @@ public class RESTClientTask extends Task {
         }
 
         public void doStart(Request request) {
-            log("RESTClient starting: " + requestFile.getAbsolutePath());
+            log("RESTClient starting: " + requestFile.getAbsolutePath(), Project.MSG_INFO);
         }
 
         public void doResponse(Response response) {
@@ -134,7 +136,7 @@ public class RESTClientTask extends Task {
         }
 
         public void doEnd() {
-            log("RESTClient ended: " + requestFile.getAbsolutePath());
+            log("RESTClient ended: " + requestFile.getAbsolutePath(), Project.MSG_INFO);
         }
 
         public void doError(String error) {
