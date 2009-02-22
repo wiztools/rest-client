@@ -43,6 +43,16 @@ public class RESTClientTask extends Task {
         this.destdir = destdir;
     }
 
+    private static String getResponseFileName(String requestFileName){
+        if(requestFileName.endsWith(".rcq")){
+            return requestFileName.replaceAll(".rcq", ".rcs");
+        }
+        else if(requestFileName.endsWith(".xml")){
+            return requestFileName.replaceAll(".xml", ".rcs");
+        }
+        return requestFileName + ".rcs";
+    }
+
     @Override
     public void execute(){
         if(destdir == null){
@@ -59,7 +69,8 @@ public class RESTClientTask extends Task {
             throw new BuildException("`destdir' attribute points not to a directory.");
         }
 
-        log("Responses will be stored in this directory: " + responseDir.getAbsolutePath(), Project.MSG_INFO);
+        log("Responses will be stored in this directory: " + responseDir.getAbsolutePath(),
+                Project.MSG_INFO);
 
         // Execute request for each file:
         try{
@@ -73,7 +84,9 @@ public class RESTClientTask extends Task {
                     File f = new File(dir, filePath);
 
                     Request request = XMLUtil.getRequestFromXMLFile(f);
-                    View view = new RESTClientAntView(f, new File(responseDir, f.getName()));
+                    View view = new RESTClientAntView(
+                            f,
+                            new File(responseDir, getResponseFileName(f.getName())));
                     RequestExecuter executer = Implementation.of(RequestExecuter.class);
                     executer.execute(request, view);
                 }

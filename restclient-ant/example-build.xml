@@ -1,0 +1,9 @@
+<project name="test-restclient" default="run.restclient">
+  <taskdef name="restclient" classname="org.wiztools.restclient.ant.RESTClientTask"/>
+
+  <target name="run.restclient">
+    <restclient destdir="${java.io.tmpdir}">
+      <fileset dir="src/test/resources" includes="**/*.rcq"/>
+    </restclient>
+  </target>
+</project>

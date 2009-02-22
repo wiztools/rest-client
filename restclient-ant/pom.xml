@@ -30,9 +30,7 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <archive>
-                        <manifest>
-                            <mainClass>org.wiztools.restclient.ant.Main</mainClass>
-                        </manifest>
+                        
                     </archive>
                 </configuration>
                 <executions>
