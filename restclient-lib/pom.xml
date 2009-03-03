@@ -66,8 +66,8 @@
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all-minimal</artifactId>
-            <version>1.5.6</version>
+            <artifactId>groovy</artifactId>
+            <version>1.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.wiztools.restclient</groupId>

@@ -1430,12 +1430,18 @@ class RESTView extends JPanel implements View {
             Map<String, String> headers = response.getHeaders();
             for(String key: headers.keySet()){
                 if("content-type".equalsIgnoreCase(key)){
-                    String contentType = headers.get(key);
-                    if("application/xml".equals(contentType) || "text/xml".equals(contentType)){
-                        isXml = true;
-                    }
-                    else if("application/json".endsWith(contentType)){
-                        isJson = true;
+                    final String contentType = headers.get(key);
+                    // We are using startsWith instead of equals
+                    // because to match headers like:
+                    // Content-type: text/plain; charset=UTF-8
+                    if(contentType != null){
+                        if(contentType.startsWith("application/xml")
+                                || contentType.startsWith("text/xml")){
+                            isXml = true;
+                        }
+                        else if(contentType.startsWith("application/json")){
+                            isJson = true;
+                        }
                     }
                     break;
                 }
