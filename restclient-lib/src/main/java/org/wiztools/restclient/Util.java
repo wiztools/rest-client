@@ -36,9 +36,10 @@ import org.wiztools.restclient.XMLUtil;
  * @author schandran
  */
 public final class Util {
-    
+
     // private constructor so that no instance from outside can be created
-    private Util(){}
+    private Util() {
+    }
 
     public static boolean isStrEmpty(final String str) {
         if (str == null || "".equals(str.trim())) {
@@ -68,9 +69,22 @@ public final class Util {
         sb.append("</ul></html>");
         return sb.toString();
     }
-    
     private static final String ENCODE = "UTF-8";
     private static final Charset UTF8CHARSET = Charset.forName(ENCODE);
+
+    private static CharBuffer decodeHelper(byte[] byteArray, int numberOfBytes) throws IOException {
+        CharsetDecoder decoder = UTF8CHARSET.newDecoder();
+        CharBuffer charBuffer = null;
+        try {
+            charBuffer = decoder.decode(ByteBuffer.wrap(byteArray, 0,
+                    numberOfBytes));
+        } catch (MalformedInputException ex) {
+            charBuffer = null;
+        }
+        return charBuffer;
+
+
+    }
 
     public static String inputStream2String(final InputStream in) throws IOException {
         if (in == null) {
@@ -78,22 +92,58 @@ public final class Util {
         }
         StringBuilder out = new StringBuilder();
         byte[] b = new byte[4096];
+        byte[] savedBytes = new byte[1];
+        boolean hasSavedBytes = false;
         CharsetDecoder decoder = UTF8CHARSET.newDecoder();
         for (int n; (n = in.read(b)) != -1;) {
-            CharBuffer charBuffer = null;
-            try{
-                charBuffer = decoder.decode(ByteBuffer.wrap(b, 0, n));
+            if (hasSavedBytes) {
+                byte[] bTmp = new byte[savedBytes.length + b.length];
+                System.arraycopy(savedBytes, 0, bTmp, 0,
+                        savedBytes.length);
+                System.arraycopy(b, 0, bTmp, savedBytes.length, b.length);
+                b = bTmp;
+                hasSavedBytes = false;
+                n = n + savedBytes.length;
             }
-            catch(MalformedInputException ex){
-                throw new IOException(
-                        "File not in supported encoding (" + ENCODE + ")", ex);
+
+            CharBuffer charBuffer = decodeHelper(b, n);
+            if (charBuffer == null) {
+                int nrOfChars = 0;
+                while (charBuffer == null) {
+                    nrOfChars++;
+                    charBuffer = decodeHelper(b, n - nrOfChars);
+                    if (nrOfChars > 10 && nrOfChars < n) {
+                        try {
+                            charBuffer = decoder.decode(ByteBuffer.wrap(b,
+                                    0, n));
+                        } catch (MalformedInputException ex) {
+                            throw new IOException(
+                                    "File not in supported encoding (" +
+                                    ENCODE + ")", ex);
+                        }
+                    }
+                }
+                savedBytes = new byte[nrOfChars];
+                hasSavedBytes = true;
+                for (int i = 0; i < nrOfChars; i++) {
+                    savedBytes[i] = b[n - nrOfChars + i];
+                }
             }
+
             charBuffer.rewind(); // Bring the buffer's pointer to 0
             out.append(charBuffer.toString());
         }
+        if (hasSavedBytes) {
+            try {
+                CharBuffer charBuffer = decoder.decode(ByteBuffer.wrap(savedBytes, 0, savedBytes.length));
+            } catch (MalformedInputException ex) {
+                throw new IOException(
+                        "File not in supported encoding (" + ENCODE + ")",
+                        ex);
+            }
+        }
         return out.toString();
     }
-    
 
     public static String parameterEncode(Map<String, String> params) {
         StringBuilder sb = new StringBuilder();
@@ -117,7 +167,7 @@ public final class Util {
             is = new FileInputStream(f);
             return inputStream2String(is);
         } finally {
-            if(is != null){
+            if (is != null) {
                 is.close();
             }
         }
@@ -133,9 +183,8 @@ public final class Util {
         } catch (Exception e) {
             // Do nothing!
             e.printStackTrace();
-        }
-        finally{
-            if(uc != null){
+        } finally {
+            if (uc != null) {
                 // No method like uc.close() !!
             }
         }
@@ -155,8 +204,8 @@ public final class Util {
         byte[] buf = new byte[BUFF_SIZE];
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile));
         boolean isSuccess = false;
-        try{
-            for (String entryName: files.keySet()) {
+        try {
+            for (String entryName : files.keySet()) {
                 File entryFile = files.get(entryName);
                 FileInputStream fis = new FileInputStream(entryFile);
                 zos.putNextEntry(new ZipEntry(entryName));
@@ -168,31 +217,28 @@ public final class Util {
                 fis.close();
             }
             isSuccess = true;
-        }
-        finally{
+        } finally {
             IOException ioe = null;
-            if(zos != null){
-                try{
+            if (zos != null) {
+                try {
                     zos.close();
-                }
-                catch(IOException ex){
+                } catch (IOException ex) {
                     isSuccess = false;
                     ioe = ex;
                 }
             }
-            if(!isSuccess){ // Failed: delete half-written zip file
+            if (!isSuccess) { // Failed: delete half-written zip file
                 zipFile.delete();
             }
             requestFile.delete();
             responseFile.delete();
-            if(ioe != null){
+            if (ioe != null) {
                 throw ioe;
             }
         }
     }
-
     private static final int BUFF_SIZE = 1024 * 4;
-    
+
     public static ReqResBean getReqResArchive(File zipFile)
             throws FileNotFoundException, IOException, XMLException {
         ReqResBean encpBean = new ReqResBean();
@@ -200,14 +246,14 @@ public final class Util {
         FileInputStream fis = new FileInputStream(zipFile);
         ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
         ZipEntry entry;
-        try{
+        try {
             boolean isReqRead = false;
             boolean isResRead = false;
             while ((entry = zis.getNextEntry()) != null) {
                 int count;
                 byte data[] = new byte[BUFF_SIZE];
                 File tmpFile = File.createTempFile(entry.getName(), "");
-                try{
+                try {
                     FileOutputStream fos = new FileOutputStream(tmpFile);
                     BufferedOutputStream dest = new BufferedOutputStream(fos, BUFF_SIZE);
                     while ((count = zis.read(data, 0, BUFF_SIZE)) != -1) {
@@ -220,22 +266,19 @@ public final class Util {
                         Request reqBean = XMLUtil.getRequestFromXMLFile(tmpFile);
                         encpBean.setRequestBean(reqBean);
                         isReqRead = true;
-                    }
-                    else if(entry.getName().equals("response.rcs")){
+                    } else if (entry.getName().equals("response.rcs")) {
                         Response resBean = XMLUtil.getResponseFromXMLFile(tmpFile);
                         encpBean.setResponseBean(resBean);
                         isResRead = true;
                     }
-                }
-                finally{
+                } finally {
                     tmpFile.delete();
                 }
             }
-            if((!isReqRead) || (!isResRead)){
+            if ((!isReqRead) || (!isResRead)) {
                 throw new IOException("Archive does not have request.rcq/response.rcs!");
             }
-        }
-        finally{
+        } finally {
             zis.close();
         }
         return encpBean;
@@ -246,12 +289,12 @@ public final class Util {
      * @param statusLine
      * @return The status code from HTTP response status line.
      */
-    public static final int getStatusCodeFromStatusLine(final String statusLine){
+    public static final int getStatusCodeFromStatusLine(final String statusLine) {
         int retVal = -1;
         final String STATUS_PATTERN = "[^\\s]+\\s([0-9]{3})\\s.*";
         Pattern p = Pattern.compile(STATUS_PATTERN);
         Matcher m = p.matcher(statusLine);
-        if(m.matches()){
+        if (m.matches()) {
             retVal = Integer.parseInt(m.group(1));
         }
         return retVal;
@@ -263,8 +306,8 @@ public final class Util {
      * @param charset
      * @return The formatted content-type and charset.
      */
-    public static final String getFormattedContentType(final String contentType, final String charset){
-        String charsetFormatted = Util.isStrEmpty(charset)? "": "; charset=" + charset;
+    public static final String getFormattedContentType(final String contentType, final String charset) {
+        String charsetFormatted = Util.isStrEmpty(charset) ? "" : "; charset=" + charset;
         return contentType + charsetFormatted;
     }
 }
