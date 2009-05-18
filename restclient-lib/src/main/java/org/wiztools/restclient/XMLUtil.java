@@ -396,7 +396,7 @@ public final class XMLUtil {
                 }
 
                 //Errors
-                if (testResult.getFailureCount() > 0) {
+                if (testResult.getErrorCount() > 0) {
                     Element e_errors = new Element("errors");
                     List<TestFailureResult> l = testResult.getErrors();
                     for (TestFailureResult b : l) {
