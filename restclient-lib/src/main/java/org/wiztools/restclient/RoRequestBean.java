@@ -24,6 +24,11 @@ public class RoRequestBean implements Request {
     private char[] sslTrustStorePassword;
     SSLHostnameVerifier sslHostNameVerifier;
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
+    private final boolean autoRedirect;
+
+    public boolean isAutoRedirect(){
+        return autoRedirect;
+    }
 
     public HTTPVersion getHttpVersion() {
         return httpVersion;
@@ -108,6 +113,7 @@ public class RoRequestBean implements Request {
         sslTrustStorePassword = request.getSslTrustStorePassword();
         httpVersion = request.getHttpVersion();
         sslHostNameVerifier = request.getSslHostNameVerifier();
+        autoRedirect = request.isAutoRedirect();
     }
 
     public SSLHostnameVerifier getSslHostNameVerifier() {

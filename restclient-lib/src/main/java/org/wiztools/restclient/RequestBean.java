@@ -29,6 +29,15 @@ public final class RequestBean implements Request{
     private char[] sslTrustStorePassword;
     private SSLHostnameVerifier sslHostNameVerifier;
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
+    private boolean autoRedirect;
+
+    public boolean isAutoRedirect(){
+        return autoRedirect;
+    }
+
+    public void setAutoRedirect(boolean autoRedirect){
+        this.autoRedirect = autoRedirect;
+    }
 
     public HTTPVersion getHttpVersion() {
         return httpVersion;
@@ -177,6 +186,7 @@ public final class RequestBean implements Request{
         cloned.setMethod(method);
         cloned.setTestScript(testScript);
         cloned.setUrl(url);
+        cloned.setAutoRedirect(autoRedirect);
         return cloned;
     }
 
@@ -195,6 +205,7 @@ public final class RequestBean implements Request{
             isEqual = isEqual && (this.authMethods == null? bean.getAuthMethods() == null: this.authMethods.equals(bean.getAuthMethods()));
             isEqual = isEqual && (this.authPassword == null? bean.getAuthPassword() == null: Arrays.equals(this.authPassword, bean.getAuthPassword()));
             isEqual = isEqual && (this.authPreemptive == bean.isAuthPreemptive());
+            isEqual = isEqual && (this.autoRedirect == bean.isAutoRedirect());
             isEqual = isEqual && (this.authRealm == null? bean.getAuthRealm() == null: this.authRealm.equals(bean.getAuthRealm()));
             isEqual = isEqual && (this.authUsername == null? bean.getAuthUsername() == null: this.authUsername.equals(bean.getAuthUsername()));
             isEqual = isEqual && (this.sslTrustStore == null? bean.getSslTrustStore() == null: this.sslTrustStore.equals(bean.getSslTrustStore()));
@@ -215,6 +226,7 @@ public final class RequestBean implements Request{
         hash = 61 * hash + (this.url != null ? this.url.hashCode() : 0);
         hash = 61 * hash + (this.method != null ? this.method.hashCode() : 0);
         hash = 61 * hash + (this.authPreemptive ? 1 : 0);
+        hash = 61 * hash + (this.autoRedirect ? 1 : 0);
         hash = 61 * hash + (this.authMethods != null ? this.authMethods.hashCode() : 0);
         hash = 61 * hash + (this.authHost != null ? this.authHost.hashCode() : 0);
         hash = 61 * hash + (this.authRealm != null ? this.authRealm.hashCode() : 0);
@@ -248,7 +260,8 @@ public final class RequestBean implements Request{
         sb.append(sslTrustStorePassword==null?"null": new String(sslTrustStorePassword).replaceAll(".", "X")).append(", ");
         sb.append(sslHostNameVerifier).append(", ");
         sb.append(httpVersion).append(", ");
-        sb.append(testScript);
+        sb.append(testScript).append(", ");
+        sb.append(autoRedirect);
         sb.append("]");
         return sb.toString();
     }

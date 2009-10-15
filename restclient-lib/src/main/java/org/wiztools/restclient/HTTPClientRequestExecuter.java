@@ -266,15 +266,13 @@ class HTTPClientRequestExecuter implements RequestExecuter {
 
             // How to handle retries and redirects:
             httpclient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler());
-            httpclient.setRedirectHandler(new DefaultRedirectHandler(){
-                @Override
-                public URI getLocationURI(HttpResponse response, HttpContext context) throws ProtocolException {
-                    URI uri = super.getLocationURI(response, context);
-                    LOG.info("Redirect response status: " + response.getStatusLine());
-                    LOG.info("Redirect: " + uri);
-                    return uri;
-                }
-            });
+
+            if(request.isAutoRedirect()){
+                httpclient.setRedirectHandler(new LoggingRedirectHandler());
+            }
+            else{ // Do not redirect!
+                httpclient.setRedirectHandler(new NoRedirectRedirectHandler());
+            }
 
             // Now Execute:
             long startTime = System.currentTimeMillis();
@@ -396,4 +394,25 @@ class HTTPClientRequestExecuter implements RequestExecuter {
             } // if ends
         } // process() method ends
     } // Inner class ends
+
+    class LoggingRedirectHandler extends DefaultRedirectHandler{
+
+        @Override
+        public URI getLocationURI(HttpResponse response, HttpContext context) throws ProtocolException {
+            URI uri = super.getLocationURI(response, context);
+            LOG.info("Redirect response status: " + response.getStatusLine());
+            LOG.info("Redirect: " + uri);
+            return uri;
+        }
+        
+    }
+
+    class NoRedirectRedirectHandler extends LoggingRedirectHandler{
+
+        @Override
+        public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
+            return false; // Always return false!
+        }
+
+    }
 }

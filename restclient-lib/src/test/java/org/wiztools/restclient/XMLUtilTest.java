@@ -47,6 +47,7 @@ public class XMLUtilTest {
         expResult.setAuthRealm("realm");
         expResult.setAuthUsername("username");
         expResult.setAuthPassword("password".toCharArray());
+        expResult.setAutoRedirect(true);
         return expResult;
     }
 

@@ -74,6 +74,11 @@ public final class XMLUtil {
             reqChildSubElement.appendChild(bean.getHttpVersion().versionNumber());
             reqChildElement.appendChild(reqChildSubElement);
 
+            // Redirect
+            reqChildSubElement = new Element("auto-redirect");
+            reqChildSubElement.appendChild(Boolean.toString(bean.isAutoRedirect()));
+            reqChildElement.appendChild(reqChildSubElement);
+
             // creating the URL child element 
             reqChildSubElement = new Element("URL");
             reqChildSubElement.appendChild(bean.getUrl().toString());
@@ -256,52 +261,70 @@ public final class XMLUtil {
                 String t = tNode.getValue();
                 HTTPVersion httpVersion = "1.1".equals(t) ? HTTPVersion.HTTP_1_1 : HTTPVersion.HTTP_1_0;
                 requestBean.setHttpVersion(httpVersion);
-            } else if ("URL".equals(nodeName)) {
+            }
+            else if("auto-redirect".equals(nodeName)){
+                requestBean.setAutoRedirect(Boolean.valueOf(tNode.getValue()));
+            }
+            else if ("URL".equals(nodeName)) {
                 URL url = new URL(tNode.getValue());
                 requestBean.setUrl(url);
-            } else if ("method".equals(nodeName)) {
+            }
+            else if ("method".equals(nodeName)) {
                 requestBean.setMethod(HTTPMethod.get(tNode.getValue()));
-            } else if ("auth-methods".equals(nodeName)) {
+            }
+            else if ("auth-methods".equals(nodeName)) {
                 String[] authenticationMethods = tNode.getValue().split(",");
                 for (int j = 0; j < authenticationMethods.length; j++) {
                     requestBean.addAuthMethod(HTTPAuthMethod.get(authenticationMethods[j]));
                 }
-            } else if ("auth-preemptive".equals(nodeName)) {
+            }
+            else if ("auth-preemptive".equals(nodeName)) {
                 if (tNode.getValue().equals("true")) {
                     requestBean.setAuthPreemptive(true);
                 } else {
                     requestBean.setAuthPreemptive(false);
                 }
-            } else if ("auth-host".equals(nodeName)) {
+            }
+            else if ("auth-host".equals(nodeName)) {
                 requestBean.setAuthHost(tNode.getValue());
-            } else if ("auth-realm".equals(nodeName)) {
+            }
+            else if ("auth-realm".equals(nodeName)) {
                 requestBean.setAuthRealm(tNode.getValue());
-            } else if ("auth-username".equals(nodeName)) {
+            }
+            else if ("auth-username".equals(nodeName)) {
                 requestBean.setAuthUsername(tNode.getValue());
-            } else if ("auth-password".equals(nodeName)) {
+            }
+            else if ("auth-password".equals(nodeName)) {
                 String password = (String) Base64.decodeToObject(tNode.getValue());
                 requestBean.setAuthPassword(password.toCharArray());
-            } else if ("ssl-truststore".equals(nodeName)) {
+            }
+            else if ("ssl-truststore".equals(nodeName)) {
                 String sslTrustStore = tNode.getValue();
                 requestBean.setSslTrustStore(sslTrustStore);
-            } else if ("ssl-truststore-password".equals(nodeName)) {
+            }
+            else if ("ssl-truststore-password".equals(nodeName)) {
                 String sslTrustStorePassword = (String) Base64.decodeToObject(tNode.getValue());
                 requestBean.setSslTrustStorePassword(sslTrustStorePassword.toCharArray());
-            } else if("ssl-hostname-verifier".equals(nodeName)){
+            }
+            else if("ssl-hostname-verifier".equals(nodeName)){
                 String sslHostnameVerifierStr = tNode.getValue();
                 SSLHostnameVerifier sslHostnameVerifier = SSLHostnameVerifier.valueOf(sslHostnameVerifierStr);
                 requestBean.setSslHostNameVerifier(sslHostnameVerifier);
-            } else if ("headers".equals(nodeName)) {
+            }
+            else if ("headers".equals(nodeName)) {
                 Map<String, String> m = getHeadersFromHeaderNode(tNode);
                 for (String key : m.keySet()) {
                     requestBean.addHeader(key, m.get(key));
                 }
-            } else if ("body".equals(nodeName)) {
+            }
+            else if ("body".equals(nodeName)) {
                 requestBean.setBody(new ReqEntityBean(tNode.getValue(), tNode.getAttributeValue("content-type"),
                         tNode.getAttributeValue("charset")));
-            } else if ("test-script".equals(nodeName)) {
+            }
+            else if ("test-script".equals(nodeName)) {
                 requestBean.setTestScript(tNode.getValue());
-            } else {
+            }
+            else {
                 throw new XMLException("Invalid element encountered: <" + nodeName + ">");
             }
         }
