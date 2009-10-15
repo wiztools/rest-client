@@ -36,7 +36,7 @@ public final class XMLUtil {
     }
     private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
     private static final String[] VERSIONS = new String[]{
-        "2.0", "2.1", "2.2a1", "2.2a2", "2.2", "2.3b1", RCConstants.VERSION
+        "2.0", "2.1", "2.2a1", "2.2a2", "2.2", "2.3b1", "2.3", RCConstants.VERSION
     };
     public static final String XML_MIME = "application/xml";
     

@@ -126,6 +126,9 @@ class RESTView extends JPanel implements View {
     
     // HTTP Version Combo box
     JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
+
+    // Auto-redirect switch:
+    JCheckBox jcb_auto_redirect = new JCheckBox("Auto-redirect");
     
     // Response
     private JScrollPane jsp_res_body = new JScrollPane();
@@ -466,8 +469,23 @@ class RESTView extends JPanel implements View {
         // Etc panel
         JPanel jp_etc = new JPanel();
         jp_etc.setLayout(new FlowLayout(FlowLayout.LEFT));
-        jp_etc.add(new JLabel("HTTP Version: "));
-        jp_etc.add(jcb_http_version);
+        JPanel jp_etc_grid = new JPanel(new GridLayout(2, 1));
+        {
+            // Add HTTP Version
+            JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            jp.add(new JLabel("HTTP Version: "));
+            jp.add(jcb_http_version);
+            jp_etc_grid.add(jp);
+        }
+        {
+            // Add auto-redirect:
+            JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            jcb_auto_redirect.setSelected(true); // default true for b/ward compatibility
+            jcb_auto_redirect.setToolTipText("Auto redirects to redirect-URL when response status 3XX encountered");
+            jp.add(jcb_auto_redirect);
+            jp_etc_grid.add(jp);
+        }
+        jp_etc.add(jp_etc_grid);
         jtp.add("Etc.", jp_etc);
         
         // Test script panel
@@ -989,6 +1007,9 @@ class RESTView extends JPanel implements View {
         
         // HTTP version
         request.setHttpVersion((HTTPVersion)jcb_http_version.getSelectedItem());
+
+        // Auto-redirect
+        request.setAutoRedirect(jcb_auto_redirect.isSelected());
         
         // Test script specific
         String testScript = se_test_script.getText();
@@ -1582,6 +1603,9 @@ class RESTView extends JPanel implements View {
         else if(request.getHttpVersion() == HTTPVersion.HTTP_1_0){
             jcb_http_version.setSelectedItem(HTTPVersion.HTTP_1_0);
         }
+
+        // Auto-redirect:
+        jcb_auto_redirect.setSelected(request.isAutoRedirect());
 
         // Test script
         Dimension d = jsp_test_script.getPreferredSize();
