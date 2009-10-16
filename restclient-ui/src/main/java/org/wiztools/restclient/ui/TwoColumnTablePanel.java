@@ -23,6 +23,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import org.wiztools.commons.StringUtil;
 
 /**
  *
@@ -168,11 +169,11 @@ final class TwoColumnTablePanel extends JPanel {
                 String key = jtf_key.getText();
                 String value = jtf_value.getText();
                 List<String> errors = null;
-                if(Util.isStrEmpty(key)){
+                if(StringUtil.isStrEmpty(key)){
                     errors = new ArrayList<String>();
                     errors.add("Key is empty.");
                 }
-                if(Util.isStrEmpty(value)){
+                if(StringUtil.isStrEmpty(value)){
                     errors = errors==null?new ArrayList<String>():errors;
                     errors.add("Value is empty.");
                 }

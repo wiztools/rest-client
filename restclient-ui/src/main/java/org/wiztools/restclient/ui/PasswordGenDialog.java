@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.Util;
 import org.wiztools.restclient.Base64;
 
@@ -179,7 +180,7 @@ class PasswordGenDialog extends EscapableDialog {
     private void generate(){
         // Check for null String in jtf_in
         final String inStr = jtf_in.getText();
-        if(Util.isStrEmpty(inStr)){
+        if(StringUtil.isStrEmpty(inStr)){
             JOptionPane.showMessageDialog(me,
                 "No input entered.",
                 "Error in input.",

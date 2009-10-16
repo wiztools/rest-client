@@ -14,9 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ProxyConfig;
-import org.wiztools.restclient.Util;
 import org.wiztools.restclient.Implementation;
 
 /**
@@ -140,12 +140,12 @@ class OptionsProxyPanel extends JPanel implements IOptionsPanel {
             char[] password = jpf_password.getPassword();
             
             // Validation
-            if(Util.isStrEmpty(host)){
+            if(StringUtil.isStrEmpty(host)){
                 errors.add("Proxy Host is empty.");
             }
             // port is already validated
             if(authEnabled){
-                if(Util.isStrEmpty(username)){
+                if(StringUtil.isStrEmpty(username)){
                     errors.add("Proxy Username is empty.");
                 }
                 if(password == null || password.length == 0){

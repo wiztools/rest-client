@@ -58,6 +58,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
+import org.wiztools.commons.CommonCharset;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
 
@@ -298,7 +299,15 @@ class HTTPClientRequestExecuter implements RequestExecuter {
             HttpEntity entity = http_res.getEntity();
             if(entity != null){
                 InputStream is = entity.getContent();
-                final Charset charset = Charset.forName(entity.getContentEncoding().getValue());
+                Charset charset = null;
+                if(entity.getContentEncoding() != null){
+                    charset = Charset.forName(entity.getContentEncoding().getValue());
+                }
+                else{
+                    // Assume UTF-8 when information is not available:
+                    charset = CommonCharset.UTF_8;
+                }
+
                 String responseBody = StreamUtil.inputStream2String(is, charset);
                 if (responseBody != null) {
                     response.setResponseBody(responseBody);
