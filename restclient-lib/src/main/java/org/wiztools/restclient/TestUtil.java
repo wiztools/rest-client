@@ -18,13 +18,10 @@ import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.RequestBean;
-import org.wiztools.restclient.ResponseBean;
-import org.wiztools.restclient.Util;
 
 /**
  *
- * @author schandran
+ * @author subwiz
  */
 public class TestUtil {
     
