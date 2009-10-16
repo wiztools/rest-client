@@ -17,6 +17,7 @@ import junit.framework.TestResult;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 import org.codehaus.groovy.control.CompilationFailedException;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.RequestBean;
 import org.wiztools.restclient.ResponseBean;
 import org.wiztools.restclient.Util;
@@ -32,7 +33,7 @@ public class TestUtil {
     public static TestSuite getTestSuite(final Request request, final Response response)
             throws TestException{
         final String script = request.getTestScript();
-        if(Util.isStrEmpty(script)){
+        if(StringUtil.isStrEmpty(script)){
             return null;
         }
         try{

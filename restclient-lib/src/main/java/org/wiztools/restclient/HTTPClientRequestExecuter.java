@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,8 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
+import org.wiztools.commons.StreamUtil;
+import org.wiztools.commons.StringUtil;
 
 /**
  *
@@ -137,8 +140,8 @@ class HTTPClientRequestExecuter implements RequestExecuter {
         if (authEnabled) {
             String uid = request.getAuthUsername();
             String pwd = new String(request.getAuthPassword());
-            String host = Util.isStrEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
-            String realm = Util.isStrEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
+            String host = StringUtil.isStrEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
+            String realm = StringUtil.isStrEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
 
             // Type of authentication
             List<String> authPrefs = new ArrayList<String>(2);
@@ -232,7 +235,7 @@ class HTTPClientRequestExecuter implements RequestExecuter {
             // SSL
             String trustStorePath = request.getSslTrustStore();
             char[] trustStorePassword = request.getSslTrustStorePassword();
-            if(urlProtocol.equalsIgnoreCase("https") && !Util.isStrEmpty(trustStorePath)){
+            if(urlProtocol.equalsIgnoreCase("https") && !StringUtil.isStrEmpty(trustStorePath)){
                 KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
                 FileInputStream instream = new FileInputStream(new File(trustStorePath));
                 try{
@@ -295,7 +298,8 @@ class HTTPClientRequestExecuter implements RequestExecuter {
             HttpEntity entity = http_res.getEntity();
             if(entity != null){
                 InputStream is = entity.getContent();
-                String responseBody = Util.inputStream2String(is);
+                final Charset charset = Charset.forName(entity.getContentEncoding().getValue());
+                String responseBody = StreamUtil.inputStream2String(is, charset);
                 if (responseBody != null) {
                     response.setResponseBody(responseBody);
                 }

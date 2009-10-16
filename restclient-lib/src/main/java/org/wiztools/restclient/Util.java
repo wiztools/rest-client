@@ -7,19 +7,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.MalformedInputException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +20,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import org.wiztools.restclient.XMLException;
-import org.wiztools.restclient.XMLUtil;
+import org.wiztools.commons.CommonCharset;
+import org.wiztools.commons.StringUtil;
 
 /**
  *
@@ -39,17 +31,6 @@ public final class Util {
 
     // private constructor so that no instance from outside can be created
     private Util() {
-    }
-
-    public static boolean isStrEmpty(final String str) {
-        if (str == null || "".equals(str.trim())) {
-            return true;
-        }
-        return false;
-    }
-
-    public static String getNullStrIfNull(final String str) {
-        return str == null ? "" : str;
     }
 
     public static String getStackTrace(final Throwable aThrowable) {
@@ -69,89 +50,14 @@ public final class Util {
         sb.append("</ul></html>");
         return sb.toString();
     }
-    private static final String ENCODE = "UTF-8";
-    private static final Charset UTF8CHARSET = Charset.forName(ENCODE);
-
-    private static CharBuffer decodeHelper(byte[] byteArray, int numberOfBytes) throws IOException {
-        CharsetDecoder decoder = UTF8CHARSET.newDecoder();
-        CharBuffer charBuffer = null;
-        try {
-            charBuffer = decoder.decode(ByteBuffer.wrap(byteArray, 0,
-                    numberOfBytes));
-        } catch (MalformedInputException ex) {
-            charBuffer = null;
-        }
-        return charBuffer;
-
-
-    }
-
-    public static String inputStream2String(final InputStream in) throws IOException {
-        if (in == null) {
-            return "";
-        }
-        StringBuilder out = new StringBuilder();
-        byte[] b = new byte[4096];
-        byte[] savedBytes = new byte[1];
-        boolean hasSavedBytes = false;
-        CharsetDecoder decoder = UTF8CHARSET.newDecoder();
-        for (int n; (n = in.read(b)) != -1;) {
-            if (hasSavedBytes) {
-                byte[] bTmp = new byte[savedBytes.length + b.length];
-                System.arraycopy(savedBytes, 0, bTmp, 0,
-                        savedBytes.length);
-                System.arraycopy(b, 0, bTmp, savedBytes.length, b.length);
-                b = bTmp;
-                hasSavedBytes = false;
-                n = n + savedBytes.length;
-            }
-
-            CharBuffer charBuffer = decodeHelper(b, n);
-            if (charBuffer == null) {
-                int nrOfChars = 0;
-                while (charBuffer == null) {
-                    nrOfChars++;
-                    charBuffer = decodeHelper(b, n - nrOfChars);
-                    if (nrOfChars > 10 && nrOfChars < n) {
-                        try {
-                            charBuffer = decoder.decode(ByteBuffer.wrap(b,
-                                    0, n));
-                        } catch (MalformedInputException ex) {
-                            throw new IOException(
-                                    "File not in supported encoding (" +
-                                    ENCODE + ")", ex);
-                        }
-                    }
-                }
-                savedBytes = new byte[nrOfChars];
-                hasSavedBytes = true;
-                for (int i = 0; i < nrOfChars; i++) {
-                    savedBytes[i] = b[n - nrOfChars + i];
-                }
-            }
-
-            charBuffer.rewind(); // Bring the buffer's pointer to 0
-            out.append(charBuffer.toString());
-        }
-        if (hasSavedBytes) {
-            try {
-                CharBuffer charBuffer = decoder.decode(ByteBuffer.wrap(savedBytes, 0, savedBytes.length));
-            } catch (MalformedInputException ex) {
-                throw new IOException(
-                        "File not in supported encoding (" + ENCODE + ")",
-                        ex);
-            }
-        }
-        return out.toString();
-    }
 
     public static String parameterEncode(Map<String, String> params) {
         StringBuilder sb = new StringBuilder();
         for (String key : params.keySet()) {
             try {
                 String value = params.get(key);
-                String encodedKey = URLEncoder.encode(key, ENCODE);
-                String encodedValue = URLEncoder.encode(value, ENCODE);
+                String encodedKey = URLEncoder.encode(key, CommonCharset.UTF_8.name());
+                String encodedValue = URLEncoder.encode(value, CommonCharset.UTF_8.name());
                 sb.append(encodedKey).append("=").append(encodedValue).append("&");
             } catch (UnsupportedEncodingException ex) {
                 assert true : "Encoder UTF-8 supported in all Java platforms.";
@@ -159,36 +65,6 @@ public final class Util {
         }
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
-    }
-
-    public static String getStringFromFile(File f) throws FileNotFoundException, IOException {
-        InputStream is = null;
-        try {
-            is = new FileInputStream(f);
-            return inputStream2String(is);
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-        }
-    }
-
-    public static String getMimeType(File f) {
-        String type = null;
-        URLConnection uc = null;
-        try {
-            URL u = f.toURI().toURL();
-            uc = u.openConnection();
-            type = uc.getContentType();
-        } catch (Exception e) {
-            // Do nothing!
-            e.printStackTrace();
-        } finally {
-            if (uc != null) {
-                // No method like uc.close() !!
-            }
-        }
-        return type;
     }
 
     public static void createReqResArchive(Request request, Response response, File zipFile)
@@ -307,7 +183,7 @@ public final class Util {
      * @return The formatted content-type and charset.
      */
     public static final String getFormattedContentType(final String contentType, final String charset) {
-        String charsetFormatted = Util.isStrEmpty(charset) ? "" : "; charset=" + charset;
+        String charsetFormatted = StringUtil.isStrEmpty(charset) ? "" : "; charset=" + charset;
         return contentType + charsetFormatted;
     }
 }
