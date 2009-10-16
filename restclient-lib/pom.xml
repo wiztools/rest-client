@@ -69,6 +69,9 @@
             <artifactId>groovy</artifactId>
             <version>1.6.3</version>
         </dependency>
+
+        <!-- commons-lib is part of the WizTools.org Mini-projects: -->
+        <!-- http://wiztools.googlecode.com/ -->
         <dependency>
             <groupId>org.wiztools.commons</groupId>
             <artifactId>commons-lib</artifactId>
