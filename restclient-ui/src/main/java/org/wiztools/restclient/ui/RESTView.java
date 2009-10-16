@@ -131,7 +131,7 @@ class RESTView extends JPanel implements View {
     JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
 
     // Auto-redirect switch:
-    JCheckBox jcb_auto_redirect = new JCheckBox("Auto-redirect");
+    JCheckBox jcb_auto_redirect = new JCheckBox("Auto-redirect (on 3XX response): ");
     
     // Response
     private JScrollPane jsp_res_body = new JScrollPane();
@@ -484,6 +484,7 @@ class RESTView extends JPanel implements View {
             // Add auto-redirect:
             JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
             jcb_auto_redirect.setSelected(true); // default true for b/ward compatibility
+            jcb_auto_redirect.setHorizontalTextPosition(SwingConstants.LEFT);
             jcb_auto_redirect.setToolTipText("Auto redirects to redirect-URL when response status 3XX encountered");
             jp.add(jcb_auto_redirect);
             jp_etc_grid.add(jp);
