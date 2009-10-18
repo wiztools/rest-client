@@ -498,7 +498,6 @@ public final class XMLUtil {
             } else if ("body".equals(nodeName)) {
                 responseBean.setResponseBody(tNode.getValue());
             } else if ("test-result".equals(nodeName)) {
-                //responseBean.setTestResult(node.getTextContent()); TODO
                 TestResultBean testResultBean = new TestResultBean();
 
                 for (int j = 0; j < tNode.getChildCount(); j++) {
