@@ -9,6 +9,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.wiztools.commons.CommonCharset;
 import static org.junit.Assert.*;
 
 /**
@@ -41,7 +42,7 @@ public class XMLUtilTest {
         expResult.setUrl(new URL("http://localhost:10101/"));
         expResult.setMethod(HTTPMethod.POST);
         expResult.addHeader("key1", "value1");
-        expResult.setBody(new ReqEntityBean("Body Text", "text/plain", "UTF-8"));
+        expResult.setBody(new ReqEntityBean("Body Text".getBytes(CommonCharset.UTF_8), "text/plain", "UTF-8"));
         expResult.addAuthMethod(HTTPAuthMethod.BASIC);
         expResult.setAuthPreemptive(true);
         expResult.setAuthRealm("realm");
@@ -58,7 +59,7 @@ public class XMLUtilTest {
         expResult.addHeader("Content-Type", "text/plain; charset=utf-8");
         expResult.addHeader("Transfer-Encoding", "chunked");
         expResult.addHeader("Server", "Jetty");
-        expResult.setResponseBody("**RESTClient TraceServlet**");
+        expResult.setResponseBodyBytes("**RESTClient TraceServlet**".getBytes(CommonCharset.UTF_8));
         return expResult;
     }
 

@@ -1,5 +1,6 @@
 package org.wiztools.restclient;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.junit.After;
@@ -60,9 +61,14 @@ public class HTTPClientRequestExecuterTest {
 
             public void doResponse(Response response) {
                 System.out.println("in doResponse()...");
-                String body = response.getResponseBody();
-                if(!body.contains("Authorization: Basic c3ViaGFzaDpzdWJoYXNo")){
-                    fail("Pre-emptive Authorization does not happen");
+                try{
+                    String body = response.getResponseBody();
+                    if(!body.contains("Authorization: Basic c3ViaGFzaDpzdWJoYXNo")){
+                        fail("Pre-emptive Authorization does not happen");
+                    }
+                }
+                catch(UnsupportedEncodingException ex){
+                    ex.printStackTrace();
                 }
             }
 
@@ -95,7 +101,7 @@ public class HTTPClientRequestExecuterTest {
         final String charset = "UTF-8";
         RequestBean request = getRequestBean();
         request.setMethod(HTTPMethod.POST);
-        ReqEntityBean rBean = new ReqEntityBean("", contentType, charset);
+        ReqEntityBean rBean = new ReqEntityBean(new byte[]{}, contentType, charset);
         request.setBody(rBean);
         
         View view = new View() {

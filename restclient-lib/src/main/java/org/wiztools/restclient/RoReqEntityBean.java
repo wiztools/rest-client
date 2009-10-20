@@ -1,5 +1,7 @@
 package org.wiztools.restclient;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  *
  * @author schandran
@@ -8,10 +10,14 @@ public class RoReqEntityBean implements ReqEntity {
     
     private final String contentType;
     private final String charSet;
-    private final String body;
+    private final byte[] bodyBytes;
 
-    public String getBody() {
-        return body;
+    public String getBody() throws UnsupportedEncodingException {
+        return new String(bodyBytes, charSet);
+    }
+
+    public byte[] getBodyBytes(){
+        return this.bodyBytes;
     }
 
     public String getCharSet() {
@@ -25,7 +31,7 @@ public class RoReqEntityBean implements ReqEntity {
     public RoReqEntityBean(final ReqEntity requestEntity){
         contentType = requestEntity.getContentType();
         charSet = requestEntity.getCharSet();
-        body = requestEntity.getBody();
+        bodyBytes = requestEntity.getBodyBytes();
     }
 
     public String getContentTypeCharsetFormatted() {

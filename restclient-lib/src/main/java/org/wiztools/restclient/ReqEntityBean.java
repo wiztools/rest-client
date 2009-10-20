@@ -1,5 +1,8 @@
 package org.wiztools.restclient;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+
 /**
  *
  * @author schandran
@@ -8,20 +11,24 @@ public final class ReqEntityBean implements ReqEntity{
     
     private String contentType;
     private String charSet;
-    private String body;
+    private byte[] bodyBytes;
     
-    public ReqEntityBean(String body, String contentType, String charSet){
-        this.body = body;
+    public ReqEntityBean(byte[] body, String contentType, String charSet){
+        this.bodyBytes = body;
         this.contentType = contentType;
         this.charSet = charSet;
     }
 
-    public String getBody() {
-        return body;
+    public String getBody() throws UnsupportedEncodingException {
+        return new String(bodyBytes, charSet);
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public byte[] getBodyBytes(){
+        return bodyBytes;
+    }
+
+    public void setBodyBytes(byte[] body) {
+        this.bodyBytes = body;
     }
 
     public String getCharSet() {
@@ -46,7 +53,7 @@ public final class ReqEntityBean implements ReqEntity{
     
     @Override
     public Object clone(){
-        ReqEntityBean cloned = new ReqEntityBean(body, contentType, charSet);
+        ReqEntityBean cloned = new ReqEntityBean(bodyBytes, contentType, charSet);
         return cloned;
     }
     
@@ -58,7 +65,7 @@ public final class ReqEntityBean implements ReqEntity{
         if(o instanceof ReqEntityBean){
             ReqEntityBean bean = (ReqEntityBean)o;
             boolean isEqual = true;
-            isEqual = isEqual && (this.body == null? bean.body == null: this.body.equals(bean.body));
+            isEqual = isEqual && (this.bodyBytes == null? bean.bodyBytes == null: Arrays.equals(this.bodyBytes, bean.bodyBytes));
             isEqual = isEqual && (this.charSet == null? bean.charSet == null: this.charSet.equals(bean.charSet));
             isEqual = isEqual && (this.contentType == null? bean.contentType == null: this.contentType.equals(bean.contentType));
             return isEqual;
@@ -71,7 +78,7 @@ public final class ReqEntityBean implements ReqEntity{
         int hash = 3;
         hash = 29 * hash + (this.contentType != null ? this.contentType.hashCode() : 0);
         hash = 29 * hash + (this.charSet != null ? this.charSet.hashCode() : 0);
-        hash = 29 * hash + (this.body != null ? this.body.hashCode() : 0);
+        hash = 29 * hash + (this.bodyBytes != null ? this.bodyBytes.hashCode() : 0);
         return hash;
     }
 
@@ -81,7 +88,7 @@ public final class ReqEntityBean implements ReqEntity{
         sb.append("@RequestBody[");
         sb.append(contentType).append(", ");
         sb.append(charSet).append(", ");
-        sb.append(body);
+        sb.append(bodyBytes);
         sb.append("]");
         return sb.toString();
     }

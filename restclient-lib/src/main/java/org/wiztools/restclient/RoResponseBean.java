@@ -1,5 +1,6 @@
 package org.wiztools.restclient;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -11,7 +12,7 @@ public class RoResponseBean implements Response {
     private final int statusCode;
     private final String statusLine;
     private final Map<String, String> headers;
-    private final String responseBody;
+    private final byte[] responseBodyBytes;
     private long executionTime;
 
     public long getExecutionTime() {
@@ -26,8 +27,12 @@ public class RoResponseBean implements Response {
         return headers;
     }
 
-    public String getResponseBody() {
-        return responseBody;
+    public String getResponseBody() throws UnsupportedEncodingException {
+        return new String(responseBodyBytes, Util.getCharsetFromHeader(headers));
+    }
+
+    public byte[] getResponseBodyBytes(){
+        return responseBodyBytes;
     }
 
     public int getStatusCode() {
@@ -43,7 +48,7 @@ public class RoResponseBean implements Response {
         statusCode = response.getStatusCode();
         statusLine = response.getStatusLine();
         headers = response.getHeaders();
-        responseBody = response.getResponseBody();
+        responseBodyBytes = response.getResponseBodyBytes();
     }
 
     public TestResult getTestResult() {

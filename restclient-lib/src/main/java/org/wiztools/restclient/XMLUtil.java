@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -187,7 +188,8 @@ public final class XMLUtil {
                 reqChildSubElement = new Element("body");
                 String contentType = rBean.getContentType();
                 String charSet = rBean.getCharSet();
-                String body = rBean.getBody();
+                byte[] bodyBytes = rBean.getBodyBytes();
+                final String body = org.apache.commons.codec.binary.Base64.encodeBase64String(bodyBytes);
                 reqChildSubElement.addAttribute(new Attribute("content-type", contentType));
                 reqChildSubElement.addAttribute(new Attribute("charset", charSet));
                 reqChildSubElement.appendChild(body);
@@ -319,8 +321,12 @@ public final class XMLUtil {
                 }
             }
             else if ("body".equals(nodeName)) {
-                requestBean.setBody(new ReqEntityBean(tNode.getValue(), tNode.getAttributeValue("content-type"),
-                        tNode.getAttributeValue("charset")));
+                final String contentType = tNode.getAttributeValue("content-type");
+                final String charset = tNode.getAttributeValue("charset");
+                byte[] body = org.apache.commons.codec.binary.Base64.decodeBase64(tNode.getValue());
+                requestBean.setBody(new ReqEntityBean(body,
+                        contentType,
+                        charset));
             }
             else if ("test-script".equals(nodeName)) {
                 requestBean.setTestScript(tNode.getValue());
@@ -378,10 +384,11 @@ public final class XMLUtil {
                 respChildElement.appendChild(respChildSubElement);
             }
 
-            String responseBody = bean.getResponseBody();
-            if (responseBody != null) {
+            final byte[] responseBodyBytes = bean.getResponseBodyBytes();
+            if (responseBodyBytes != null) {
                 //creating the body child element and append to response child element
                 respChildSubElement = new Element("body");
+                String responseBody = org.apache.commons.codec.binary.Base64.encodeBase64String(responseBodyBytes);
                 respChildSubElement.appendChild(responseBody);
                 respChildElement.appendChild(respChildSubElement);
             }
@@ -496,7 +503,8 @@ public final class XMLUtil {
                     responseBean.addHeader(key, m.get(key));
                 }
             } else if ("body".equals(nodeName)) {
-                responseBean.setResponseBody(tNode.getValue());
+                byte[] body = org.apache.commons.codec.binary.Base64.decodeBase64(tNode.getValue());
+                responseBean.setResponseBodyBytes(body);
             } else if ("test-result".equals(nodeName)) {
                 TestResultBean testResultBean = new TestResultBean();
 

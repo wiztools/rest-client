@@ -1,21 +1,28 @@
 package org.wiztools.restclient;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.wiztools.commons.CommonCharset;
 
 /**
  *
- * @author schandran
+ * @author subwiz
  */
 public final class ResponseBean implements Response{
 
     private int statusCode;
     private String statusLine;
     private Map<String, String> headers;
-    private String responseBody;
+    private byte[] responseBodyBytes;
     private TestResult testResult;
     private long executionTime;
+
+    private String getCharset(){
+        return Util.getCharsetFromHeader(headers);
+    }
 
     public long getExecutionTime() {
         return executionTime;
@@ -45,12 +52,20 @@ public final class ResponseBean implements Response{
         this.headers.put(key, value);
     }
 
-    public String getResponseBody() {
-        return responseBody;
+    public String getResponseBody() throws UnsupportedEncodingException{
+        String charset = getCharset();
+        if(charset == null){ // when charset is not set, use UTF-8
+            charset = CommonCharset.UTF_8.name();
+        }
+        return new String(responseBodyBytes, charset);
     }
 
-    public void setResponseBody(String responseBody) {
-        this.responseBody = responseBody;
+    public byte[] getResponseBodyBytes() {
+        return responseBodyBytes;
+    }
+
+    public void setResponseBodyBytes(byte[] responseBody) {
+        this.responseBodyBytes = responseBody;
     }
 
     public String getStatusLine() {
@@ -79,7 +94,7 @@ public final class ResponseBean implements Response{
         response.executionTime = executionTime;
         response.statusCode = statusCode;
         response.statusLine = statusLine;
-        response.responseBody = responseBody;
+        response.responseBodyBytes = responseBodyBytes;
         if(headers.size() != 0){
             for(String header: headers.keySet()){
                 response.addHeader(header, headers.get(header));
@@ -102,7 +117,7 @@ public final class ResponseBean implements Response{
             isEqual = isEqual && (this.statusCode == bean.getStatusCode());
             isEqual = isEqual && (this.statusLine == null? bean.getStatusLine() == null: this.statusLine.equals(bean.getStatusLine()));
             isEqual = isEqual && (this.headers == null? bean.getHeaders() == null: this.headers.equals(bean.getHeaders()));
-            isEqual = isEqual && (this.responseBody == null? bean.getResponseBody() == null: this.responseBody.equals(bean.getResponseBody()));
+            isEqual = isEqual && (this.responseBodyBytes == null? bean.getResponseBodyBytes() == null: Arrays.equals(this.responseBodyBytes, bean.getResponseBodyBytes()));
             isEqual = isEqual && (this.testResult == null? bean.getTestResult() == null: this.testResult.equals(bean.getTestResult()));
             return isEqual;
         }
@@ -116,7 +131,7 @@ public final class ResponseBean implements Response{
         hash = 53 * hash + this.statusCode;
         hash = 53 * hash + (this.statusLine != null ? this.statusLine.hashCode() : 0);
         hash = 53 * hash + (this.headers != null ? this.headers.hashCode() : 0);
-        hash = 53 * hash + (this.responseBody != null ? this.responseBody.hashCode() : 0);
+        hash = 53 * hash + (this.responseBodyBytes != null ? this.responseBodyBytes.hashCode() : 0);
         hash = 53 * hash + (this.testResult != null ? this.testResult.hashCode() : 0);
         return hash;
     }

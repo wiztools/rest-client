@@ -308,9 +308,9 @@ class HTTPClientRequestExecuter implements RequestExecuter {
                     charset = CommonCharset.UTF_8;
                 }
 
-                String responseBody = StreamUtil.inputStream2String(is, charset);
+                byte[] responseBody = StreamUtil.inputStream2Bytes(is);
                 if (responseBody != null) {
-                    response.setResponseBody(responseBody);
+                    response.setResponseBodyBytes(responseBody);
                 }
             }
 

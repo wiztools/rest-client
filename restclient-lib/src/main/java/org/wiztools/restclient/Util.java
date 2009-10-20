@@ -186,4 +186,24 @@ public final class Util {
         String charsetFormatted = StringUtil.isStrEmpty(charset) ? "" : "; charset=" + charset;
         return contentType + charsetFormatted;
     }
+
+    public static final String getCharsetFromHeader(final String contentType){
+        Pattern p = Pattern.compile(".*charset=([^;]*).*");
+        Matcher m = p.matcher(contentType);
+        if(m.matches()){
+            String charset = m.group(1);
+            return charset;
+        }
+        // if no match:
+        return null;
+    }
+
+    public static final String getCharsetFromHeader(final Map<String, String> headers){
+        for(String key: headers.keySet()){
+            if(key.equalsIgnoreCase("Content-type")){
+                return getCharsetFromHeader(headers.get(key));
+            }
+        }
+        return null;
+    }
 }

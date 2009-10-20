@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  *
@@ -11,7 +8,9 @@ package org.wiztools.restclient;
  */
 public interface ReqEntity extends Cloneable {
 
-    String getBody();
+    String getBody() throws UnsupportedEncodingException;
+
+    byte[] getBodyBytes();
 
     String getCharSet();
 
