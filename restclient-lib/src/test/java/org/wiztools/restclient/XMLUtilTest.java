@@ -136,7 +136,7 @@ public class XMLUtilTest {
         File f = new File("src/test/resources/reqFromXml.rcq");
 
         RequestBean expResult = getDefaultRequestBean();
-        
+
         Request result = XMLUtil.getRequestFromXMLFile(f);
         assertEquals(expResult, result);
     }
@@ -150,7 +150,7 @@ public class XMLUtilTest {
         File f = new File("src/test/resources/resFromXml.rcs");
 
         ResponseBean expResult = getDefaultResponseBean();
-        
+
         Response result = XMLUtil.getResponseFromXMLFile(f);
         assertEquals(expResult, result);
     }

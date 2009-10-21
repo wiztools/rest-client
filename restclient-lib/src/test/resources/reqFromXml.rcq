@@ -13,6 +13,6 @@
 <header key="key1" value="value1"/>
 </headers>
 <auto-redirect>true</auto-redirect>
-<body charset="UTF-8" content-type="text/plain">Body Text</body>
+<body charset="UTF-8" content-type="text/plain">Qm9keSBUZXh0</body>
 </request>
 </rest-client>

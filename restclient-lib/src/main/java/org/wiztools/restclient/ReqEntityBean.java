@@ -2,6 +2,7 @@ package org.wiztools.restclient;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import org.wiztools.commons.CommonCharset;
 
 /**
  *
@@ -88,7 +89,7 @@ public final class ReqEntityBean implements ReqEntity{
         sb.append("@RequestBody[");
         sb.append(contentType).append(", ");
         sb.append(charSet).append(", ");
-        sb.append(bodyBytes);
+        sb.append(org.apache.commons.codec.binary.Base64.encodeBase64String(bodyBytes));
         sb.append("]");
         return sb.toString();
     }
