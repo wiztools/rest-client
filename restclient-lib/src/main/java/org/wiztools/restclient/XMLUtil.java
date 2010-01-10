@@ -25,7 +25,6 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Serializer;
 import nu.xom.ParsingException;
-import org.wiztools.commons.CommonCharset;
 import org.wiztools.commons.StringUtil;
 
 /**

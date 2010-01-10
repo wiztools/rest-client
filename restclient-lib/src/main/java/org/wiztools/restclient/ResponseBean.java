@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.wiztools.commons.CommonCharset;
+import org.wiztools.commons.Charsets;
 
 /**
  *
@@ -55,7 +55,7 @@ public final class ResponseBean implements Response{
     public String getResponseBody() throws UnsupportedEncodingException{
         String charset = getCharset();
         if(charset == null){ // when charset is not set, use UTF-8
-            charset = CommonCharset.UTF_8.name();
+            charset = Charsets.UTF_8.name();
         }
         return new String(responseBodyBytes, charset);
     }

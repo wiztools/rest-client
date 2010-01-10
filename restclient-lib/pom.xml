@@ -75,12 +75,12 @@
             <version>1.6.3</version>
         </dependency>
 
-        <!-- commons-lib is part of the WizTools.org Mini-projects: -->
-        <!-- http://wiztools.googlecode.com/ -->
+        <!-- wiztools-commons-lib is a separate project: -->
+        <!-- http://wiztools-commons-lib.googlecode.com/ -->
         <dependency>
             <groupId>org.wiztools.commons</groupId>
-            <artifactId>commons-lib</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <artifactId>wiztools-commons-lib</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.wiztools.restclient</groupId>

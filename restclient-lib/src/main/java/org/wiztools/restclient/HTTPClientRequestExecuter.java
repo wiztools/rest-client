@@ -58,7 +58,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
-import org.wiztools.commons.CommonCharset;
+import org.wiztools.commons.Charsets;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
 
@@ -305,7 +305,7 @@ class HTTPClientRequestExecuter implements RequestExecuter {
                 }
                 else{
                     // Assume UTF-8 when information is not available:
-                    charset = CommonCharset.UTF_8;
+                    charset = Charsets.UTF_8;
                 }
 
                 byte[] responseBody = StreamUtil.inputStream2Bytes(is);

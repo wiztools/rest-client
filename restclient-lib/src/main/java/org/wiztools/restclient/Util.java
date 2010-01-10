@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import org.wiztools.commons.CommonCharset;
+import org.wiztools.commons.Charsets;
 import org.wiztools.commons.StringUtil;
 
 /**
@@ -56,8 +56,8 @@ public final class Util {
         for (String key : params.keySet()) {
             try {
                 String value = params.get(key);
-                String encodedKey = URLEncoder.encode(key, CommonCharset.UTF_8.name());
-                String encodedValue = URLEncoder.encode(value, CommonCharset.UTF_8.name());
+                String encodedKey = URLEncoder.encode(key, Charsets.UTF_8.name());
+                String encodedValue = URLEncoder.encode(value, Charsets.UTF_8.name());
                 sb.append(encodedKey).append("=").append(encodedValue).append("&");
             } catch (UnsupportedEncodingException ex) {
                 assert true : "Encoder UTF-8 supported in all Java platforms.";

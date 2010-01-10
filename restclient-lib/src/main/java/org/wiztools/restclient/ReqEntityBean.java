@@ -2,7 +2,6 @@ package org.wiztools.restclient;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import org.wiztools.commons.CommonCharset;
 
 /**
  *
