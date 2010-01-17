@@ -18,10 +18,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JFrame;
+import org.wiztools.commons.Implementation;
 
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.Util;
-import org.wiztools.restclient.Implementation;
 
 /**
  *

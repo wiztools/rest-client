@@ -2,6 +2,7 @@ package org.wiztools.restclient.ui;
 
 import java.util.Map;
 import javax.swing.table.AbstractTableModel;
+import org.wiztools.commons.MultiValueMap;
 
 /**
  *
@@ -85,13 +86,16 @@ class TwoColumnTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
     
-    public void setData(final Map<String, String> dataMap){
-        int size = dataMap.size();
-        Object[] keys = dataMap.keySet().toArray();
+    public void setData(final MultiValueMap<String, String> dataMap){
+        int size = dataMap.values().size();
         Object[][] o = new Object[size][2];
-        for(int i=0; i<size; i++){
-            o[i][0] = keys[i];
-            o[i][1] = dataMap.get(keys[i]);
+        int i = 0;
+        for(String key: dataMap.keySet()){
+            for(String value: dataMap.get(key)){
+                o[i][0] = key;
+                o[i][1] = value;
+                i++;
+            }
         }
         data = null;
         data = o;

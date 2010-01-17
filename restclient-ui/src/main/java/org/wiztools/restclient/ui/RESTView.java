@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.LinkedList;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -35,7 +34,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -53,10 +51,12 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
-import org.wiztools.commons.CommonCharset;
+import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
+import org.wiztools.commons.Implementation;
+import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.MultiValueMapArrayList;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.Implementation;
 import org.wiztools.restclient.TestException;
 import org.wiztools.restclient.TestResult;
 import org.wiztools.restclient.TestUtil;
@@ -542,7 +542,7 @@ class RESTView extends JPanel implements View {
                 }
                 try{
                     String testScript = FileUtil.getContentAsString(f,
-                            CommonCharset.UTF_8);
+                            Charsets.UTF_8);
                     Dimension d = jsp_test_script.getPreferredSize();
                     se_test_script.setText(testScript);
                     se_test_script.setCaretPosition(0);
@@ -651,7 +651,7 @@ class RESTView extends JPanel implements View {
                     final String indentedXML = XMLUtil.indentXML(resText);
                     jp_response.setData(indentedXML.getBytes(),
                             "application/xml",
-                            CommonCharset.UTF_8.name(),
+                            Charsets.UTF_8.name(),
                             false);
                     jp_response.getScriptEditor().setCaretPosition(0);
                     setStatusMessage("Indent XML: Success");
@@ -678,7 +678,7 @@ class RESTView extends JPanel implements View {
                     String indentedJSON = JSONUtil.indentJSON(resText);
                     jp_response.setData(indentedJSON.getBytes(), // TODO encoding
                             "application/json",
-                            CommonCharset.UTF_8.name(),
+                            Charsets.UTF_8.name(),
                             false);
                     jp_response.getScriptEditor().setCaretPosition(0);
                     setStatusMessage("Indent JSON: Success");
@@ -862,7 +862,7 @@ class RESTView extends JPanel implements View {
             public void setParameter(final String params) {
                 // se_req_body.setText(params);
                 try{
-                    jp_req_body.setData(params.getBytes(CommonCharset.UTF_8),
+                    jp_req_body.setData(params.getBytes(Charsets.UTF_8),
                         "text/plain", "utf-8", true);
                 }
                 catch(UnsupportedEncodingException ex){
@@ -927,7 +927,7 @@ class RESTView extends JPanel implements View {
     
     Response getResponseFromUI(){
         ResponseBean response = new ResponseBean();
-        response.setResponseBodyBytes(unindentedResponseBody.getBytes(CommonCharset.UTF_8)); // TODO
+        response.setResponseBodyBytes(unindentedResponseBody.getBytes(Charsets.UTF_8)); // TODO
         String statusLine = jtf_res_status.getText();
         response.setStatusLine(statusLine);
         response.setStatusCode(Util.getStatusCodeFromStatusLine(statusLine));
@@ -1440,7 +1440,7 @@ class RESTView extends JPanel implements View {
         jrb_req_get.setSelected(true);
         
         // Headers
-        jp_2col_req_headers.getTableModel().setData(Collections.EMPTY_MAP);
+        jp_2col_req_headers.getTableModel().setData(new MultiValueMapArrayList<String, String>()); // TODO Collections.EMPTY_MAP
         
         // Body
         jd_body_content_type.setContentType(BodyContentTypeDialog.DEFAULT_CONTENT_TYPE);
@@ -1502,11 +1502,11 @@ class RESTView extends JPanel implements View {
         boolean isJson = false;
         boolean isImage = false;
         boolean isText = false;
-        Map<String, String> headers = response.getHeaders();
+        MultiValueMap<String, String> headers = response.getHeaders();
 
         for(String key: headers.keySet()){
             if("content-type".equalsIgnoreCase(key)){
-                contentType = headers.get(key);
+                contentType = headers.get(key).iterator().next();
                 // We are using startsWith instead of equals
                 // because to match headers like:
                 // Content-type: text/plain; charset=UTF-8
@@ -1626,7 +1626,7 @@ class RESTView extends JPanel implements View {
         }
 
         // Headers
-        Map<String, String> headers = request.getHeaders();
+        MultiValueMap<String, String> headers = request.getHeaders();
         jp_2col_req_headers.getTableModel().setData(headers);
 
         // Body

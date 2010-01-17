@@ -1,7 +1,6 @@
 package org.wiztools.restclient.ui;
 
 import java.util.Map;
-import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;

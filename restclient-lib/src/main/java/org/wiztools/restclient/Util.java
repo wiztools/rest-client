@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.wiztools.commons.Charsets;
+import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
 
 /**
@@ -198,10 +200,11 @@ public final class Util {
         return null;
     }
 
-    public static final String getCharsetFromHeader(final Map<String, String> headers){
+    public static final String getCharsetFromHeader(final MultiValueMap<String, String> headers){
         for(String key: headers.keySet()){
             if(key.equalsIgnoreCase("Content-type")){
-                return getCharsetFromHeader(headers.get(key));
+                Collection<String> values = headers.get(key);
+                return getCharsetFromHeader(values.iterator().next());
             }
         }
         return null;

@@ -59,6 +59,8 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.wiztools.commons.Charsets;
+import org.wiztools.commons.Implementation;
+import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
 
@@ -66,7 +68,7 @@ import org.wiztools.commons.StringUtil;
  *
  * @author subwiz
  */
-class HTTPClientRequestExecuter implements RequestExecuter {
+public class HTTPClientRequestExecuter implements RequestExecuter {
 
     private static final Logger LOG = Logger.getLogger(HTTPClientRequestExecuter.class.getName());
 
@@ -204,11 +206,12 @@ class HTTPClientRequestExecuter implements RequestExecuter {
             method.setParams(new BasicHttpParams().setParameter(urlStr, url));
 
             // Get request headers
-            Map<String, String> header_data = request.getHeaders();
+            MultiValueMap<String, String> header_data = request.getHeaders();
             for (String key : header_data.keySet()) {
-                String value = header_data.get(key);
-                Header header = new BasicHeader(key, value);
-                method.addHeader(header);
+                for(String value: header_data.get(key)){
+                    Header header = new BasicHeader(key, value);
+                    method.addHeader(header);
+                }
             }
 
             // POST/PUT method specific logic

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import org.wiztools.commons.Implementation;
 import org.wiztools.restclient.IGlobalOptions;
-import org.wiztools.restclient.Implementation;
 
 /**
  *

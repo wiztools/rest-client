@@ -6,9 +6,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextPane;
 import org.apache.commons.codec.binary.Base64;
-import org.wiztools.commons.CommonCharset;
+import org.wiztools.commons.Charsets;
 
 /**
  *
@@ -39,9 +38,9 @@ public class BodyPanel extends JPanel {
 
     public void setText(String str, boolean editable){
         try{
-            setData(str.getBytes(CommonCharset.UTF_8),
+            setData(str.getBytes(Charsets.UTF_8),
                 "text/plain",
-                CommonCharset.UTF_8.name(),
+                Charsets.UTF_8.name(),
                 editable);
         }
         catch(UnsupportedEncodingException ex){
@@ -59,7 +58,7 @@ public class BodyPanel extends JPanel {
                 || contentType.equals("application/xml")
                 || contentType.equals("application/json")){
             if(charset == null){
-                se.setText(new String(data, CommonCharset.UTF_8));
+                se.setText(new String(data, Charsets.UTF_8));
             }
             else{
                 se.setText(new String(data, charset));

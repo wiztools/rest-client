@@ -20,8 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.wiztools.commons.Implementation;
 import org.wiztools.restclient.IGlobalOptions;
-import org.wiztools.restclient.Implementation;
 
 /**
  *

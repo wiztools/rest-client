@@ -1,7 +1,7 @@
 package org.wiztools.restclient;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
+import org.wiztools.commons.MultiValueMap;
 
 /**
  *
@@ -11,7 +11,7 @@ public interface Response extends Cloneable {
 
     long getExecutionTime();
 
-    Map<String, String> getHeaders();
+    MultiValueMap<String, String> getHeaders();
 
     String getResponseBody() throws UnsupportedEncodingException;
 

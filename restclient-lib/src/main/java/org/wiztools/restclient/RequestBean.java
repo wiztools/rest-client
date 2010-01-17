@@ -4,9 +4,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.MultiValueMapArrayList;
 
 /**
  *
@@ -22,7 +22,7 @@ public final class RequestBean implements Request{
     private String authRealm;
     private String authUsername;
     private char[] authPassword;
-    private Map<String, String> headers;
+    private MultiValueMap<String, String> headers;
     private ReqEntity body;
     private String testScript;
     private String sslTrustStore;
@@ -135,8 +135,10 @@ public final class RequestBean implements Request{
         this.authUsername = authUsername;
     }
 
-    public Map<String, String> getHeaders() {
-        return Collections.unmodifiableMap(headers);
+    public MultiValueMap<String, String> getHeaders() {
+        // TODO: make unmodifiable:
+        return headers;
+        // return Collections.unmodifiableMap(headers);
     }
 
     public void addHeader(final String key, final String value){
@@ -160,7 +162,7 @@ public final class RequestBean implements Request{
     }
     
     public RequestBean(){
-        headers = new LinkedHashMap();
+        headers = new MultiValueMapArrayList<String, String>();
         authMethods = new ArrayList<HTTPAuthMethod>();
     }
     
@@ -180,7 +182,9 @@ public final class RequestBean implements Request{
         }
         if(headers.size() != 0){
             for(String header: headers.keySet()){
-                cloned.addHeader(header, headers.get(header));
+                for(String value: headers.get(header)){
+                    cloned.addHeader(header, value);
+                }
             }
         }
         cloned.setMethod(method);

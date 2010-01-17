@@ -2,7 +2,7 @@ package org.wiztools.restclient;
 
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
+import org.wiztools.commons.MultiValueMap;
 
 /**
  *
@@ -12,7 +12,7 @@ public class RoRequestBean implements Request {
     
     private final URL url;
     private final HTTPMethod method;
-    private final Map<String, String> headers;
+    private final MultiValueMap<String, String> headers;
     private final RoReqEntityBean body;
     private final List<HTTPAuthMethod> authMethods;
     private final boolean authPreemptive;
@@ -81,7 +81,7 @@ public class RoRequestBean implements Request {
         return body;
     }
 
-    public Map<String, String> getHeaders() {
+    public MultiValueMap<String, String> getHeaders() {
         return headers;
     }
 

@@ -1,7 +1,7 @@
 package org.wiztools.restclient.ui;
 
-import java.util.Map;
 import javax.swing.table.AbstractTableModel;
+import org.wiztools.commons.MultiValueMap;
 
 /**
  *
@@ -12,7 +12,7 @@ class ResponseHeaderTableModel extends AbstractTableModel {
     private final String[] title = new String[]{"HTTP Header", "Value"};
     private String[][] headers;
     
-    public void setHeaders(Map<String, String> mapHeaders){
+    public void setHeaders(MultiValueMap<String, String> mapHeaders){
         if(mapHeaders == null){
             headers = new String[0][0];
         }
@@ -20,9 +20,11 @@ class ResponseHeaderTableModel extends AbstractTableModel {
             headers = new String[mapHeaders.size()][2];
             int i = 0;
             for(String key: mapHeaders.keySet()){
-                headers[i][0] = key;
-                headers[i][1] = mapHeaders.get(key);
-                i++;
+                for(String value: mapHeaders.get(key)){
+                    headers[i][0] = key;
+                    headers[i][1] = value;
+                    i++;
+                }
             }
         }
         fireTableDataChanged();
