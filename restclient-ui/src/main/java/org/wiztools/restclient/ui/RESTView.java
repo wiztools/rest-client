@@ -100,7 +100,6 @@ class RESTView extends JPanel implements View {
     private JScrollPane jsp_req_body;
     private Dimension d_jsp_req_body;
     
-    private JScrollPane jsp_test_script;
     private ScriptEditor se_test_script = ScriptEditorFactory.getGroovyScriptEditor();
     private JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
     private JButton jb_req_test_open = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
@@ -513,10 +512,10 @@ class RESTView extends JPanel implements View {
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                Dimension d = jsp_test_script.getPreferredSize();
+                Dimension d = se_test_script.getScrollableEditorView().getPreferredSize();
                 se_test_script.setText(templateTestScript);
                 se_test_script.setCaretPosition(0);
-                jsp_test_script.setPreferredSize(d);
+                se_test_script.getScrollableEditorView().setPreferredSize(d);
             }
         });
         jp_test_north.add(jb_req_test_template);
@@ -543,10 +542,10 @@ class RESTView extends JPanel implements View {
                 try{
                     String testScript = FileUtil.getContentAsString(f,
                             Charsets.UTF_8);
-                    Dimension d = jsp_test_script.getPreferredSize();
+                    Dimension d = se_test_script.getScrollableEditorView().getPreferredSize();
                     se_test_script.setText(testScript);
                     se_test_script.setCaretPosition(0);
-                    jsp_test_script.setPreferredSize(d);
+                    se_test_script.getScrollableEditorView().setPreferredSize(d);
                 }
                 catch(IOException ex){
                     showError(Util.getStackTrace(ex));
@@ -588,8 +587,7 @@ class RESTView extends JPanel implements View {
         jp_test_north.add(jb_req_test_quick);
         jp_test.add(jp_test_north, BorderLayout.NORTH);
         
-        jsp_test_script = new JScrollPane(se_test_script.getEditorView());
-        jp_test.add(jsp_test_script, BorderLayout.CENTER);
+        jp_test.add(se_test_script.getScrollableEditorView(), BorderLayout.CENTER);
         jtp.addTab("Test Script", jp_test);
         
         return jtp;
@@ -1698,10 +1696,10 @@ class RESTView extends JPanel implements View {
         jcb_auto_redirect.setSelected(request.isAutoRedirect());
 
         // Test script
-        Dimension d = jsp_test_script.getPreferredSize();
+        Dimension d = se_test_script.getScrollableEditorView().getPreferredSize();
         se_test_script.setText(request.getTestScript()==null?"":request.getTestScript());
         se_test_script.setCaretPosition(0);
-        jsp_test_script.setPreferredSize(d);
+        se_test_script.getScrollableEditorView().setPreferredSize(d);
     }
     
     private Calendar statusLastUpdated;

@@ -1,6 +1,5 @@
 package org.wiztools.restclient.ui;
 
-import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 import org.wiztools.commons.MultiValueMap;
 

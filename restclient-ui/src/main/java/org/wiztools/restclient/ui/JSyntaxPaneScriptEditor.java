@@ -3,6 +3,8 @@ package org.wiztools.restclient.ui;
 import java.awt.Font;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import jsyntaxpane.DefaultSyntaxKit;
 
 /**
  *
@@ -11,9 +13,10 @@ import javax.swing.JEditorPane;
 class JSyntaxPaneScriptEditor implements ScriptEditor {
     
     private JEditorPane jep = new JEditorPane();
+    private JScrollPane jsp = new JScrollPane(jep);
     
     JSyntaxPaneScriptEditor(TextEditorSyntax syntax){
-        jsyntaxpane.DefaultSyntaxKit.initKit();
+        DefaultSyntaxKit.initKit();
         if(syntax == TextEditorSyntax.GROOVY){
             jep.setContentType("text/groovy");
         }
@@ -48,6 +51,10 @@ class JSyntaxPaneScriptEditor implements ScriptEditor {
 
     public JComponent getEditorView() {
         return jep;
+    }
+
+    public JComponent getScrollableEditorView(){
+        return jsp;
     }
 
     public String getText() {

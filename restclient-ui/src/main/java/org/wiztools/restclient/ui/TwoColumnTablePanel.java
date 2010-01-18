@@ -1,6 +1,5 @@
 package org.wiztools.restclient.ui;
 
-import java.util.Map;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -11,7 +10,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,6 +20,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
 
 /**
@@ -39,38 +38,17 @@ final class TwoColumnTablePanel extends JPanel {
     private void initMultiEntryDialog(){
         // Initialize the Multi-entry dialog:
         MultiEntryAdd callback = new MultiEntryAdd() {
-            public void add(Map<String, String> keyValuePair, List<String> invalidLines) {
-                Object[][] data = model.getData();
-                List<String> keys = new ArrayList<String>();
-                for(Object[] o: data){
-                    String key = (String)o[0];
-                    keys.add(key);
-                }
-                Map<String, String> keyAlreadyExists = new LinkedHashMap<String, String>();
-
+            public void add(MultiValueMap<String, String> keyValuePair, List<String> invalidLines) {
                 int successCount = 0;
                 for(String key: keyValuePair.keySet()){
-                    String value = keyValuePair.get(key);
-                    if(keys.contains(key)){
-                        keyAlreadyExists.put(key, keyValuePair.get(key));
-                    }
-                    else{
+                    for(String value: keyValuePair.get(key)){
                         model.insertRow(key, value);
                         successCount++;
                     }
                 }
+                
                 StringBuilder sb = new StringBuilder();
                 sb.append("Added ").append(successCount).append(" key/value pairs.\n\n");
-                sb.append("**Lines Skipped Due To Duplication**\n\n");
-                if(keyAlreadyExists.size() == 0){
-                    sb.append("- None -\n");
-                }
-                else{
-                    for(String key: keyAlreadyExists.keySet()){
-                        String value = keyAlreadyExists.get(key);
-                        sb.append(key).append(": ").append(value).append("\n");
-                    }
-                }
 
                 sb.append("\n**Lines Skipped Due To Pattern Mis-match**\n\n");
                 if(invalidLines.size() == 0){
@@ -175,15 +153,6 @@ final class TwoColumnTablePanel extends JPanel {
                 if(StringUtil.isStrEmpty(value)){
                     errors = errors==null?new ArrayList<String>():errors;
                     errors.add("Value is empty.");
-                }
-                Object[][] data = model.getData();
-                if(data != null){
-                    for(int i=0; i<data.length; i++){
-                        if((data[i][0] != null) && (data[i][0].equals(key))){
-                            errors = errors==null?new ArrayList<String>():errors;
-                            errors.add("Duplicate key found! Delete the original before adding!");
-                        }
-                    }
                 }
                 if(errors != null){
                     StringBuilder sb = new StringBuilder();

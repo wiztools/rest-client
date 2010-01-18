@@ -53,16 +53,17 @@ public final class Util {
         return sb.toString();
     }
 
-    public static String parameterEncode(Map<String, String> params) {
+    public static String parameterEncode(MultiValueMap<String, String> params) {
         StringBuilder sb = new StringBuilder();
         for (String key : params.keySet()) {
-            try {
-                String value = params.get(key);
-                String encodedKey = URLEncoder.encode(key, Charsets.UTF_8.name());
-                String encodedValue = URLEncoder.encode(value, Charsets.UTF_8.name());
-                sb.append(encodedKey).append("=").append(encodedValue).append("&");
-            } catch (UnsupportedEncodingException ex) {
-                assert true : "Encoder UTF-8 supported in all Java platforms.";
+            for(String value: params.get(key)){
+                try {
+                    String encodedKey = URLEncoder.encode(key, Charsets.UTF_8.name());
+                    String encodedValue = URLEncoder.encode(value, Charsets.UTF_8.name());
+                    sb.append(encodedKey).append("=").append(encodedValue).append("&");
+                } catch (UnsupportedEncodingException ex) {
+                    assert true : "Encoder UTF-8 supported in all Java platforms.";
+                }
             }
         }
         sb.deleteCharAt(sb.length() - 1);

@@ -23,6 +23,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
+import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.MultiValueMapArrayList;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.Util;
 
@@ -134,7 +136,7 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         String[] line_arr = str.split("\\n");
 
         List<String> linesNotMatching = new ArrayList<String>();
-        Map<String, String> keyValMap = new LinkedHashMap<String, String>();
+        MultiValueMap<String, String> keyValMap = new MultiValueMapArrayList<String, String>();
 
         for (String line : line_arr) {
             int index = line.indexOf(':');

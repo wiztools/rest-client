@@ -14,6 +14,8 @@ interface ScriptEditor {
      */
     public JComponent getEditorView();
 
+    public JComponent getScrollableEditorView();
+
     /**
      * get test script code
      *

@@ -7,6 +7,7 @@ import javax.swing.*;
  */
 class TextAreaScriptEditor implements ScriptEditor {
     private JTextArea textArea = new JTextArea();
+    private JScrollPane jsp = new JScrollPane(textArea);
 
     /**
      * view component for test script editor
@@ -51,5 +52,9 @@ class TextAreaScriptEditor implements ScriptEditor {
      */
     public void setEditable(boolean editable) {
         textArea.setEditable(editable);
+    }
+
+    public JComponent getScrollableEditorView() {
+        return jsp;
     }
 }

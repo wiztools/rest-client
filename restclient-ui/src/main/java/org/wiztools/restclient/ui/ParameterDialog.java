@@ -7,12 +7,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.MultiValueMapArrayList;
 
 /**
  *
@@ -96,7 +96,7 @@ class ParameterDialog extends EscapableDialog {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Map<String, String> m = new LinkedHashMap<String, String>();
+        MultiValueMap<String, String> m = new MultiValueMapArrayList<String, String>();
         for(int i=0; i<data.length; i++){
             m.put((String)data[i][0], (String)data[i][1]);
         }

@@ -10,9 +10,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -26,6 +24,7 @@ import nu.xom.Element;
 import nu.xom.Serializer;
 import nu.xom.ParsingException;
 import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.MultiValueMapArrayList;
 import org.wiztools.commons.StringUtil;
 
 /**
@@ -214,9 +213,9 @@ public final class XMLUtil {
         }
     }
 
-    private static Map<String, String> getHeadersFromHeaderNode(final Element node)
+    private static MultiValueMap<String, String> getHeadersFromHeaderNode(final Element node)
             throws XMLException {
-        Map<String, String> m = new LinkedHashMap<String, String>();
+        MultiValueMap<String, String> m = new MultiValueMapArrayList<String, String>();
 
         for (int i = 0; i < node.getChildElements().size(); i++) {
             Element headerElement = node.getChildElements().get(i);
@@ -316,9 +315,11 @@ public final class XMLUtil {
                 requestBean.setSslHostNameVerifier(sslHostnameVerifier);
             }
             else if ("headers".equals(nodeName)) {
-                Map<String, String> m = getHeadersFromHeaderNode(tNode);
+                MultiValueMap<String, String> m = getHeadersFromHeaderNode(tNode);
                 for (String key : m.keySet()) {
-                    requestBean.addHeader(key, m.get(key));
+                    for(String value: m.get(key)){
+                        requestBean.addHeader(key, value);
+                    }
                 }
             }
             else if ("body".equals(nodeName)) {
@@ -500,9 +501,11 @@ public final class XMLUtil {
                 responseBean.setStatusLine(tNode.getValue());
                 responseBean.setStatusCode(Integer.parseInt(tNode.getAttributeValue("code")));
             } else if ("headers".equals(nodeName)) {
-                Map<String, String> m = getHeadersFromHeaderNode(tNode);
+                MultiValueMap<String, String> m = getHeadersFromHeaderNode(tNode);
                 for (String key : m.keySet()) {
-                    responseBean.addHeader(key, m.get(key));
+                    for(String value: m.get(key)){
+                        responseBean.addHeader(key, value);
+                    }
                 }
             } else if ("body".equals(nodeName)) {
                 byte[] body = org.apache.commons.codec.binary.Base64.decodeBase64(tNode.getValue());
