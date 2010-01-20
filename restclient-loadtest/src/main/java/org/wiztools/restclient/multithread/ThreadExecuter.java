@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.wiztools.restclient.Implementation;
+import org.wiztools.commons.Implementation;
 import org.wiztools.restclient.Request;
 import org.wiztools.restclient.RequestExecuter;
 import org.wiztools.restclient.Response;

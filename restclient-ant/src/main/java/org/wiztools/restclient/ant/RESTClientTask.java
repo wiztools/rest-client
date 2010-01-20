@@ -9,7 +9,7 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
-import org.wiztools.restclient.Implementation;
+import org.wiztools.commons.Implementation;
 import org.wiztools.restclient.Request;
 import org.wiztools.restclient.RequestExecuter;
 import org.wiztools.restclient.Response;
