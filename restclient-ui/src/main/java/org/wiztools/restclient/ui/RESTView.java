@@ -52,6 +52,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
 import org.wiztools.commons.Charsets;
+import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.commons.Implementation;
 import org.wiztools.commons.MultiValueMap;
@@ -1438,7 +1439,7 @@ class RESTView extends JPanel implements View {
         jrb_req_get.setSelected(true);
         
         // Headers
-        jp_2col_req_headers.getTableModel().setData(new MultiValueMapArrayList<String, String>()); // TODO Collections.EMPTY_MAP
+        jp_2col_req_headers.getTableModel().setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
         
         // Body
         jd_body_content_type.setContentType(BodyContentTypeDialog.DEFAULT_CONTENT_TYPE);

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapArrayList;
 
@@ -136,9 +137,7 @@ public final class RequestBean implements Request{
     }
 
     public MultiValueMap<String, String> getHeaders() {
-        // TODO: make unmodifiable:
-        return headers;
-        // return Collections.unmodifiableMap(headers);
+        return CollectionsUtil.unmodifiableMultiValueMap(headers);
     }
 
     public void addHeader(final String key, final String value){

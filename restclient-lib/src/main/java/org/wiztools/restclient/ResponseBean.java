@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import org.wiztools.commons.Charsets;
+import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapArrayList;
 
@@ -41,9 +42,7 @@ public final class ResponseBean implements Response{
     }
 
     public MultiValueMap<String, String> getHeaders() {
-        //return Collections.unmodifiableMap(headers);
-        // TODO: return unmodifiable collection:
-        return headers;
+        return CollectionsUtil.unmodifiableMultiValueMap(headers);
     }
 
     /*public void setHeaders(Map<String, String> headers) {

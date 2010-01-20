@@ -29,10 +29,13 @@ public class TraceServlet extends HttpServlet {
         out.println("\n*Headers*");
         Enumeration eHeaders = request.getHeaderNames();
         while(eHeaders.hasMoreElements()){
-            String headerName = (String)eHeaders.nextElement();
-            String headerValue = request.getHeader(headerName);
-            headerValue = headerValue.replaceAll("\n", "\n\t");
-            out.println("\t" + headerName + ": " + request.getHeader(headerName));
+            final String headerName = (String)eHeaders.nextElement();
+            final Enumeration eHeaderValues = request.getHeaders(headerName);
+            while(eHeaderValues.hasMoreElements()){
+                String headerValue = (String)eHeaderValues.nextElement();
+                headerValue = headerValue.replaceAll("\n", "\n\t");
+                out.println("\t" + headerName + ": " + request.getHeader(headerName));
+            }
         }
         
         out.println("\n*Query String*");
