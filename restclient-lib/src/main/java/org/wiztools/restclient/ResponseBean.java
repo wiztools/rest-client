@@ -2,7 +2,6 @@ package org.wiztools.restclient;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;

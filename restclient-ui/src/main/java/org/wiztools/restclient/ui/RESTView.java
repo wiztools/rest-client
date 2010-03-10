@@ -56,7 +56,6 @@ import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.commons.Implementation;
 import org.wiztools.commons.MultiValueMap;
-import org.wiztools.commons.MultiValueMapArrayList;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.TestException;
 import org.wiztools.restclient.TestResult;
@@ -172,6 +171,8 @@ class RESTView extends JPanel implements View {
     // Cache the last request and response
     private Request lastRequest;
     private Response lastResponse;
+
+    private boolean isResponseBodyBase64Encoded = false;
     
     // Load templateTestScript:
     private static final String templateTestScript;
@@ -926,14 +927,39 @@ class RESTView extends JPanel implements View {
     
     Response getResponseFromUI(){
         ResponseBean response = new ResponseBean();
-        response.setResponseBodyBytes(unindentedResponseBody.getBytes(Charsets.UTF_8)); // TODO
+
         String statusLine = jtf_res_status.getText();
         response.setStatusLine(statusLine);
         response.setStatusCode(Util.getStatusCodeFromStatusLine(statusLine));
         String[][] headers = ((ResponseHeaderTableModel)jt_res_headers.getModel()).getHeaders();
+        String contentType = null;
         for(int i=0; i<headers.length; i++){
+            if("content-type".equalsIgnoreCase(headers[i][0])){
+                contentType = headers[i][1];
+            }
             response.addHeader(headers[i][0], headers[i][1]);
         }
+
+        final String charset = Util.getCharsetFromHeader(contentType);
+
+        response.setResponseBodyBytes(jp_response.getData());
+
+        /*
+        if(isResponseBodyBase64Encoded){
+            response.setResponseBodyBytes(
+                    org.apache.commons.codec.binary.Base64.decodeBase64(unindentedResponseBody));
+        }
+        else{
+            try{
+                response.setResponseBodyBytes(unindentedResponseBody.getBytes(charset));
+            }
+            catch(UnsupportedEncodingException ex){
+                LOG.warning("Encoding not recognized: " + charset);
+                LOG.warning("Using default: UTF-8");
+                response.setResponseBodyBytes(unindentedResponseBody.getBytes(Charsets.UTF_8));
+            }
+        }*/
+        
         response.setTestResult(jp_testResultPanel.getTestResult());
         return response;
     }
@@ -1106,7 +1132,7 @@ class RESTView extends JPanel implements View {
     @Override
     public void doResponse(final Response response){
         lastResponse = response;
-    
+
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 // Update the UI:
