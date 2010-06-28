@@ -28,8 +28,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import org.wiztools.restclient.XMLException;
-import org.wiztools.restclient.XMLUtil;
 
 /**
  *
@@ -72,13 +70,13 @@ public final class Util {
     private static final String ENCODE = "UTF-8";
     private static final Charset UTF8CHARSET = Charset.forName(ENCODE);
 
-    public static String inputStream2String(final InputStream in) throws IOException {
+    public static String inputStream2String(final InputStream in, Charset charset) throws IOException {
         if (in == null) {
             return "";
         }
         StringBuilder out = new StringBuilder();
         byte[] b = new byte[4096];
-        CharsetDecoder decoder = UTF8CHARSET.newDecoder();
+        CharsetDecoder decoder = charset.newDecoder();
         for (int n; (n = in.read(b)) != -1;) {
             CharBuffer charBuffer = null;
             try{
@@ -86,7 +84,7 @@ public final class Util {
             }
             catch(MalformedInputException ex){
                 throw new IOException(
-                        "File not in supported encoding (" + ENCODE + ")", ex);
+                        "File not in supported encoding (" + charset.displayName() + ")", ex);
             }
             charBuffer.rewind(); // Bring the buffer's pointer to 0
             out.append(charBuffer.toString());
@@ -115,7 +113,7 @@ public final class Util {
         InputStream is = null;
         try {
             is = new FileInputStream(f);
-            return inputStream2String(is);
+            return inputStream2String(is, UTF8CHARSET);
         } finally {
             if(is != null){
                 is.close();

@@ -7,10 +7,12 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -270,8 +272,8 @@ class HTTPClientRequestExecuter implements RequestExecuter {
                 @Override
                 public URI getLocationURI(HttpResponse response, HttpContext context) throws ProtocolException {
                     URI uri = super.getLocationURI(response, context);
-                    LOG.info("Redirect response status: " + response.getStatusLine());
-                    LOG.info("Redirect: " + uri);
+                    LOG.log(Level.INFO, "Redirect response status: {0}", response.getStatusLine());
+                    LOG.log(Level.INFO, "Redirect: {0}", uri);
                     return uri;
                 }
             });
@@ -297,7 +299,13 @@ class HTTPClientRequestExecuter implements RequestExecuter {
             HttpEntity entity = http_res.getEntity();
             if(entity != null){
                 InputStream is = entity.getContent();
-                String responseBody = Util.inputStream2String(is);
+                String encodingStr = entity.getContentEncoding().getValue();
+                if(encodingStr == null) {
+                    LOG.log(Level.WARNING, "Response encoding unknown. Using UTF-8.");
+                    encodingStr = "UTF-8";
+                }
+                final Charset encoding = Charset.forName(encodingStr);
+                String responseBody = Util.inputStream2String(is, encoding);
                 if (responseBody != null) {
                     response.setResponseBody(responseBody);
                 }
