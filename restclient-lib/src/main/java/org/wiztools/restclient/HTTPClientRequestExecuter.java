@@ -292,19 +292,23 @@ class HTTPClientRequestExecuter implements RequestExecuter {
             response.setStatusLine(http_res.getStatusLine().toString());
 
             final Header[] responseHeaders = http_res.getAllHeaders();
+            String contentType = null;
             for (Header header : responseHeaders) {
                 response.addHeader(header.getName(), header.getValue());
+                if(header.getName().equalsIgnoreCase("content-type")) {
+                    contentType = header.getValue();
+                }
+            }
+
+            String charset = null;
+            if(contentType != null) {
+                charset = Util.getCharsetFromContentType(contentType);
             }
 
             HttpEntity entity = http_res.getEntity();
             if(entity != null){
                 InputStream is = entity.getContent();
-                String encodingStr = entity.getContentEncoding().getValue();
-                if(encodingStr == null) {
-                    LOG.log(Level.WARNING, "Response encoding unknown. Using UTF-8.");
-                    encodingStr = "UTF-8";
-                }
-                final Charset encoding = Charset.forName(encodingStr);
+                final Charset encoding = Charset.forName(charset);
                 String responseBody = Util.inputStream2String(is, encoding);
                 if (responseBody != null) {
                     response.setResponseBody(responseBody);

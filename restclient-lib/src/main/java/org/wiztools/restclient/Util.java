@@ -265,4 +265,13 @@ public final class Util {
         String charsetFormatted = Util.isStrEmpty(charset)? "": "; charset=" + charset;
         return contentType + charsetFormatted;
     }
+
+    public static final String getCharsetFromContentType(final String contentType) {
+        Pattern p = Pattern.compile("^.+;\\s*charset=(.+)$");
+        Matcher m = p.matcher(contentType);
+        if(m.matches()) {
+            return m.group(1);
+        }
+        return "UTF-8";
+    }
 }
