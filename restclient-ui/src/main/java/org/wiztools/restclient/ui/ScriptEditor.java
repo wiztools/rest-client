@@ -1,6 +1,7 @@
 package org.wiztools.restclient.ui;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -13,6 +14,12 @@ interface ScriptEditor {
      * @return JComponent object
      */
     public JComponent getEditorView();
+
+    /**
+     * The editor component is returned.
+     * @return
+     */
+    public JTextComponent getEditorComponent();
 
     /**
      * get test script code

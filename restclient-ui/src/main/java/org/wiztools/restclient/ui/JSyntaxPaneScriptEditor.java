@@ -3,6 +3,8 @@ package org.wiztools.restclient.ui;
 import java.awt.Font;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -11,6 +13,7 @@ import javax.swing.JEditorPane;
 class JSyntaxPaneScriptEditor implements ScriptEditor {
     
     private JEditorPane jep = new JEditorPane();
+    private JScrollPane jsp = new JScrollPane(jep);
     
     JSyntaxPaneScriptEditor(TextEditorSyntax syntax){
         jsyntaxpane.DefaultSyntaxKit.initKit();
@@ -47,6 +50,10 @@ class JSyntaxPaneScriptEditor implements ScriptEditor {
     }
 
     public JComponent getEditorView() {
+        return jsp;
+    }
+
+    public JTextComponent getEditorComponent() {
         return jep;
     }
 

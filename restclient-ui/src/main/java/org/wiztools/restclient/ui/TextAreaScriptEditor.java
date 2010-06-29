@@ -1,12 +1,14 @@
 package org.wiztools.restclient.ui;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 
 /**
  *  textarea script editor
  */
 class TextAreaScriptEditor implements ScriptEditor {
     private JTextArea textArea = new JTextArea();
+    private JScrollPane jsp = new JScrollPane(textArea);
 
     /**
      * view component for test script editor
@@ -14,6 +16,10 @@ class TextAreaScriptEditor implements ScriptEditor {
      * @return JComponent object
      */
     public JComponent getEditorView() {
+        return jsp;
+    }
+
+    public JTextComponent getEditorComponent() {
         return textArea;
     }
 

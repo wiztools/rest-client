@@ -93,10 +93,8 @@ class RESTView extends JPanel implements View {
     private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JButton jb_body_params = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
     private BodyContentTypeDialog jd_body_content_type;
-    private JScrollPane jsp_req_body;
-    private Dimension d_jsp_req_body;
     
-    private JScrollPane jsp_test_script;
+    // private JScrollPane jsp_test_script;
     private ScriptEditor se_test_script = ScriptEditorFactory.getGroovyScriptEditor();
     private JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
     private JButton jb_req_test_open = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
@@ -128,7 +126,7 @@ class RESTView extends JPanel implements View {
     JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
     
     // Response
-    private JScrollPane jsp_res_body = new JScrollPane();
+    // private JScrollPane jsp_res_body = new JScrollPane();
     private ScriptEditor se_response = ScriptEditorFactory.getXMLScriptEditor();
     
     private JTable jt_res_headers = new JTable();
@@ -337,8 +335,8 @@ class RESTView extends JPanel implements View {
         
         jpm_req_body.add(jm_syntax);
         
-        if (se_req_body.getEditorView() instanceof JEditorPane) {
-            se_req_body.getEditorView().addMouseListener(new MouseAdapter() {
+        if (se_req_body.getEditorComponent() instanceof JEditorPane) {
+            se_req_body.getEditorComponent().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     showPopup(e);
@@ -349,7 +347,7 @@ class RESTView extends JPanel implements View {
                     showPopup(e);
                 }
                 private void showPopup(final MouseEvent e) {
-                    if(!se_req_body.getEditorView().isEnabled()){
+                    if(!se_req_body.getEditorComponent().isEnabled()){
                         // do not show popup menu when component is disabled:
                         return;
                     }
@@ -363,8 +361,7 @@ class RESTView extends JPanel implements View {
         jp_body.add(jp_body_north, BorderLayout.NORTH);
         JPanel jp_body_center = new JPanel();
         jp_body_center.setLayout(new GridLayout(1, 1));
-        jsp_req_body = new JScrollPane(se_req_body.getEditorView());
-        jp_body_center.add(jsp_req_body);
+        jp_body_center.add(se_req_body.getEditorView());
         jp_body.add(jp_body_center, BorderLayout.CENTER);
         jtp.addTab("Body", jp_body);
         
@@ -486,10 +483,8 @@ class RESTView extends JPanel implements View {
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                Dimension d = jsp_test_script.getPreferredSize();
                 se_test_script.setText(templateTestScript);
                 se_test_script.setCaretPosition(0);
-                jsp_test_script.setPreferredSize(d);
             }
         });
         jp_test_north.add(jb_req_test_template);
@@ -515,10 +510,8 @@ class RESTView extends JPanel implements View {
                 }
                 try{
                     String testScript = Util.getStringFromFile(f);
-                    Dimension d = jsp_test_script.getPreferredSize();
                     se_test_script.setText(testScript);
                     se_test_script.setCaretPosition(0);
-                    jsp_test_script.setPreferredSize(d);
                 }
                 catch(IOException ex){
                     showError(Util.getStackTrace(ex));
@@ -560,8 +553,7 @@ class RESTView extends JPanel implements View {
         jp_test_north.add(jb_req_test_quick);
         jp_test.add(jp_test_north, BorderLayout.NORTH);
         
-        jsp_test_script = new JScrollPane(se_test_script.getEditorView());
-        jp_test.add(jsp_test_script, BorderLayout.CENTER);
+        jp_test.add(se_test_script.getEditorView(), BorderLayout.CENTER);
         jtp.addTab("Test Script", jp_test);
         
         return jtp;
@@ -708,8 +700,7 @@ class RESTView extends JPanel implements View {
         JPanel jp_body = new JPanel();
         jp_body.setLayout(new GridLayout(1,1));
         se_response.setEditable(false);
-        jsp_res_body = new JScrollPane(se_response.getEditorView());
-        jp_body.add(jsp_res_body);
+        jp_body.add(se_response.getEditorView());
         JPanel jp_body_encp = new JPanel();
         jp_body_encp.setBorder(BorderFactory.createEmptyBorder());
         jp_body_encp.setLayout(new GridLayout(1, 1));
@@ -840,7 +831,7 @@ class RESTView extends JPanel implements View {
                 fontSize = Integer.parseInt(fontSizeStr);
             }
             catch(NumberFormatException ex){
-                LOG.log(Level.WARNING, "Font size property is not a number: " + fontSizeStr);
+                LOG.log(Level.WARNING, "Font size property is not a number: {0}", fontSizeStr);
             }
         }
         if(fontName != null){
@@ -1002,7 +993,7 @@ class RESTView extends JPanel implements View {
         if(jb_request.getIcon() == icon_go){
             final Request request = getRequestFromUI();
             List<String> errors = validateRequest(request);
-            if(errors.size() == 0){
+            if(errors.isEmpty()){
                 clearUIResponse();
                 final RequestExecuter executer = Implementation.of(RequestExecuter.class);
                 // Execute the request:
@@ -1291,27 +1282,13 @@ class RESTView extends JPanel implements View {
     }
     
     private void setUIReqBodyEnabled(final boolean boo){
-        setJTAReqBodyDimension();
-                
         se_req_body.getEditorView().setEnabled(boo);
         jb_body_content_type.setEnabled(boo);
         jb_body_file.setEnabled(boo);
         jb_body_params.setEnabled(boo);
     }
     
-    private void setJTAReqBodyDimension(){
-        // The TextArea was re-drawing to a bigger size
-        // when large text was placed. This check is for
-        // avoiding that.
-        if(d_jsp_req_body == null){
-            Dimension d = ((JEditorPane)se_req_body.getEditorView()).getPreferredScrollableViewportSize();
-            d_jsp_req_body = d;
-        }
-        if(jsp_req_body != null){
-            jsp_req_body.setPreferredSize(d_jsp_req_body);
-        }
-    }
-    
+   
     // Checks if URL starts with http:// or https://
     // If not, appends http:// to the hostname
     // This is just a UI convenience method.
@@ -1418,7 +1395,6 @@ class RESTView extends JPanel implements View {
         resHeaderTableModel.setHeaders(response.getHeaders());
 
         // Response body
-        Dimension d = jsp_res_body.getPreferredSize();
         //// Set the unindentedResponseBody:
         unindentedResponseBody = response.getResponseBody();
         IGlobalOptions options = Implementation.of(IGlobalOptions.class);
@@ -1476,7 +1452,6 @@ class RESTView extends JPanel implements View {
         else{
             se_response.setText(response.getResponseBody());
         }
-        jsp_res_body.setPreferredSize(d);
         se_response.setCaretPosition(0);
 
         // Response test result
@@ -1578,10 +1553,8 @@ class RESTView extends JPanel implements View {
         }
 
         // Test script
-        Dimension d = jsp_test_script.getPreferredSize();
         se_test_script.setText(request.getTestScript()==null?"":request.getTestScript());
         se_test_script.setCaretPosition(0);
-        jsp_test_script.setPreferredSize(d);
     }
     
     private Calendar statusLastUpdated;
