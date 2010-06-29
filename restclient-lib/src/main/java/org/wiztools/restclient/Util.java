@@ -261,16 +261,16 @@ public final class Util {
      * @param charset
      * @return The formatted content-type and charset.
      */
-    public static final String getFormattedContentType(final String contentType, final String charset){
+    public static String getFormattedContentType(final String contentType, final String charset){
         String charsetFormatted = Util.isStrEmpty(charset)? "": "; charset=" + charset;
         return contentType + charsetFormatted;
     }
 
-    public static final String getCharsetFromContentType(final String contentType) {
-        Pattern p = Pattern.compile("^.+;\\s*charset=(.+)$");
+    public static String getCharsetFromContentType(final String contentType) {
+        Pattern p = Pattern.compile("^.+charset=([^;]+).*$");
         Matcher m = p.matcher(contentType);
         if(m.matches()) {
-            return m.group(1);
+            return m.group(1).trim();
         }
         return "UTF-8";
     }
