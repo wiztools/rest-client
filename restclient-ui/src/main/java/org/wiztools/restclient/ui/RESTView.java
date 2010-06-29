@@ -675,8 +675,8 @@ class RESTView extends JPanel implements View {
         popupMenu.add(jm_syntax);
         
         // Attach popup menu
-        if (se_response.getEditorView() instanceof JEditorPane) {
-            se_response.getEditorView().addMouseListener(new MouseAdapter() {
+        if (se_response.getEditorComponent() instanceof JEditorPane) {
+            se_response.getEditorComponent().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     showPopup(e);
@@ -836,8 +836,8 @@ class RESTView extends JPanel implements View {
         }
         if(fontName != null){
             Font f = new Font(fontName, Font.PLAIN, fontSize);
-            se_req_body.getEditorView().setFont(f);
-            se_response.getEditorView().setFont(f);
+            se_req_body.getEditorComponent().setFont(f);
+            se_response.getEditorComponent().setFont(f);
         }
         
         this.setLayout(new BorderLayout());
@@ -1282,7 +1282,7 @@ class RESTView extends JPanel implements View {
     }
     
     private void setUIReqBodyEnabled(final boolean boo){
-        se_req_body.getEditorView().setEnabled(boo);
+        se_req_body.getEditorComponent().setEnabled(boo);
         jb_body_content_type.setEnabled(boo);
         jb_body_file.setEnabled(boo);
         jb_body_params.setEnabled(boo);
@@ -1573,12 +1573,12 @@ class RESTView extends JPanel implements View {
     }
     
     public Font getTextAreaFont(){
-        return se_req_body.getEditorView().getFont();
+        return se_req_body.getEditorComponent().getFont();
     }
     
     public void setTextAreaFont(final Font f){
-        se_req_body.getEditorView().setFont(f);
-        se_response.getEditorView().setFont(f);
+        se_req_body.getEditorComponent().setFont(f);
+        se_response.getEditorComponent().setFont(f);
     }
     
     private class StatusClearerThread extends Thread{
