@@ -25,6 +25,7 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Serializer;
 import nu.xom.ParsingException;
+import org.wiztools.commons.MultiValueMap;
 
 /**
  *
@@ -162,15 +163,16 @@ public final class XMLUtil {
             }
 
             // creating the headers child element
-            Map<String, String> headers = bean.getHeaders();
+            MultiValueMap<String, String> headers = bean.getHeaders();
             if (!headers.isEmpty()) {
                 reqChildSubElement = new Element("headers");
                 for (String key : headers.keySet()) {
-                    String value = headers.get(key);
-                    reqChildSubSubElement = new Element("header");
-                    reqChildSubSubElement.addAttribute(new Attribute("key", key));
-                    reqChildSubSubElement.addAttribute(new Attribute("value", value));
-                    reqChildSubElement.appendChild(reqChildSubSubElement);
+                    for(String value: headers.get(key)) {
+                        reqChildSubSubElement = new Element("header");
+                        reqChildSubSubElement.addAttribute(new Attribute("key", key));
+                        reqChildSubSubElement.addAttribute(new Attribute("value", value));
+                        reqChildSubElement.appendChild(reqChildSubSubElement);
+                    }
                 }
                 reqChildElement.appendChild(reqChildSubElement);
             }
@@ -335,20 +337,21 @@ public final class XMLUtil {
             respChildElement.appendChild(respChildSubElement);
 
             // adding third sub child element - headers
-            Map<String, String> headers = bean.getHeaders();
+            MultiValueMap<String, String> headers = bean.getHeaders();
             if (!headers.isEmpty()) {
                 Attribute keyAttribute = null;
                 Attribute valueAttribute = null;
                 // creating sub child-child element 
                 respChildSubElement = new Element("headers");
                 for (String key : headers.keySet()) {
-                    String value = headers.get(key);
-                    respChildSubSubElement = new Element("header");
-                    keyAttribute = new Attribute("key", key);
-                    valueAttribute = new Attribute("value", value);
-                    respChildSubSubElement.addAttribute(keyAttribute);
-                    respChildSubSubElement.addAttribute(valueAttribute);
-                    respChildSubElement.appendChild(respChildSubSubElement);
+                    for(String value: headers.get(key)) {
+                        respChildSubSubElement = new Element("header");
+                        keyAttribute = new Attribute("key", key);
+                        valueAttribute = new Attribute("value", value);
+                        respChildSubSubElement.addAttribute(keyAttribute);
+                        respChildSubSubElement.addAttribute(valueAttribute);
+                        respChildSubElement.appendChild(respChildSubSubElement);
+                    }
                 }
                 // add response child element - headers
                 respChildElement.appendChild(respChildSubElement);

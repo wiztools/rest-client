@@ -1,6 +1,6 @@
 package org.wiztools.restclient;
 
-import java.util.Map;
+import org.wiztools.commons.MultiValueMap;
 
 /**
  *
@@ -10,7 +10,7 @@ public class RoResponseBean implements Response {
     
     private final int statusCode;
     private final String statusLine;
-    private final Map<String, String> headers;
+    private final MultiValueMap<String, String> headers;
     private final String responseBody;
     private long executionTime;
 
@@ -22,7 +22,7 @@ public class RoResponseBean implements Response {
         this.executionTime = executionTime;
     }
 
-    public Map<String, String> getHeaders() {
+    public MultiValueMap<String, String> getHeaders() {
         return headers;
     }
 

@@ -52,12 +52,16 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
-import org.wiztools.restclient.Implementation;
+import org.wiztools.commons.Charsets;
+import org.wiztools.commons.CollectionsUtil;
+import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.TestException;
 import org.wiztools.restclient.TestResult;
 import org.wiztools.restclient.TestUtil;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.XMLUtil;
+import org.wiztools.commons.Implementation;
+import org.wiztools.commons.MultiValueMap;
 
 /**
  *
@@ -509,7 +513,7 @@ class RESTView extends JPanel implements View {
                     return;
                 }
                 try{
-                    String testScript = Util.getStringFromFile(f);
+                    String testScript = FileUtil.getContentAsString(f, Charsets.UTF_8);
                     se_test_script.setText(testScript);
                     se_test_script.setCaretPosition(0);
                 }
@@ -1185,7 +1189,7 @@ class RESTView extends JPanel implements View {
             return;
         }
         // Determine the MIME type and set parameter
-        String contentType = Util.getMimeType(f);
+        String contentType = FileUtil.getMimeType(f);
         String charset = null;
         if(XMLUtil.XML_MIME.equals(contentType)){
             try{
@@ -1222,7 +1226,7 @@ class RESTView extends JPanel implements View {
         }
         // Get text from file and set
         try{
-            String body = Util.getStringFromFile(f);
+            String body = FileUtil.getContentAsString(f, Charsets.UTF_8);
             se_req_body.setText(body);
             se_req_body.setCaretPosition(0);
         }
@@ -1354,7 +1358,7 @@ class RESTView extends JPanel implements View {
         jrb_req_get.setSelected(true);
         
         // Headers
-        jp_2col_req_headers.getTableModel().setData(Collections.EMPTY_MAP);
+        jp_2col_req_headers.getTableModel().setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
         
         // Body
         jd_body_content_type.setContentType(BodyContentTypeDialog.DEFAULT_CONTENT_TYPE);
@@ -1403,17 +1407,18 @@ class RESTView extends JPanel implements View {
         if(indent){
             boolean isXml = false;
             boolean isJson = false;
-            Map<String, String> headers = response.getHeaders();
+            MultiValueMap<String, String> headers = response.getHeaders();
             for(String key: headers.keySet()){
                 if("content-type".equalsIgnoreCase(key)){
-                    String contentType = headers.get(key);
-                    if("application/xml".equals(contentType) || "text/xml".equals(contentType)){
-                        isXml = true;
+                    for(String contentType: headers.get(key)) {
+                        if(contentType.startsWith("application/xml") || contentType.startsWith("text/xml")){
+                            isXml = true;
+                        }
+                        else if(contentType.startsWith("application/json")){
+                            isJson = true;
+                        }
+                        break;
                     }
-                    else if("application/json".endsWith(contentType)){
-                        isJson = true;
-                    }
-                    break;
                 }
             }
             final String responseBody = response.getResponseBody();
@@ -1492,7 +1497,7 @@ class RESTView extends JPanel implements View {
         }
 
         // Headers
-        Map<String, String> headers = request.getHeaders();
+        MultiValueMap<String, String> headers = request.getHeaders();
         jp_2col_req_headers.getTableModel().setData(headers);
 
         // Body

@@ -7,6 +7,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.wiztools.commons.Implementation;
 import static org.junit.Assert.*;
 import org.wiztools.restclient.server.TraceServer;
 

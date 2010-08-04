@@ -12,8 +12,8 @@ import org.wiztools.restclient.Response;
 import org.wiztools.restclient.RequestExecuter;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.XMLUtil;
-import org.wiztools.restclient.Implementation;
 import org.wiztools.restclient.TestResult;
+import org.wiztools.commons.Implementation;
 
 /**
  *

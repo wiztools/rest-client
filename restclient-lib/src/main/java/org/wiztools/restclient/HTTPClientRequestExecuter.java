@@ -11,7 +11,6 @@ import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.Header;
@@ -59,12 +58,15 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
+import org.wiztools.commons.Implementation;
+import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.StreamUtil;
 
 /**
  *
  * @author subwiz
  */
-class HTTPClientRequestExecuter implements RequestExecuter {
+public class HTTPClientRequestExecuter implements RequestExecuter {
 
     private static final Logger LOG = Logger.getLogger(HTTPClientRequestExecuter.class.getName());
 
@@ -202,11 +204,12 @@ class HTTPClientRequestExecuter implements RequestExecuter {
             method.setParams(new BasicHttpParams().setParameter(urlStr, url));
 
             // Get request headers
-            Map<String, String> header_data = request.getHeaders();
+            MultiValueMap<String, String> header_data = request.getHeaders();
             for (String key : header_data.keySet()) {
-                String value = header_data.get(key);
-                Header header = new BasicHeader(key, value);
-                method.addHeader(header);
+                for(String value: header_data.get(key)) {
+                    Header header = new BasicHeader(key, value);
+                    method.addHeader(header);
+                }
             }
 
             // POST/PUT method specific logic
@@ -309,7 +312,7 @@ class HTTPClientRequestExecuter implements RequestExecuter {
             if(entity != null){
                 InputStream is = entity.getContent();
                 final Charset encoding = Charset.forName(charset);
-                String responseBody = Util.inputStream2String(is, encoding);
+                String responseBody = StreamUtil.inputStream2String(is, encoding);
                 if (responseBody != null) {
                     response.setResponseBody(responseBody);
                 }

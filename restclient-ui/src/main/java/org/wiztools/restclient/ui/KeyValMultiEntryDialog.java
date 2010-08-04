@@ -21,6 +21,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import org.wiztools.commons.Charsets;
+import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.Util;
 
@@ -110,7 +112,7 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         File f = ui.getOpenFile(FileChooserType.OPEN_TEST_SCRIPT, me);
         if(f != null){
             try{
-                String content = Util.getStringFromFile(f);
+                String content = FileUtil.getContentAsString(f, Charsets.UTF_8);
                 Dimension d = jsp_in.getPreferredSize();
                 jta_in.setText(content);
                 jta_in.setCaretPosition(0);

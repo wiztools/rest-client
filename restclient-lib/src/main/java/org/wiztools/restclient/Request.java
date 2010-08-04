@@ -2,7 +2,7 @@ package org.wiztools.restclient;
 
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
+import org.wiztools.commons.MultiValueMap;
 
 /**
  *
@@ -22,7 +22,7 @@ public interface Request extends Cloneable {
 
     ReqEntity getBody();
 
-    Map<String, String> getHeaders();
+    MultiValueMap<String, String> getHeaders();
 
     HTTPVersion getHttpVersion();
 

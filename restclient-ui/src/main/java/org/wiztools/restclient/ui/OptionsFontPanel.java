@@ -21,7 +21,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.wiztools.restclient.IGlobalOptions;
-import org.wiztools.restclient.Implementation;
+import org.wiztools.commons.Implementation;
 
 /**
  *

@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ProxyConfig;
 import org.wiztools.restclient.Util;
-import org.wiztools.restclient.Implementation;
+import org.wiztools.commons.Implementation;
 
 /**
  *

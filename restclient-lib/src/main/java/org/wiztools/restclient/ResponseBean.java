@@ -1,8 +1,8 @@
 package org.wiztools.restclient;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import org.wiztools.commons.CollectionsUtil;
+import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.MultiValueMapArrayList;
 
 /**
  *
@@ -12,7 +12,7 @@ public final class ResponseBean implements Response{
 
     private int statusCode;
     private String statusLine;
-    private Map<String, String> headers;
+    private MultiValueMap<String, String> headers;
     private String responseBody;
     private TestResult testResult;
     private long executionTime;
@@ -33,8 +33,8 @@ public final class ResponseBean implements Response{
         this.statusCode = statusCode;
     }
 
-    public Map<String, String> getHeaders() {
-        return Collections.unmodifiableMap(headers);
+    public MultiValueMap<String, String> getHeaders() {
+        return CollectionsUtil.unmodifiableMultiValueMap(headers);
     }
 
     /*public void setHeaders(Map<String, String> headers) {
@@ -70,7 +70,7 @@ public final class ResponseBean implements Response{
     }
     
     public ResponseBean(){
-        headers = new LinkedHashMap<String, String>();
+        headers = new MultiValueMapArrayList<String, String>();
     }
     
     @Override
@@ -82,7 +82,9 @@ public final class ResponseBean implements Response{
         response.responseBody = responseBody;
         if(headers.size() != 0){
             for(String header: headers.keySet()){
-                response.addHeader(header, headers.get(header));
+                for(String value: headers.get(header)) {
+                    response.addHeader(header, value);
+                }
             }
         }
         return response;

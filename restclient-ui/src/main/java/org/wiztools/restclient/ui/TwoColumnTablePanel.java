@@ -46,34 +46,19 @@ final class TwoColumnTablePanel extends JPanel {
                     String key = (String)o[0];
                     keys.add(key);
                 }
-                Map<String, String> keyAlreadyExists = new LinkedHashMap<String, String>();
 
                 int successCount = 0;
                 for(String key: keyValuePair.keySet()){
                     String value = keyValuePair.get(key);
-                    if(keys.contains(key)){
-                        keyAlreadyExists.put(key, keyValuePair.get(key));
-                    }
-                    else{
-                        model.insertRow(key, value);
-                        successCount++;
-                    }
+                    model.insertRow(key, value);
+                    successCount++;
                 }
+                
                 StringBuilder sb = new StringBuilder();
                 sb.append("Added ").append(successCount).append(" key/value pairs.\n\n");
-                sb.append("**Lines Skipped Due To Duplication**\n\n");
-                if(keyAlreadyExists.size() == 0){
-                    sb.append("- None -\n");
-                }
-                else{
-                    for(String key: keyAlreadyExists.keySet()){
-                        String value = keyAlreadyExists.get(key);
-                        sb.append(key).append(": ").append(value).append("\n");
-                    }
-                }
 
                 sb.append("\n**Lines Skipped Due To Pattern Mis-match**\n\n");
-                if(invalidLines.size() == 0){
+                if(invalidLines.isEmpty()){
                     sb.append("- None -\n");
                 }
                 else{
@@ -177,14 +162,7 @@ final class TwoColumnTablePanel extends JPanel {
                     errors.add("Value is empty.");
                 }
                 Object[][] data = model.getData();
-                if(data != null){
-                    for(int i=0; i<data.length; i++){
-                        if((data[i][0] != null) && (data[i][0].equals(key))){
-                            errors = errors==null?new ArrayList<String>():errors;
-                            errors.add("Duplicate key found! Delete the original before adding!");
-                        }
-                    }
-                }
+                
                 if(errors != null){
                     StringBuilder sb = new StringBuilder();
                     sb.append("<html><ul>");
