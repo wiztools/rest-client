@@ -45,11 +45,15 @@ public class TraceServlet extends HttpServlet {
         Enumeration eParams = request.getParameterNames();
         while(eParams.hasMoreElements()){
             String paramName = (String)eParams.nextElement();
-            out.println("\t~Parameter Name: " + paramName);
-            out.println("\t~Parameter Value:");
-            String paramValue = request.getParameter(paramName);
-            paramValue = paramValue.replaceAll("\n", "\n\t");
-            out.println("\t" + paramValue);
+            String[] paramValues = request.getParameterValues(paramName);
+
+            for(String paramValue: paramValues) {
+                paramValue = paramValue.replaceAll("\n", "\n\t");
+
+                out.println("\t~Parameter Name: " + paramName);
+                out.println("\t~Parameter Value:");
+                out.println("\t" + paramValue);
+            }
         }
         
         out.println("\n*Body*");
