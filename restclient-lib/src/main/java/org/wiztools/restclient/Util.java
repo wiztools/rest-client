@@ -7,19 +7,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.MalformedInputException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +20,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import org.wiztools.commons.MultiValueMap;
 
 /**
  *
@@ -69,14 +62,15 @@ public final class Util {
     
     private static final String ENCODE = "UTF-8";
 
-    public static String parameterEncode(Map<String, String> params) {
-        StringBuilder sb = new StringBuilder();
+    public static String parameterEncode(MultiValueMap<String, String> params) {
+        final StringBuilder sb = new StringBuilder();
         for (String key : params.keySet()) {
             try {
-                String value = params.get(key);
-                String encodedKey = URLEncoder.encode(key, ENCODE);
-                String encodedValue = URLEncoder.encode(value, ENCODE);
-                sb.append(encodedKey).append("=").append(encodedValue).append("&");
+                for(final String value: params.get(key)) {
+                    String encodedKey = URLEncoder.encode(key, ENCODE);
+                    String encodedValue = URLEncoder.encode(value, ENCODE);
+                    sb.append(encodedKey).append("=").append(encodedValue).append("&");
+                }
             } catch (UnsupportedEncodingException ex) {
                 assert true : "Encoder UTF-8 supported in all Java platforms.";
             }
