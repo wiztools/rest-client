@@ -51,6 +51,7 @@ public class Main {
         globalUISettings();
         
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new RESTMain(RCConstants.TITLE + RCConstants.VERSION);
             }
