@@ -62,6 +62,7 @@ import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.XMLUtil;
 import org.wiztools.commons.Implementation;
 import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.StringUtil;
 
 /**
  *
@@ -481,7 +482,7 @@ class RESTView extends JPanel implements View {
         jb_req_test_template.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String t = se_test_script.getText();
-                if(!Util.isStrEmpty(t)){
+                if(!StringUtil.isStrEmpty(t)){
                     JOptionPane.showMessageDialog(rest_ui.getFrame(),
                             "Script text already present! Please clear existing script!",
                             "Error", JOptionPane.ERROR_MESSAGE);
@@ -496,7 +497,7 @@ class RESTView extends JPanel implements View {
         jb_req_test_open.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String str = se_test_script.getText();
-                if(!Util.isStrEmpty(str)){
+                if(!StringUtil.isStrEmpty(str)){
                     int ret = JOptionPane.showConfirmDialog(rest_ui.getFrame(), "Script already exists. Erase?", "Erase existing script?", JOptionPane.YES_NO_OPTION);
                     if(ret == JOptionPane.NO_OPTION){
                         return;
@@ -527,7 +528,7 @@ class RESTView extends JPanel implements View {
         jb_req_test_run.setToolTipText("Run Test");
         jb_req_test_run.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(Util.isStrEmpty(se_test_script.getText())){
+                if(StringUtil.isStrEmpty(se_test_script.getText())){
                     JOptionPane.showMessageDialog(rest_ui.getFrame(),
                             "No script!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -547,7 +548,7 @@ class RESTView extends JPanel implements View {
                     return;
                 }
                 String testScript = se_test_script.getText();
-                if(Util.isStrEmpty(testScript)){
+                if(StringUtil.isStrEmpty(testScript)){
                     JOptionPane.showMessageDialog(rest_ui.getFrame(), "No Script", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -967,7 +968,7 @@ class RESTView extends JPanel implements View {
         if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
             // Get request body
             String req_body = se_req_body.getText();
-            if(!Util.isStrEmpty(req_body)){
+            if(!StringUtil.isStrEmpty(req_body)){
                 String req_content_type = jd_body_content_type.getContentType();
                 String req_char_set = jd_body_content_type.getCharSet();
                 ReqEntityBean body = new ReqEntityBean(req_body,
@@ -1250,7 +1251,7 @@ class RESTView extends JPanel implements View {
     }
     
     private boolean canSetReqBodyText(){
-        if(Util.isStrEmpty(se_req_body.getText())){
+        if(StringUtil.isStrEmpty(se_req_body.getText())){
             return true;
         }
         else{
@@ -1298,7 +1299,7 @@ class RESTView extends JPanel implements View {
     // This is just a UI convenience method.
     private void correctRequestURL(){
         String str = (String)jcb_url.getSelectedItem();
-        if(Util.isStrEmpty(str)){
+        if(StringUtil.isStrEmpty(str)){
             return;
         }
         else{
@@ -1322,10 +1323,10 @@ class RESTView extends JPanel implements View {
         
         // Auth check
         if(request.getAuthMethods().size() > 0){
-            if(Util.isStrEmpty(request.getAuthUsername())){
+            if(StringUtil.isStrEmpty(request.getAuthUsername())){
                 errors.add("Username is empty.");
             }
-            if(Util.isStrEmpty(new String(request.getAuthPassword()))){
+            if(StringUtil.isStrEmpty(new String(request.getAuthPassword()))){
                 errors.add("Password is empty.");
             }
         }
@@ -1337,11 +1338,11 @@ class RESTView extends JPanel implements View {
             ReqEntity reBean = request.getBody();
             if(reBean != null){
                 String req_body = reBean.getBody();
-                if(!Util.isStrEmpty(req_body)){
+                if(!StringUtil.isStrEmpty(req_body)){
                     String req_content_type = reBean.getContentType();
                     String req_char_set = reBean.getCharSet();
-                    if(Util.isStrEmpty(req_content_type)
-                            || Util.isStrEmpty(req_char_set)){
+                    if(StringUtil.isStrEmpty(req_content_type)
+                            || StringUtil.isStrEmpty(req_char_set)){
                         errors.add("Body content is set, but `Content-type' and/or `Char-set' not set.");
                     }
                 }
@@ -1528,9 +1529,9 @@ class RESTView extends JPanel implements View {
             }
         }
         jcb_auth_preemptive.setSelected(request.isAuthPreemptive());
-        jtf_auth_host.setText(Util.getNullStrIfNull(request.getAuthHost()));
-        jtf_auth_realm.setText(Util.getNullStrIfNull(request.getAuthRealm()));
-        jtf_auth_username.setText(Util.getNullStrIfNull(request.getAuthUsername()));
+        jtf_auth_host.setText(StringUtil.getNullStrIfNull(request.getAuthHost()));
+        jtf_auth_realm.setText(StringUtil.getNullStrIfNull(request.getAuthRealm()));
+        jtf_auth_username.setText(StringUtil.getNullStrIfNull(request.getAuthUsername()));
         if(request.getAuthPassword() != null){
             jpf_auth_password.setText(new String(request.getAuthPassword()));
         }

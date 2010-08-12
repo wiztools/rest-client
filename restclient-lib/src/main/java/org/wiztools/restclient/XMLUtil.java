@@ -26,6 +26,7 @@ import nu.xom.Element;
 import nu.xom.Serializer;
 import nu.xom.ParsingException;
 import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.StringUtil;
 
 /**
  *
@@ -107,21 +108,21 @@ public final class XMLUtil {
 
                 // creating the auth-host child element
                 String authHost = bean.getAuthHost();
-                if (!Util.isStrEmpty(authHost)) {
+                if (!StringUtil.isStrEmpty(authHost)) {
                     reqChildSubElement = new Element("auth-host");
                     reqChildSubElement.appendChild(authHost);
                     reqChildElement.appendChild(reqChildSubElement);
                 }
                 // creating the auth-realm child element
                 String authRealm = bean.getAuthRealm();
-                if (!Util.isStrEmpty(authRealm)) {
+                if (!StringUtil.isStrEmpty(authRealm)) {
                     reqChildSubElement = new Element("auth-realm");
                     reqChildSubElement.appendChild(authRealm);
                     reqChildElement.appendChild(reqChildSubElement);
                 }
                 // creating the auth-username child element
                 String authUsername = bean.getAuthUsername();
-                if (!Util.isStrEmpty(authUsername)) {
+                if (!StringUtil.isStrEmpty(authUsername)) {
                     reqChildSubElement = new Element("auth-username");
                     reqChildSubElement.appendChild(authUsername);
                     reqChildElement.appendChild(reqChildSubElement);
@@ -130,7 +131,7 @@ public final class XMLUtil {
                 String authPassword = null;
                 if (bean.getAuthPassword() != null) {
                     authPassword = new String(bean.getAuthPassword());
-                    if (!Util.isStrEmpty(authPassword)) {
+                    if (!StringUtil.isStrEmpty(authPassword)) {
                         String encPassword = Base64.encodeObject(authPassword);
 
                         reqChildSubElement = new Element("auth-password");
@@ -142,7 +143,7 @@ public final class XMLUtil {
 
             // Creating SSL elements
             String sslTruststore = bean.getSslTrustStore();
-            if (!Util.isStrEmpty(sslTruststore)) {
+            if (!StringUtil.isStrEmpty(sslTruststore)) {
                 // 1. Create truststore entry
                 reqChildSubElement = new Element("ssl-truststore");
                 reqChildSubElement.appendChild(sslTruststore);

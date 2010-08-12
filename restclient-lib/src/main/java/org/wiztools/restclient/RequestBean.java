@@ -28,7 +28,7 @@ public final class RequestBean implements Request{
     private String testScript;
     private String sslTrustStore;
     private char[] sslTrustStorePassword;
-    private SSLHostnameVerifier sslHostNameVerifier;
+    private SSLHostnameVerifier sslHostNameVerifier = SSLHostnameVerifier.STRICT; // Default to strict!
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
 
     public HTTPVersion getHttpVersion() {

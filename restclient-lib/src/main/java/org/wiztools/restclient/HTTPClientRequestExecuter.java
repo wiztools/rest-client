@@ -61,6 +61,7 @@ import org.apache.http.protocol.HttpContext;
 import org.wiztools.commons.Implementation;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StreamUtil;
+import org.wiztools.commons.StringUtil;
 
 /**
  *
@@ -141,8 +142,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         if (authEnabled) {
             String uid = request.getAuthUsername();
             String pwd = new String(request.getAuthPassword());
-            String host = Util.isStrEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
-            String realm = Util.isStrEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
+            String host = StringUtil.isStrEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
+            String realm = StringUtil.isStrEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
 
             // Type of authentication
             List<String> authPrefs = new ArrayList<String>(2);
@@ -235,35 +236,48 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             }
 
             // SSL
-            String trustStorePath = request.getSslTrustStore();
+
+            // Set the hostname verifier:
+            SSLHostnameVerifier verifier = request.getSslHostNameVerifier();
+            final X509HostnameVerifier hcVerifier;
+            switch(verifier){
+                case STRICT:
+                    hcVerifier = SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
+                    break;
+                case BROWSER_COMPATIBLE:
+                    hcVerifier = SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
+                    break;
+                case ALLOW_ALL:
+                    hcVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+                    break;
+                default:
+                    hcVerifier = SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
+                    break;
+            }
+            
+            // Set the hostname verifier in the default SSL handler:
+            {
+                Scheme s = httpclient.getConnectionManager().getSchemeRegistry().getScheme("https");
+                SSLSocketFactory sslFac = (SSLSocketFactory) s.getSocketFactory();
+                sslFac.setHostnameVerifier(hcVerifier);
+            }
+
+            // SSL with truststore:
+            final String trustStorePath = request.getSslTrustStore();
             char[] trustStorePassword = request.getSslTrustStorePassword();
-            if(urlProtocol.equalsIgnoreCase("https") && !Util.isStrEmpty(trustStorePath)){
+            if(urlProtocol.equalsIgnoreCase("https") && !StringUtil.isStrEmpty(trustStorePath)){
                 KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
-                FileInputStream instream = new FileInputStream(new File(trustStorePath));
-                try{
-                    trustStore.load(instream, trustStorePassword);
-                }
-                finally{
-                    instream.close();
+                if(!StringUtil.isStrEmpty(trustStorePath)) {
+                    FileInputStream instream = new FileInputStream(new File(trustStorePath));
+                    try{
+                        trustStore.load(instream, trustStorePassword);
+                    }
+                    finally{
+                        instream.close();
+                    }
                 }
 
                 SSLSocketFactory socketFactory = new SSLSocketFactory(trustStore);
-                SSLHostnameVerifier verifier = request.getSslHostNameVerifier();
-                X509HostnameVerifier hcVerifier = null;
-                switch(verifier){
-                    case STRICT:
-                        hcVerifier = SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
-                        break;
-                    case BROWSER_COMPATIBLE:
-                        hcVerifier = SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
-                        break;
-                    case ALLOW_ALL:
-                        hcVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-                        break;
-                    default:
-                        hcVerifier = SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
-                        break;
-                }
                 socketFactory.setHostnameVerifier(hcVerifier);
                 Scheme sch = new Scheme(urlProtocol, socketFactory, urlPort);
                 httpclient.getConnectionManager().getSchemeRegistry().register(sch);

@@ -21,6 +21,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.StringUtil;
 
 /**
  *
@@ -30,17 +31,6 @@ public final class Util {
     
     // private constructor so that no instance from outside can be created
     private Util(){}
-
-    public static boolean isStrEmpty(final String str) {
-        if (str == null || "".equals(str.trim())) {
-            return true;
-        }
-        return false;
-    }
-
-    public static String getNullStrIfNull(final String str) {
-        return str == null ? "" : str;
-    }
 
     public static String getStackTrace(final Throwable aThrowable) {
         String errorMsg = aThrowable.getMessage();
@@ -201,7 +191,7 @@ public final class Util {
      * @return The formatted content-type and charset.
      */
     public static String getFormattedContentType(final String contentType, final String charset){
-        String charsetFormatted = Util.isStrEmpty(charset)? "": "; charset=" + charset;
+        String charsetFormatted = StringUtil.isStrEmpty(charset)? "": "; charset=" + charset;
         return contentType + charsetFormatted;
     }
 
