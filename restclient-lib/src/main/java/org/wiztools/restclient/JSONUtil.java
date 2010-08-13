@@ -5,10 +5,10 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.JsonNode;
-import org.codehaus.jackson.map.JsonTypeMapper;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  *
@@ -28,18 +28,23 @@ public final class JSONUtil {
         JsonFactory fac = new JsonFactory();
         try{
             JsonParser parser = fac.createJsonParser(new StringReader(jsonIn));
-            JsonTypeMapper mapper = new JsonTypeMapper();
+            ObjectMapper mapper = new ObjectMapper();
             JsonNode node = null;
             try{
-                node = mapper.read(parser);
+                node = mapper.readTree(parser);
             }
             catch(JsonParseException ex){
                 throw new JSONParseException(ex.getMessage());
             }
             StringWriter out = new StringWriter();
+
+            // Create pretty printer:
             JsonGenerator gen = fac.createJsonGenerator(out);
             gen.useDefaultPrettyPrinter();
-            node.writeTo(gen);
+
+            // Now write:
+            mapper.writeTree(gen, node);
+            
             gen.flush();
             gen.close();
             return out.toString();

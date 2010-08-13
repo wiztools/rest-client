@@ -61,8 +61,8 @@
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-asl</artifactId>
-            <version>0.9.3</version>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.5.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
