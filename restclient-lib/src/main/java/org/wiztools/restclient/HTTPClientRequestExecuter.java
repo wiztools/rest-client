@@ -352,9 +352,21 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             final HttpEntity entity = http_res.getEntity();
             if(entity != null){
                 InputStream is = entity.getContent();
-                String responseBody = StreamUtil.inputStream2String(is, charset);
-                if (responseBody != null) {
-                    response.setResponseBody(responseBody);
+                try{
+                    String responseBody = StreamUtil.inputStream2String(is, charset);
+                    if (responseBody != null) {
+                        response.setResponseBody(responseBody);
+                    }
+                }
+                catch(IOException ex) {
+                    final String msg = "Response body conversion to string using "
+                            + charset.displayName()
+                            + " encoding failed. Response body not set!";
+
+                    for(View view: views) {
+                        view.doError(msg);
+                    }
+                    LOG.log(Level.WARNING, msg);
                 }
             }
 
