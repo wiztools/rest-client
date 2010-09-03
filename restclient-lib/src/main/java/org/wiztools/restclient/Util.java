@@ -201,6 +201,6 @@ public final class Util {
         if(m.matches()) {
             return m.group(1).trim();
         }
-        return "UTF-8";
+        return null;
     }
 }

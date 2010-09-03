@@ -8,6 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +86,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
      */
     private boolean isRequestStarted = false;
 
+    @Override
     public void execute(Request request, View... views) {
         // Verify if this is the first call to this object:
         if(isRequestStarted){
@@ -317,16 +320,39 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 }
             }
 
-            String charset = null;
-            if(contentType != null) {
-                charset = Util.getCharsetFromContentType(contentType);
+            // find out the charset:
+            final Charset charset;
+            {
+                Charset c;
+                if(contentType != null) {
+                    final String charsetStr = Util.getCharsetFromContentType(contentType);
+                    try{
+                        c = Charset.forName(charsetStr);
+                    }
+                    catch(IllegalCharsetNameException ex) {
+                        LOG.log(Level.WARNING, "Charset name is illegal: {0}", charsetStr);
+                        c = Charset.defaultCharset();
+                    }
+                    catch(UnsupportedCharsetException ex) {
+                        LOG.log(Level.WARNING, "Charset {0} is not supported in this JVM.", charsetStr);
+                        c = Charset.defaultCharset();
+                    }
+                    catch(IllegalArgumentException ex) {
+                        LOG.log(Level.WARNING, "Charset parameter is not available in Content-Type header!");
+                        c = Charset.defaultCharset();
+                    }
+                }
+                else {
+                    c = Charset.defaultCharset();
+                    LOG.log(Level.WARNING, "Content-Type header not available in response. Using platform default encoding: {0}", c.name());
+                }
+                charset = c;
             }
 
-            HttpEntity entity = http_res.getEntity();
+            final HttpEntity entity = http_res.getEntity();
             if(entity != null){
                 InputStream is = entity.getContent();
-                final Charset encoding = Charset.forName(charset);
-                String responseBody = StreamUtil.inputStream2String(is, encoding);
+                String responseBody = StreamUtil.inputStream2String(is, charset);
                 if (responseBody != null) {
                     response.setResponseBody(responseBody);
                 }
@@ -348,9 +374,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             for(View view: views){
                 view.doResponse(response);
             }
-        } /*catch (HttpException ex) {
-            view.doError(Util.getStackTrace(ex));
-        }*/ catch (IOException ex) {
+        }
+        catch (IOException ex) {
             if(!interruptedShutdown){
                 for(View view: views){
                     view.doError(Util.getStackTrace(ex));
@@ -383,6 +408,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         }
     }
 
+    @Override
     public void abortExecution(){
         if(!isRequestCompleted){
             ClientConnectionManager conMgr = httpclient.getConnectionManager();
@@ -396,6 +422,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
     
     private static final class PreemptiveAuth implements HttpRequestInterceptor {
 
+        @Override
         public void process(
                 final HttpRequest request,
                 final HttpContext context) throws HttpException, IOException {
