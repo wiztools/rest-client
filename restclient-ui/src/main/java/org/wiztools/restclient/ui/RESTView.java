@@ -93,7 +93,19 @@ class RESTView extends JPanel implements View {
     private JTextField jtf_res_status = new JTextField();
     
     private JTextField jtf_body_content_type = new JTextField();
-    private ScriptEditor se_req_body = ScriptEditorFactory.getXMLScriptEditor();
+    private ScriptEditor se_req_body;
+    {
+        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        final boolean enableSyntaxColoring = Boolean.valueOf(
+                options.getProperty("request.body.syntax.color")==null?
+                    "true": options.getProperty("request.body.syntax.color"));
+        if(enableSyntaxColoring) {
+            se_req_body = ScriptEditorFactory.getXMLScriptEditor();
+        }
+        else {
+            se_req_body = ScriptEditorFactory.getTextAreaScriptEditor();
+        }
+    }
     private JButton jb_body_content_type = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "edit.png"));
     private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JButton jb_body_params = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
@@ -132,7 +144,19 @@ class RESTView extends JPanel implements View {
     
     // Response
     // private JScrollPane jsp_res_body = new JScrollPane();
-    private ScriptEditor se_response = ScriptEditorFactory.getXMLScriptEditor();
+    private ScriptEditor se_response;
+    {
+        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        final boolean enableSyntaxColoring = Boolean.valueOf(
+                options.getProperty("response.body.syntax.color")==null?
+                    "true": options.getProperty("response.body.syntax.color"));
+        if(enableSyntaxColoring) {
+            se_response = ScriptEditorFactory.getXMLScriptEditor();
+        }
+        else {
+            se_response = ScriptEditorFactory.getTextAreaScriptEditor();
+        }
+    }
     
     private JTable jt_res_headers = new JTable();
     
@@ -233,6 +257,7 @@ class RESTView extends JPanel implements View {
         //jrb_req_trace.setMnemonic('e');
         
         ActionListener jrbAL = new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
                     setUIReqBodyEnabled(true);
@@ -287,6 +312,7 @@ class RESTView extends JPanel implements View {
     
         jb_body_content_type.setToolTipText("Edit Content-type & Charset");
         jb_body_content_type.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 jd_body_content_type.setVisible(true);
             }
@@ -298,6 +324,7 @@ class RESTView extends JPanel implements View {
         
         jb_body_file.setToolTipText("Load from file");
         jb_body_file.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 jb_body_fileActionPerformed(event);
             }
@@ -306,6 +333,7 @@ class RESTView extends JPanel implements View {
         
         jb_body_params.setToolTipText("Insert parameters");
         jb_body_params.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 jb_body_paramActionPerformed(event);
             }
@@ -318,6 +346,7 @@ class RESTView extends JPanel implements View {
         JMenu jm_syntax = new JMenu("Syntax Color");
         JMenuItem jmi_syntax_none = new JMenuItem("None");
         jmi_syntax_none.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.DEFAULT);
             }
@@ -325,6 +354,7 @@ class RESTView extends JPanel implements View {
         jm_syntax.add(jmi_syntax_none);
         JMenuItem jmi_syntax_xml = new JMenuItem("XML");
         jmi_syntax_xml.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.XML);
             }
@@ -332,6 +362,7 @@ class RESTView extends JPanel implements View {
         jm_syntax.add(jmi_syntax_xml);
         JMenuItem jmi_syntax_json = new JMenuItem("JSON");
         jmi_syntax_json.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.JSON);
             }
@@ -380,6 +411,7 @@ class RESTView extends JPanel implements View {
         jp_auth_west_center.setLayout(new GridLayout(2,1));
         jcb_auth_basic.setSelected(false);
         ActionListener action = new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 auth_enableActionPerformed(event);
             }
@@ -480,6 +512,7 @@ class RESTView extends JPanel implements View {
         jp_test_north.setLayout(new FlowLayout(FlowLayout.LEFT));
         jb_req_test_template.setToolTipText("Insert Template");
         jb_req_test_template.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 String t = se_test_script.getText();
                 if(!StringUtil.isStrEmpty(t)){
@@ -495,6 +528,7 @@ class RESTView extends JPanel implements View {
         jp_test_north.add(jb_req_test_template);
         jb_req_test_open.setToolTipText("Open Test Script From File");
         jb_req_test_open.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 String str = se_test_script.getText();
                 if(!StringUtil.isStrEmpty(str)){
