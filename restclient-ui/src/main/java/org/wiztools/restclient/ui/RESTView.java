@@ -20,7 +20,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.LinkedList;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -34,7 +33,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -50,6 +48,7 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
 import org.wiztools.commons.Charsets;
@@ -227,9 +226,18 @@ class RESTView extends JPanel implements View {
         init();
         view = this;
         
-        // Start status clear thread:
+        // Start status clear timer:
         statusLastUpdated = Calendar.getInstance();
-        new StatusClearerThread().start();
+        new Timer(5*1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Calendar c = (Calendar)statusLastUpdated.clone();
+                c.add(Calendar.SECOND, 20);
+                if(Calendar.getInstance().after(c)){
+                    setStatusMessage(RCConstants.TITLE);
+                }
+            }
+        }).start();
     }
     
     private JTabbedPane initJTPRequest(){
@@ -477,6 +485,7 @@ class RESTView extends JPanel implements View {
         JPanel jp_ssl_center_flow = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_truststore_file);
         jb_ssl_browse.setToolTipText("Open truststore file.");
         jb_ssl_browse.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
                 if(f == null){
@@ -561,6 +570,7 @@ class RESTView extends JPanel implements View {
         jp_test_north.add(new JSeparator(JSeparator.VERTICAL));
         jb_req_test_run.setToolTipText("Run Test");
         jb_req_test_run.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if(StringUtil.isStrEmpty(se_test_script.getText())){
                     JOptionPane.showMessageDialog(rest_ui.getFrame(),
@@ -576,6 +586,7 @@ class RESTView extends JPanel implements View {
         jp_test_north.add(jb_req_test_run);
         jb_req_test_quick.setToolTipText("Quick Run Test-Using last request & response");
         jb_req_test_quick.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if(lastRequest == null || lastResponse == null){
                     JOptionPane.showMessageDialog(rest_ui.getFrame(), "No Last Request/Response", "Error", JOptionPane.ERROR_MESSAGE);
@@ -643,6 +654,7 @@ class RESTView extends JPanel implements View {
         // Indent XML
         JMenuItem jmi_indentXml = new JMenuItem("Indent XML");
         jmi_indentXml.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent evt) {
                 String resText = se_response.getText();
                 if("".equals(resText.trim())){
@@ -666,6 +678,7 @@ class RESTView extends JPanel implements View {
         // Indent JSON
         JMenuItem jmi_indentJson = new JMenuItem("Indent JSON");
         jmi_indentJson.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 String resText = se_response.getText();
                 if("".equals(resText.trim())){
@@ -691,6 +704,7 @@ class RESTView extends JPanel implements View {
         JMenu jm_syntax = new JMenu("Syntax Color");
         JMenuItem jmi_syntax_xml = new JMenuItem("XML");
         jmi_syntax_xml.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 actionTextEditorSyntaxChange(se_response, TextEditorSyntax.XML);
             }
@@ -698,6 +712,7 @@ class RESTView extends JPanel implements View {
         jm_syntax.add(jmi_syntax_xml);
         JMenuItem jmi_syntax_json = new JMenuItem("JSON");
         jmi_syntax_json.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 actionTextEditorSyntaxChange(se_response, TextEditorSyntax.JSON);
             }
@@ -705,6 +720,7 @@ class RESTView extends JPanel implements View {
         jm_syntax.add(jmi_syntax_json);
         JMenuItem jmi_syntax_none = new JMenuItem("None");
         jmi_syntax_none.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 actionTextEditorSyntaxChange(se_response, TextEditorSyntax.DEFAULT);
             }
@@ -783,6 +799,7 @@ class RESTView extends JPanel implements View {
         jb_request = new JButton(icon_go);
         jb_request.setToolTipText("Go!");
         jb_request.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 jb_requestActionPerformed();
             }
@@ -846,6 +863,7 @@ class RESTView extends JPanel implements View {
         
         // Initialize parameter dialog
         ParameterView pv = new ParameterView(){
+            @Override
             public void setParameter(final String params) {
                 se_req_body.setText(params);
             }
@@ -856,6 +874,7 @@ class RESTView extends JPanel implements View {
         // Initialize jd_body_content_type
         jd_body_content_type = new BodyContentTypeDialog(rest_ui.getFrame());
         jd_body_content_type.addContentTypeCharSetChangeListener(new ContentTypeCharSetChangeListener() {
+            @Override
             public void changed(String contentType, String charSet) {
                 jtf_body_content_type.setText(Util.getFormattedContentType(contentType, charSet));
             }
@@ -1069,6 +1088,7 @@ class RESTView extends JPanel implements View {
         lastRequest = request;
         
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 jpb_status.setVisible(true);
                 // jb_request.setEnabled(false);
@@ -1086,6 +1106,7 @@ class RESTView extends JPanel implements View {
         lastResponse = response;
     
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 // Update the UI:
                 setUIFromResponse(response);
@@ -1104,6 +1125,7 @@ class RESTView extends JPanel implements View {
     @Override
     public void doCancelled(){
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 setStatusMessage("Request cancelled!");
             }
@@ -1113,6 +1135,7 @@ class RESTView extends JPanel implements View {
     @Override
     public void doEnd(){
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 jpb_status.setVisible(false);
                 // jb_request.setEnabled(true);
@@ -1125,6 +1148,7 @@ class RESTView extends JPanel implements View {
     @Override
     public void doError(final String error){
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 showError(error);
                 setStatusMessage("An error occurred during request.");
@@ -1621,22 +1645,4 @@ class RESTView extends JPanel implements View {
         se_response.getEditorComponent().setFont(f);
     }
     
-    private class StatusClearerThread extends Thread{
-        @Override
-        public void run(){
-            while(true){
-                try{
-                    Thread.sleep(5*1000);
-                }
-                catch(InterruptedException ex){
-                    // Do nothing!
-                }
-                Calendar c = (Calendar)statusLastUpdated.clone();
-                c.add(Calendar.SECOND, 20);
-                if(Calendar.getInstance().after(c)){
-                    setStatusMessage(RCConstants.TITLE);
-                }
-            }
-        }
-    }
 }
