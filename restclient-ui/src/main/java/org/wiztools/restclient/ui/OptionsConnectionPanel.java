@@ -13,8 +13,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import org.wiztools.commons.Implementation;
 import org.wiztools.restclient.IGlobalOptions;
+import org.wiztools.commons.Implementation;
 
 /**
  *

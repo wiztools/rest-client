@@ -86,11 +86,11 @@ class TwoColumnTableModel extends AbstractTableModel {
     }
     
     public void setData(final MultiValueMap<String, String> dataMap){
-        int size = dataMap.values().size();
-        Object[][] o = new Object[size][2];
+        Object[][] o = new Object[dataMap.values().size()][2];
+
         int i = 0;
-        for(String key: dataMap.keySet()){
-            for(String value: dataMap.get(key)){
+        for(String key: dataMap.keySet()) {
+            for(String value: dataMap.get(key)) {
                 o[i][0] = key;
                 o[i][1] = value;
                 i++;

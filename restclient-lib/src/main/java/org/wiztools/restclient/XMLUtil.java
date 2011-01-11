@@ -10,7 +10,9 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -24,7 +26,6 @@ import nu.xom.Element;
 import nu.xom.Serializer;
 import nu.xom.ParsingException;
 import org.wiztools.commons.MultiValueMap;
-import org.wiztools.commons.MultiValueMapArrayList;
 import org.wiztools.commons.StringUtil;
 
 /**
@@ -37,7 +38,7 @@ public final class XMLUtil {
     }
     private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
     private static final String[] VERSIONS = new String[]{
-        "2.0", "2.1", "2.2a1", "2.2a2", "2.2", "2.3b1", "2.3", RCConstants.VERSION
+        "2.0", "2.1", "2.2a1", "2.2a2", "2.2", "2.3b1", "2.3", "2.3.1", "2.3.2", RCConstants.VERSION
     };
     public static final String XML_MIME = "application/xml";
     
@@ -73,11 +74,6 @@ public final class XMLUtil {
             // HTTP Version
             reqChildSubElement = new Element("http-version");
             reqChildSubElement.appendChild(bean.getHttpVersion().versionNumber());
-            reqChildElement.appendChild(reqChildSubElement);
-
-            // Redirect
-            reqChildSubElement = new Element("auto-redirect");
-            reqChildSubElement.appendChild(Boolean.toString(bean.isAutoRedirect()));
             reqChildElement.appendChild(reqChildSubElement);
 
             // creating the URL child element 
@@ -172,7 +168,7 @@ public final class XMLUtil {
             if (!headers.isEmpty()) {
                 reqChildSubElement = new Element("headers");
                 for (String key : headers.keySet()) {
-                    for(String value: headers.get(key)){
+                    for(String value: headers.get(key)) {
                         reqChildSubSubElement = new Element("header");
                         reqChildSubSubElement.addAttribute(new Attribute("key", key));
                         reqChildSubSubElement.addAttribute(new Attribute("value", value));
@@ -188,8 +184,7 @@ public final class XMLUtil {
                 reqChildSubElement = new Element("body");
                 String contentType = rBean.getContentType();
                 String charSet = rBean.getCharSet();
-                byte[] bodyBytes = rBean.getBodyBytes();
-                final String body = org.apache.commons.codec.binary.Base64.encodeBase64String(bodyBytes);
+                String body = rBean.getBody();
                 reqChildSubElement.addAttribute(new Attribute("content-type", contentType));
                 reqChildSubElement.addAttribute(new Attribute("charset", charSet));
                 reqChildSubElement.appendChild(body);
@@ -213,9 +208,9 @@ public final class XMLUtil {
         }
     }
 
-    private static MultiValueMap<String, String> getHeadersFromHeaderNode(final Element node)
+    private static Map<String, String> getHeadersFromHeaderNode(final Element node)
             throws XMLException {
-        MultiValueMap<String, String> m = new MultiValueMapArrayList<String, String>();
+        Map<String, String> m = new LinkedHashMap<String, String>();
 
         for (int i = 0; i < node.getChildElements().size(); i++) {
             Element headerElement = node.getChildElements().get(i);
@@ -264,76 +259,52 @@ public final class XMLUtil {
                 String t = tNode.getValue();
                 HTTPVersion httpVersion = "1.1".equals(t) ? HTTPVersion.HTTP_1_1 : HTTPVersion.HTTP_1_0;
                 requestBean.setHttpVersion(httpVersion);
-            }
-            else if("auto-redirect".equals(nodeName)){
-                requestBean.setAutoRedirect(Boolean.valueOf(tNode.getValue()));
-            }
-            else if ("URL".equals(nodeName)) {
+            } else if ("URL".equals(nodeName)) {
                 URL url = new URL(tNode.getValue());
                 requestBean.setUrl(url);
-            }
-            else if ("method".equals(nodeName)) {
+            } else if ("method".equals(nodeName)) {
                 requestBean.setMethod(HTTPMethod.get(tNode.getValue()));
-            }
-            else if ("auth-methods".equals(nodeName)) {
+            } else if ("auth-methods".equals(nodeName)) {
                 String[] authenticationMethods = tNode.getValue().split(",");
                 for (int j = 0; j < authenticationMethods.length; j++) {
                     requestBean.addAuthMethod(HTTPAuthMethod.get(authenticationMethods[j]));
                 }
-            }
-            else if ("auth-preemptive".equals(nodeName)) {
+            } else if ("auth-preemptive".equals(nodeName)) {
                 if (tNode.getValue().equals("true")) {
                     requestBean.setAuthPreemptive(true);
                 } else {
                     requestBean.setAuthPreemptive(false);
                 }
-            }
-            else if ("auth-host".equals(nodeName)) {
+            } else if ("auth-host".equals(nodeName)) {
                 requestBean.setAuthHost(tNode.getValue());
-            }
-            else if ("auth-realm".equals(nodeName)) {
+            } else if ("auth-realm".equals(nodeName)) {
                 requestBean.setAuthRealm(tNode.getValue());
-            }
-            else if ("auth-username".equals(nodeName)) {
+            } else if ("auth-username".equals(nodeName)) {
                 requestBean.setAuthUsername(tNode.getValue());
-            }
-            else if ("auth-password".equals(nodeName)) {
+            } else if ("auth-password".equals(nodeName)) {
                 String password = (String) Base64.decodeToObject(tNode.getValue());
                 requestBean.setAuthPassword(password.toCharArray());
-            }
-            else if ("ssl-truststore".equals(nodeName)) {
+            } else if ("ssl-truststore".equals(nodeName)) {
                 String sslTrustStore = tNode.getValue();
                 requestBean.setSslTrustStore(sslTrustStore);
-            }
-            else if ("ssl-truststore-password".equals(nodeName)) {
+            } else if ("ssl-truststore-password".equals(nodeName)) {
                 String sslTrustStorePassword = (String) Base64.decodeToObject(tNode.getValue());
                 requestBean.setSslTrustStorePassword(sslTrustStorePassword.toCharArray());
-            }
-            else if("ssl-hostname-verifier".equals(nodeName)){
+            } else if("ssl-hostname-verifier".equals(nodeName)){
                 String sslHostnameVerifierStr = tNode.getValue();
                 SSLHostnameVerifier sslHostnameVerifier = SSLHostnameVerifier.valueOf(sslHostnameVerifierStr);
                 requestBean.setSslHostNameVerifier(sslHostnameVerifier);
-            }
-            else if ("headers".equals(nodeName)) {
-                MultiValueMap<String, String> m = getHeadersFromHeaderNode(tNode);
+            } else if ("headers".equals(nodeName)) {
+                Map<String, String> m = getHeadersFromHeaderNode(tNode);
                 for (String key : m.keySet()) {
-                    for(String value: m.get(key)){
-                        requestBean.addHeader(key, value);
-                    }
+                    requestBean.addHeader(key, m.get(key));
                 }
-            }
-            else if ("body".equals(nodeName)) {
-                final String contentType = tNode.getAttributeValue("content-type");
-                final String charset = tNode.getAttributeValue("charset");
-                byte[] body = org.apache.commons.codec.binary.Base64.decodeBase64(tNode.getValue());
-                requestBean.setBody(new ReqEntityBean(body,
-                        contentType,
-                        charset));
-            }
-            else if ("test-script".equals(nodeName)) {
+            } else if ("body".equals(nodeName)) {
+                requestBean.setBody(new ReqEntityBean(tNode.getValue(), tNode.getAttributeValue("content-type"),
+                        tNode.getAttributeValue("charset")));
+            } else if ("test-script".equals(nodeName)) {
                 requestBean.setTestScript(tNode.getValue());
-            }
-            else {
+            } else {
                 throw new XMLException("Invalid element encountered: <" + nodeName + ">");
             }
         }
@@ -374,7 +345,7 @@ public final class XMLUtil {
                 // creating sub child-child element 
                 respChildSubElement = new Element("headers");
                 for (String key : headers.keySet()) {
-                    for(String value: headers.get(key)){
+                    for(String value: headers.get(key)) {
                         respChildSubSubElement = new Element("header");
                         keyAttribute = new Attribute("key", key);
                         valueAttribute = new Attribute("value", value);
@@ -387,11 +358,10 @@ public final class XMLUtil {
                 respChildElement.appendChild(respChildSubElement);
             }
 
-            final byte[] responseBodyBytes = bean.getResponseBodyBytes();
-            if (responseBodyBytes != null) {
+            String responseBody = bean.getResponseBody();
+            if (responseBody != null) {
                 //creating the body child element and append to response child element
                 respChildSubElement = new Element("body");
-                String responseBody = org.apache.commons.codec.binary.Base64.encodeBase64String(responseBodyBytes);
                 respChildSubElement.appendChild(responseBody);
                 respChildElement.appendChild(respChildSubElement);
             }
@@ -430,7 +400,7 @@ public final class XMLUtil {
                 }
 
                 //Errors
-                if (testResult.getErrorCount() > 0) {
+                if (testResult.getFailureCount() > 0) {
                     Element e_errors = new Element("errors");
                     List<TestFailureResult> l = testResult.getErrors();
                     for (TestFailureResult b : l) {
@@ -501,16 +471,14 @@ public final class XMLUtil {
                 responseBean.setStatusLine(tNode.getValue());
                 responseBean.setStatusCode(Integer.parseInt(tNode.getAttributeValue("code")));
             } else if ("headers".equals(nodeName)) {
-                MultiValueMap<String, String> m = getHeadersFromHeaderNode(tNode);
+                Map<String, String> m = getHeadersFromHeaderNode(tNode);
                 for (String key : m.keySet()) {
-                    for(String value: m.get(key)){
-                        responseBean.addHeader(key, value);
-                    }
+                    responseBean.addHeader(key, m.get(key));
                 }
             } else if ("body".equals(nodeName)) {
-                byte[] body = org.apache.commons.codec.binary.Base64.decodeBase64(tNode.getValue());
-                responseBean.setResponseBodyBytes(body);
+                responseBean.setResponseBody(tNode.getValue());
             } else if ("test-result".equals(nodeName)) {
+                //responseBean.setTestResult(node.getTextContent()); TODO
                 TestResultBean testResultBean = new TestResultBean();
 
                 for (int j = 0; j < tNode.getChildCount(); j++) {

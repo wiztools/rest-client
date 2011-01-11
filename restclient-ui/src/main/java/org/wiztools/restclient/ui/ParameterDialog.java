@@ -12,7 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.wiztools.commons.MultiValueMap;
-import org.wiztools.commons.MultiValueMapArrayList;
+import org.wiztools.commons.MultiValueMapLinkedHashSet;
 
 /**
  *
@@ -96,7 +96,7 @@ class ParameterDialog extends EscapableDialog {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        MultiValueMap<String, String> m = new MultiValueMapArrayList<String, String>();
+        MultiValueMap<String, String> m = new MultiValueMapLinkedHashSet<String, String>();
         for(int i=0; i<data.length; i++){
             m.put((String)data[i][0], (String)data[i][1]);
         }

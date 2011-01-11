@@ -1,5 +1,7 @@
 package org.wiztools.restclient.ui;
 
+import java.util.Map;
+import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -10,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -20,7 +23,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
 
 /**
@@ -38,20 +40,26 @@ final class TwoColumnTablePanel extends JPanel {
     private void initMultiEntryDialog(){
         // Initialize the Multi-entry dialog:
         MultiEntryAdd callback = new MultiEntryAdd() {
-            public void add(MultiValueMap<String, String> keyValuePair, List<String> invalidLines) {
+            public void add(Map<String, String> keyValuePair, List<String> invalidLines) {
+                Object[][] data = model.getData();
+                List<String> keys = new ArrayList<String>();
+                for(Object[] o: data){
+                    String key = (String)o[0];
+                    keys.add(key);
+                }
+
                 int successCount = 0;
                 for(String key: keyValuePair.keySet()){
-                    for(String value: keyValuePair.get(key)){
-                        model.insertRow(key, value);
-                        successCount++;
-                    }
+                    String value = keyValuePair.get(key);
+                    model.insertRow(key, value);
+                    successCount++;
                 }
                 
                 StringBuilder sb = new StringBuilder();
                 sb.append("Added ").append(successCount).append(" key/value pairs.\n\n");
 
                 sb.append("\n**Lines Skipped Due To Pattern Mis-match**\n\n");
-                if(invalidLines.size() == 0){
+                if(invalidLines.isEmpty()){
                     sb.append("- None -\n");
                 }
                 else{
@@ -154,6 +162,8 @@ final class TwoColumnTablePanel extends JPanel {
                     errors = errors==null?new ArrayList<String>():errors;
                     errors.add("Value is empty.");
                 }
+                Object[][] data = model.getData();
+                
                 if(errors != null){
                     StringBuilder sb = new StringBuilder();
                     sb.append("<html><ul>");

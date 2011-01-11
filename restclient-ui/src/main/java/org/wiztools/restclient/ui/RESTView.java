@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -49,19 +48,20 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.FileUtil;
-import org.wiztools.commons.Implementation;
-import org.wiztools.commons.MultiValueMap;
-import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.TestException;
 import org.wiztools.restclient.TestResult;
 import org.wiztools.restclient.TestUtil;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.XMLUtil;
+import org.wiztools.commons.Implementation;
+import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.StringUtil;
 
 /**
  *
@@ -92,14 +92,25 @@ class RESTView extends JPanel implements View {
     private JTextField jtf_res_status = new JTextField();
     
     private JTextField jtf_body_content_type = new JTextField();
-    private BodyPanel jp_req_body = new BodyPanel();
+    private ScriptEditor se_req_body;
+    {
+        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        final boolean enableSyntaxColoring = Boolean.valueOf(
+                options.getProperty("request.body.syntax.color")==null?
+                    "true": options.getProperty("request.body.syntax.color"));
+        if(enableSyntaxColoring) {
+            se_req_body = ScriptEditorFactory.getXMLScriptEditor();
+        }
+        else {
+            se_req_body = ScriptEditorFactory.getTextAreaScriptEditor();
+        }
+    }
     private JButton jb_body_content_type = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "edit.png"));
     private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JButton jb_body_params = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
     private BodyContentTypeDialog jd_body_content_type;
-    private JScrollPane jsp_req_body;
-    private Dimension d_jsp_req_body;
     
+    // private JScrollPane jsp_test_script;
     private ScriptEditor se_test_script = ScriptEditorFactory.getGroovyScriptEditor();
     private JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
     private JButton jb_req_test_open = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
@@ -129,13 +140,22 @@ class RESTView extends JPanel implements View {
     
     // HTTP Version Combo box
     JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
-
-    // Auto-redirect switch:
-    JCheckBox jcb_auto_redirect = new JCheckBox("Auto-redirect (on 3XX response): ");
     
     // Response
-    private JScrollPane jsp_res_body = new JScrollPane();
-    private BodyPanel jp_response = new BodyPanel();
+    // private JScrollPane jsp_res_body = new JScrollPane();
+    private ScriptEditor se_response;
+    {
+        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        final boolean enableSyntaxColoring = Boolean.valueOf(
+                options.getProperty("response.body.syntax.color")==null?
+                    "true": options.getProperty("response.body.syntax.color"));
+        if(enableSyntaxColoring) {
+            se_response = ScriptEditorFactory.getXMLScriptEditor();
+        }
+        else {
+            se_response = ScriptEditorFactory.getTextAreaScriptEditor();
+        }
+    }
     
     private JTable jt_res_headers = new JTable();
     
@@ -171,8 +191,6 @@ class RESTView extends JPanel implements View {
     // Cache the last request and response
     private Request lastRequest;
     private Response lastResponse;
-
-    private boolean isResponseBodyBase64Encoded = false;
     
     // Load templateTestScript:
     private static final String templateTestScript;
@@ -203,14 +221,23 @@ class RESTView extends JPanel implements View {
         if (scriptEditor != null)
             this.se_test_script = scriptEditor;
         if (responseViewer != null)
-            jp_response.setScriptEditor(responseViewer);
+            this.se_response = responseViewer;
         this.rest_ui = ui;
         init();
         view = this;
         
-        // Start status clear thread:
+        // Start status clear timer:
         statusLastUpdated = Calendar.getInstance();
-        new StatusClearerThread().start();
+        new Timer(5*1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Calendar c = (Calendar)statusLastUpdated.clone();
+                c.add(Calendar.SECOND, 20);
+                if(Calendar.getInstance().after(c)){
+                    setStatusMessage(RCConstants.TITLE);
+                }
+            }
+        }).start();
     }
     
     private JTabbedPane initJTPRequest(){
@@ -238,6 +265,7 @@ class RESTView extends JPanel implements View {
         //jrb_req_trace.setMnemonic('e');
         
         ActionListener jrbAL = new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
                     setUIReqBodyEnabled(true);
@@ -292,6 +320,7 @@ class RESTView extends JPanel implements View {
     
         jb_body_content_type.setToolTipText("Edit Content-type & Charset");
         jb_body_content_type.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 jd_body_content_type.setVisible(true);
             }
@@ -303,6 +332,7 @@ class RESTView extends JPanel implements View {
         
         jb_body_file.setToolTipText("Load from file");
         jb_body_file.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 jb_body_fileActionPerformed(event);
             }
@@ -311,6 +341,7 @@ class RESTView extends JPanel implements View {
         
         jb_body_params.setToolTipText("Insert parameters");
         jb_body_params.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 jb_body_paramActionPerformed(event);
             }
@@ -323,33 +354,33 @@ class RESTView extends JPanel implements View {
         JMenu jm_syntax = new JMenu("Syntax Color");
         JMenuItem jmi_syntax_none = new JMenuItem("None");
         jmi_syntax_none.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(jp_req_body.getScriptEditor(),
-                        TextEditorSyntax.DEFAULT);
+                actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.DEFAULT);
             }
         });
         jm_syntax.add(jmi_syntax_none);
         JMenuItem jmi_syntax_xml = new JMenuItem("XML");
         jmi_syntax_xml.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(jp_req_body.getScriptEditor(),
-                        TextEditorSyntax.XML);
+                actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.XML);
             }
         });
         jm_syntax.add(jmi_syntax_xml);
         JMenuItem jmi_syntax_json = new JMenuItem("JSON");
         jmi_syntax_json.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(jp_req_body.getScriptEditor(),
-                        TextEditorSyntax.JSON);
+                actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.JSON);
             }
         });
         jm_syntax.add(jmi_syntax_json);
         
         jpm_req_body.add(jm_syntax);
         
-        if (jp_req_body.getEditorView() instanceof JEditorPane) {
-            jp_req_body.getEditorView().addMouseListener(new MouseAdapter() {
+        if (se_req_body.getEditorComponent() instanceof JEditorPane) {
+            se_req_body.getEditorComponent().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     showPopup(e);
@@ -360,7 +391,7 @@ class RESTView extends JPanel implements View {
                     showPopup(e);
                 }
                 private void showPopup(final MouseEvent e) {
-                    if(!jp_req_body.getEditorView().isEnabled()){
+                    if(!se_req_body.getEditorComponent().isEnabled()){
                         // do not show popup menu when component is disabled:
                         return;
                     }
@@ -374,9 +405,7 @@ class RESTView extends JPanel implements View {
         jp_body.add(jp_body_north, BorderLayout.NORTH);
         JPanel jp_body_center = new JPanel();
         jp_body_center.setLayout(new GridLayout(1, 1));
-        // jsp_req_body = new JScrollPane(se_req_body.getEditorView());
-        jsp_req_body = new JScrollPane(jp_req_body);
-        jp_body_center.add(jsp_req_body);
+        jp_body_center.add(se_req_body.getEditorView());
         jp_body.add(jp_body_center, BorderLayout.CENTER);
         jtp.addTab("Body", jp_body);
         
@@ -390,6 +419,7 @@ class RESTView extends JPanel implements View {
         jp_auth_west_center.setLayout(new GridLayout(2,1));
         jcb_auth_basic.setSelected(false);
         ActionListener action = new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 auth_enableActionPerformed(event);
             }
@@ -455,6 +485,7 @@ class RESTView extends JPanel implements View {
         JPanel jp_ssl_center_flow = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_truststore_file);
         jb_ssl_browse.setToolTipText("Open truststore file.");
         jb_ssl_browse.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
                 if(f == null){
@@ -478,24 +509,8 @@ class RESTView extends JPanel implements View {
         // Etc panel
         JPanel jp_etc = new JPanel();
         jp_etc.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JPanel jp_etc_grid = new JPanel(new GridLayout(2, 1));
-        {
-            // Add HTTP Version
-            JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            jp.add(new JLabel("HTTP Version: "));
-            jp.add(jcb_http_version);
-            jp_etc_grid.add(jp);
-        }
-        {
-            // Add auto-redirect:
-            JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            jcb_auto_redirect.setSelected(true); // default true for b/ward compatibility
-            jcb_auto_redirect.setHorizontalTextPosition(SwingConstants.LEFT);
-            jcb_auto_redirect.setToolTipText("Auto redirects to redirect-URL when response status 3XX encountered");
-            jp.add(jcb_auto_redirect);
-            jp_etc_grid.add(jp);
-        }
-        jp_etc.add(jp_etc_grid);
+        jp_etc.add(new JLabel("HTTP Version: "));
+        jp_etc.add(jcb_http_version);
         jtp.add("Etc.", jp_etc);
         
         // Test script panel
@@ -506,6 +521,7 @@ class RESTView extends JPanel implements View {
         jp_test_north.setLayout(new FlowLayout(FlowLayout.LEFT));
         jb_req_test_template.setToolTipText("Insert Template");
         jb_req_test_template.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 String t = se_test_script.getText();
                 if(!StringUtil.isStrEmpty(t)){
@@ -514,15 +530,14 @@ class RESTView extends JPanel implements View {
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                Dimension d = se_test_script.getScrollableEditorView().getPreferredSize();
                 se_test_script.setText(templateTestScript);
                 se_test_script.setCaretPosition(0);
-                se_test_script.getScrollableEditorView().setPreferredSize(d);
             }
         });
         jp_test_north.add(jb_req_test_template);
         jb_req_test_open.setToolTipText("Open Test Script From File");
         jb_req_test_open.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 String str = se_test_script.getText();
                 if(!StringUtil.isStrEmpty(str)){
@@ -542,12 +557,9 @@ class RESTView extends JPanel implements View {
                     return;
                 }
                 try{
-                    String testScript = FileUtil.getContentAsString(f,
-                            Charsets.UTF_8);
-                    Dimension d = se_test_script.getScrollableEditorView().getPreferredSize();
+                    String testScript = FileUtil.getContentAsString(f, Charsets.UTF_8);
                     se_test_script.setText(testScript);
                     se_test_script.setCaretPosition(0);
-                    se_test_script.getScrollableEditorView().setPreferredSize(d);
                 }
                 catch(IOException ex){
                     showError(Util.getStackTrace(ex));
@@ -558,6 +570,7 @@ class RESTView extends JPanel implements View {
         jp_test_north.add(new JSeparator(JSeparator.VERTICAL));
         jb_req_test_run.setToolTipText("Run Test");
         jb_req_test_run.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if(StringUtil.isStrEmpty(se_test_script.getText())){
                     JOptionPane.showMessageDialog(rest_ui.getFrame(),
@@ -573,6 +586,7 @@ class RESTView extends JPanel implements View {
         jp_test_north.add(jb_req_test_run);
         jb_req_test_quick.setToolTipText("Quick Run Test-Using last request & response");
         jb_req_test_quick.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if(lastRequest == null || lastResponse == null){
                     JOptionPane.showMessageDialog(rest_ui.getFrame(), "No Last Request/Response", "Error", JOptionPane.ERROR_MESSAGE);
@@ -589,7 +603,7 @@ class RESTView extends JPanel implements View {
         jp_test_north.add(jb_req_test_quick);
         jp_test.add(jp_test_north, BorderLayout.NORTH);
         
-        jp_test.add(se_test_script.getScrollableEditorView(), BorderLayout.CENTER);
+        jp_test.add(se_test_script.getEditorView(), BorderLayout.CENTER);
         jtp.addTab("Test Script", jp_test);
         
         return jtp;
@@ -640,20 +654,17 @@ class RESTView extends JPanel implements View {
         // Indent XML
         JMenuItem jmi_indentXml = new JMenuItem("Indent XML");
         jmi_indentXml.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent evt) {
-                byte[] data = jp_response.getData();
-                String resText = new String(data); // TODO find encoding
+                String resText = se_response.getText();
                 if("".equals(resText.trim())){
                     setStatusMessage("No response body!");
                     return;
                 }
                 try {
                     final String indentedXML = XMLUtil.indentXML(resText);
-                    jp_response.setData(indentedXML.getBytes(),
-                            "application/xml",
-                            Charsets.UTF_8.name(),
-                            false);
-                    jp_response.getScriptEditor().setCaretPosition(0);
+                    se_response.setText(indentedXML);
+                    se_response.setCaretPosition(0);
                     setStatusMessage("Indent XML: Success");
                 } catch (XMLException ex) {
                     setStatusMessage("Indent XML: XML Parser Configuration Error.");
@@ -667,27 +678,21 @@ class RESTView extends JPanel implements View {
         // Indent JSON
         JMenuItem jmi_indentJson = new JMenuItem("Indent JSON");
         jmi_indentJson.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
-                byte[] data = jp_response.getData();
-                String resText = new String(data); // TODO find encoding
+                String resText = se_response.getText();
                 if("".equals(resText.trim())){
                     setStatusMessage("No response body!");
                     return;
                 }
                 try{
                     String indentedJSON = JSONUtil.indentJSON(resText);
-                    jp_response.setData(indentedJSON.getBytes(), // TODO encoding
-                            "application/json",
-                            Charsets.UTF_8.name(),
-                            false);
-                    jp_response.getScriptEditor().setCaretPosition(0);
+                    se_response.setText(indentedJSON);
+                    se_response.setCaretPosition(0);
                     setStatusMessage("Indent JSON: Success");
                 }
                 catch(JSONUtil.JSONParseException ex){
                     setStatusMessage("Indent JSON: Not a valid JSON text.");
-                }
-                catch(UnsupportedEncodingException ex){
-                    setStatusMessage("Encoding failed.");
                 }
             };
         });
@@ -699,25 +704,25 @@ class RESTView extends JPanel implements View {
         JMenu jm_syntax = new JMenu("Syntax Color");
         JMenuItem jmi_syntax_xml = new JMenuItem("XML");
         jmi_syntax_xml.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(jp_response.getScriptEditor(),
-                        TextEditorSyntax.XML);
+                actionTextEditorSyntaxChange(se_response, TextEditorSyntax.XML);
             }
         });
         jm_syntax.add(jmi_syntax_xml);
         JMenuItem jmi_syntax_json = new JMenuItem("JSON");
         jmi_syntax_json.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(jp_response.getScriptEditor(),
-                        TextEditorSyntax.JSON);
+                actionTextEditorSyntaxChange(se_response, TextEditorSyntax.JSON);
             }
         });
         jm_syntax.add(jmi_syntax_json);
         JMenuItem jmi_syntax_none = new JMenuItem("None");
         jmi_syntax_none.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(jp_response.getScriptEditor(),
-                        TextEditorSyntax.DEFAULT);
+                actionTextEditorSyntaxChange(se_response, TextEditorSyntax.DEFAULT);
             }
         });
         jm_syntax.add(jmi_syntax_none);
@@ -725,8 +730,8 @@ class RESTView extends JPanel implements View {
         popupMenu.add(jm_syntax);
         
         // Attach popup menu
-        if (jp_response.getEditorView() instanceof JEditorPane) {
-            jp_response.getEditorView().addMouseListener(new MouseAdapter() {
+        if (se_response.getEditorComponent() instanceof JEditorPane) {
+            se_response.getEditorComponent().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     showPopup(e);
@@ -737,8 +742,7 @@ class RESTView extends JPanel implements View {
                     showPopup(e);
                 }
                 private void showPopup(final MouseEvent e) {
-                    byte[] data = jp_response.getData();
-                    if(data == null || data.length == 0){
+                    if("".equals(se_response.getText().trim())){
                         // No response body
                         return;
                     }
@@ -750,9 +754,8 @@ class RESTView extends JPanel implements View {
         }
         JPanel jp_body = new JPanel();
         jp_body.setLayout(new GridLayout(1,1));
-        jp_response.getScriptEditor().setEditable(false);
-        jsp_res_body = new JScrollPane(jp_response);
-        jp_body.add(jsp_res_body);
+        se_response.setEditable(false);
+        jp_body.add(se_response.getEditorView());
         JPanel jp_body_encp = new JPanel();
         jp_body_encp.setBorder(BorderFactory.createEmptyBorder());
         jp_body_encp.setLayout(new GridLayout(1, 1));
@@ -796,6 +799,7 @@ class RESTView extends JPanel implements View {
         jb_request = new JButton(icon_go);
         jb_request.setToolTipText("Go!");
         jb_request.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 jb_requestActionPerformed();
             }
@@ -859,15 +863,9 @@ class RESTView extends JPanel implements View {
         
         // Initialize parameter dialog
         ParameterView pv = new ParameterView(){
+            @Override
             public void setParameter(final String params) {
-                // se_req_body.setText(params);
-                try{
-                    jp_req_body.setData(params.getBytes(Charsets.UTF_8),
-                        "text/plain", "utf-8", true);
-                }
-                catch(UnsupportedEncodingException ex){
-                    showError(Util.getStackTrace(ex));
-                }
+                se_req_body.setText(params);
             }
             
         };
@@ -876,6 +874,7 @@ class RESTView extends JPanel implements View {
         // Initialize jd_body_content_type
         jd_body_content_type = new BodyContentTypeDialog(rest_ui.getFrame());
         jd_body_content_type.addContentTypeCharSetChangeListener(new ContentTypeCharSetChangeListener() {
+            @Override
             public void changed(String contentType, String charSet) {
                 jtf_body_content_type.setText(Util.getFormattedContentType(contentType, charSet));
             }
@@ -890,13 +889,13 @@ class RESTView extends JPanel implements View {
                 fontSize = Integer.parseInt(fontSizeStr);
             }
             catch(NumberFormatException ex){
-                LOG.log(Level.WARNING, "Font size property is not a number: " + fontSizeStr);
+                LOG.log(Level.WARNING, "Font size property is not a number: {0}", fontSizeStr);
             }
         }
         if(fontName != null){
             Font f = new Font(fontName, Font.PLAIN, fontSize);
-            jp_req_body.getEditorView().setFont(f);
-            jp_req_body.getEditorView().setFont(f);
+            se_req_body.getEditorComponent().setFont(f);
+            se_response.getEditorComponent().setFont(f);
         }
         
         this.setLayout(new BorderLayout());
@@ -927,39 +926,14 @@ class RESTView extends JPanel implements View {
     
     Response getResponseFromUI(){
         ResponseBean response = new ResponseBean();
-
+        response.setResponseBody(unindentedResponseBody);
         String statusLine = jtf_res_status.getText();
         response.setStatusLine(statusLine);
         response.setStatusCode(Util.getStatusCodeFromStatusLine(statusLine));
         String[][] headers = ((ResponseHeaderTableModel)jt_res_headers.getModel()).getHeaders();
-        String contentType = null;
         for(int i=0; i<headers.length; i++){
-            if("content-type".equalsIgnoreCase(headers[i][0])){
-                contentType = headers[i][1];
-            }
             response.addHeader(headers[i][0], headers[i][1]);
         }
-
-        final String charset = Util.getCharsetFromHeader(contentType);
-
-        response.setResponseBodyBytes(jp_response.getData());
-
-        /*
-        if(isResponseBodyBase64Encoded){
-            response.setResponseBodyBytes(
-                    org.apache.commons.codec.binary.Base64.decodeBase64(unindentedResponseBody));
-        }
-        else{
-            try{
-                response.setResponseBodyBytes(unindentedResponseBody.getBytes(charset));
-            }
-            catch(UnsupportedEncodingException ex){
-                LOG.warning("Encoding not recognized: " + charset);
-                LOG.warning("Using default: UTF-8");
-                response.setResponseBodyBytes(unindentedResponseBody.getBytes(Charsets.UTF_8));
-            }
-        }*/
-        
         response.setTestResult(jp_testResultPanel.getTestResult());
         return response;
     }
@@ -1046,11 +1020,11 @@ class RESTView extends JPanel implements View {
         // EntityEnclosing method specific
         if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
             // Get request body
-            byte[] data = jp_req_body.getData();
-            if(data != null || data.length != 0){
+            String req_body = se_req_body.getText();
+            if(!StringUtil.isStrEmpty(req_body)){
                 String req_content_type = jd_body_content_type.getContentType();
                 String req_char_set = jd_body_content_type.getCharSet();
-                ReqEntityBean body = new ReqEntityBean(data,
+                ReqEntityBean body = new ReqEntityBean(req_body,
                         req_content_type,
                         req_char_set);
                 request.setBody(body);
@@ -1064,9 +1038,6 @@ class RESTView extends JPanel implements View {
         
         // HTTP version
         request.setHttpVersion((HTTPVersion)jcb_http_version.getSelectedItem());
-
-        // Auto-redirect
-        request.setAutoRedirect(jcb_auto_redirect.isSelected());
         
         // Test script specific
         String testScript = se_test_script.getText();
@@ -1080,7 +1051,7 @@ class RESTView extends JPanel implements View {
         if(jb_request.getIcon() == icon_go){
             final Request request = getRequestFromUI();
             List<String> errors = validateRequest(request);
-            if(errors.size() == 0){
+            if(errors.isEmpty()){
                 clearUIResponse();
                 final RequestExecuter executer = Implementation.of(RequestExecuter.class);
                 // Execute the request:
@@ -1117,6 +1088,7 @@ class RESTView extends JPanel implements View {
         lastRequest = request;
         
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 jpb_status.setVisible(true);
                 // jb_request.setEnabled(false);
@@ -1132,8 +1104,9 @@ class RESTView extends JPanel implements View {
     @Override
     public void doResponse(final Response response){
         lastResponse = response;
-
+    
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 // Update the UI:
                 setUIFromResponse(response);
@@ -1152,6 +1125,7 @@ class RESTView extends JPanel implements View {
     @Override
     public void doCancelled(){
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 setStatusMessage("Request cancelled!");
             }
@@ -1161,6 +1135,7 @@ class RESTView extends JPanel implements View {
     @Override
     public void doEnd(){
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 jpb_status.setVisible(false);
                 // jb_request.setEnabled(true);
@@ -1173,6 +1148,7 @@ class RESTView extends JPanel implements View {
     @Override
     public void doError(final String error){
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 showError(error);
                 setStatusMessage("An error occurred during request.");
@@ -1192,7 +1168,7 @@ class RESTView extends JPanel implements View {
     void clearUIResponse(){
         unindentedResponseBody = null;
         jtf_res_status.setText("");
-        jp_response.clearData();
+        se_response.setText("");
         ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
         model.setHeaders(null);
         jp_testResultPanel.clear();
@@ -1309,13 +1285,9 @@ class RESTView extends JPanel implements View {
         }
         // Get text from file and set
         try{
-            // String body = FileUtil.getContentAsString(f,
-            //        CommonCharset.UTF_8);
-            jp_req_body.setData(FileUtil.getContentAsBytes(f),
-                    FileUtil.getMimeType(f),
-                    charset,
-                    true);
-            jp_req_body.getScriptEditor().setCaretPosition(0);
+            String body = FileUtil.getContentAsString(f, Charsets.UTF_8);
+            se_req_body.setText(body);
+            se_req_body.setCaretPosition(0);
         }
         catch(IOException ex){
             JOptionPane.showMessageDialog(rest_ui.getFrame(),
@@ -1337,13 +1309,12 @@ class RESTView extends JPanel implements View {
     }
     
     private boolean canSetReqBodyText(){
-        byte[] data = jp_req_body.getData();
-        if(data == null || data.length == 0){
+        if(StringUtil.isStrEmpty(se_req_body.getText())){
             return true;
         }
         else{
             int response = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
-                    "Body data exists. Erase?",
+                    "Body text exists. Erase?",
                     "Erase?",
                     JOptionPane.YES_NO_OPTION);
             if(response == JOptionPane.YES_OPTION){
@@ -1374,27 +1345,13 @@ class RESTView extends JPanel implements View {
     }
     
     private void setUIReqBodyEnabled(final boolean boo){
-        setJTAReqBodyDimension();
-                
-        jp_req_body.getEditorView().setEnabled(boo);
+        se_req_body.getEditorComponent().setEnabled(boo);
         jb_body_content_type.setEnabled(boo);
         jb_body_file.setEnabled(boo);
         jb_body_params.setEnabled(boo);
     }
     
-    private void setJTAReqBodyDimension(){
-        // The TextArea was re-drawing to a bigger size
-        // when large text was placed. This check is for
-        // avoiding that.
-        if(d_jsp_req_body == null){
-            Dimension d = ((JEditorPane)jp_req_body.getEditorView()).getPreferredScrollableViewportSize();
-            d_jsp_req_body = d;
-        }
-        if(jsp_req_body != null){
-            jsp_req_body.setPreferredSize(d_jsp_req_body);
-        }
-    }
-    
+   
     // Checks if URL starts with http:// or https://
     // If not, appends http:// to the hostname
     // This is just a UI convenience method.
@@ -1438,19 +1395,14 @@ class RESTView extends JPanel implements View {
             // Get request body
             ReqEntity reBean = request.getBody();
             if(reBean != null){
-                try{
-                    String req_body = reBean.getBody();
-                    if(!StringUtil.isStrEmpty(req_body)){
-                        String req_content_type = reBean.getContentType();
-                        String req_char_set = reBean.getCharSet();
-                        if(StringUtil.isStrEmpty(req_content_type)
-                                || StringUtil.isStrEmpty(req_char_set)){
-                            errors.add("Body content is set, but `Content-type' and/or `Char-set' not set.");
-                        }
+                String req_body = reBean.getBody();
+                if(!StringUtil.isStrEmpty(req_body)){
+                    String req_content_type = reBean.getContentType();
+                    String req_char_set = reBean.getCharSet();
+                    if(StringUtil.isStrEmpty(req_content_type)
+                            || StringUtil.isStrEmpty(req_char_set)){
+                        errors.add("Body content is set, but `Content-type' and/or `Char-set' not set.");
                     }
-                }
-                catch(UnsupportedEncodingException ex){
-                    errors.add(ex.getMessage());
                 }
             }
         }
@@ -1470,7 +1422,7 @@ class RESTView extends JPanel implements View {
         // Body
         jd_body_content_type.setContentType(BodyContentTypeDialog.DEFAULT_CONTENT_TYPE);
         jd_body_content_type.setCharSet(BodyContentTypeDialog.DEFAULT_CHARSET);
-        jp_req_body.clearData();
+        se_req_body.setText("");
         setUIReqBodyEnabled(false);
         
         // Auth
@@ -1490,9 +1442,6 @@ class RESTView extends JPanel implements View {
         
         // HTTP version
         jcb_http_version.setSelectedItem(HTTPVersion.getDefault());
-
-        // Auto-redirect:
-        jcb_auto_redirect.setSelected(true);
         
         // Script
         se_test_script.setText("");
@@ -1509,109 +1458,65 @@ class RESTView extends JPanel implements View {
         resHeaderTableModel.setHeaders(response.getHeaders());
 
         // Response body
-        Dimension d = jsp_res_body.getPreferredSize();
         //// Set the unindentedResponseBody:
-        try{
-            unindentedResponseBody = response.getResponseBody();
-        }
-        catch(UnsupportedEncodingException ex){
-            showError(Util.getStackTrace(ex));
-        }
+        unindentedResponseBody = response.getResponseBody();
         IGlobalOptions options = Implementation.of(IGlobalOptions.class);
         String indentStr = options.getProperty("response.body.indent");
         boolean indent = indentStr==null? false: (indentStr.equals("true")? true: false);
-
-        String contentType = null;
-        String charset = null;
-        boolean isXml = false;
-        boolean isJson = false;
-        boolean isImage = false;
-        boolean isText = false;
-        MultiValueMap<String, String> headers = response.getHeaders();
-
-        for(String key: headers.keySet()){
-            if("content-type".equalsIgnoreCase(key)){
-                contentType = headers.get(key).iterator().next();
-                // We are using startsWith instead of equals
-                // because to match headers like:
-                // Content-type: text/plain; charset=UTF-8
-                if(contentType != null){
-                    charset = Util.getCharsetFromHeader(contentType);
-                    if(contentType.startsWith("application/xml")
-                            || contentType.startsWith("text/xml")){
-                        isXml = true;
-                    }
-                    else if(contentType.startsWith("application/json")){
-                        isJson = true;
-                    }
-                    else if(contentType.startsWith("image/jpeg")
-                            || contentType.startsWith("image/png")
-                            || contentType.startsWith("image/gif")){
-                        isImage = true;
-                    }
-                    else if(contentType.startsWith("text/")){
-                        isText = true;
+        if(indent){
+            boolean isXml = false;
+            boolean isJson = false;
+            MultiValueMap<String, String> headers = response.getHeaders();
+            for(String key: headers.keySet()){
+                if("content-type".equalsIgnoreCase(key)){
+                    for(String contentType: headers.get(key)) {
+                        if(contentType.startsWith("application/xml") || contentType.startsWith("text/xml")){
+                            isXml = true;
+                        }
+                        else if(contentType.startsWith("application/json")){
+                            isJson = true;
+                        }
+                        break;
                     }
                 }
-                break;
+            }
+            final String responseBody = response.getResponseBody();
+            if(isXml){
+                try{
+                    String indentedResponseBody = XMLUtil.indentXML(responseBody);
+                    se_response.setText(indentedResponseBody);
+                }
+                catch(IOException ex){
+                    setStatusMessage("XML indentation failed.");
+                    LOG.warning(ex.getMessage());
+                    se_response.setText(responseBody);
+                }
+                catch(XMLException ex){
+                    setStatusMessage("XML indentation failed.");
+                    LOG.warning(ex.getMessage());
+                    se_response.setText(responseBody);
+                }
+            }
+            else if(isJson){
+                try{
+                    String indentedResponseBody = JSONUtil.indentJSON(responseBody);
+                    se_response.setText(indentedResponseBody);
+                }
+                catch(JSONUtil.JSONParseException ex){
+                    setStatusMessage("JSON indentation failed.");
+                    LOG.warning(ex.getMessage());
+                    se_response.setText(responseBody);
+                }
+            }
+            else{
+                setStatusMessage("Response body neither XML nor JSON. No indentation.");
+                se_response.setText(responseBody);
             }
         }
-
-        // Get the data:
-        final byte[] data = response.getResponseBodyBytes();
-
-        if((isXml || isJson) && indent){
-            
-            try{
-                final String responseBody = response.getResponseBody();
-                if(isXml){
-                    try{
-                        String indentedResponseBody = XMLUtil.indentXML(responseBody);
-                        jp_response.setText(indentedResponseBody, false);
-                    }
-                    catch(IOException ex){
-                        setStatusMessage("XML indentation failed.");
-                        LOG.warning(ex.getMessage());
-                        jp_response.setText(responseBody, false);
-                    }
-                    catch(XMLException ex){
-                        setStatusMessage("XML indentation failed.");
-                        LOG.warning(ex.getMessage());
-                        jp_response.setText(responseBody, false);
-                    }
-                }
-                else if(isJson){
-                    try{
-                        String indentedResponseBody = JSONUtil.indentJSON(responseBody);
-                        jp_response.setText(indentedResponseBody, false);
-                    }
-                    catch(JSONUtil.JSONParseException ex){
-                        setStatusMessage("JSON indentation failed.");
-                        LOG.warning(ex.getMessage());
-                        jp_response.setText(responseBody, false);
-                    }
-                }
-                else{
-                    setStatusMessage("Response body neither XML nor JSON. No indentation.");
-                    jp_response.setText(responseBody, false);
-                }
-
-            }
-            catch(UnsupportedEncodingException ex){
-                showError(Util.getStackTrace(ex));
-            }
+        else{
+            se_response.setText(response.getResponseBody());
         }
-        else{ // if indent is not selected:
-            try{
-                jp_response.setData(data, contentType, charset, false);
-            }
-            catch(UnsupportedEncodingException ex){
-                showError(Util.getStackTrace(ex));
-            }
-        }
-        
-        jsp_res_body.setPreferredSize(d);
-        jp_response.getScriptEditor().setCaretPosition(0);
+        se_response.setCaretPosition(0);
 
         // Response test result
         jp_testResultPanel.setTestResult(response.getTestResult());
@@ -1662,16 +1567,8 @@ class RESTView extends JPanel implements View {
             }
             jd_body_content_type.setContentType(body.getContentType());
             jd_body_content_type.setCharSet(body.getCharSet());
-            try{
-                jp_req_body.setData(body.getBodyBytes(),
-                        body.getContentType(),
-                        body.getCharSet(),
-                        true);
-            }
-            catch(UnsupportedEncodingException ex){
-                doError(Util.getStackTrace(ex));
-            }
-            jp_req_body.getScriptEditor().setCaretPosition(0);
+            se_req_body.setText(body.getBody());
+            se_req_body.setCaretPosition(0);
         }
 
         // Authentication
@@ -1719,14 +1616,9 @@ class RESTView extends JPanel implements View {
             jcb_http_version.setSelectedItem(HTTPVersion.HTTP_1_0);
         }
 
-        // Auto-redirect:
-        jcb_auto_redirect.setSelected(request.isAutoRedirect());
-
         // Test script
-        Dimension d = se_test_script.getScrollableEditorView().getPreferredSize();
         se_test_script.setText(request.getTestScript()==null?"":request.getTestScript());
         se_test_script.setCaretPosition(0);
-        se_test_script.getScrollableEditorView().setPreferredSize(d);
     }
     
     private Calendar statusLastUpdated;
@@ -1745,30 +1637,12 @@ class RESTView extends JPanel implements View {
     }
     
     public Font getTextAreaFont(){
-        return jp_req_body.getEditorView().getFont();
+        return se_req_body.getEditorComponent().getFont();
     }
     
     public void setTextAreaFont(final Font f){
-        jp_req_body.getEditorView().setFont(f);
-        jp_response.getEditorView().setFont(f);
+        se_req_body.getEditorComponent().setFont(f);
+        se_response.getEditorComponent().setFont(f);
     }
     
-    private class StatusClearerThread extends Thread{
-        @Override
-        public void run(){
-            while(true){
-                try{
-                    Thread.sleep(5*1000);
-                }
-                catch(InterruptedException ex){
-                    // Do nothing!
-                }
-                Calendar c = (Calendar)statusLastUpdated.clone();
-                c.add(Calendar.SECOND, 20);
-                if(Calendar.getInstance().after(c)){
-                    setStatusMessage(RCConstants.TITLE);
-                }
-            }
-        }
-    }
 }

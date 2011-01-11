@@ -17,10 +17,10 @@ class ResponseHeaderTableModel extends AbstractTableModel {
             headers = new String[0][0];
         }
         else{
-            headers = new String[mapHeaders.size()][2];
+            headers = new String[mapHeaders.values().size()][2];
             int i = 0;
             for(String key: mapHeaders.keySet()){
-                for(String value: mapHeaders.get(key)){
+                for(String value: mapHeaders.get(key)) {
                     headers[i][0] = key;
                     headers[i][1] = value;
                     i++;

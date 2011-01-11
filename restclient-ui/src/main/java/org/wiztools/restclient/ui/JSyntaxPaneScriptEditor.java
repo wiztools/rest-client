@@ -4,7 +4,7 @@ import java.awt.Font;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
-import jsyntaxpane.DefaultSyntaxKit;
+import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -16,7 +16,7 @@ class JSyntaxPaneScriptEditor implements ScriptEditor {
     private JScrollPane jsp = new JScrollPane(jep);
     
     JSyntaxPaneScriptEditor(TextEditorSyntax syntax){
-        DefaultSyntaxKit.initKit();
+        jsyntaxpane.DefaultSyntaxKit.initKit();
         if(syntax == TextEditorSyntax.GROOVY){
             jep.setContentType("text/groovy");
         }
@@ -50,11 +50,11 @@ class JSyntaxPaneScriptEditor implements ScriptEditor {
     }
 
     public JComponent getEditorView() {
-        return jep;
+        return jsp;
     }
 
-    public JComponent getScrollableEditorView(){
-        return jsp;
+    public JTextComponent getEditorComponent() {
+        return jep;
     }
 
     public String getText() {

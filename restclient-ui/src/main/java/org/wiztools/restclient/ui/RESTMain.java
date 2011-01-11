@@ -7,7 +7,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.ImageIcon;
@@ -20,7 +22,6 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
-import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.FileType;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.ReqResBean;
@@ -613,18 +614,6 @@ class RESTMain implements RESTUserInterface {
                 return;
             }
             Response uiResponse = view.getResponseFromUI();
-            // TODO Delete
-            try{
-                XMLUtil.writeResponseXML(uiResponse, new File("/home/subwiz/ui-resp.xml"));
-                XMLUtil.writeResponseXML(response, new File("/home/subwiz/resp.xml"));
-            }
-            catch(XMLException ex){
-                ex.printStackTrace();
-            }
-            catch(IOException ex){
-                ex.printStackTrace();
-            }
-            // END TODO
             if(!response.equals(uiResponse)){
                 if(!doSaveEvenIfUIChanged(DO_SAVE_UI_RESPONSE)){
                     return;
@@ -654,11 +643,18 @@ class RESTMain implements RESTUserInterface {
             }
             File f = getSaveFile(FileChooserType.SAVE_RESPONSE_BODY);
             if(f != null){
+                PrintWriter pw = null;
                 try{
-                    FileUtil.writeBytes(f, response.getResponseBodyBytes());
+                    pw = new PrintWriter(new FileWriter(f));
+                    pw.print(response.getResponseBody());
                 }
                 catch(IOException ex){
                     view.showError(Util.getStackTrace(ex));
+                }
+                finally{
+                    if(pw != null){
+                        pw.close();
+                    }
                 }
             }
         }

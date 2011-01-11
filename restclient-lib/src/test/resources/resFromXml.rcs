@@ -8,6 +8,6 @@
 <header key="Transfer-Encoding" value="chunked"/>
 <header key="Server" value="Jetty"/>
 </headers>
-<body>KipSRVNUQ2xpZW50IFRyYWNlU2VydmxldCoq</body>
+<body>**RESTClient TraceServlet**</body>
 </response>
 </rest-client>

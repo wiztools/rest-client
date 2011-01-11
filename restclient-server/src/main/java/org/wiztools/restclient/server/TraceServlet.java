@@ -30,11 +30,11 @@ public class TraceServlet extends HttpServlet {
         Enumeration eHeaders = request.getHeaderNames();
         while(eHeaders.hasMoreElements()){
             final String headerName = (String)eHeaders.nextElement();
-            final Enumeration eHeaderValues = request.getHeaders(headerName);
-            while(eHeaderValues.hasMoreElements()){
-                String headerValue = (String)eHeaderValues.nextElement();
+            Enumeration eValues = request.getHeaders(headerName);
+            while(eValues.hasMoreElements()) {
+                String headerValue = (String) eValues.nextElement();
                 headerValue = headerValue.replaceAll("\n", "\n\t");
-                out.println("\t" + headerName + ": " + request.getHeader(headerName));
+                out.println("\t" + headerName + ": " + headerValue);
             }
         }
         
@@ -45,11 +45,13 @@ public class TraceServlet extends HttpServlet {
         Enumeration eParams = request.getParameterNames();
         while(eParams.hasMoreElements()){
             String paramName = (String)eParams.nextElement();
-            out.println("\t~Parameter Name: " + paramName);
-            out.println("\t~Parameter Value:");
-            final String[] paramValues = request.getParameterValues(paramName);
-            for(String paramValue: paramValues){
+            String[] paramValues = request.getParameterValues(paramName);
+
+            for(String paramValue: paramValues) {
                 paramValue = paramValue.replaceAll("\n", "\n\t");
+
+                out.println("\t~Parameter Name: " + paramName);
+                out.println("\t~Parameter Value:");
                 out.println("\t" + paramValue);
             }
         }

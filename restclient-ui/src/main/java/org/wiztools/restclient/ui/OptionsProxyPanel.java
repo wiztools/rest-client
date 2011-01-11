@@ -14,10 +14,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import org.wiztools.commons.Implementation;
-import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ProxyConfig;
+import org.wiztools.restclient.Util;
+import org.wiztools.commons.Implementation;
+import org.wiztools.commons.StringUtil;
 
 /**
  *
