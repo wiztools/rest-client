@@ -96,4 +96,12 @@ public class UtilTest {
         assertEquals(expResult, result);
     }
 
+    @Test
+    public void testGetMimeFromContentType() {
+        System.out.println("getMimeFromContentType");
+        String contentType = "application/xml;charset=UTF-8";
+        String expResult = "application/xml";
+        String result = Util.getMimeFromContentType(contentType);
+        assertEquals(expResult, result);
+    }
 }

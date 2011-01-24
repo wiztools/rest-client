@@ -203,4 +203,24 @@ public final class Util {
         }
         return null;
     }
+
+    /**
+     * Parses the Content-Type HTTP header and returns the MIME type part of the
+     * response. For example, when receiving Content-Type header like:
+     *
+     * application/xml;charset=UTF-8
+     *
+     * This method will return "application/xml".
+     * @param contentType
+     * @return
+     */
+    public static String getMimeFromContentType(final String contentType) {
+        final int occurance = contentType.indexOf(';');
+        if(occurance == -1) {
+            return contentType;
+        }
+        else {
+            return contentType.substring(0, occurance);
+        }
+    }
 }
