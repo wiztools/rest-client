@@ -1469,8 +1469,11 @@ class RESTView extends JPanel implements View {
             MultiValueMap<String, String> headers = response.getHeaders();
             for(String key: headers.keySet()){
                 if("content-type".equalsIgnoreCase(key)){
-                    for(String contentType: headers.get(key)) {
-                        if(contentType.startsWith("application/xml") || contentType.startsWith("text/xml")){
+                    for(String v: headers.get(key)) {
+                        final String contentType = Util.getMimeFromContentType(v);
+                        if(contentType.startsWith("application/xml")
+                                || contentType.startsWith("text/xml")
+                                || contentType.endsWith("+xml")){
                             isXml = true;
                         }
                         else if(contentType.startsWith("application/json")){
