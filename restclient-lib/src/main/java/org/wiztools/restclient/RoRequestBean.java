@@ -131,12 +131,15 @@ public class RoRequestBean implements Request {
         sslTrustStorePassword = request.getSslTrustStorePassword();
         httpVersion = request.getHttpVersion();
         sslHostNameVerifier = request.getSslHostNameVerifier();
+        isFollowRedirect = request.isFollowRedirect();
     }
 
+    @Override
     public SSLHostnameVerifier getSslHostNameVerifier() {
         return sslHostNameVerifier;
     }
 
+    @Override
     public String getTestScript() {
         return null;
     }

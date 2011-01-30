@@ -205,6 +205,7 @@ public final class RequestBean implements Request{
         cloned.setMethod(method);
         cloned.setTestScript(testScript);
         cloned.setUrl(url);
+        cloned.setFollwoRedirect(isFollowRedirect);
         return cloned;
     }
 
@@ -231,6 +232,7 @@ public final class RequestBean implements Request{
             isEqual = isEqual && (this.httpVersion == null? bean.getHttpVersion() == null: this.httpVersion == bean.getHttpVersion());
             isEqual = isEqual && (this.testScript == null? bean.getTestScript() == null: this.testScript.equals(bean.getTestScript()));
             isEqual = isEqual && (this.url == null? bean.getUrl() == null: this.url.equals(bean.getUrl()));
+            isEqual = isEqual && (this.isFollowRedirect == bean.isFollowRedirect());
             return isEqual;
         }
         return false;
@@ -255,6 +257,7 @@ public final class RequestBean implements Request{
         hash = 61 * hash + (this.sslTrustStorePassword != null ? this.sslTrustStorePassword.hashCode() : 0);
         hash = 61 * hash + (this.sslHostNameVerifier != null ? this.sslHostNameVerifier.hashCode() : 0);
         hash = 61 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
+        hash = 61 * hash + (this.isFollowRedirect ? 1 : 0);
         return hash;
     }
 
@@ -276,6 +279,7 @@ public final class RequestBean implements Request{
         sb.append(sslTrustStorePassword==null?"null": new String(sslTrustStorePassword).replaceAll(".", "X")).append(", ");
         sb.append(sslHostNameVerifier).append(", ");
         sb.append(httpVersion).append(", ");
+        sb.append(isFollowRedirect).append(", ");
         sb.append(testScript);
         sb.append("]");
         return sb.toString();
