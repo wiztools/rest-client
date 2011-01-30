@@ -85,6 +85,7 @@ class RESTView extends JPanel implements View {
     
     private JLabel jl_status = new JLabel(RCConstants.TITLE);
     private JLabel jl_url = new JLabel("URL: ");
+    private boolean fromKeyboard = false;
     private JComboBox jcb_url = new JComboBox();
     
     private JButton jb_request = null;
@@ -792,6 +793,12 @@ class RESTView extends JPanel implements View {
                 jcb_urlActionPerformed(evt);
             }
         });
+        jcb_url.getEditor().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fromKeyboard = true;
+            }
+        });
         // AutoCompleteDecorator.decorate(jcb_url);
         AutoCompletion ac = new AutoCompletion(jcb_url);
         ac.setStrict(false);
@@ -1205,8 +1212,13 @@ class RESTView extends JPanel implements View {
                 jcb_url.insertItemAt(item, 0);
             }
         }
+        // make the selected item is the item we want
+        jcb_url.setSelectedItem(item);
         // Use this to trigger request action on pressing Enter:
-        // jb_requestActionPerformed(event);
+        if (fromKeyboard) {
+            fromKeyboard = false;
+            jb_requestActionPerformed();
+        }
     }
     
     private void auth_enableActionPerformed(final ActionEvent event){
