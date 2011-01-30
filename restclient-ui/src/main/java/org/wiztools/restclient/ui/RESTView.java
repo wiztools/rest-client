@@ -140,7 +140,10 @@ class RESTView extends JPanel implements View {
     private JComboBox jcb_ssl_hostname_verifier = new JComboBox(SSLHostnameVerifier.getAll());
     
     // HTTP Version Combo box
-    JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
+    private JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
+
+    // Follow redirect
+    private JCheckBox jcb_followRedirects = new JCheckBox("Follow Redirects?");
     
     // Response
     // private JScrollPane jsp_res_body = new JScrollPane();
@@ -509,10 +512,23 @@ class RESTView extends JPanel implements View {
         
         // Etc panel
         JPanel jp_etc = new JPanel();
-        jp_etc.setLayout(new FlowLayout(FlowLayout.LEFT));
-        jp_etc.add(new JLabel("HTTP Version: "));
-        jp_etc.add(jcb_http_version);
-        jtp.add("Etc.", jp_etc);
+        jp_etc.setLayout(new GridLayout(2, 1));
+        { // Http Version
+            JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            jp.add(new JLabel("HTTP Version: "));
+            jp.add(jcb_http_version);
+            jp_etc.add(jp);
+        }
+        { // Follow Redirect
+            JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            jp.add(jcb_followRedirects);
+            jp_etc.add(jp);
+        }
+        { // add jp_etc in an enclosing panel
+            JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            jp.add(jp_etc);
+            jtp.add("Etc.", jp);
+        }
         
         // Test script panel
         JPanel jp_test = new JPanel();
@@ -1045,6 +1061,9 @@ class RESTView extends JPanel implements View {
         
         // HTTP version
         request.setHttpVersion((HTTPVersion)jcb_http_version.getSelectedItem());
+
+        // Follow redirect
+        request.setFollwoRedirect(jcb_followRedirects.isSelected());
         
         // Test script specific
         String testScript = se_test_script.getText();
