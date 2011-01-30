@@ -30,7 +30,9 @@ public final class RequestBean implements Request{
     private char[] sslTrustStorePassword;
     private SSLHostnameVerifier sslHostNameVerifier = SSLHostnameVerifier.STRICT; // Default to strict!
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
+    private boolean isFollowRedirect;
 
+    @Override
     public HTTPVersion getHttpVersion() {
         return httpVersion;
     }
@@ -39,6 +41,7 @@ public final class RequestBean implements Request{
         this.httpVersion = httpVersion;
     }
 
+    @Override
     public String getSslTrustStore() {
         return sslTrustStore;
     }
@@ -47,6 +50,7 @@ public final class RequestBean implements Request{
         this.sslTrustStore = sslKeyStore;
     }
 
+    @Override
     public char[] getSslTrustStorePassword() {
         return sslTrustStorePassword;
     }
@@ -55,6 +59,7 @@ public final class RequestBean implements Request{
         this.sslTrustStorePassword = sslKeyStorePassword;
     }
 
+    @Override
     public SSLHostnameVerifier getSslHostNameVerifier() {
         return sslHostNameVerifier;
     }
@@ -63,6 +68,7 @@ public final class RequestBean implements Request{
         this.sslHostNameVerifier = sslHostNameVerifier;
     }
     
+    @Override
     public String getTestScript() {
         return testScript;
     }
@@ -71,6 +77,7 @@ public final class RequestBean implements Request{
         this.testScript = testScript;
     }
 
+    @Override
     public ReqEntity getBody() {
         return body;
     }
@@ -79,6 +86,7 @@ public final class RequestBean implements Request{
         this.body = body;
     }
     
+    @Override
     public boolean isAuthPreemptive() {
         return authPreemptive;
     }
@@ -87,6 +95,7 @@ public final class RequestBean implements Request{
         this.authPreemptive = authPreemptive;
     }
 
+    @Override
     public List<HTTPAuthMethod> getAuthMethods() {
         return Collections.unmodifiableList(authMethods);
     }
@@ -95,6 +104,7 @@ public final class RequestBean implements Request{
         this.authMethods.add(authMethod);
     }
 
+    @Override
     public String getAuthHost() {
         return authHost;
     }
@@ -103,6 +113,7 @@ public final class RequestBean implements Request{
         this.authHost = authHost;
     }
 
+    @Override
     public char[] getAuthPassword() {
         return authPassword;
     }
@@ -111,6 +122,7 @@ public final class RequestBean implements Request{
         this.authPassword = authPassword;
     }
 
+    @Override
     public String getAuthRealm() {
         return authRealm;
     }
@@ -119,6 +131,7 @@ public final class RequestBean implements Request{
         this.authRealm = authRealm;
     }
 
+    @Override
     public String getAuthUsername() {
         return authUsername;
     }
@@ -127,6 +140,7 @@ public final class RequestBean implements Request{
         this.authUsername = authUsername;
     }
 
+    @Override
     public MultiValueMap<String, String> getHeaders() {
         return CollectionsUtil.unmodifiableMultiValueMap(headers);
     }
@@ -135,6 +149,7 @@ public final class RequestBean implements Request{
         this.headers.put(key, value);
     }
 
+    @Override
     public HTTPMethod getMethod() {
         return method;
     }
@@ -143,12 +158,22 @@ public final class RequestBean implements Request{
         this.method = method;
     }
 
+    @Override
     public URL getUrl() {
         return url;
     }
 
     public void setUrl(URL url) {
         this.url = url;
+    }
+
+    @Override
+    public boolean isFollowRedirect() {
+        return isFollowRedirect;
+    }
+
+    public void setFollwoRedirect(boolean isFollowRedirect) {
+        this.isFollowRedirect = isFollowRedirect;
     }
     
     public RequestBean(){
@@ -170,7 +195,7 @@ public final class RequestBean implements Request{
         if(body != null){
             cloned.setBody((ReqEntityBean)body.clone());
         }
-        if(headers.size() != 0){
+        if(!headers.isEmpty()){
             for(String header: headers.keySet()){
                 for(String value: headers.get(header)) {
                     cloned.addHeader(header, value);

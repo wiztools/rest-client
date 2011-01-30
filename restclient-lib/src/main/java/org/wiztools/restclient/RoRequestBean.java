@@ -24,7 +24,9 @@ public class RoRequestBean implements Request {
     private char[] sslTrustStorePassword;
     SSLHostnameVerifier sslHostNameVerifier;
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
+    private boolean isFollowRedirect;
 
+    @Override
     public HTTPVersion getHttpVersion() {
         return httpVersion;
     }
@@ -33,6 +35,7 @@ public class RoRequestBean implements Request {
         this.httpVersion = httpVersion;
     }
 
+    @Override
     public String getSslTrustStore() {
         return sslTrustStore;
     }
@@ -41,6 +44,7 @@ public class RoRequestBean implements Request {
         this.sslTrustStore = sslTrustStore;
     }
 
+    @Override
     public char[] getSslTrustStorePassword() {
         return sslTrustStorePassword;
     }
@@ -48,44 +52,63 @@ public class RoRequestBean implements Request {
     public void setSslTrustStorePassword(char[] sslTrustStorePassword) {
         this.sslTrustStorePassword = sslTrustStorePassword;
     }
+    @Override
     public String getAuthHost() {
         return authHost;
     }
 
+    @Override
     public List<HTTPAuthMethod> getAuthMethods() {
         return authMethods;
     }
 
+    @Override
     public char[] getAuthPassword() {
         return authPassword;
     }
 
+    @Override
     public boolean isAuthPreemptive() {
         return authPreemptive;
     }
 
+    @Override
     public String getAuthRealm() {
         return authRealm;
     }
 
+    @Override
     public String getAuthUsername() {
         return authUsername;
     }
 
+    @Override
     public RoReqEntityBean getBody() {
         return body;
     }
 
+    @Override
     public MultiValueMap<String, String> getHeaders() {
         return headers;
     }
 
+    @Override
     public HTTPMethod getMethod() {
         return method;
     }
 
+    @Override
     public URL getUrl() {
         return url;
+    }
+
+    @Override
+    public boolean isFollowRedirect() {
+        return this.isFollowRedirect;
+    }
+
+    public void setFollowRedirect(boolean isFollowRedirect) {
+        this.isFollowRedirect = isFollowRedirect;
     }
     
     public RoRequestBean(final Request request){

@@ -40,5 +40,7 @@ public interface Request extends Cloneable {
 
     boolean isAuthPreemptive();
 
+    boolean isFollowRedirect();
+
     Object clone();
 }

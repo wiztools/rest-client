@@ -31,6 +31,7 @@ import org.apache.http.auth.AuthState;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.RedirectHandler;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
@@ -85,6 +86,24 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
      * fine for finding this type of error during development phase.
      */
     private boolean isRequestStarted = false;
+
+    // Redirect Handlers:
+    private static final RedirectHandler noFollowRedirectHandler = new DefaultRedirectHandler() {
+        @Override
+        public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
+            return false;
+        }
+    };
+
+    private static final RedirectHandler followRedirectHandler = new DefaultRedirectHandler() {
+        @Override
+        public URI getLocationURI(HttpResponse response, HttpContext context) throws ProtocolException {
+            URI uri = super.getLocationURI(response, context);
+            LOG.log(Level.INFO, "Redirect response status: {0}", response.getStatusLine());
+            LOG.log(Level.INFO, "Redirect: {0}", uri);
+            return uri;
+        }
+    };
 
     @Override
     public void execute(Request request, View... views) {
@@ -288,15 +307,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
 
             // How to handle retries and redirects:
             httpclient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler());
-            httpclient.setRedirectHandler(new DefaultRedirectHandler(){
-                @Override
-                public URI getLocationURI(HttpResponse response, HttpContext context) throws ProtocolException {
-                    URI uri = super.getLocationURI(response, context);
-                    LOG.log(Level.INFO, "Redirect response status: {0}", response.getStatusLine());
-                    LOG.log(Level.INFO, "Redirect: {0}", uri);
-                    return uri;
-                }
-            });
+            httpclient.setRedirectHandler(
+                    request.isFollowRedirect()? followRedirectHandler: noFollowRedirectHandler);
 
             // Now Execute:
             long startTime = System.currentTimeMillis();
@@ -431,7 +443,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             LOG.info("Request already completed. Doing nothing.");
         }
     }
-    
+
     private static final class PreemptiveAuth implements HttpRequestInterceptor {
 
         @Override
