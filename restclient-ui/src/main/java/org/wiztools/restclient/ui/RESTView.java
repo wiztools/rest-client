@@ -143,7 +143,7 @@ class RESTView extends JPanel implements View {
     private JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
 
     // Follow redirect
-    private JCheckBox jcb_followRedirects = new JCheckBox("Follow Redirects?");
+    private JCheckBox jcb_followRedirects = new JCheckBox("Follow HTTP Redirects?");
     
     // Response
     // private JScrollPane jsp_res_body = new JScrollPane();
@@ -524,6 +524,7 @@ class RESTView extends JPanel implements View {
             // Previous version of RESTClient had follow redirects as true.
             // To maintain backward compatibility in default behavior:
             jcb_followRedirects.setSelected(true);
+            jcb_followRedirects.setHorizontalTextPosition(SwingConstants.LEFT);
             jp.add(jcb_followRedirects);
             jp_etc.add(jp);
         }
