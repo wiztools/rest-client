@@ -1,6 +1,7 @@
 package org.wiztools.restclient.ui;
 
 import com.jidesoft.swing.AutoCompletion;
+import java.awt.event.FocusEvent;
 import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -9,6 +10,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
@@ -818,6 +820,12 @@ class RESTView extends JPanel implements View {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fromKeyboard = true;
+            }
+        });
+        jcb_url.getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                ((JTextField) jcb_url.getEditor().getEditorComponent()).selectAll();
             }
         });
         // AutoCompleteDecorator.decorate(jcb_url);
