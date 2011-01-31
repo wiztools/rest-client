@@ -68,135 +68,147 @@ public final class XMLUtil {
             reqRootElement.addAttribute(versionAttributes);
 
             Element reqChildElement = new Element("request");
-            Element reqChildSubElement = null;
-            Element reqChildSubSubElement = null;
 
-            // HTTP Version
-            reqChildSubElement = new Element("http-version");
-            reqChildSubElement.appendChild(bean.getHttpVersion().versionNumber());
-            reqChildElement.appendChild(reqChildSubElement);
+            { // HTTP Version
+                Element e = new Element("http-version");
+                e.appendChild(bean.getHttpVersion().versionNumber());
+                reqChildElement.appendChild(e);
+            }
 
-            // creating the URL child element 
-            reqChildSubElement = new Element("URL");
-            reqChildSubElement.appendChild(bean.getUrl().toString());
-            reqChildElement.appendChild(reqChildSubElement);
+            { // HTTP Follow Redirect
+                Element e = new Element("http-follow-redirects");
+                e.appendChild(String.valueOf(bean.isFollowRedirect()));
+                reqChildElement.appendChild(e);
+            }
 
-            // creating the method child element
-            reqChildSubElement = new Element("method");
-            reqChildSubElement.appendChild(bean.getMethod().name());
-            reqChildElement.appendChild(reqChildSubElement);
+            { // creating the URL child element
+                Element e = new Element("URL");
+                e.appendChild(bean.getUrl().toString());
+                reqChildElement.appendChild(e);
+            }
 
-            // creating the auth-methods child element
-            List<HTTPAuthMethod> authMethods = bean.getAuthMethods();
-            if (authMethods == null || authMethods.size() > 0) {
+            { // creating the method child element
+                Element e = new Element("method");
+                e.appendChild(bean.getMethod().name());
+                reqChildElement.appendChild(e);
+            }
 
-                reqChildSubElement = new Element("auth-methods");
-                String methods = "";
-                for (HTTPAuthMethod authMethod : authMethods) {
-                    methods = methods + authMethod + ",";
-                }
-                String authenticationMethod = methods.substring(0, methods.length() == 0 ? 0 : methods.length() - 1);
-                reqChildSubElement.appendChild(authenticationMethod);
-                reqChildElement.appendChild(reqChildSubElement);
+            { // creating the auth-methods child element
+                List<HTTPAuthMethod> authMethods = bean.getAuthMethods();
+                if (authMethods == null || authMethods.size() > 0) {
 
-                // creating the auth-preemptive child element
-                boolean authPreemptive = bean.isAuthPreemptive();
+                    { // auth-methods
+                        Element e = new Element("auth-methods");
+                        String methods = "";
+                        for (HTTPAuthMethod authMethod : authMethods) {
+                            methods = methods + authMethod + ",";
+                        }
+                        String authenticationMethod = methods.substring(0, methods.length() == 0 ? 0 : methods.length() - 1);
+                        e.appendChild(authenticationMethod);
+                        reqChildElement.appendChild(e);
+                    }
 
-                reqChildSubElement = new Element("auth-preemptive");
-                reqChildSubElement.appendChild(new Boolean(authPreemptive).toString());
-                reqChildElement.appendChild(reqChildSubElement);
+                    { // creating the auth-preemptive child element
+                        Element e = new Element("auth-preemptive");
+                        e.appendChild(String.valueOf(bean.isAuthPreemptive()));
+                        reqChildElement.appendChild(e);
+                    }
 
-                // creating the auth-host child element
-                String authHost = bean.getAuthHost();
-                if (!StringUtil.isStrEmpty(authHost)) {
-                    reqChildSubElement = new Element("auth-host");
-                    reqChildSubElement.appendChild(authHost);
-                    reqChildElement.appendChild(reqChildSubElement);
-                }
-                // creating the auth-realm child element
-                String authRealm = bean.getAuthRealm();
-                if (!StringUtil.isStrEmpty(authRealm)) {
-                    reqChildSubElement = new Element("auth-realm");
-                    reqChildSubElement.appendChild(authRealm);
-                    reqChildElement.appendChild(reqChildSubElement);
-                }
-                // creating the auth-username child element
-                String authUsername = bean.getAuthUsername();
-                if (!StringUtil.isStrEmpty(authUsername)) {
-                    reqChildSubElement = new Element("auth-username");
-                    reqChildSubElement.appendChild(authUsername);
-                    reqChildElement.appendChild(reqChildSubElement);
-                }
-                // creating the auth-password child element
-                String authPassword = null;
-                if (bean.getAuthPassword() != null) {
-                    authPassword = new String(bean.getAuthPassword());
-                    if (!StringUtil.isStrEmpty(authPassword)) {
-                        String encPassword = Base64.encodeObject(authPassword);
+                    // creating the auth-host child element
+                    String authHost = bean.getAuthHost();
+                    if (!StringUtil.isStrEmpty(authHost)) {
+                        Element e = new Element("auth-host");
+                        e.appendChild(authHost);
+                        reqChildElement.appendChild(e);
+                    }
+                    // creating the auth-realm child element
+                    String authRealm = bean.getAuthRealm();
+                    if (!StringUtil.isStrEmpty(authRealm)) {
+                        Element e = new Element("auth-realm");
+                        e.appendChild(authRealm);
+                        reqChildElement.appendChild(e);
+                    }
+                    // creating the auth-username child element
+                    String authUsername = bean.getAuthUsername();
+                    if (!StringUtil.isStrEmpty(authUsername)) {
+                        Element e = new Element("auth-username");
+                        e.appendChild(authUsername);
+                        reqChildElement.appendChild(e);
+                    }
+                    // creating the auth-password child element
+                    String authPassword = null;
+                    if (bean.getAuthPassword() != null) {
+                        authPassword = new String(bean.getAuthPassword());
+                        if (!StringUtil.isStrEmpty(authPassword)) {
+                            String encPassword = Base64.encodeObject(authPassword);
 
-                        reqChildSubElement = new Element("auth-password");
-                        reqChildSubElement.appendChild(encPassword);
-                        reqChildElement.appendChild(reqChildSubElement);
+                            Element e = new Element("auth-password");
+                            e.appendChild(encPassword);
+                            reqChildElement.appendChild(e);
+                        }
                     }
                 }
             }
-
+            
             // Creating SSL elements
             String sslTruststore = bean.getSslTrustStore();
             if (!StringUtil.isStrEmpty(sslTruststore)) {
-                // 1. Create truststore entry
-                reqChildSubElement = new Element("ssl-truststore");
-                reqChildSubElement.appendChild(sslTruststore);
-                reqChildElement.appendChild(reqChildSubElement);
+                { // 1. Create truststore entry
+                    Element e = new Element("ssl-truststore");
+                    e.appendChild(sslTruststore);
+                    reqChildElement.appendChild(e);
+                }
 
-                // 2. Create password entry
-                String sslPassword = new String(bean.getSslTrustStorePassword());
-                String encPassword = Base64.encodeObject(sslPassword);
-                reqChildSubElement = new Element("ssl-truststore-password");
-                reqChildSubElement.appendChild(encPassword);
-                reqChildElement.appendChild(reqChildSubElement);
+                { // 2. Create password entry
+                    String sslPassword = new String(bean.getSslTrustStorePassword());
+                    String encPassword = Base64.encodeObject(sslPassword);
+                    Element e = new Element("ssl-truststore-password");
+                    e.appendChild(encPassword);
+                    reqChildElement.appendChild(e);
+                }
 
-                // 3. Create Hostname Verifier entry
-                String sslHostnameVerifier = bean.getSslHostNameVerifier().name();
-                reqChildSubElement = new Element("ssl-hostname-verifier");
-                reqChildSubElement.appendChild(sslHostnameVerifier);
-                reqChildElement.appendChild(reqChildSubElement);
+                { // 3. Create Hostname Verifier entry
+                    String sslHostnameVerifier = bean.getSslHostNameVerifier().name();
+                    Element e = new Element("ssl-hostname-verifier");
+                    e.appendChild(sslHostnameVerifier);
+                    reqChildElement.appendChild(e);
+                }
             }
 
             // creating the headers child element
             MultiValueMap<String, String> headers = bean.getHeaders();
             if (!headers.isEmpty()) {
-                reqChildSubElement = new Element("headers");
+                Element e = new Element("headers");
                 for (String key : headers.keySet()) {
                     for(String value: headers.get(key)) {
-                        reqChildSubSubElement = new Element("header");
-                        reqChildSubSubElement.addAttribute(new Attribute("key", key));
-                        reqChildSubSubElement.addAttribute(new Attribute("value", value));
-                        reqChildSubElement.appendChild(reqChildSubSubElement);
+                        Element ee = new Element("header");
+                        ee.addAttribute(new Attribute("key", key));
+                        ee.addAttribute(new Attribute("value", value));
+                        e.appendChild(ee);
                     }
                 }
-                reqChildElement.appendChild(reqChildSubElement);
+                reqChildElement.appendChild(e);
             }
 
             // creating the body child element
             ReqEntity rBean = bean.getBody();
             if (rBean != null) {
-                reqChildSubElement = new Element("body");
                 String contentType = rBean.getContentType();
                 String charSet = rBean.getCharSet();
                 String body = rBean.getBody();
-                reqChildSubElement.addAttribute(new Attribute("content-type", contentType));
-                reqChildSubElement.addAttribute(new Attribute("charset", charSet));
-                reqChildSubElement.appendChild(body);
-                reqChildElement.appendChild(reqChildSubElement);
+                Element e = new Element("body");
+                e.addAttribute(new Attribute("content-type", contentType));
+                e.addAttribute(new Attribute("charset", charSet));
+                e.appendChild(body);
+                reqChildElement.appendChild(e);
             }
             // creating the test-script child element
             String testScript = bean.getTestScript();
             if (testScript != null) {
 
-                reqChildSubElement = new Element("test-script");
-                reqChildSubElement.appendChild(testScript);
-                reqChildElement.appendChild(reqChildSubElement);
+                Element e = new Element("test-script");
+                e.appendChild(testScript);
+                reqChildElement.appendChild(e);
             }
             reqRootElement.appendChild(reqChildElement);
 
@@ -259,52 +271,70 @@ public final class XMLUtil {
                 String t = tNode.getValue();
                 HTTPVersion httpVersion = "1.1".equals(t) ? HTTPVersion.HTTP_1_1 : HTTPVersion.HTTP_1_0;
                 requestBean.setHttpVersion(httpVersion);
-            } else if ("URL".equals(nodeName)) {
+            }
+            else if("http-follow-redirects".equals(nodeName)) {
+                requestBean.setFollwoRedirect(Boolean.valueOf(tNode.getValue()));
+            }
+            else if ("URL".equals(nodeName)) {
                 URL url = new URL(tNode.getValue());
                 requestBean.setUrl(url);
-            } else if ("method".equals(nodeName)) {
+            }
+            else if ("method".equals(nodeName)) {
                 requestBean.setMethod(HTTPMethod.get(tNode.getValue()));
-            } else if ("auth-methods".equals(nodeName)) {
+            }
+            else if ("auth-methods".equals(nodeName)) {
                 String[] authenticationMethods = tNode.getValue().split(",");
                 for (int j = 0; j < authenticationMethods.length; j++) {
                     requestBean.addAuthMethod(HTTPAuthMethod.get(authenticationMethods[j]));
                 }
-            } else if ("auth-preemptive".equals(nodeName)) {
+            }
+            else if ("auth-preemptive".equals(nodeName)) {
                 if (tNode.getValue().equals("true")) {
                     requestBean.setAuthPreemptive(true);
                 } else {
                     requestBean.setAuthPreemptive(false);
                 }
-            } else if ("auth-host".equals(nodeName)) {
+            }
+            else if ("auth-host".equals(nodeName)) {
                 requestBean.setAuthHost(tNode.getValue());
-            } else if ("auth-realm".equals(nodeName)) {
+            }
+            else if ("auth-realm".equals(nodeName)) {
                 requestBean.setAuthRealm(tNode.getValue());
-            } else if ("auth-username".equals(nodeName)) {
+            }
+            else if ("auth-username".equals(nodeName)) {
                 requestBean.setAuthUsername(tNode.getValue());
-            } else if ("auth-password".equals(nodeName)) {
+            }
+            else if ("auth-password".equals(nodeName)) {
                 String password = (String) Base64.decodeToObject(tNode.getValue());
                 requestBean.setAuthPassword(password.toCharArray());
-            } else if ("ssl-truststore".equals(nodeName)) {
+            }
+            else if ("ssl-truststore".equals(nodeName)) {
                 String sslTrustStore = tNode.getValue();
                 requestBean.setSslTrustStore(sslTrustStore);
-            } else if ("ssl-truststore-password".equals(nodeName)) {
+            }
+            else if ("ssl-truststore-password".equals(nodeName)) {
                 String sslTrustStorePassword = (String) Base64.decodeToObject(tNode.getValue());
                 requestBean.setSslTrustStorePassword(sslTrustStorePassword.toCharArray());
-            } else if("ssl-hostname-verifier".equals(nodeName)){
+            }
+            else if("ssl-hostname-verifier".equals(nodeName)){
                 String sslHostnameVerifierStr = tNode.getValue();
                 SSLHostnameVerifier sslHostnameVerifier = SSLHostnameVerifier.valueOf(sslHostnameVerifierStr);
                 requestBean.setSslHostNameVerifier(sslHostnameVerifier);
-            } else if ("headers".equals(nodeName)) {
+            }
+            else if ("headers".equals(nodeName)) {
                 Map<String, String> m = getHeadersFromHeaderNode(tNode);
                 for (String key : m.keySet()) {
                     requestBean.addHeader(key, m.get(key));
                 }
-            } else if ("body".equals(nodeName)) {
+            }
+            else if ("body".equals(nodeName)) {
                 requestBean.setBody(new ReqEntityBean(tNode.getValue(), tNode.getAttributeValue("content-type"),
                         tNode.getAttributeValue("charset")));
-            } else if ("test-script".equals(nodeName)) {
+            }
+            else if ("test-script".equals(nodeName)) {
                 requestBean.setTestScript(tNode.getValue());
-            } else {
+            }
+            else {
                 throw new XMLException("Invalid element encountered: <" + nodeName + ">");
             }
         }
