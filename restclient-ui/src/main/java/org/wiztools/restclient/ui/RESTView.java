@@ -521,6 +521,9 @@ class RESTView extends JPanel implements View {
         }
         { // Follow Redirect
             JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            // Previous version of RESTClient had follow redirects as true.
+            // To maintain backward compatibility in default behavior:
+            jcb_followRedirects.setSelected(true);
             jp.add(jcb_followRedirects);
             jp_etc.add(jp);
         }
