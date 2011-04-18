@@ -5,12 +5,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,7 +25,6 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolException;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.auth.AuthScheme;
 import org.apache.http.auth.AuthScope;
@@ -31,7 +32,6 @@ import org.apache.http.auth.AuthState;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.RedirectHandler;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
@@ -41,6 +41,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.AuthPolicy;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnRoutePNames;
@@ -52,7 +53,6 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.impl.client.DefaultRedirectHandler;
 import org.apache.http.message.AbstractHttpMessage;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.params.BasicHttpParams;
@@ -86,24 +86,6 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
      * fine for finding this type of error during development phase.
      */
     private boolean isRequestStarted = false;
-
-    // Redirect Handlers:
-    private static final RedirectHandler noFollowRedirectHandler = new DefaultRedirectHandler() {
-        @Override
-        public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
-            return false;
-        }
-    };
-
-    private static final RedirectHandler followRedirectHandler = new DefaultRedirectHandler() {
-        @Override
-        public URI getLocationURI(HttpResponse response, HttpContext context) throws ProtocolException {
-            URI uri = super.getLocationURI(response, context);
-            LOG.log(Level.INFO, "Redirect response status: {0}", response.getStatusLine());
-            LOG.log(Level.INFO, "Redirect: {0}", uri);
-            return uri;
-        }
-    };
 
     @Override
     public void execute(Request request, View... views) {
@@ -276,39 +258,31 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                     hcVerifier = SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
                     break;
             }
-            
-            // Set the hostname verifier in the default SSL handler:
-            {
-                Scheme s = httpclient.getConnectionManager().getSchemeRegistry().getScheme("https");
-                SSLSocketFactory sslFac = (SSLSocketFactory) s.getSocketFactory();
-                sslFac.setHostnameVerifier(hcVerifier);
-            }
 
-            // SSL with truststore:
-            final String trustStorePath = request.getSslTrustStore();
-            char[] trustStorePassword = request.getSslTrustStorePassword();
-            if(urlProtocol.equalsIgnoreCase("https") && !StringUtil.isStrEmpty(trustStorePath)){
-                KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
-                if(!StringUtil.isStrEmpty(trustStorePath)) {
-                    FileInputStream instream = new FileInputStream(new File(trustStorePath));
-                    try{
-                        trustStore.load(instream, trustStorePassword);
-                    }
-                    finally{
-                        instream.close();
-                    }
-                }
+            // Register the SSL Scheme:
+            final int sslPort = request.getUrl().getPort()==-1? 443: request.getUrl().getPort();
 
-                SSLSocketFactory socketFactory = new SSLSocketFactory(trustStore);
-                socketFactory.setHostnameVerifier(hcVerifier);
-                Scheme sch = new Scheme(urlProtocol, socketFactory, urlPort);
+            if(urlProtocol.equalsIgnoreCase("https")){
+                final String trustStorePath = request.getSslTrustStore();
+
+                final KeyStore trustStore  = StringUtil.isStrEmpty(trustStorePath)?
+                    null:
+                    getTrustStore(trustStorePath, request.getSslTrustStorePassword());
+                SSLSocketFactory socketFactory = new SSLSocketFactory(
+                        "TLS", // Algorithm
+                        null,  // Keystore
+                        null,  // Keystore password
+                        trustStore,
+                        null,  // Secure Random
+                        hcVerifier);
+                Scheme sch = new Scheme(urlProtocol, sslPort, socketFactory);
                 httpclient.getConnectionManager().getSchemeRegistry().register(sch);
             }
 
             // How to handle retries and redirects:
             httpclient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler());
-            httpclient.setRedirectHandler(
-                    request.isFollowRedirect()? followRedirectHandler: noFollowRedirectHandler);
+            httpclient.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS,
+                    request.isFollowRedirect());
 
             // Now Execute:
             long startTime = System.currentTimeMillis();
@@ -430,6 +404,22 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             }
             isRequestCompleted = true;
         }
+    }
+
+    private KeyStore getTrustStore(String trustStorePath, char[] trustStorePassword)
+            throws KeyStoreException, IOException,
+            NoSuchAlgorithmException, CertificateException {
+        KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
+        if(!StringUtil.isStrEmpty(trustStorePath)) {
+            FileInputStream instream = new FileInputStream(new File(trustStorePath));
+            try{
+                trustStore.load(instream, trustStorePassword);
+            }
+            finally{
+                instream.close();
+            }
+        }
+        return trustStore;
     }
 
     @Override
