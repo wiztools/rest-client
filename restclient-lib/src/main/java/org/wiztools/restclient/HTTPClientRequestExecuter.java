@@ -101,11 +101,11 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             view.doStart(request);
         }
 
-        URL url = request.getUrl();
-        String urlHost = url.getHost();
-        int urlPort = url.getPort()==-1?url.getDefaultPort():url.getPort();
-        String urlProtocol = url.getProtocol();
-        String urlStr = url.toString();
+        final URL url = request.getUrl();
+        final String urlHost = url.getHost();
+        final int urlPort = url.getPort()==-1?url.getDefaultPort():url.getPort();
+        final String urlProtocol = url.getProtocol();
+        final String urlStr = url.toString();
 
         // Needed for specifying HTTP pre-emptive authentication
         HttpContext httpContext = null;
@@ -260,8 +260,6 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             }
 
             // Register the SSL Scheme:
-            final int sslPort = request.getUrl().getPort()==-1? 443: request.getUrl().getPort();
-
             if(urlProtocol.equalsIgnoreCase("https")){
                 final String trustStorePath = request.getSslTrustStore();
 
@@ -275,7 +273,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                         trustStore,
                         null,  // Secure Random
                         hcVerifier);
-                Scheme sch = new Scheme(urlProtocol, sslPort, socketFactory);
+                Scheme sch = new Scheme(urlProtocol, urlPort, socketFactory);
                 httpclient.getConnectionManager().getSchemeRegistry().register(sch);
             }
 
