@@ -8,6 +8,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -164,7 +167,7 @@ class RESTView extends JPanel implements View {
     }
     
     private JTable jt_res_headers = new JTable();
-    
+
     //private JScrollPane jsp_test_result;
     //private JTextArea jta_test_result = new JTextArea();
     private TestResultPanel jp_testResultPanel = new TestResultPanel();
@@ -660,6 +663,68 @@ class RESTView extends JPanel implements View {
         // Header Tab: Other Headers
         JPanel jp_headers_others = new JPanel();
         jp_headers_others.setLayout(new GridLayout(1, 1));
+        jt_res_headers.addMouseListener(new MouseAdapter() {
+            private JPopupMenu popup = new JPopupMenu();
+            private JMenuItem jmi_copy = new JMenuItem("Copy Selected Header");
+            private JMenuItem jmi_copy_all = new JMenuItem("Copy Headers");
+            {
+                jmi_copy.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        final int row = jt_res_headers.getSelectedRow();
+                        final String key = (String) jt_res_headers.getValueAt(row, 0);
+                        final String value = (String) jt_res_headers.getValueAt(row, 1);
+
+                        clipboardCopy(key + ": " + value);
+                    }
+                });
+                popup.add(jmi_copy);
+
+                jmi_copy_all.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        final int totalRows = jt_res_headers.getRowCount();
+
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<totalRows; i++) {
+                            final String key = (String) jt_res_headers.getValueAt(i, 0);
+                            final String value = (String) jt_res_headers.getValueAt(i, 1);
+
+                            sb.append(key).append(": ").append(value).append("\r\n");
+                        }
+                        clipboardCopy(sb.toString());
+                    }
+                });
+                popup.add(jmi_copy_all);
+            }
+
+            private void clipboardCopy(String str) {
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(new StringSelection(str), null);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                showPopup(e);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopup(e);
+            }
+
+            private void showPopup(MouseEvent e) {
+                if(jt_res_headers.getSelectedRowCount() == 0) {
+                    jmi_copy.setEnabled(false);
+                }
+                else {
+                    jmi_copy.setEnabled(true);
+                }
+                if (e.isPopupTrigger()) {
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
         jt_res_headers.setModel(resHeaderTableModel);
         JScrollPane jsp = new JScrollPane(jt_res_headers);
         Dimension d = jsp.getPreferredSize();

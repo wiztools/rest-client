@@ -1,7 +1,6 @@
 package org.wiztools.restclient.ui;
 
 import java.util.Map;
-import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -12,7 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -40,6 +38,7 @@ final class TwoColumnTablePanel extends JPanel {
     private void initMultiEntryDialog(){
         // Initialize the Multi-entry dialog:
         MultiEntryAdd callback = new MultiEntryAdd() {
+            @Override
             public void add(Map<String, String> keyValuePair, List<String> invalidLines) {
                 Object[][] data = model.getData();
                 List<String> keys = new ArrayList<String>();
@@ -99,6 +98,7 @@ final class TwoColumnTablePanel extends JPanel {
         final JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem jmi_delete = new JMenuItem("Delete");
         jmi_delete.addActionListener(new ActionListener(){
+            @Override
             public void actionPerformed(ActionEvent e){
                 int selectionCount = jt.getSelectedRowCount();
                 if(selectionCount > 0){

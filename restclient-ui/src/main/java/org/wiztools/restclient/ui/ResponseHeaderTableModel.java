@@ -39,6 +39,7 @@ class ResponseHeaderTableModel extends AbstractTableModel {
         return title[col];
     }
 
+    @Override
     public int getRowCount() {
         if(headers == null){
             return 0;
@@ -46,11 +47,13 @@ class ResponseHeaderTableModel extends AbstractTableModel {
         return headers.length;
     }
 
+    @Override
     public int getColumnCount() {
         // Key and Value
         return 2;
     }
 
+    @Override
     public Object getValueAt(int row, int column) {
         // 0 means key
         if(column == 0){
