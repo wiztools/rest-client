@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
 import javax.swing.ButtonGroup;
@@ -665,17 +666,21 @@ class RESTView extends JPanel implements View {
         jp_headers_others.setLayout(new GridLayout(1, 1));
         jt_res_headers.addMouseListener(new MouseAdapter() {
             private JPopupMenu popup = new JPopupMenu();
-            private JMenuItem jmi_copy = new JMenuItem("Copy Selected Header");
-            private JMenuItem jmi_copy_all = new JMenuItem("Copy Headers");
+            private JMenuItem jmi_copy = new JMenuItem("Copy Selected Header(s)");
+            private JMenuItem jmi_copy_all = new JMenuItem("Copy All Headers");
             {
                 jmi_copy.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        final int row = jt_res_headers.getSelectedRow();
-                        final String key = (String) jt_res_headers.getValueAt(row, 0);
-                        final String value = (String) jt_res_headers.getValueAt(row, 1);
-
-                        clipboardCopy(key + ": " + value);
+                        final int[] rows = jt_res_headers.getSelectedRows();
+                        Arrays.sort(rows);
+                        StringBuilder sb = new StringBuilder();
+                        for(final int row: rows) {
+                            final String key = (String) jt_res_headers.getValueAt(row, 0);
+                            final String value = (String) jt_res_headers.getValueAt(row, 1);
+                            sb.append(key).append(": ").append(value).append("\r\n");
+                        }
+                        UIUtil.clipboardCopy(sb.toString());
                     }
                 });
                 popup.add(jmi_copy);
@@ -692,15 +697,10 @@ class RESTView extends JPanel implements View {
 
                             sb.append(key).append(": ").append(value).append("\r\n");
                         }
-                        clipboardCopy(sb.toString());
+                        UIUtil.clipboardCopy(sb.toString());
                     }
                 });
                 popup.add(jmi_copy_all);
-            }
-
-            private void clipboardCopy(String str) {
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(new StringSelection(str), null);
             }
 
             @Override

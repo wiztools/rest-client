@@ -3,6 +3,9 @@ package org.wiztools.restclient.ui;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -47,5 +50,10 @@ final class UIUtil {
         }
         jp.add(component);
         return jp;
+    }
+    
+    public static void clipboardCopy(String str) {
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(new StringSelection(str), null);
     }
 }
