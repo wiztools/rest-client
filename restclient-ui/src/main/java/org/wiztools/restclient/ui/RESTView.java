@@ -1580,12 +1580,10 @@ class RESTView extends JPanel implements View {
                 if("content-type".equalsIgnoreCase(key)){
                     for(String v: headers.get(key)) {
                         final String contentType = Util.getMimeFromContentType(v);
-                        if(contentType.startsWith("application/xml")
-                                || contentType.startsWith("text/xml")
-                                || contentType.endsWith("+xml")){
+                        if(ContentTypeUtil.isXmlContentType(contentType)){
                             isXml = true;
                         }
-                        else if(contentType.startsWith("application/json")){
+                        else if(ContentTypeUtil.isJsonContentType(contentType)){
                             isJson = true;
                         }
                         break;
