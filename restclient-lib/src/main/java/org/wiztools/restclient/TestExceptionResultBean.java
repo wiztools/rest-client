@@ -4,10 +4,11 @@ package org.wiztools.restclient;
  *
  * @author subwiz
  */
-class TestFailureResultBean implements TestFailureResult {
+class TestExceptionResultBean implements TestExceptionResult {
     private int lineNumber;
     private String exceptionMessage;
 
+    @Override
     public String getExceptionMessage() {
         return exceptionMessage;
     }
@@ -16,6 +17,7 @@ class TestFailureResultBean implements TestFailureResult {
         this.exceptionMessage = exceptionMessage;
     }
 
+    @Override
     public int getLineNumber() {
         return lineNumber;
     }
@@ -32,7 +34,7 @@ class TestFailureResultBean implements TestFailureResult {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final TestFailureResult other = (TestFailureResult) obj;
+        final TestExceptionResult other = (TestExceptionResult) obj;
         if (this.lineNumber != other.getLineNumber()) {
             return false;
         }

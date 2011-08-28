@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient;
 
 import java.util.List;
@@ -15,11 +10,11 @@ public interface TestResult {
 
     int getErrorCount();
 
-    List<TestFailureResult> getErrors();
+    List<TestExceptionResult> getErrors();
 
     int getFailureCount();
 
-    List<TestFailureResult> getFailures();
+    List<TestExceptionResult> getFailures();
 
     String getMessage();
 

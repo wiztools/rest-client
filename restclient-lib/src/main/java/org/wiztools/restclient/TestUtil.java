@@ -108,12 +108,12 @@ public class TestUtil {
         resultBean.setErrorCount(errorCount);
         
         if(failureCount > 0){
-            List<TestFailureResult> l = new ArrayList<TestFailureResult>();
+            List<TestExceptionResult> l = new ArrayList<TestExceptionResult>();
             Enumeration<TestFailure> failures = result.failures();
             while(failures.hasMoreElements()){
                 TestFailure failure = failures.nextElement();
 
-                TestFailureResultBean t = new TestFailureResultBean();
+                TestExceptionResultBean t = new TestExceptionResultBean();
                 t.setExceptionMessage(failure.exceptionMessage());
                 t.setLineNumber(getLineNumber(failure.trace()));
                 l.add(t);
@@ -122,12 +122,12 @@ public class TestUtil {
         }
         
         if(errorCount > 0){
-            List<TestFailureResult> l = new ArrayList<TestFailureResult>();
+            List<TestExceptionResult> l = new ArrayList<TestExceptionResult>();
             Enumeration<TestFailure> errors = result.errors();
             while(errors.hasMoreElements()){
                 TestFailure error = errors.nextElement();
                 
-                TestFailureResultBean t = new TestFailureResultBean();
+                TestExceptionResultBean t = new TestExceptionResultBean();
                 t.setExceptionMessage(error.exceptionMessage());
                 t.setLineNumber(getLineNumber(error.trace()));
                 l.add(t);

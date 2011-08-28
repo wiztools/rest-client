@@ -14,8 +14,8 @@ class TestResultBean implements TestResult {
     private int runCount;
     private int failureCount;
     private int errorCount;
-    private List<TestFailureResult> failures;
-    private List<TestFailureResult> errors;
+    private List<TestExceptionResult> failures;
+    private List<TestExceptionResult> errors;
 
     private String message;
     
@@ -40,11 +40,11 @@ class TestResultBean implements TestResult {
         this.errorCount = errorCount;
     }
 
-    public List<TestFailureResult> getErrors() {
+    public List<TestExceptionResult> getErrors() {
         return errors;
     }
 
-    public void setErrors(List<TestFailureResult> errors) {
+    public void setErrors(List<TestExceptionResult> errors) {
         this.errors = errors;
     }
 
@@ -56,11 +56,11 @@ class TestResultBean implements TestResult {
         this.failureCount = failureCount;
     }
 
-    public List<TestFailureResult> getFailures() {
+    public List<TestExceptionResult> getFailures() {
         return failures;
     }
 
-    public void setFailures(List<TestFailureResult> failures) {
+    public void setFailures(List<TestExceptionResult> failures) {
         this.failures = failures;
     }
 

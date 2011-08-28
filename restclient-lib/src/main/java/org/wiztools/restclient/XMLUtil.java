@@ -415,8 +415,8 @@ public final class XMLUtil {
                 // Failures
                 if (testResult.getFailureCount() > 0) {
                     Element e_failures = new Element("failures");
-                    List<TestFailureResult> l = testResult.getFailures();
-                    for (TestFailureResult b : l) {
+                    List<TestExceptionResult> l = testResult.getFailures();
+                    for (TestExceptionResult b : l) {
                         Element e_message = new Element("message");
                         e_message.appendChild(b.getExceptionMessage());
                         Element e_line = new Element("line-number");
@@ -430,10 +430,10 @@ public final class XMLUtil {
                 }
 
                 //Errors
-                if (testResult.getFailureCount() > 0) {
+                if (testResult.getErrorCount() > 0) {
                     Element e_errors = new Element("errors");
-                    List<TestFailureResult> l = testResult.getErrors();
-                    for (TestFailureResult b : l) {
+                    List<TestExceptionResult> l = testResult.getErrors();
+                    for (TestExceptionResult b : l) {
                         Element e_message = new Element("message");
                         e_message.appendChild(b.getExceptionMessage());
                         Element e_line = new Element("line-number");
