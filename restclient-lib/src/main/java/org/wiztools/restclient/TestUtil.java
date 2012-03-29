@@ -33,7 +33,7 @@ public class TestUtil {
     public static TestSuite getTestSuite(final Request request, final Response response)
             throws TestException{
         final String script = request.getTestScript();
-        if(StringUtil.isStrEmpty(script)){
+        if(StringUtil.isEmpty(script)){
             return null;
         }
         try{

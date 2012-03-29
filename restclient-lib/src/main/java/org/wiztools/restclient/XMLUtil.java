@@ -116,21 +116,21 @@ public final class XMLUtil {
 
                     // creating the auth-host child element
                     String authHost = bean.getAuthHost();
-                    if (!StringUtil.isStrEmpty(authHost)) {
+                    if (!StringUtil.isEmpty(authHost)) {
                         Element e = new Element("auth-host");
                         e.appendChild(authHost);
                         reqChildElement.appendChild(e);
                     }
                     // creating the auth-realm child element
                     String authRealm = bean.getAuthRealm();
-                    if (!StringUtil.isStrEmpty(authRealm)) {
+                    if (!StringUtil.isEmpty(authRealm)) {
                         Element e = new Element("auth-realm");
                         e.appendChild(authRealm);
                         reqChildElement.appendChild(e);
                     }
                     // creating the auth-username child element
                     String authUsername = bean.getAuthUsername();
-                    if (!StringUtil.isStrEmpty(authUsername)) {
+                    if (!StringUtil.isEmpty(authUsername)) {
                         Element e = new Element("auth-username");
                         e.appendChild(authUsername);
                         reqChildElement.appendChild(e);
@@ -139,7 +139,7 @@ public final class XMLUtil {
                     String authPassword = null;
                     if (bean.getAuthPassword() != null) {
                         authPassword = new String(bean.getAuthPassword());
-                        if (!StringUtil.isStrEmpty(authPassword)) {
+                        if (!StringUtil.isEmpty(authPassword)) {
                             String encPassword = Base64.encodeObject(authPassword);
 
                             Element e = new Element("auth-password");
@@ -152,7 +152,7 @@ public final class XMLUtil {
             
             // Creating SSL elements
             String sslTruststore = bean.getSslTrustStore();
-            if (!StringUtil.isStrEmpty(sslTruststore)) {
+            if (!StringUtil.isEmpty(sslTruststore)) {
                 { // 1. Create truststore entry
                     Element e = new Element("ssl-truststore");
                     e.appendChild(sslTruststore);

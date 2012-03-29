@@ -191,7 +191,7 @@ public final class Util {
      * @return The formatted content-type and charset.
      */
     public static String getFormattedContentType(final String contentType, final String charset){
-        String charsetFormatted = StringUtil.isStrEmpty(charset)? "": "; charset=" + charset;
+        String charsetFormatted = StringUtil.isEmpty(charset)? "": "; charset=" + charset;
         return contentType + charsetFormatted;
     }
 

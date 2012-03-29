@@ -146,8 +146,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         if (authEnabled) {
             String uid = request.getAuthUsername();
             String pwd = new String(request.getAuthPassword());
-            String host = StringUtil.isStrEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
-            String realm = StringUtil.isStrEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
+            String host = StringUtil.isEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
+            String realm = StringUtil.isEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
 
             // Type of authentication
             List<String> authPrefs = new ArrayList<String>(2);
@@ -263,7 +263,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             if(urlProtocol.equalsIgnoreCase("https")){
                 final String trustStorePath = request.getSslTrustStore();
 
-                final KeyStore trustStore  = StringUtil.isStrEmpty(trustStorePath)?
+                final KeyStore trustStore  = StringUtil.isEmpty(trustStorePath)?
                     null:
                     getTrustStore(trustStorePath, request.getSslTrustStorePassword());
                 SSLSocketFactory socketFactory = new SSLSocketFactory(
@@ -408,7 +408,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             throws KeyStoreException, IOException,
             NoSuchAlgorithmException, CertificateException {
         KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
-        if(!StringUtil.isStrEmpty(trustStorePath)) {
+        if(!StringUtil.isEmpty(trustStorePath)) {
             FileInputStream instream = new FileInputStream(new File(trustStorePath));
             try{
                 trustStore.load(instream, trustStorePassword);
