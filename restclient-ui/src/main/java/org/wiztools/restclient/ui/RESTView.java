@@ -552,7 +552,7 @@ class RESTView extends JPanel implements View {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String t = se_test_script.getText();
-                if(!StringUtil.isStrEmpty(t)){
+                if(!StringUtil.isEmpty(t)){
                     JOptionPane.showMessageDialog(rest_ui.getFrame(),
                             "Script text already present! Please clear existing script!",
                             "Error", JOptionPane.ERROR_MESSAGE);
@@ -568,7 +568,7 @@ class RESTView extends JPanel implements View {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String str = se_test_script.getText();
-                if(!StringUtil.isStrEmpty(str)){
+                if(!StringUtil.isEmpty(str)){
                     int ret = JOptionPane.showConfirmDialog(rest_ui.getFrame(), "Script already exists. Erase?", "Erase existing script?", JOptionPane.YES_NO_OPTION);
                     if(ret == JOptionPane.NO_OPTION){
                         return;
@@ -600,7 +600,7 @@ class RESTView extends JPanel implements View {
         jb_req_test_run.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(StringUtil.isStrEmpty(se_test_script.getText())){
+                if(StringUtil.isEmpty(se_test_script.getText())){
                     JOptionPane.showMessageDialog(rest_ui.getFrame(),
                             "No script!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -621,7 +621,7 @@ class RESTView extends JPanel implements View {
                     return;
                 }
                 String testScript = se_test_script.getText();
-                if(StringUtil.isStrEmpty(testScript)){
+                if(StringUtil.isEmpty(testScript)){
                     JOptionPane.showMessageDialog(rest_ui.getFrame(), "No Script", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -1122,7 +1122,7 @@ class RESTView extends JPanel implements View {
         if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
             // Get request body
             String req_body = se_req_body.getText();
-            if(!StringUtil.isStrEmpty(req_body)){
+            if(!StringUtil.isEmpty(req_body)){
                 String req_content_type = jd_body_content_type.getContentType();
                 String req_char_set = jd_body_content_type.getCharSet();
                 ReqEntityBean body = new ReqEntityBean(req_body,
@@ -1418,7 +1418,7 @@ class RESTView extends JPanel implements View {
     }
     
     private boolean canSetReqBodyText(){
-        if(StringUtil.isStrEmpty(se_req_body.getText())){
+        if(StringUtil.isEmpty(se_req_body.getText())){
             return true;
         }
         else{
@@ -1466,7 +1466,7 @@ class RESTView extends JPanel implements View {
     // This is just a UI convenience method.
     private void correctRequestURL(){
         String str = (String)jcb_url.getSelectedItem();
-        if(StringUtil.isStrEmpty(str)){
+        if(StringUtil.isEmpty(str)){
             return;
         }
         else{
@@ -1490,10 +1490,10 @@ class RESTView extends JPanel implements View {
         
         // Auth check
         if(request.getAuthMethods().size() > 0){
-            if(StringUtil.isStrEmpty(request.getAuthUsername())){
+            if(StringUtil.isEmpty(request.getAuthUsername())){
                 errors.add("Username is empty.");
             }
-            if(StringUtil.isStrEmpty(new String(request.getAuthPassword()))){
+            if(StringUtil.isEmpty(new String(request.getAuthPassword()))){
                 errors.add("Password is empty.");
             }
         }
@@ -1505,11 +1505,11 @@ class RESTView extends JPanel implements View {
             ReqEntity reBean = request.getBody();
             if(reBean != null){
                 String req_body = reBean.getBody();
-                if(!StringUtil.isStrEmpty(req_body)){
+                if(!StringUtil.isEmpty(req_body)){
                     String req_content_type = reBean.getContentType();
                     String req_char_set = reBean.getCharSet();
-                    if(StringUtil.isStrEmpty(req_content_type)
-                            || StringUtil.isStrEmpty(req_char_set)){
+                    if(StringUtil.isEmpty(req_content_type)
+                            || StringUtil.isEmpty(req_char_set)){
                         errors.add("Body content is set, but `Content-type' and/or `Char-set' not set.");
                     }
                 }

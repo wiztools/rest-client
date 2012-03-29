@@ -154,11 +154,11 @@ final class TwoColumnTablePanel extends JPanel {
                 String key = jtf_key.getText();
                 String value = jtf_value.getText();
                 List<String> errors = null;
-                if(StringUtil.isStrEmpty(key)){
+                if(StringUtil.isEmpty(key)){
                     errors = new ArrayList<String>();
                     errors.add("Key is empty.");
                 }
-                if(StringUtil.isStrEmpty(value)){
+                if(StringUtil.isEmpty(value)){
                     errors = errors==null?new ArrayList<String>():errors;
                     errors.add("Value is empty.");
                 }

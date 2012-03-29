@@ -141,12 +141,12 @@ class OptionsProxyPanel extends JPanel implements IOptionsPanel {
             char[] password = jpf_password.getPassword();
             
             // Validation
-            if(StringUtil.isStrEmpty(host)){
+            if(StringUtil.isEmpty(host)){
                 errors.add("Proxy Host is empty.");
             }
             // port is already validated
             if(authEnabled){
-                if(StringUtil.isStrEmpty(username)){
+                if(StringUtil.isEmpty(username)){
                     errors.add("Proxy Username is empty.");
                 }
                 if(password == null || password.length == 0){

@@ -180,7 +180,7 @@ class PasswordGenDialog extends EscapableDialog {
     private void generate(){
         // Check for null String in jtf_in
         final String inStr = jtf_in.getText();
-        if(StringUtil.isStrEmpty(inStr)){
+        if(StringUtil.isEmpty(inStr)){
             JOptionPane.showMessageDialog(me,
                 "No input entered.",
                 "Error in input.",
