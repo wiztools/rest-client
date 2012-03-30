@@ -23,6 +23,10 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
+import org.simplericity.macify.eawt.Application;
+import org.simplericity.macify.eawt.ApplicationEvent;
+import org.simplericity.macify.eawt.ApplicationListener;
+import org.simplericity.macify.eawt.DefaultApplication;
 import org.wiztools.restclient.FileType;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.ReqResBean;
@@ -40,6 +44,8 @@ import org.wiztools.restclient.XMLUtil;
  * @author schandran
  */
 class RESTMain implements RESTUserInterface {
+    
+    private final Application application = new DefaultApplication();
     
     private RESTView view;
     private AboutDialog aboutDialog;
@@ -66,6 +72,12 @@ class RESTMain implements RESTUserInterface {
     }
     
     public RESTMain(final String title){
+        // Macify:
+        application.addAboutMenuItem();
+        application.addApplicationListener(new RCApplicationListener());
+        application.addPreferencesMenuItem();
+        
+        // Application logic:
         frame = new JFrame(title);
         init(false, null, null); // false means isPlugin==false
     }
@@ -153,18 +165,20 @@ class RESTMain implements RESTUserInterface {
         });
         jm_file.add(jmi_save_archive);
         
-        jm_file.addSeparator();
-        
-        JMenuItem jmi_exit = new JMenuItem("Exit", UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "fv_exit.png"));
-        jmi_exit.setMnemonic(KeyEvent.VK_X);
-        jmi_exit.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        jmi_exit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                shutdownCall();
-            }
-        });
-        jm_file.add(jmi_exit);
+        if(!application.isMac()) { // Shown only for non-Mac platform!
+            jm_file.addSeparator();
+
+            JMenuItem jmi_exit = new JMenuItem("Exit", UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "fv_exit.png"));
+            jmi_exit.setMnemonic(KeyEvent.VK_X);
+            jmi_exit.setAccelerator(KeyStroke.getKeyStroke(
+                    KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            jmi_exit.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent arg0) {
+                    shutdownCall();
+                }
+            });
+            jm_file.add(jmi_exit);
+        }
         
         // Edit menu
         JMenu jm_edit = new JMenu("Edit");
@@ -288,35 +302,41 @@ class RESTMain implements RESTUserInterface {
         });
         jm_tools.add(jmi_server_fill_url);
         
-        jm_tools.addSeparator();
-        
-        JMenuItem jmi_options = new JMenuItem("Options");
-        jmi_options.setMnemonic('o');
-        jmi_options.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                actionOpenOptionsDialog(event);
-            }
-        });
-        jm_tools.add(jmi_options);
-        
-        // Help menu
-        JMenu jm_help = new JMenu("Help");
-        jm_help.setMnemonic(KeyEvent.VK_H);
-        
-        JMenuItem jmi_about = new JMenuItem("About");
-        jmi_about.setMnemonic('a');
-        jmi_about.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-              showAboutDialog();
-            }
-        });
-        jm_help.add(jmi_about);
+        if(!application.isMac()) { // Add Options menu only for non-Mac platform!
+            jm_tools.addSeparator();
+
+            JMenuItem jmi_options = new JMenuItem("Options");
+            jmi_options.setMnemonic('o');
+            jmi_options.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    showOptionsDialog();
+                }
+            });
+            jm_tools.add(jmi_options);
+        }
         
         // Add menus to menu-bar
         jmb.add(jm_file);
         jmb.add(jm_edit);
         jmb.add(jm_tools);
-        jmb.add(jm_help);
+        
+        // Help menu
+        if(!application.isMac()) { // show for only non-Mac platform!
+            JMenu jm_help = new JMenu("Help");
+            jm_help.setMnemonic(KeyEvent.VK_H);
+
+            JMenuItem jmi_about = new JMenuItem("About");
+            jmi_about.setMnemonic('a');
+            jmi_about.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent arg0) {
+                showAboutDialog();
+                }
+            });
+            jm_help.add(jmi_about);
+            
+            // Add Help menu to Menubar:
+            jmb.add(jm_help);
+        }
         
         frame.setJMenuBar(jmb);
     }
@@ -351,7 +371,7 @@ class RESTMain implements RESTUserInterface {
         }
     }
     
-    private void actionOpenOptionsDialog(ActionEvent event){
+    private void showOptionsDialog(){
         if(optionsDialog == null){
             optionsDialog = new OptionsDialog(frame);
         }
@@ -705,10 +725,46 @@ class RESTMain implements RESTUserInterface {
      * show about dialog
      */
     public void showAboutDialog() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                aboutDialog.setVisible(true);
-            }
-        });
+        aboutDialog.setVisible(true);
+    }
+    
+    public class RCApplicationListener implements ApplicationListener {
+
+        @Override
+        public void handleAbout(ApplicationEvent ae) {
+            showAboutDialog();
+            ae.setHandled(true);
+        }
+
+        @Override
+        public void handleOpenApplication(ApplicationEvent ae) {
+            // do nothing!
+        }
+
+        @Override
+        public void handleOpenFile(ApplicationEvent ae) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void handlePreferences(ApplicationEvent ae) {
+            showOptionsDialog();
+        }
+
+        @Override
+        public void handlePrintFile(ApplicationEvent ae) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void handleQuit(ApplicationEvent ae) {
+            shutdownCall();
+        }
+
+        @Override
+        public void handleReOpenApplication(ApplicationEvent ae) {
+            frame.setVisible(true);
+            ae.setHandled(true);
+        }
     }
 }
