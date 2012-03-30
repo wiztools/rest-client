@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -149,11 +150,21 @@ class TestResultPanel extends JPanel {
     }
     
     void clear(){
+        // Clear Summary tab:
         jl_icon.setIcon(ICON_DEFAULT);
         jl_runCount.setText("");
         jl_failureCount.setText("");
         jl_errorCount.setText("");
         jl_status.setText("");
+        
+        // Clear Failures tab:
+        tm_failures.setData(Collections.EMPTY_LIST);
+        
+        // Clear Errors tab:
+        tm_errors.setData(Collections.EMPTY_LIST);
+        
+        // Clear trace tab:
+        jta_trace.setText("");
     }
     
     void setTestResult(TestResult result){
