@@ -1,6 +1,7 @@
 package org.wiztools.restclient.ui;
 
 import java.awt.Component;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -89,7 +90,7 @@ class RESTMain implements RESTUserInterface {
         JMenuItem jmi_open_req = new JMenuItem("Open Request", RCFileView.REQUEST_ICON);
         jmi_open_req.setMnemonic(KeyEvent.VK_O);
         jmi_open_req.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         jmi_open_req.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 jmi_open_reqAction();
@@ -118,7 +119,7 @@ class RESTMain implements RESTUserInterface {
         JMenuItem jmi_save_req = new JMenuItem("Save Request", RCFileView.REQUEST_ICON);
         jmi_save_req.setMnemonic(KeyEvent.VK_Q);
         jmi_save_req.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         jmi_save_req.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 actionSave(FileChooserType.SAVE_REQUEST);
@@ -157,7 +158,7 @@ class RESTMain implements RESTUserInterface {
         JMenuItem jmi_exit = new JMenuItem("Exit", UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "fv_exit.png"));
         jmi_exit.setMnemonic(KeyEvent.VK_X);
         jmi_exit.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         jmi_exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 shutdownCall();
