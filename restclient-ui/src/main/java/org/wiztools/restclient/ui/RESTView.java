@@ -1,70 +1,21 @@
 package org.wiztools.restclient.ui;
 
 import com.jidesoft.swing.AutoCompletion;
-import java.awt.event.FocusEvent;
-import org.wiztools.restclient.*;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.LinkedList;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JEditorPane;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
-import org.wiztools.commons.Charsets;
-import org.wiztools.commons.CollectionsUtil;
-import org.wiztools.commons.FileUtil;
-import org.wiztools.restclient.TestException;
-import org.wiztools.restclient.TestResult;
-import org.wiztools.restclient.TestUtil;
-import org.wiztools.restclient.XMLException;
-import org.wiztools.restclient.XMLUtil;
-import org.wiztools.commons.Implementation;
-import org.wiztools.commons.MultiValueMap;
-import org.wiztools.commons.StringUtil;
+import org.wiztools.commons.*;
+import org.wiztools.restclient.*;
 
 /**
  *
@@ -632,6 +583,10 @@ class RESTView extends JPanel implements View {
         jtp.addTab("Test Script", jp_test);
         
         return jtp;
+    }
+    
+    void requestFocusAddressBar() {
+        jcb_url.requestFocus();
     }
     
     void runClonedRequestTest(Request request, Response response){
