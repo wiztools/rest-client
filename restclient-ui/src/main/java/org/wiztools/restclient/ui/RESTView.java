@@ -824,7 +824,20 @@ class RESTView extends JPanel implements View {
         jl_url.setLabelFor(jcb_url);
         jl_url.setDisplayedMnemonic('u');
         jp_north.add(jl_url, BorderLayout.WEST);
-        
+
+        { // Keystroke for focusing on the address bar:
+            final KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_L,
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+            final String actionName = "org.wiztools.restclient:ADDRESS_FOCUS";
+            jcb_url.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                    .put(ks, actionName);
+            jcb_url.getActionMap().put(actionName, new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    requestFocusAddressBar();
+                }
+            });
+        }
         jcb_url.setToolTipText("URL");
         jcb_url.setEditable(true);
         jcb_url.addActionListener(new java.awt.event.ActionListener() {
