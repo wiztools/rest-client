@@ -2,42 +2,21 @@ package org.wiztools.restclient.ui;
 
 import java.awt.Component;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import org.simplericity.macify.eawt.Application;
 import org.simplericity.macify.eawt.ApplicationEvent;
 import org.simplericity.macify.eawt.ApplicationListener;
 import org.simplericity.macify.eawt.DefaultApplication;
-import org.wiztools.restclient.FileType;
-import org.wiztools.restclient.MessageI18N;
-import org.wiztools.restclient.ReqResBean;
-import org.wiztools.restclient.RequestBean;
-import org.wiztools.restclient.Util;
+import org.wiztools.restclient.*;
 import org.wiztools.restclient.server.TraceServer;
-import org.wiztools.restclient.Base64;
-import org.wiztools.restclient.Request;
-import org.wiztools.restclient.Response;
-import org.wiztools.restclient.XMLException;
-import org.wiztools.restclient.XMLUtil;
 
 /**
  *
@@ -104,6 +83,7 @@ class RESTMain implements RESTUserInterface {
         jmi_open_req.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         jmi_open_req.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 jmi_open_reqAction();
             }
@@ -112,6 +92,7 @@ class RESTMain implements RESTUserInterface {
         
         JMenuItem jmi_open_res = new JMenuItem("Open Response", RCFileView.RESPONSE_ICON);
         jmi_open_res.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 jmi_open_resAction();
             }
@@ -120,6 +101,7 @@ class RESTMain implements RESTUserInterface {
         
         JMenuItem jmi_open_archive = new JMenuItem("Open Req-Res Archive", RCFileView.ARCHIVE_ICON);
         jmi_open_archive.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 jmi_open_archiveAction();
             }
@@ -133,6 +115,7 @@ class RESTMain implements RESTUserInterface {
         jmi_save_req.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         jmi_save_req.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 actionSave(FileChooserType.SAVE_REQUEST);
             }
@@ -142,6 +125,7 @@ class RESTMain implements RESTUserInterface {
         JMenuItem jmi_save_res = new JMenuItem("Save Response", RCFileView.RESPONSE_ICON);
         jmi_save_res.setMnemonic(KeyEvent.VK_S);
         jmi_save_res.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 actionSave(FileChooserType.SAVE_RESPONSE);
             }
@@ -151,6 +135,7 @@ class RESTMain implements RESTUserInterface {
         JMenuItem jmi_save_res_body = new JMenuItem("Save Response Body", RCFileView.FILE_ICON);
         // jmi_save_res_body.setMnemonic(' ');
         jmi_save_res_body.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 actionSave(FileChooserType.SAVE_RESPONSE_BODY);
             }
@@ -159,6 +144,7 @@ class RESTMain implements RESTUserInterface {
         
         JMenuItem jmi_save_archive = new JMenuItem("Save Req-Res Archive", RCFileView.ARCHIVE_ICON);
         jmi_save_archive.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 actionSave(FileChooserType.SAVE_ARCHIVE);
             }
@@ -173,6 +159,7 @@ class RESTMain implements RESTUserInterface {
             jmi_exit.setAccelerator(KeyStroke.getKeyStroke(
                     KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             jmi_exit.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent arg0) {
                     shutdownCall();
                 }
@@ -187,6 +174,7 @@ class RESTMain implements RESTUserInterface {
         JMenuItem jmi_clear_res = new JMenuItem("Clear Response");
         jmi_clear_res.setMnemonic(KeyEvent.VK_C);
         jmi_clear_res.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 view.clearUIResponse();
             }
@@ -195,6 +183,7 @@ class RESTMain implements RESTUserInterface {
         JMenuItem jmi_reset_all = new JMenuItem("Reset All");
         jmi_reset_all.setMnemonic('a');
         jmi_reset_all.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 view.clearUIResponse();
                 view.clearUIRequest();
@@ -206,6 +195,7 @@ class RESTMain implements RESTUserInterface {
         
         JMenuItem jmi_reset_to_last = new JMenuItem("Reset to Last Request-Response");
         jmi_reset_to_last.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if(view.getLastRequest() != null && view.getLastResponse() != null){
                     view.setUIToLastRequestResponse();
@@ -227,6 +217,7 @@ class RESTMain implements RESTUserInterface {
         JMenuItem jmi_session = new JMenuItem("Open Session View");
         jmi_session.setMnemonic('s');
         jmi_session.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 view.showSessionFrame();
             }
@@ -237,6 +228,7 @@ class RESTMain implements RESTUserInterface {
         JMenuItem jmi_pwd_gen = new JMenuItem("Password Encoder/Decoder");
         jmi_pwd_gen.setMnemonic('p');
         jmi_pwd_gen.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 if(passwordGenDialog == null){
                     passwordGenDialog = new PasswordGenDialog(frame);
@@ -251,6 +243,7 @@ class RESTMain implements RESTUserInterface {
         // Trace Server
         JMenuItem jmi_server_start = new JMenuItem("Start Trace Server @ port " + TraceServer.PORT);
         jmi_server_start.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 try{
                     TraceServer.start();
@@ -265,6 +258,7 @@ class RESTMain implements RESTUserInterface {
         
         JMenuItem jmi_server_stop = new JMenuItem("Stop Trace Server");
         jmi_server_stop.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 try{
                     if(TraceServer.isRunning()){
@@ -281,6 +275,7 @@ class RESTMain implements RESTUserInterface {
         
         JMenuItem jmi_server_fill_url = new JMenuItem("Insert Trace Server URL");
         jmi_server_fill_url.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 RequestBean request = (RequestBean) view.getRequestFromUI();
                 if(request.getUrl() != null){
@@ -308,6 +303,7 @@ class RESTMain implements RESTUserInterface {
             JMenuItem jmi_options = new JMenuItem("Options");
             jmi_options.setMnemonic('o');
             jmi_options.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent event) {
                     showOptionsDialog();
                 }
@@ -328,8 +324,9 @@ class RESTMain implements RESTUserInterface {
             JMenuItem jmi_about = new JMenuItem("About");
             jmi_about.setMnemonic('a');
             jmi_about.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent arg0) {
-                showAboutDialog();
+                    showAboutDialog();
                 }
             });
             jm_help.add(jmi_about);
@@ -424,71 +421,21 @@ class RESTMain implements RESTUserInterface {
     private void jmi_open_reqAction(){
         File f = getOpenFile(FileChooserType.OPEN_REQUEST);
         if(f != null){
-            Exception e = null;
-            try{
-                Request request = XMLUtil.getRequestFromXMLFile(f);
-                view.setUIFromRequest(request);
-            }
-            catch(IOException ex){
-                e = ex;
-            }
-            catch(XMLException ex){
-                e = ex;
-            }
-            catch(Base64.Base64Exception ex){
-                e = ex;
-            }
-            if(e != null){
-                view.showError(Util.getStackTrace(e));
-            }
+            FileOpenUtil.openRequest(view, f);
         }
     }
     
     private void jmi_open_resAction(){
         File f = getOpenFile(FileChooserType.OPEN_RESPONSE);
         if(f != null){
-            Exception e = null;
-            try{
-                Response response = XMLUtil.getResponseFromXMLFile(f);
-                view.setUIFromResponse(response);
-            }
-            catch(IOException ex){
-                e = ex;
-            }
-            catch(XMLException ex){
-                e = ex;
-            }
-            if(e != null){
-                view.showError(Util.getStackTrace(e));
-            }
+            FileOpenUtil.openResponse(view, f);
         }
     }
     
     private void jmi_open_archiveAction(){
         File f = getOpenFile(FileChooserType.OPEN_ARCHIVE);
         if(f != null){
-            Exception e = null;
-            try{
-                ReqResBean encp = Util.getReqResArchive(f);
-                Request request = encp.getRequestBean();
-                Response response = encp.getResponseBean();
-                if(request != null && response != null){
-                    view.setUIFromRequest(request);
-                    view.setUIFromResponse(response);
-                }
-                else{
-                    view.showError("Unable to load archive! Check if valid archive!");
-                }
-            }
-            catch(IOException ex){
-                e = ex;
-            }
-            catch(XMLException ex){
-                e = ex;
-            }
-            if(e != null){
-                view.showError(Util.getStackTrace(e));
-            }
+            FileOpenUtil.openArchive(view, f);
         }
     }
     
@@ -743,17 +690,21 @@ class RESTMain implements RESTUserInterface {
 
         @Override
         public void handleOpenFile(ApplicationEvent ae) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            final String fileName = ae.getFilename();
+            final File f = new File(fileName);
+            FileOpenUtil.open(view, f);
+            ae.setHandled(true);
         }
 
         @Override
         public void handlePreferences(ApplicationEvent ae) {
             showOptionsDialog();
+            ae.setHandled(true);
         }
 
         @Override
         public void handlePrintFile(ApplicationEvent ae) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            JOptionPane.showMessageDialog(frame, "Sorry, printing not implemented");
         }
 
         @Override
