@@ -16,7 +16,7 @@ import javax.swing.JTextArea;
  */
 class MessageDialog extends EscapableDialog {
     
-    private MessageDialog messageDialog;
+    private final MessageDialog messageDialog;
     private java.awt.Frame parent;
     
     /** Creates new form ErrorDialog */
@@ -42,6 +42,7 @@ class MessageDialog extends EscapableDialog {
         
         jb_ok = new JButton("Ok");
         jb_ok.setMnemonic('o');
+        getRootPane().setDefaultButton(jb_ok);
         jb_ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 jb_okActionPerformed(event);
