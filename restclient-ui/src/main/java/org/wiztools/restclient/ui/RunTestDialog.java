@@ -1,28 +1,12 @@
 package org.wiztools.restclient.ui;
 
-import java.awt.AWTEvent;
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import org.wiztools.restclient.FileType;
-import org.wiztools.restclient.ReqResBean;
-import org.wiztools.restclient.Request;
-import org.wiztools.restclient.Response;
-import org.wiztools.restclient.Util;
-import org.wiztools.restclient.XMLException;
+import javax.swing.*;
+import org.wiztools.restclient.*;
 
 /**
  *
@@ -107,6 +91,7 @@ class RunTestDialog extends EscapableDialog {
         JPanel jp_south = new JPanel();
         jp_south.setLayout(new FlowLayout(FlowLayout.RIGHT));
         jb_next.setMnemonic('n');
+        getRootPane().setDefaultButton(jb_next);
         jb_next.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jb_nextAction();
