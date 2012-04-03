@@ -1,7 +1,6 @@
 package org.wiztools.restclient.ui;
 
 import java.awt.AWTEvent;
-import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -13,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapLinkedHashSet;
+import org.wiztools.restclient.Util;
 
 /**
  *
