@@ -864,6 +864,7 @@ class RESTView extends JPanel implements View {
         jp_north.add(jcb_url, BorderLayout.CENTER);
         jb_request = new JButton(icon_go);
         jb_request.setToolTipText("Go!");
+        rest_ui.getFrame().getRootPane().setDefaultButton(jb_request);
         jb_request.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
