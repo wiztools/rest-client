@@ -56,6 +56,7 @@ class ParameterDialog extends EscapableDialog {
         JPanel jp_south = new JPanel();
         jp_south.setLayout(new FlowLayout(FlowLayout.CENTER));
         jb_generate.setMnemonic('g');
+        getRootPane().setDefaultButton(jb_generate);
         jb_generate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 actionGenerate(event);

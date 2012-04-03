@@ -1,7 +1,6 @@
 package org.wiztools.restclient.ui;
 
 import java.awt.AWTEvent;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -13,14 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.*;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.MessageI18N;
@@ -83,6 +75,7 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         JPanel jp_south = new JPanel();
         jp_south.setLayout(new FlowLayout());
         jb_add.setMnemonic('a');
+        getRootPane().setDefaultButton(jb_add);
         jb_add.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 add();

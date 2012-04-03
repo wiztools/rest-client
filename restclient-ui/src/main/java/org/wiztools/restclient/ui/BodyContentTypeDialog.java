@@ -1,10 +1,6 @@
 package org.wiztools.restclient.ui;
 
-import java.awt.AWTEvent;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -15,11 +11,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
@@ -129,6 +121,7 @@ class BodyContentTypeDialog extends EscapableDialog {
         jp_south.setLayout(new FlowLayout(FlowLayout.CENTER));
         JButton jb_ok = new JButton("Ok");
         jb_ok.setMnemonic('o');
+        getRootPane().setDefaultButton(jb_ok);
         jb_ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 hideMe(true);
