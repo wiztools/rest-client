@@ -5,23 +5,13 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JFrame;
-
+import javax.swing.*;
+import org.wiztools.commons.Implementation;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.Util;
-import org.wiztools.commons.Implementation;
 
 /**
  *
@@ -91,6 +81,7 @@ class OptionsDialog extends EscapableDialog {
         JPanel jp_encp_south = new JPanel();
         jp_encp_south.setLayout(new FlowLayout(FlowLayout.CENTER));
         JButton jb_ok = new JButton("Ok");
+        me.getRootPane().setDefaultButton(jb_ok);
         jb_ok.setMnemonic('o');
         jb_ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
