@@ -1,30 +1,14 @@
 package org.wiztools.restclient.ui;
 
-import java.awt.AWTEvent;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
+import javax.swing.*;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.Util;
 import org.wiztools.restclient.Base64;
 
 /**
@@ -134,6 +118,7 @@ class PasswordGenDialog extends EscapableDialog {
         jp_south.setLayout(new FlowLayout(FlowLayout.CENTER));
         JButton jb_generate = new JButton("Generate");
         jb_generate.setMnemonic('g');
+        getRootPane().setDefaultButton(jb_generate);
         jb_generate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 generate();
