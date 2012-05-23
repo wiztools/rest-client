@@ -437,61 +437,93 @@ class RESTView extends JPanel implements View {
         // SSL Tab
         JPanel jp_ssl = new JPanel();
         jp_ssl.setLayout(new BorderLayout(BORDER_WIDTH, 2));
-        // SSL West
-        JPanel jp_ssl_west = new JPanel();
-        jp_ssl_west.setLayout(new GridLayout(5, 1));
-        jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Trust store file:")));
-        jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Trust store password:")));
-        jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Hostname verifier:")));
-        jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Key store file:")));
-        jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Key store password:")));
-        jp_ssl.add(jp_ssl_west, BorderLayout.WEST);
-        // SSL Center
-        JPanel jp_ssl_center = new JPanel();
-        jp_ssl_center.setLayout(new GridLayout(5, 1));
-        JPanel jp_ssl_center_flow = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_truststore_file);
-        jb_ssl_browse.setToolTipText("Open truststore file.");
-        jb_ssl_browse.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
-                if(f == null){
-                    // do nothing--cancel pressed
-                }
-                else if(f.canRead()){
-                    jtf_ssl_truststore_file.setText(f.getAbsolutePath());
-                }
-                else{
-                    setStatusMessage("Truststore file cannot be read.");
-                }
+        
+        {
+            JTabbedPane jtp_ssl = new JTabbedPane();
+            // jtp_ssl.setTabPlacement(JTabbedPane.LEFT);
+            
+            { // Trust store:
+                JPanel jp = new JPanel(new BorderLayout(BORDER_WIDTH, 2));
+                
+                JPanel jp_label = new JPanel(new GridLayout(2, 1));
+                jp_label.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Truststore file:")));
+                jp_label.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Truststore password:")));
+                jp.add(jp_label, BorderLayout.WEST);
+                
+                JPanel jp_input = new JPanel(new GridLayout(2, 1));
+                JPanel jp_truststore_file = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_truststore_file);
+                jb_ssl_browse.setToolTipText("Open truststore file.");
+                jb_ssl_browse.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent arg0) {
+                        File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
+                        if(f == null){
+                            // do nothing--cancel pressed
+                        }
+                        else if(f.canRead()){
+                            jtf_ssl_truststore_file.setText(f.getAbsolutePath());
+                        }
+                        else{
+                            setStatusMessage("Truststore file cannot be read.");
+                        }
+                    }
+                });
+                jp_truststore_file.add(jb_ssl_browse);
+                jp_input.add(jp_truststore_file);
+                
+                jp_input.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_truststore_pwd));
+                jp.add(jp_input, BorderLayout.CENTER);
+                
+                jtp_ssl.addTab("Truststore", UIUtil.getFlowLayoutPanelLeftAligned(jp));
             }
-        });
-        jp_ssl_center_flow.add(jb_ssl_browse);
-        jp_ssl_center.add(jp_ssl_center_flow);
-        jp_ssl_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_truststore_pwd));
-        jp_ssl_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jcb_ssl_hostname_verifier));
-        JPanel jp_ssl_keystore_center_flow = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_keystore_file);
-        jb_ssl_keystore_browse.setToolTipText("Open keystore file.");
-        jb_ssl_keystore_browse.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
-                if(f == null){
-                    // do nothing--cancel pressed
-                }
-                else if(f.canRead()){
-                    jtf_ssl_keystore_file.setText(f.getAbsolutePath());
-                }
-                else{
-                    setStatusMessage("Keystore file cannot be read.");
-                }
+            
+            { // Key store
+                JPanel jp = new JPanel(new BorderLayout(BORDER_WIDTH, 2));
+            
+                JPanel jp_label = new JPanel(new GridLayout(2, 1));
+                jp_label.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Keystore file:")));
+                jp_label.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Keystore password:")));
+                jp.add(jp_label, BorderLayout.WEST);
+                
+                JPanel jp_input = new JPanel(new GridLayout(2, 1));
+                JPanel jp_keystore_file = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_keystore_file);
+                jb_ssl_keystore_browse.setToolTipText("Open keystore file.");
+                jb_ssl_keystore_browse.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent arg0) {
+                        File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
+                        if(f == null){
+                            // do nothing--cancel pressed
+                        }
+                        else if(f.canRead()){
+                            jtf_ssl_keystore_file.setText(f.getAbsolutePath());
+                        }
+                        else{
+                            setStatusMessage("Keystore file cannot be read.");
+                        }
+                    }
+                });
+                jp_keystore_file.add(jb_ssl_keystore_browse);
+                jp_input.add(jp_keystore_file);
+                
+                jp_input.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_keystore_pwd));
+                
+                jp.add(jp_input, BorderLayout.CENTER);
+                
+                jtp_ssl.addTab("Keystore", UIUtil.getFlowLayoutPanelLeftAligned(jp));
             }
-        });
-        jp_ssl_keystore_center_flow.add(jb_ssl_keystore_browse);
-        jp_ssl_center.add(jp_ssl_keystore_center_flow);
-        jp_ssl_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_keystore_pwd));
-        jp_ssl.add(jp_ssl_center, BorderLayout.CENTER);
-        jtp.addTab("SSL", UIUtil.getFlowLayoutPanelLeftAligned("SSL Configuration", jp_ssl));
+            
+            { // Hostname verifier:
+                JPanel jp = new JPanel();
+                jp.setLayout(new FlowLayout(FlowLayout.LEFT));
+                jp.add(new JLabel("Hostname verifier:"));
+                jp.add(jcb_ssl_hostname_verifier);
+                jtp_ssl.addTab("Others", jp);
+            }
+            
+            jp_ssl.add(jtp_ssl);
+        }
+        jtp.addTab("SSL", jp_ssl);
         
         // Etc panel
         JPanel jp_etc = new JPanel();
