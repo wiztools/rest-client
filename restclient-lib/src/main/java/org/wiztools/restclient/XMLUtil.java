@@ -174,6 +174,23 @@ public final class XMLUtil {
                     reqChildElement.appendChild(e);
                 }
             }
+            
+            String sslKeystore = bean.getSslKeyStore();
+            if(!StringUtil.isEmpty(sslKeystore)) {
+            	{ // 1. Create keystore entry
+            		Element e = new Element("ssl-keystore");
+            		e.appendChild(sslKeystore);
+            		reqChildElement.appendChild(e);
+            	}
+            	
+            	{ // 2. Create password entry
+            		String sslPassword = new String(bean.getSslKeyStorePassword());
+            		String encPassword = Base64.encodeObject(sslPassword);
+            		Element e = new Element("ssl-keystore-password");
+            		e.appendChild(encPassword);
+            		reqChildElement.appendChild(e);
+            	}
+            }
 
             // creating the headers child element
             MultiValueMap<String, String> headers = bean.getHeaders();
@@ -320,6 +337,14 @@ public final class XMLUtil {
                 String sslHostnameVerifierStr = tNode.getValue();
                 SSLHostnameVerifier sslHostnameVerifier = SSLHostnameVerifier.valueOf(sslHostnameVerifierStr);
                 requestBean.setSslHostNameVerifier(sslHostnameVerifier);
+            }
+            else if ("ssl-keystore".equals(nodeName)) {
+                String sslKeyStore = tNode.getValue();
+                requestBean.setSslKeyStore(sslKeyStore);
+            }
+            else if ("ssl-keystore-password".equals(nodeName)) {
+                String sslKeyStorePassword = (String) Base64.decodeToObject(tNode.getValue());
+                requestBean.setSslKeyStorePassword(sslKeyStorePassword.toCharArray());
             }
             else if ("headers".equals(nodeName)) {
                 Map<String, String> m = getHeadersFromHeaderNode(tNode);

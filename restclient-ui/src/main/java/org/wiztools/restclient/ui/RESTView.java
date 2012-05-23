@@ -87,10 +87,17 @@ class RESTView extends JPanel implements View {
     private JTextField jtf_auth_username = new JTextField(auth_text_size);
     private JPasswordField jpf_auth_password = new JPasswordField(auth_text_size);
     
-    // SSL
+    // SSL - trust store
     private JTextField jtf_ssl_truststore_file = new JTextField(auth_text_size);
     private JButton jb_ssl_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JPasswordField jpf_ssl_truststore_pwd = new JPasswordField(auth_text_size);
+    
+    // SSL - key store
+    private JTextField jtf_ssl_keystore_file = new JTextField(auth_text_size);
+    private JButton jb_ssl_keystore_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+    private JPasswordField jpf_ssl_keystore_pwd = new JPasswordField(auth_text_size);
+    
+    // SSL - misc
     private JComboBox jcb_ssl_hostname_verifier = new JComboBox(SSLHostnameVerifier.getAll());
     
     // HTTP Version Combo box
@@ -432,14 +439,16 @@ class RESTView extends JPanel implements View {
         jp_ssl.setLayout(new BorderLayout(BORDER_WIDTH, 2));
         // SSL West
         JPanel jp_ssl_west = new JPanel();
-        jp_ssl_west.setLayout(new GridLayout(3, 1));
+        jp_ssl_west.setLayout(new GridLayout(5, 1));
         jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Trust store file:")));
         jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Trust store password:")));
         jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Hostname verifier:")));
+        jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Key store file:")));
+        jp_ssl_west.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Key store password:")));
         jp_ssl.add(jp_ssl_west, BorderLayout.WEST);
         // SSL Center
         JPanel jp_ssl_center = new JPanel();
-        jp_ssl_center.setLayout(new GridLayout(3, 1));
+        jp_ssl_center.setLayout(new GridLayout(5, 1));
         JPanel jp_ssl_center_flow = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_truststore_file);
         jb_ssl_browse.setToolTipText("Open truststore file.");
         jb_ssl_browse.addActionListener(new ActionListener() {
@@ -461,8 +470,28 @@ class RESTView extends JPanel implements View {
         jp_ssl_center.add(jp_ssl_center_flow);
         jp_ssl_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_truststore_pwd));
         jp_ssl_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jcb_ssl_hostname_verifier));
+        JPanel jp_ssl_keystore_center_flow = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_keystore_file);
+        jb_ssl_keystore_browse.setToolTipText("Open keystore file.");
+        jb_ssl_keystore_browse.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
+                if(f == null){
+                    // do nothing--cancel pressed
+                }
+                else if(f.canRead()){
+                    jtf_ssl_keystore_file.setText(f.getAbsolutePath());
+                }
+                else{
+                    setStatusMessage("Keystore file cannot be read.");
+                }
+            }
+        });
+        jp_ssl_keystore_center_flow.add(jb_ssl_keystore_browse);
+        jp_ssl_center.add(jp_ssl_keystore_center_flow);
+        jp_ssl_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_keystore_pwd));
         jp_ssl.add(jp_ssl_center, BorderLayout.CENTER);
-        jtp.addTab("SSL", UIUtil.getFlowLayoutPanelLeftAligned("SSL Trust Store Configuration", jp_ssl));
+        jtp.addTab("SSL", UIUtil.getFlowLayoutPanelLeftAligned("SSL Configuration", jp_ssl));
         
         // Etc panel
         JPanel jp_etc = new JPanel();
@@ -1101,6 +1130,8 @@ class RESTView extends JPanel implements View {
         // SSL specific
         request.setSslTrustStore(jtf_ssl_truststore_file.getText());
         request.setSslTrustStorePassword(jpf_ssl_truststore_pwd.getPassword());
+        request.setSslKeyStore(jtf_ssl_keystore_file.getText());
+        request.setSslKeyStorePassword(jpf_ssl_keystore_pwd.getPassword());
         request.setSslHostNameVerifier((SSLHostnameVerifier)jcb_ssl_hostname_verifier.getSelectedItem());
         
         // HTTP version
@@ -1682,6 +1713,14 @@ class RESTView extends JPanel implements View {
         SSLHostnameVerifier sslHostnameVerifier = request.getSslHostNameVerifier();
         if(sslHostnameVerifier != null){
             jcb_ssl_hostname_verifier.setSelectedItem(sslHostnameVerifier);
+        }
+        String sslKeystore = request.getSslKeyStore();
+        char[] sslKeystorePassword = request.getSslKeyStorePassword();
+        if(sslKeystore != null){
+        	jtf_ssl_keystore_file.setText(sslKeystore);
+        }
+        if(sslKeystorePassword != null){
+        	jpf_ssl_keystore_pwd.setText(new String(sslKeystorePassword));
         }
 
         // HTTP Version

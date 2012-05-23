@@ -28,6 +28,8 @@ public final class RequestBean implements Request{
     private String testScript;
     private String sslTrustStore;
     private char[] sslTrustStorePassword;
+    private String sslKeyStore;
+    private char[] sslKeyStorePassword;
     private SSLHostnameVerifier sslHostNameVerifier = SSLHostnameVerifier.STRICT; // Default to strict!
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
     private boolean isFollowRedirect;
@@ -57,6 +59,24 @@ public final class RequestBean implements Request{
 
     public void setSslTrustStorePassword(char[] sslKeyStorePassword) {
         this.sslTrustStorePassword = sslKeyStorePassword;
+    }
+    
+    @Override
+    public String getSslKeyStore() {
+        return sslKeyStore;
+    }
+
+    public void setSslKeyStore(String sslKeyStore) {
+        this.sslKeyStore = sslKeyStore;
+    }
+
+    @Override
+    public char[] getSslKeyStorePassword() {
+        return sslKeyStorePassword;
+    }
+
+    public void setSslKeyStorePassword(char[] sslKeyStorePassword) {
+        this.sslKeyStorePassword = sslKeyStorePassword;
     }
 
     @Override
@@ -256,6 +276,8 @@ public final class RequestBean implements Request{
         hash = 61 * hash + (this.sslTrustStore != null ? this.sslTrustStore.hashCode() : 0);
         hash = 61 * hash + (this.sslTrustStorePassword != null ? this.sslTrustStorePassword.hashCode() : 0);
         hash = 61 * hash + (this.sslHostNameVerifier != null ? this.sslHostNameVerifier.hashCode() : 0);
+        hash = 61 * hash + (this.sslKeyStore != null ? this.sslKeyStore.hashCode() : 0);
+        hash = 61 * hash + (this.sslKeyStorePassword != null ? this.sslKeyStorePassword.hashCode() : 0);
         hash = 61 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
         hash = 61 * hash + (this.isFollowRedirect ? 1 : 0);
         return hash;
@@ -278,6 +300,8 @@ public final class RequestBean implements Request{
         sb.append(sslTrustStore).append(", ");
         sb.append(sslTrustStorePassword==null?"null": new String(sslTrustStorePassword).replaceAll(".", "X")).append(", ");
         sb.append(sslHostNameVerifier).append(", ");
+        sb.append(sslKeyStore).append(", ");
+        sb.append(sslKeyStorePassword==null?"null": new String(sslKeyStorePassword).replaceAll(".", "X")).append(", ");
         sb.append(httpVersion).append(", ");
         sb.append(isFollowRedirect).append(", ");
         sb.append(testScript);

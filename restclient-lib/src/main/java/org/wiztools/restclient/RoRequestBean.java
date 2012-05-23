@@ -22,6 +22,8 @@ public class RoRequestBean implements Request {
     private final char[] authPassword;
     private String sslTrustStore;
     private char[] sslTrustStorePassword;
+    private String sslKeyStore;
+    private char[] sslKeyStorePassword;
     SSLHostnameVerifier sslHostNameVerifier;
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
     private boolean isFollowRedirect;
@@ -52,6 +54,25 @@ public class RoRequestBean implements Request {
     public void setSslTrustStorePassword(char[] sslTrustStorePassword) {
         this.sslTrustStorePassword = sslTrustStorePassword;
     }
+    
+    @Override
+    public String getSslKeyStore() {
+        return sslKeyStore;
+    }
+
+    public void setSslKeyStore(String sslKeyStore) {
+        this.sslKeyStore = sslKeyStore;
+    }
+
+    @Override
+    public char[] getSslKeyStorePassword() {
+        return sslKeyStorePassword;
+    }
+
+    public void setSslKeyStorePassword(char[] sslKeyStorePassword) {
+        this.sslKeyStorePassword = sslKeyStorePassword;
+    }
+    
     @Override
     public String getAuthHost() {
         return authHost;

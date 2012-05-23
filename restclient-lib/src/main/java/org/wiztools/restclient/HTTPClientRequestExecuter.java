@@ -262,14 +262,18 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             // Register the SSL Scheme:
             if(urlProtocol.equalsIgnoreCase("https")){
                 final String trustStorePath = request.getSslTrustStore();
+                final String keyStorePath = request.getSslKeyStore();
 
                 final KeyStore trustStore  = StringUtil.isEmpty(trustStorePath)?
                     null:
                     getTrustStore(trustStorePath, request.getSslTrustStorePassword());
+                final KeyStore keyStore = StringUtil.isEmpty(keyStorePath)?
+                	null:
+                	getTrustStore(keyStorePath, request.getSslKeyStorePassword());
                 SSLSocketFactory socketFactory = new SSLSocketFactory(
                         "TLS", // Algorithm
-                        null,  // Keystore
-                        null,  // Keystore password
+                        keyStore,  // Keystore
+                        new String(request.getSslKeyStorePassword()),  // Keystore password
                         trustStore,
                         null,  // Secure Random
                         hcVerifier);
@@ -419,6 +423,22 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         }
         return trustStore;
     }
+    
+    /*private KeyStore getKeyStore(String keyStorePath, char[] keyStorePassword)
+            throws KeyStoreException, IOException,
+            NoSuchAlgorithmException, CertificateException {
+        KeyStore keyStore  = KeyStore.getInstance(KeyStore.getDefaultType());
+        if(!StringUtil.isEmpty(keyStorePath)) {
+            FileInputStream instream = new FileInputStream(new File(keyStorePath));
+            try{
+                keyStore.load(instream, keyStorePassword);
+            }
+            finally{
+                instream.close();
+            }
+        }
+        return keyStore;
+    }*/
 
     @Override
     public void abortExecution(){
