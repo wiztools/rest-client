@@ -705,6 +705,7 @@ class RESTMain implements RESTUserInterface {
     }
     
     private void shutdownCall(){
+        uiPrefs.store();
         System.out.println("Exiting...");
         System.exit(0);
     }
