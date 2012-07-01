@@ -62,7 +62,13 @@ class UIPreferenceRepo {
     }
     
     void openedFile(File f) {
+        // Verify and remove if the same file is already in the list:
+        recentFiles.remove(f);
+        
+        // Now, add:
         recentFiles.addFirst(f);
+        
+        // Remove the least recently used file from list:
         if(recentFiles.size() == 11) { // store only 10 recent files!
             recentFiles.removeLast();
         }
