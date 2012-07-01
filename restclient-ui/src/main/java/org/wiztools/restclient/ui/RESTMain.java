@@ -123,6 +123,7 @@ class RESTMain implements RESTUserInterface {
                 jm_open_recent.removeAll();
                 for(final File f: recentFiles) {
                     JMenuItem jmi = new JMenuItem(f.getName());
+                    jmi.setToolTipText(f.getAbsolutePath());
                     jmi.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent ae) {
