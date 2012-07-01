@@ -1,5 +1,7 @@
 package org.wiztools.restclient;
 
+import com.google.inject.ImplementedBy;
+
 /**
  * This is the interface used to execute the HTTP request. For getting the
  * default implementation for this interface, use the Implementation class:
@@ -12,6 +14,7 @@ package org.wiztools.restclient;
  * </pre>
  * @author subwiz
  */
+@ImplementedBy(HTTPClientRequestExecuter.class)
 public interface RequestExecuter {
 
     /**
