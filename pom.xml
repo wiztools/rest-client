@@ -110,6 +110,13 @@
             </plugin>
         </plugins>
     </reporting>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+        </dependency>
+    </dependencies>
     <modules>
         <module>restclient-server</module>
         <module>restclient-lib</module>
