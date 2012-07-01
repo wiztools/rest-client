@@ -87,7 +87,8 @@ package org.wiztools.restclient;
  * @author rob@iharder.net
  * @version 2.2.2
  */
-public class Base64
+@Deprecated
+public class LegacyBase64
 {
     
 /* ********  P U B L I C   F I E L D S  ******** */   
@@ -381,7 +382,7 @@ public class Base64
 
     
     /** Defeats instantiation. */
-    private Base64(){}
+    private LegacyBase64(){}
     
 
     /**
@@ -399,10 +400,10 @@ public class Base64
             String infile = args[1];
             String outfile = args[2];
             if( flag.equals( "-e" ) ){
-                Base64.encodeFileToFile( infile, outfile );
+                LegacyBase64.encodeFileToFile( infile, outfile );
             }   // end if: encode
             else if( flag.equals( "-d" ) ) {
-                Base64.decodeFileToFile( infile, outfile );
+                LegacyBase64.decodeFileToFile( infile, outfile );
             }   // end else if: decode    
             else {
                 usage( "Unknown flag: " + flag );
@@ -578,7 +579,7 @@ public class Base64
         {
             // ObjectOutputStream -> (GZIP) -> Base64 -> ByteArrayOutputStream
             baos  = new java.io.ByteArrayOutputStream();
-            b64os = new Base64.OutputStream( baos, ENCODE | options );
+            b64os = new LegacyBase64.OutputStream( baos, ENCODE | options );
     
             // GZip?
             if( gzip == GZIP )
@@ -708,14 +709,14 @@ public class Base64
         {
             java.io.ByteArrayOutputStream  baos  = null;
             java.util.zip.GZIPOutputStream gzos  = null;
-            Base64.OutputStream            b64os = null;
+            LegacyBase64.OutputStream            b64os = null;
             
     
             try
             {
                 // GZip -> Base64 -> ByteArray
                 baos = new java.io.ByteArrayOutputStream();
-                b64os = new Base64.OutputStream( baos, ENCODE | options );
+                b64os = new LegacyBase64.OutputStream( baos, ENCODE | options );
                 gzos  = new java.util.zip.GZIPOutputStream( b64os ); 
             
                 gzos.write( source, off, len );
@@ -1101,11 +1102,11 @@ public class Base64
     public static boolean encodeToFile( byte[] dataToEncode, String filename )
     {
         boolean success = false;
-        Base64.OutputStream bos = null;
+        LegacyBase64.OutputStream bos = null;
         try
         {
-            bos = new Base64.OutputStream( 
-                      new java.io.FileOutputStream( filename ), Base64.ENCODE );
+            bos = new LegacyBase64.OutputStream( 
+                      new java.io.FileOutputStream( filename ), LegacyBase64.ENCODE );
             bos.write( dataToEncode );
             success = true;
         }   // end try
@@ -1135,11 +1136,11 @@ public class Base64
     public static boolean decodeToFile( String dataToDecode, String filename )
     {
         boolean success = false;
-        Base64.OutputStream bos = null;
+        LegacyBase64.OutputStream bos = null;
         try
         {
-                bos = new Base64.OutputStream( 
-                          new java.io.FileOutputStream( filename ), Base64.DECODE );
+                bos = new LegacyBase64.OutputStream( 
+                          new java.io.FileOutputStream( filename ), LegacyBase64.DECODE );
                 bos.write( dataToDecode.getBytes( PREFERRED_ENCODING ) );
                 success = true;
         }   // end try
@@ -1170,7 +1171,7 @@ public class Base64
     public static byte[] decodeFromFile( String filename )
     {
         byte[] decodedData = null;
-        Base64.InputStream bis = null;
+        LegacyBase64.InputStream bis = null;
         try
         {
             // Set up some useful variables
@@ -1188,9 +1189,9 @@ public class Base64
             buffer = new byte[ (int)file.length() ];
             
             // Open a stream
-            bis = new Base64.InputStream( 
+            bis = new LegacyBase64.InputStream( 
                       new java.io.BufferedInputStream( 
-                      new java.io.FileInputStream( file ) ), Base64.DECODE );
+                      new java.io.FileInputStream( file ) ), LegacyBase64.DECODE );
             
             // Read until done
             while( ( numBytes = bis.read( buffer, length, 4096 ) ) >= 0 )
@@ -1227,7 +1228,7 @@ public class Base64
     public static String encodeFromFile( String filename )
     {
         String encodedData = null;
-        Base64.InputStream bis = null;
+        LegacyBase64.InputStream bis = null;
         try
         {
             // Set up some useful variables
@@ -1237,16 +1238,16 @@ public class Base64
             int numBytes = 0;
             
             // Open a stream
-            bis = new Base64.InputStream( 
+            bis = new LegacyBase64.InputStream( 
                       new java.io.BufferedInputStream( 
-                      new java.io.FileInputStream( file ) ), Base64.ENCODE );
+                      new java.io.FileInputStream( file ) ), LegacyBase64.ENCODE );
             
             // Read until done
             while( ( numBytes = bis.read( buffer, length, 4096 ) ) >= 0 )
                 length += numBytes;
             
             // Save in a variable to return
-            encodedData = new String( buffer, 0, length, Base64.PREFERRED_ENCODING );
+            encodedData = new String( buffer, 0, length, LegacyBase64.PREFERRED_ENCODING );
                 
         }   // end try
         catch( java.io.IOException e )
@@ -1278,10 +1279,10 @@ public class Base64
         java.io.InputStream in = null;
         java.io.OutputStream out = null;
         try{
-            in  = new Base64.InputStream( 
+            in  = new LegacyBase64.InputStream( 
                       new java.io.BufferedInputStream( 
                       new java.io.FileInputStream( infile ) ), 
-                      Base64.ENCODE );
+                      LegacyBase64.ENCODE );
             out = new java.io.BufferedOutputStream( new java.io.FileOutputStream( outfile ) );
             byte[] buffer = new byte[65536]; // 64K
             int read = -1;
@@ -1315,10 +1316,10 @@ public class Base64
         java.io.InputStream in = null;
         java.io.OutputStream out = null;
         try{
-            in  = new Base64.InputStream( 
+            in  = new LegacyBase64.InputStream( 
                       new java.io.BufferedInputStream( 
                       new java.io.FileInputStream( infile ) ), 
-                      Base64.DECODE );
+                      LegacyBase64.DECODE );
             out = new java.io.BufferedOutputStream( new java.io.FileOutputStream( outfile ) );
             byte[] buffer = new byte[65536]; // 64K
             int read = -1;
@@ -1697,7 +1698,7 @@ public class Base64
                     buffer[ position++ ] = (byte)theByte;
                     if( position >= bufferLength )  // Enough to output.
                     {
-                        int len = Base64.decode4to3( buffer, 0, b4, 0, options );
+                        int len = LegacyBase64.decode4to3( buffer, 0, b4, 0, options );
                         out.write( b4, 0, len );
                         //out.write( Base64.decode4to3( buffer ) );
                         position = 0;
@@ -1821,4 +1822,4 @@ public class Base64
         }
     }
     
-}   // end class Base64
+}   
