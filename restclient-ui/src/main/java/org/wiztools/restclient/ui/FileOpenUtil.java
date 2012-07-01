@@ -24,9 +24,6 @@ class FileOpenUtil {
         catch(XMLException ex){
             e = ex;
         }
-        catch(Base64.Base64Exception ex){
-            e = ex;
-        }
         if(e != null){
             view.showError(Util.getStackTrace(e));
         }
@@ -42,9 +39,6 @@ class FileOpenUtil {
             e = ex;
         }
         catch(XMLException ex){
-            e = ex;
-        }
-        catch(Base64.Base64Exception ex){
             e = ex;
         }
         if(e != null){
