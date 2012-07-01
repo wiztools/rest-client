@@ -21,19 +21,20 @@ class UIPreferenceRepo {
     private static final String KEY_RECENT_FILES = "recent.opened.files";
     private static final String SPLIT_KEY = ";";
     
-    private final LinkedList<String> recentFiles = new LinkedList<String>();
+    private final LinkedList<File> recentFiles = new LinkedList<File>();
 
     UIPreferenceRepo() {
         final String recentOpenedFilesStr = prefs.get(KEY_RECENT_FILES, "");
-        LinkedList<String> l = getListRepresentation(recentOpenedFilesStr);
+        LinkedList<File> l = getListRepresentation(recentOpenedFilesStr);
         recentFiles.addAll(l);
     }
     
-    protected final String getStringRepresentation(LinkedList<String> recentFiles) {
+    protected final String getStringRepresentation(LinkedList<File> recentFiles) {
         StringBuilder sb = new StringBuilder();
-        for(String file: recentFiles) {
+        for(File file: recentFiles) {
             try {
-                sb.append(URLEncoder.encode(file, Charsets.UTF_8.name()));
+                sb.append(URLEncoder.encode(
+                        file.getAbsolutePath(), Charsets.UTF_8.name()));
                 sb.append(SPLIT_KEY);
             }
             catch(UnsupportedEncodingException ex) {
@@ -44,12 +45,12 @@ class UIPreferenceRepo {
         return sb.toString();
     }
     
-    protected final LinkedList getListRepresentation(String recentFilesStr) {
-        LinkedList<String> out = new LinkedList<String>();
+    protected final LinkedList<File> getListRepresentation(String recentFilesStr) {
+        LinkedList<File> out = new LinkedList<File>();
         String[] arr = recentFilesStr.split(SPLIT_KEY);
         for(String str: arr) {
             try{
-                out.addLast(URLDecoder.decode(str, Charsets.UTF_8.name()));
+                out.addLast(new File(URLDecoder.decode(str, Charsets.UTF_8.name())));
             }
             catch(UnsupportedEncodingException ex) {
                 throw new RuntimeException(ex);
@@ -59,13 +60,13 @@ class UIPreferenceRepo {
     }
     
     void openedFile(File f) {
-        recentFiles.addFirst(f.getName() + " -- " + f.getParent());
+        recentFiles.addFirst(f);
         if(recentFiles.size() == 11) { // store only 10 recent files!
             recentFiles.removeLast();
         }
     }
     
-    List<String> getRecentFiles() {
+    List<File> getRecentFiles() {
         return Collections.unmodifiableList(recentFiles);
     }
     
