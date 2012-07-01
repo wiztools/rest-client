@@ -24,9 +24,11 @@ class UIPreferenceRepo {
     private final LinkedList<File> recentFiles = new LinkedList<File>();
 
     UIPreferenceRepo() {
-        final String recentOpenedFilesStr = prefs.get(KEY_RECENT_FILES, "");
-        LinkedList<File> l = getListRepresentation(recentOpenedFilesStr);
-        recentFiles.addAll(l);
+        final String recentOpenedFilesStr = prefs.get(KEY_RECENT_FILES, null);
+        if(recentOpenedFilesStr != null) {
+            LinkedList<File> l = getListRepresentation(recentOpenedFilesStr);
+            recentFiles.addAll(l);
+        }
     }
     
     protected final String getStringRepresentation(LinkedList<File> recentFiles) {

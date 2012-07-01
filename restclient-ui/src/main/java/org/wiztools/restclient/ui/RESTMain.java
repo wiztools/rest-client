@@ -9,7 +9,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import javax.inject.Inject;
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileFilter;
 import org.simplericity.macify.eawt.Application;
 import org.simplericity.macify.eawt.ApplicationEvent;
@@ -36,6 +40,8 @@ class RESTMain implements RESTUserInterface {
     private JFileChooser jfc_response = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_generic = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
+    
+    private UIPreferenceRepo uiPrefs = ServiceLocator.getInstance(UIPreferenceRepo.class);
     
     private final JFrame frame;
 
@@ -107,6 +113,37 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_file.add(jmi_open_archive);
+        
+        final JMenu jm_open_recent = new JMenu("Open recent");
+        jm_open_recent.addMenuListener(new MenuListener() {
+
+            @Override
+            public void menuSelected(MenuEvent me) {
+                List<File> recentFiles = uiPrefs.getRecentFiles();
+                jm_open_recent.removeAll();
+                for(final File f: recentFiles) {
+                    JMenuItem jmi = new JMenuItem(f.getName());
+                    jmi.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            FileOpenUtil.open(view, f);
+                        }
+                    });
+                    jm_open_recent.add(jmi);
+                }
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent me) {
+                // do nothing
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent me) {
+                // do nothing
+            }
+        });
+        jm_file.add(jm_open_recent);
         
         jm_file.addSeparator();
         
@@ -422,6 +459,7 @@ class RESTMain implements RESTUserInterface {
         File f = getOpenFile(FileChooserType.OPEN_REQUEST);
         if(f != null){
             FileOpenUtil.openRequest(view, f);
+            uiPrefs.openedFile(f);
         }
     }
     
@@ -429,6 +467,7 @@ class RESTMain implements RESTUserInterface {
         File f = getOpenFile(FileChooserType.OPEN_RESPONSE);
         if(f != null){
             FileOpenUtil.openResponse(view, f);
+            uiPrefs.openedFile(f);
         }
     }
     
@@ -436,6 +475,7 @@ class RESTMain implements RESTUserInterface {
         File f = getOpenFile(FileChooserType.OPEN_ARCHIVE);
         if(f != null){
             FileOpenUtil.openArchive(view, f);
+            uiPrefs.openedFile(f);
         }
     }
     
