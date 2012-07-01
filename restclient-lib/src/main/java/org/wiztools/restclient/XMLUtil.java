@@ -1,12 +1,6 @@
 package org.wiztools.restclient;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -16,15 +10,12 @@ import java.util.Map;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.XMLEvent;
-import javax.xml.stream.XMLStreamException;
-import nu.xom.Attribute;
-import nu.xom.Builder;
-import nu.xom.Document;
-import nu.xom.Element;
-import nu.xom.Serializer;
-import nu.xom.ParsingException;
+import nu.xom.*;
+import org.apache.commons.codec.binary.Base64;
+import org.wiztools.commons.Charsets;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
 
@@ -141,7 +132,8 @@ public final class XMLUtil {
                     if (bean.getAuthPassword() != null) {
                         authPassword = new String(bean.getAuthPassword());
                         if (!StringUtil.isEmpty(authPassword)) {
-                            String encPassword = Base64.encodeObject(authPassword);
+                            String encPassword = Base64.encodeBase64String(
+                                    authPassword.getBytes(Charsets.UTF_8));
 
                             Element e = new Element("auth-password");
                             e.appendChild(encPassword);
@@ -162,7 +154,8 @@ public final class XMLUtil {
 
                 { // 2. Create password entry
                     String sslPassword = new String(bean.getSslTrustStorePassword());
-                    String encPassword = Base64.encodeObject(sslPassword);
+                    String encPassword = Base64.encodeBase64String(
+                            sslPassword.getBytes(Charsets.UTF_8));
                     Element e = new Element("ssl-truststore-password");
                     e.appendChild(encPassword);
                     reqChildElement.appendChild(e);
@@ -186,7 +179,8 @@ public final class XMLUtil {
             	
             	{ // 2. Create password entry
             		String sslPassword = new String(bean.getSslKeyStorePassword());
-            		String encPassword = Base64.encodeObject(sslPassword);
+            		String encPassword = Base64.encodeBase64String(
+                                sslPassword.getBytes(Charsets.UTF_8));
             		Element e = new Element("ssl-keystore-password");
             		e.appendChild(encPassword);
             		reqChildElement.appendChild(e);
@@ -323,7 +317,8 @@ public final class XMLUtil {
                 requestBean.setAuthUsername(tNode.getValue());
             }
             else if ("auth-password".equals(nodeName)) {
-                String password = (String) Base64.decodeToObject(tNode.getValue());
+                String password = new String(Base64.decodeBase64(tNode.getValue()),
+                        Charsets.UTF_8);
                 requestBean.setAuthPassword(password.toCharArray());
             }
             else if ("ssl-truststore".equals(nodeName)) {
@@ -331,7 +326,8 @@ public final class XMLUtil {
                 requestBean.setSslTrustStore(sslTrustStore);
             }
             else if ("ssl-truststore-password".equals(nodeName)) {
-                String sslTrustStorePassword = (String) Base64.decodeToObject(tNode.getValue());
+                String sslTrustStorePassword = new String(
+                        Base64.decodeBase64(tNode.getValue()), Charsets.UTF_8);
                 requestBean.setSslTrustStorePassword(sslTrustStorePassword.toCharArray());
             }
             else if("ssl-hostname-verifier".equals(nodeName)){
@@ -344,7 +340,8 @@ public final class XMLUtil {
                 requestBean.setSslKeyStore(sslKeyStore);
             }
             else if ("ssl-keystore-password".equals(nodeName)) {
-                String sslKeyStorePassword = (String) Base64.decodeToObject(tNode.getValue());
+                String sslKeyStorePassword = new String(
+                        Base64.decodeBase64(tNode.getValue()), Charsets.UTF_8);
                 requestBean.setSslKeyStorePassword(sslKeyStorePassword.toCharArray());
             }
             else if ("headers".equals(nodeName)) {
