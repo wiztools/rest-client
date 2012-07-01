@@ -32,6 +32,10 @@ public final class XMLUtil {
         "2.0", "2.1", "2.2a1", "2.2a2", "2.2", "2.3b1", "2.3", "2.3.1", "2.3.2",
         "2.3.3", "2.4", RCConstants.VERSION
     };
+    private static final List<String> LEGACY_BASE64_VERSIONS = Arrays.asList(new String[]{
+        "2.0", "2.1", "2.2a1", "2.2a2", "2.2", "2.3b1", "2.3", "2.3.1", "2.3.2",
+        "2.3.3", "2.4"
+    });
     public static final String XML_MIME = "application/xml";
     
     static {
@@ -248,6 +252,18 @@ public final class XMLUtil {
         }
         return m;
     }
+    
+    
+    
+    private static String base64decode(String rcVersion, String base64Str) {
+        if(LEGACY_BASE64_VERSIONS.contains(rcVersion)) {
+            return (String) LegacyBase64.decodeToObject(base64Str);
+        }
+        else {
+            byte[] out = Base64.decodeBase64(base64Str);
+            return new String(out, Charsets.UTF_8);
+        }
+    }
 
     private static Request xml2Request(final Document doc)
             throws MalformedURLException, XMLException {
@@ -261,7 +277,8 @@ public final class XMLUtil {
         }
 
         // checking correct rest version
-        checkIfVersionValid(rootNode.getAttributeValue("version"));
+        final String rcVersion = rootNode.getAttributeValue("version");
+        checkIfVersionValid(rcVersion);
 
         // assign rootnode to current node and also finding 'request' node
         Element tNode = null;
@@ -317,8 +334,7 @@ public final class XMLUtil {
                 requestBean.setAuthUsername(tNode.getValue());
             }
             else if ("auth-password".equals(nodeName)) {
-                String password = new String(Base64.decodeBase64(tNode.getValue()),
-                        Charsets.UTF_8);
+                String password = base64decode(rcVersion, tNode.getValue());
                 requestBean.setAuthPassword(password.toCharArray());
             }
             else if ("ssl-truststore".equals(nodeName)) {
@@ -326,8 +342,7 @@ public final class XMLUtil {
                 requestBean.setSslTrustStore(sslTrustStore);
             }
             else if ("ssl-truststore-password".equals(nodeName)) {
-                String sslTrustStorePassword = new String(
-                        Base64.decodeBase64(tNode.getValue()), Charsets.UTF_8);
+                String sslTrustStorePassword = base64decode(rcVersion, tNode.getValue());
                 requestBean.setSslTrustStorePassword(sslTrustStorePassword.toCharArray());
             }
             else if("ssl-hostname-verifier".equals(nodeName)){
@@ -340,8 +355,7 @@ public final class XMLUtil {
                 requestBean.setSslKeyStore(sslKeyStore);
             }
             else if ("ssl-keystore-password".equals(nodeName)) {
-                String sslKeyStorePassword = new String(
-                        Base64.decodeBase64(tNode.getValue()), Charsets.UTF_8);
+                String sslKeyStorePassword = base64decode(rcVersion, tNode.getValue());
                 requestBean.setSslKeyStorePassword(sslKeyStorePassword.toCharArray());
             }
             else if ("headers".equals(nodeName)) {
