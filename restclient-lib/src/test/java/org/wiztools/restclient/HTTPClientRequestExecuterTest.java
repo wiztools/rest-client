@@ -7,7 +7,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.wiztools.commons.Implementation;
 import static org.junit.Assert.*;
 import org.wiztools.restclient.server.TraceServer;
 
@@ -81,7 +80,7 @@ public class HTTPClientRequestExecuterTest {
         };
 
         // Execute:
-        RequestExecuter executer = Implementation.of(RequestExecuter.class);
+        RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
         executer.execute(req, view);
     }
 
@@ -124,7 +123,7 @@ public class HTTPClientRequestExecuterTest {
         };
         
         // Execute:
-        RequestExecuter executer = Implementation.of(RequestExecuter.class);
+        RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
         executer.execute(request, view);
     }
 
@@ -132,7 +131,7 @@ public class HTTPClientRequestExecuterTest {
     public void testMultipleExecution() throws Exception{
         try{
             RequestBean request = getRequestBean();
-            RequestExecuter executer = Implementation.of(RequestExecuter.class);
+            RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
             View view = new ViewAdapter();
             executer.execute(request, view);
             // Second execution should throw exception:
