@@ -13,9 +13,8 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CodingErrorAction;
+import java.nio.CharBuffer;
+import java.nio.charset.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -50,12 +49,21 @@ public final class Util {
         byte[] out = Base64.decodeBase64(base64Str);
         CharsetDecoder decoder = Charsets.UTF_8.newDecoder();
         try {
-            decoder.decode(ByteBuffer.wrap(Arrays.copyOf(out, out.length)));
+            decoder.onMalformedInput(CodingErrorAction.REPORT);
+            decoder.onUnmappableCharacter(CodingErrorAction.REPORT);
+            CharBuffer buffer = decoder.decode(
+                    ByteBuffer.wrap(Arrays.copyOf(out, out.length)));
+            return buffer.toString();
+        }
+        catch(MalformedInputException ex) {
+            throw new Base64Exception(ex);
+        }
+        catch(UnmappableCharacterException ex) {
+            throw new Base64Exception(ex);
         }
         catch(CharacterCodingException ex) {
             throw new Base64Exception(ex);
         }
-        return new String(out, Charsets.UTF_8);
     }
 
     public static String getStackTrace(final Throwable aThrowable) {
