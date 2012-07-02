@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import javax.swing.*;
-import org.apache.commons.codec.binary.Base64;
-import org.wiztools.commons.Charsets;
 import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.Base64Exception;
+import org.wiztools.restclient.Util;
 
 /**
  *
@@ -176,15 +176,15 @@ class PasswordGenDialog extends EscapableDialog {
         // Get if it is encode or decode
         final String result;
         if(jrb_encode.isSelected()){
-            result = Base64.encodeBase64String(inStr.getBytes(Charsets.UTF_8));
+            result = Util.base64encode(inStr);
         }
         else{
-            if(Base64.isArrayByteBase64(inStr.getBytes(Charsets.UTF_8))) {
-                result = new String(Base64.decodeBase64(inStr), Charsets.UTF_8);
+            try {
+                result = Util.base64decode(inStr);
             }
-            else {
+            catch(Base64Exception ex) {
                 JOptionPane.showMessageDialog(me,
-                    "Input string is not Base64 encoded.",
+                    ex.getMessage(),
                     "Error in input.",
                     JOptionPane.ERROR_MESSAGE);
                 return;
