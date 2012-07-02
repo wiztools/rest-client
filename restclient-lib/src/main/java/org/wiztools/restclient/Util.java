@@ -12,6 +12,11 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +25,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.codec.binary.Base64;
+import org.wiztools.commons.Charsets;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
 
@@ -31,6 +38,25 @@ public final class Util {
     
     // private constructor so that no instance from outside can be created
     private Util(){}
+    
+    public static String base64encode(String inStr) {
+        return Base64.encodeBase64String(inStr.getBytes(Charsets.UTF_8));
+    }
+    
+    public static String base64decode(String base64Str) throws Base64Exception {
+        if(!Base64.isBase64(base64Str)) {
+            throw new Base64Exception("Provided string is not Base64 encoded");
+        }
+        byte[] out = Base64.decodeBase64(base64Str);
+        CharsetDecoder decoder = Charsets.UTF_8.newDecoder();
+        try {
+            decoder.decode(ByteBuffer.wrap(Arrays.copyOf(out, out.length)));
+        }
+        catch(CharacterCodingException ex) {
+            throw new Base64Exception(ex);
+        }
+        return new String(out, Charsets.UTF_8);
+    }
 
     public static String getStackTrace(final Throwable aThrowable) {
         String errorMsg = aThrowable.getMessage();

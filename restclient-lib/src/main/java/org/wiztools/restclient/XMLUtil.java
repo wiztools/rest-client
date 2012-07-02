@@ -14,8 +14,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.XMLEvent;
 import nu.xom.*;
-import org.apache.commons.codec.binary.Base64;
-import org.wiztools.commons.Charsets;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
 
@@ -136,8 +134,7 @@ public final class XMLUtil {
                     if (bean.getAuthPassword() != null) {
                         authPassword = new String(bean.getAuthPassword());
                         if (!StringUtil.isEmpty(authPassword)) {
-                            String encPassword = Base64.encodeBase64String(
-                                    authPassword.getBytes(Charsets.UTF_8));
+                            String encPassword = Util.base64encode(authPassword);
 
                             Element e = new Element("auth-password");
                             e.appendChild(encPassword);
@@ -158,8 +155,7 @@ public final class XMLUtil {
 
                 { // 2. Create password entry
                     String sslPassword = new String(bean.getSslTrustStorePassword());
-                    String encPassword = Base64.encodeBase64String(
-                            sslPassword.getBytes(Charsets.UTF_8));
+                    String encPassword = Util.base64encode(sslPassword);
                     Element e = new Element("ssl-truststore-password");
                     e.appendChild(encPassword);
                     reqChildElement.appendChild(e);
@@ -183,8 +179,7 @@ public final class XMLUtil {
             	
             	{ // 2. Create password entry
             		String sslPassword = new String(bean.getSslKeyStorePassword());
-            		String encPassword = Base64.encodeBase64String(
-                                sslPassword.getBytes(Charsets.UTF_8));
+            		String encPassword = Util.base64encode(sslPassword);
             		Element e = new Element("ssl-keystore-password");
             		e.appendChild(encPassword);
             		reqChildElement.appendChild(e);
@@ -260,8 +255,7 @@ public final class XMLUtil {
             return (String) LegacyBase64.decodeToObject(base64Str);
         }
         else {
-            byte[] out = Base64.decodeBase64(base64Str);
-            return new String(out, Charsets.UTF_8);
+            return Util.base64decode(base64Str);
         }
     }
 
