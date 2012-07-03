@@ -56,10 +56,10 @@ public final class Util {
             return buffer.toString();
         }
         catch(MalformedInputException ex) {
-            throw new Base64Exception(ex);
+            throw new Base64Exception("Input is malformed", ex);
         }
         catch(UnmappableCharacterException ex) {
-            throw new Base64Exception(ex);
+            throw new Base64Exception("Unmappable characters found", ex);
         }
         catch(CharacterCodingException ex) {
             throw new Base64Exception(ex);
