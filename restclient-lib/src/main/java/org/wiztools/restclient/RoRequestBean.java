@@ -20,21 +20,18 @@ public class RoRequestBean implements Request {
     private final String authRealm;
     private final String authUsername;
     private final char[] authPassword;
-    private String sslTrustStore;
-    private char[] sslTrustStorePassword;
-    private String sslKeyStore;
-    private char[] sslKeyStorePassword;
-    SSLHostnameVerifier sslHostNameVerifier;
-    private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
-    private boolean isFollowRedirect;
+    private final String authToken;
+    private final String sslTrustStore;
+    private final char[] sslTrustStorePassword;
+    private final String sslKeyStore;
+    private final char[] sslKeyStorePassword;
+    private final SSLHostnameVerifier sslHostNameVerifier;
+    private final HTTPVersion httpVersion;
+    private final boolean isFollowRedirect;
 
     @Override
     public HTTPVersion getHttpVersion() {
         return httpVersion;
-    }
-
-    public void setHttpVersion(HTTPVersion httpVersion) {
-        this.httpVersion = httpVersion;
     }
 
     @Override
@@ -42,17 +39,9 @@ public class RoRequestBean implements Request {
         return sslTrustStore;
     }
 
-    public void setSslTrustStore(String sslTrustStore) {
-        this.sslTrustStore = sslTrustStore;
-    }
-
     @Override
     public char[] getSslTrustStorePassword() {
         return sslTrustStorePassword;
-    }
-
-    public void setSslTrustStorePassword(char[] sslTrustStorePassword) {
-        this.sslTrustStorePassword = sslTrustStorePassword;
     }
     
     @Override
@@ -60,17 +49,9 @@ public class RoRequestBean implements Request {
         return sslKeyStore;
     }
 
-    public void setSslKeyStore(String sslKeyStore) {
-        this.sslKeyStore = sslKeyStore;
-    }
-
     @Override
     public char[] getSslKeyStorePassword() {
         return sslKeyStorePassword;
-    }
-
-    public void setSslKeyStorePassword(char[] sslKeyStorePassword) {
-        this.sslKeyStorePassword = sslKeyStorePassword;
     }
     
     @Override
@@ -104,6 +85,11 @@ public class RoRequestBean implements Request {
     }
 
     @Override
+    public String getAuthToken() {
+        return authToken;
+    }
+    
+    @Override
     public RoReqEntityBean getBody() {
         return body;
     }
@@ -127,10 +113,6 @@ public class RoRequestBean implements Request {
     public boolean isFollowRedirect() {
         return this.isFollowRedirect;
     }
-
-    public void setFollowRedirect(boolean isFollowRedirect) {
-        this.isFollowRedirect = isFollowRedirect;
-    }
     
     public RoRequestBean(final Request request){
         url = request.getUrl();
@@ -148,8 +130,11 @@ public class RoRequestBean implements Request {
         authRealm = request.getAuthRealm();
         authUsername = request.getAuthUsername();
         authPassword = request.getAuthPassword();
+        authToken = request.getAuthToken();
         sslTrustStore = request.getSslTrustStore();
         sslTrustStorePassword = request.getSslTrustStorePassword();
+        sslKeyStore = request.getSslKeyStore();
+        sslKeyStorePassword = request.getSslKeyStorePassword();
         httpVersion = request.getHttpVersion();
         sslHostNameVerifier = request.getSslHostNameVerifier();
         isFollowRedirect = request.isFollowRedirect();

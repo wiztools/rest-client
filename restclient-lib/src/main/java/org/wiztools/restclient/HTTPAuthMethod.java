@@ -7,7 +7,7 @@ import java.util.logging.Logger;
  * @author subwiz
  */
 public enum HTTPAuthMethod {
-    BASIC, DIGEST;
+    BASIC, DIGEST, OAUTH_20;
 
     private static final Logger LOG = Logger.getLogger(HTTPAuthMethod.class.getName());
 
@@ -17,6 +17,9 @@ public enum HTTPAuthMethod {
         }
         else if("DIGEST".equals(name)){
             return DIGEST;
+        }
+        else if("OAUTH_20".equals(name)) {
+            return OAUTH_20;
         }
         else{
             LOG.warning("HTTPAuthMethod string unrecognized: " + name);

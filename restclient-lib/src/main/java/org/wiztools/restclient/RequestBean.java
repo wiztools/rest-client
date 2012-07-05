@@ -23,6 +23,7 @@ public final class RequestBean implements Request{
     private String authRealm;
     private String authUsername;
     private char[] authPassword;
+    private String authToken;
     private MultiValueMap<String, String> headers;
     private ReqEntity body;
     private String testScript;
@@ -140,6 +141,15 @@ public final class RequestBean implements Request{
 
     public void setAuthPassword(char[] authPassword) {
         this.authPassword = authPassword;
+    }
+
+    @Override
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 
     @Override
