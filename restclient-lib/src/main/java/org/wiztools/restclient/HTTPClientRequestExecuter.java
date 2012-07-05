@@ -1,10 +1,6 @@
 package org.wiztools.restclient;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
@@ -17,29 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpException;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.auth.AuthScheme;
+import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.AuthState;
-import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpTrace;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.params.AuthPolicy;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.protocol.ClientContext;
@@ -51,6 +29,7 @@ import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.message.AbstractHttpMessage;
@@ -59,7 +38,6 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.wiztools.commons.Implementation;
 import org.wiztools.commons.MultiValueMap;
@@ -169,12 +147,12 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                     new UsernamePasswordCredentials(uid, pwd));
 
             // preemptive mode
-            // http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/module-client/src/examples/org/apache/http/examples/client/ClientPreemptiveBasicAuthentication.java
             if (request.isAuthPreemptive()) {
-                BasicHttpContext localcontext = new BasicHttpContext();
+                AuthCache authCache = new BasicAuthCache();
                 BasicScheme basicAuth = new BasicScheme();
-                localcontext.setAttribute("preemptive-auth", basicAuth);
-                httpclient.addRequestInterceptor(new PreemptiveAuth(), 0);
+                authCache.put(new HttpHost(urlHost, urlPort, urlProtocol), basicAuth);
+                BasicHttpContext localcontext = new BasicHttpContext();
+                localcontext.setAttribute(ClientContext.AUTH_CACHE, authCache);
                 httpContext = localcontext;
             }
         }
@@ -265,11 +243,11 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 final String keyStorePath = request.getSslKeyStore();
 
                 final KeyStore trustStore  = StringUtil.isEmpty(trustStorePath)?
-                    null:
-                    getTrustStore(trustStorePath, request.getSslTrustStorePassword());
+                        null:
+                        getKeyStore(trustStorePath, request.getSslTrustStorePassword());
                 final KeyStore keyStore = StringUtil.isEmpty(keyStorePath)?
-                	null:
-                	getTrustStore(keyStorePath, request.getSslKeyStorePassword());
+                        null:
+                	getKeyStore(keyStorePath, request.getSslKeyStorePassword());
                 SSLSocketFactory socketFactory = new SSLSocketFactory(
                         "TLS", // Algorithm
                         keyStore,  // Keystore
@@ -408,37 +386,21 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         }
     }
 
-    private KeyStore getTrustStore(String trustStorePath, char[] trustStorePassword)
+    private KeyStore getKeyStore(String storePath, char[] storePassword)
             throws KeyStoreException, IOException,
             NoSuchAlgorithmException, CertificateException {
-        KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
-        if(!StringUtil.isEmpty(trustStorePath)) {
-            FileInputStream instream = new FileInputStream(new File(trustStorePath));
+        KeyStore store  = KeyStore.getInstance(KeyStore.getDefaultType());
+        if(!StringUtil.isEmpty(storePath)) {
+            FileInputStream instream = new FileInputStream(new File(storePath));
             try{
-                trustStore.load(instream, trustStorePassword);
+                store.load(instream, storePassword);
             }
             finally{
                 instream.close();
             }
         }
-        return trustStore;
+        return store;
     }
-    
-    /*private KeyStore getKeyStore(String keyStorePath, char[] keyStorePassword)
-            throws KeyStoreException, IOException,
-            NoSuchAlgorithmException, CertificateException {
-        KeyStore keyStore  = KeyStore.getInstance(KeyStore.getDefaultType());
-        if(!StringUtil.isEmpty(keyStorePath)) {
-            FileInputStream instream = new FileInputStream(new File(keyStorePath));
-            try{
-                keyStore.load(instream, keyStorePassword);
-            }
-            finally{
-                instream.close();
-            }
-        }
-        return keyStore;
-    }*/
 
     @Override
     public void abortExecution(){
@@ -450,38 +412,5 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         else{
             LOG.info("Request already completed. Doing nothing.");
         }
-    }
-
-    private static final class PreemptiveAuth implements HttpRequestInterceptor {
-
-        @Override
-        public void process(
-                final HttpRequest request,
-                final HttpContext context) throws HttpException, IOException {
-
-            AuthState authState = (AuthState) context.getAttribute(
-                    ClientContext.TARGET_AUTH_STATE);
-
-            // If no auth scheme avaialble yet, try to initialize it preemptively
-            if (authState.getAuthScheme() == null) {
-                AuthScheme authScheme = (AuthScheme) context.getAttribute(
-                        "preemptive-auth");
-                CredentialsProvider credsProvider = (CredentialsProvider) context.getAttribute(
-                        ClientContext.CREDS_PROVIDER);
-                HttpHost targetHost = (HttpHost) context.getAttribute(
-                        ExecutionContext.HTTP_TARGET_HOST);
-                if (authScheme != null) {
-                    Credentials creds = credsProvider.getCredentials(
-                            new AuthScope(
-                                    targetHost.getHostName(),
-                                    targetHost.getPort()));
-                    if (creds == null) {
-                        throw new HttpException("No credentials for preemptive authentication");
-                    }
-                    authState.setAuthScheme(authScheme);
-                    authState.setCredentials(creds);
-                }
-            } // if ends
-        } // process() method ends
-    } // Inner class ends
+    }    
 }
