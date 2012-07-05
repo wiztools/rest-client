@@ -110,21 +110,21 @@ public final class XMLUtil {
 
                     // creating the auth-host child element
                     String authHost = bean.getAuthHost();
-                    if (!StringUtil.isEmpty(authHost)) {
+                    if (StringUtil.isNotEmpty(authHost)) {
                         Element e = new Element("auth-host");
                         e.appendChild(authHost);
                         reqChildElement.appendChild(e);
                     }
                     // creating the auth-realm child element
                     String authRealm = bean.getAuthRealm();
-                    if (!StringUtil.isEmpty(authRealm)) {
+                    if (StringUtil.isNotEmpty(authRealm)) {
                         Element e = new Element("auth-realm");
                         e.appendChild(authRealm);
                         reqChildElement.appendChild(e);
                     }
                     // creating the auth-username child element
                     String authUsername = bean.getAuthUsername();
-                    if (!StringUtil.isEmpty(authUsername)) {
+                    if (StringUtil.isNotEmpty(authUsername)) {
                         Element e = new Element("auth-username");
                         e.appendChild(authUsername);
                         reqChildElement.appendChild(e);
@@ -133,7 +133,7 @@ public final class XMLUtil {
                     String authPassword = null;
                     if (bean.getAuthPassword() != null) {
                         authPassword = new String(bean.getAuthPassword());
-                        if (!StringUtil.isEmpty(authPassword)) {
+                        if (StringUtil.isNotEmpty(authPassword)) {
                             String encPassword = Util.base64encode(authPassword);
 
                             Element e = new Element("auth-password");
@@ -141,12 +141,19 @@ public final class XMLUtil {
                             reqChildElement.appendChild(e);
                         }
                     }
+                    // creating auth-token child element
+                    String authToken = bean.getAuthToken();
+                    if(StringUtil.isNotEmpty(authToken)) {
+                        Element e = new Element("auth-token");
+                        e.appendChild(authToken);
+                        reqChildElement.appendChild(e);
+                    }
                 }
             }
             
             // Creating SSL elements
             String sslTruststore = bean.getSslTrustStore();
-            if (!StringUtil.isEmpty(sslTruststore)) {
+            if (StringUtil.isNotEmpty(sslTruststore)) {
                 { // 1. Create truststore entry
                     Element e = new Element("ssl-truststore");
                     e.appendChild(sslTruststore);
@@ -170,7 +177,7 @@ public final class XMLUtil {
             }
             
             String sslKeystore = bean.getSslKeyStore();
-            if(!StringUtil.isEmpty(sslKeystore)) {
+            if(StringUtil.isNotEmpty(sslKeystore)) {
             	{ // 1. Create keystore entry
             		Element e = new Element("ssl-keystore");
             		e.appendChild(sslKeystore);
@@ -330,6 +337,9 @@ public final class XMLUtil {
             else if ("auth-password".equals(nodeName)) {
                 String password = base64decode(rcVersion, tNode.getValue());
                 requestBean.setAuthPassword(password.toCharArray());
+            }
+            else if("auth-token".equals(nodeName)) {
+                requestBean.setAuthToken(tNode.getValue());
             }
             else if ("ssl-truststore".equals(nodeName)) {
                 String sslTrustStore = tNode.getValue();
