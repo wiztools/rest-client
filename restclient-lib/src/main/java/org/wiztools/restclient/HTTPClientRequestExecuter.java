@@ -390,7 +390,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             throws KeyStoreException, IOException,
             NoSuchAlgorithmException, CertificateException {
         KeyStore store  = KeyStore.getInstance(KeyStore.getDefaultType());
-        if(!StringUtil.isEmpty(storePath)) {
+        if(StringUtil.isNotEmpty(storePath)) {
             FileInputStream instream = new FileInputStream(new File(storePath));
             try{
                 store.load(instream, storePassword);
