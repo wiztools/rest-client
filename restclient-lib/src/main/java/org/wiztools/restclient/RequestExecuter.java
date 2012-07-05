@@ -9,8 +9,6 @@ import com.google.inject.ImplementedBy;
  * <pre>
  * import org.wiztools.restclient.RequestExecuter;
  * import org.wiztools.restclient.Implementation;
- *
- * RequestExecuter executer = Implementation.of(RequestExecuter.class);
  * </pre>
  * @author subwiz
  */
@@ -33,13 +31,13 @@ public interface RequestExecuter {
      * import org.wiztools.restclient.Request;
      * import org.wiztools.restclient.View;
      * import org.wiztools.restclient.RequestExecuter;
-     * import org.wiztools.restclient.Implementation;
+     * import org.wiztools.restclient.ServiceLocator;
      *
      * ...
      * 
      * final Request request = ...;
      * final View view = ...;
-     * final RequestExecuter executer = Implementation.of(RequestExecuter.class);
+     * final RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
      * Thread t = new Thread(){
      *      @Override
      *      public void run(){

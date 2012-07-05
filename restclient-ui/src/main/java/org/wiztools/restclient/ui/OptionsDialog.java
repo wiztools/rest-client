@@ -9,8 +9,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import org.wiztools.commons.Implementation;
 import org.wiztools.restclient.IGlobalOptions;
+import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.Util;
 
 /**
@@ -118,7 +118,7 @@ class OptionsDialog extends EscapableDialog {
             panels.get(key).shutdownOptions();
         }
         
-        Implementation.of(IGlobalOptions.class).writeProperties();
+        ServiceLocator.getInstance(IGlobalOptions.class).writeProperties();
     }
     
     @Override

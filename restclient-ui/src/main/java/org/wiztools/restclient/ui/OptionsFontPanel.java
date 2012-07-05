@@ -21,7 +21,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.wiztools.restclient.IGlobalOptions;
-import org.wiztools.commons.Implementation;
+import org.wiztools.restclient.ServiceLocator;
 
 /**
  *
@@ -94,8 +94,8 @@ class OptionsFontPanel extends JPanel implements IOptionsPanel {
     @Override
     public void initOptions() {
         Font f = null;
-        String fontName = Implementation.of(IGlobalOptions.class).getProperty(PROP_PREFIX + "font");
-        String fontSizeStr = Implementation.of(IGlobalOptions.class).getProperty(PROP_PREFIX + "fontSize");
+        String fontName = ServiceLocator.getInstance(IGlobalOptions.class).getProperty(PROP_PREFIX + "font");
+        String fontSizeStr = ServiceLocator.getInstance(IGlobalOptions.class).getProperty(PROP_PREFIX + "fontSize");
         int fontSize = 12;
         if(fontSizeStr != null){
             try{
@@ -120,8 +120,8 @@ class OptionsFontPanel extends JPanel implements IOptionsPanel {
 
     @Override
     public void shutdownOptions() {
-        Implementation.of(IGlobalOptions.class).setProperty(PROP_PREFIX + "font", (String)jl_font.getSelectedValue());
-        Implementation.of(IGlobalOptions.class).setProperty(PROP_PREFIX + "fontSize", (String)jl_fontSize.getSelectedValue());
+        ServiceLocator.getInstance(IGlobalOptions.class).setProperty(PROP_PREFIX + "font", (String)jl_font.getSelectedValue());
+        ServiceLocator.getInstance(IGlobalOptions.class).setProperty(PROP_PREFIX + "fontSize", (String)jl_fontSize.getSelectedValue());
     }
 
     @Override

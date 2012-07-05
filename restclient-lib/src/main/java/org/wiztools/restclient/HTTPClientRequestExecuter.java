@@ -39,7 +39,6 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.wiztools.commons.Implementation;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
@@ -99,7 +98,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 protocolVersion);
 
         // Set request timeout (default 1 minute--60000 milliseconds)
-        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         options.acquire();
         HttpConnectionParams.setConnectionTimeout(httpclient.getParams(),
                 Integer.parseInt(options.getProperty("request-timeout-in-millis")));

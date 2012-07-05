@@ -1,9 +1,12 @@
 package org.wiztools.restclient;
 
+import com.google.inject.ImplementedBy;
+
 /**
  *
  * @author subwiz
  */
+@ImplementedBy(GlobalOptions.class)
 public interface IGlobalOptions {
 
     void acquire();

@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import org.wiztools.restclient.IGlobalOptions;
-import org.wiztools.commons.Implementation;
+import org.wiztools.restclient.ServiceLocator;
 
 /**
  *
@@ -42,19 +42,19 @@ class OptionsEtcPanel extends JPanel implements IOptionsPanel{
     }
 
     private boolean isIndentSetInGlobalOptions(){
-        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         String indentStr = options.getProperty(INDENT_KEY);
         return indentStr==null? false: (indentStr.equals("true")? true: false);
     }
 
     private boolean isResponseSyntaxSetInGlobalOptions() {
-        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         String syntaxResponse = options.getProperty(SYNTAX_COLOR_RESPONSE);
         return syntaxResponse==null? true: Boolean.valueOf(syntaxResponse);
     }
 
     private boolean isRequestSyntaxSetInGlobalOptions() {
-        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         String syntaxRequest = options.getProperty(SYNTAX_COLOR_REQUEST);
         return syntaxRequest==null? true: Boolean.valueOf(syntaxRequest);
     }
@@ -95,7 +95,7 @@ class OptionsEtcPanel extends JPanel implements IOptionsPanel{
 
     @Override
     public boolean saveOptions() {
-        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         options.setProperty(INDENT_KEY, String.valueOf(jcb_indentResponse.isSelected()));
 
         options.setProperty(SYNTAX_COLOR_REQUEST, String.valueOf(jcb_syntaxRequest.isSelected()));

@@ -49,7 +49,7 @@ class RESTView extends JPanel implements View {
     private JTextField jtf_body_content_type = new JTextField();
     private ScriptEditor se_req_body;
     {
-        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         final boolean enableSyntaxColoring = Boolean.valueOf(
                 options.getProperty("request.body.syntax.color")==null?
                     "true": options.getProperty("request.body.syntax.color"));
@@ -110,7 +110,7 @@ class RESTView extends JPanel implements View {
     // private JScrollPane jsp_res_body = new JScrollPane();
     private ScriptEditor se_response;
     {
-        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         final boolean enableSyntaxColoring = Boolean.valueOf(
                 options.getProperty("response.body.syntax.color")==null?
                     "true": options.getProperty("response.body.syntax.color"));
@@ -1009,8 +1009,8 @@ class RESTView extends JPanel implements View {
         });
         
         // Set the font of ScriptEditors:
-        String fontName = Implementation.of(IGlobalOptions.class).getProperty("font.options.font");
-        String fontSizeStr = Implementation.of(IGlobalOptions.class).getProperty("font.options.fontSize");
+        String fontName = ServiceLocator.getInstance(IGlobalOptions.class).getProperty("font.options.font");
+        String fontSizeStr = ServiceLocator.getInstance(IGlobalOptions.class).getProperty("font.options.fontSize");
         int fontSize = 12; // Default font size is 12
         if(fontSizeStr != null){
             try{
@@ -1186,7 +1186,7 @@ class RESTView extends JPanel implements View {
             List<String> errors = validateRequest(request);
             if(errors.isEmpty()){
                 clearUIResponse();
-                final RequestExecuter executer = Implementation.of(RequestExecuter.class);
+                final RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
                 // Execute the request:
                 requestThread = new Thread(){
                     @Override
@@ -1598,7 +1598,7 @@ class RESTView extends JPanel implements View {
         // Response body
         //// Set the unindentedResponseBody:
         unindentedResponseBody = response.getResponseBody();
-        IGlobalOptions options = Implementation.of(IGlobalOptions.class);
+        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         String indentStr = options.getProperty("response.body.indent");
         boolean indent = indentStr==null? false: (indentStr.equals("true")? true: false);
         if(indent){
