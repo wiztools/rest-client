@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 final public class GlobalOptions implements IGlobalOptions {
     
-    private static Logger LOG = Logger.getLogger(GlobalOptions.class.getName());
+    private final static Logger LOG = Logger.getLogger(GlobalOptions.class.getName());
     
     public static final Integer DEFAULT_TIMEOUT_MILLIS = new Integer(60000);
     private static final File CONF_DIR = new File(
@@ -58,6 +58,7 @@ final public class GlobalOptions implements IGlobalOptions {
         }
     }
     
+    @Override
     public void setProperty(String key, String value){
         if(value == null){
             value = "";
@@ -65,14 +66,17 @@ final public class GlobalOptions implements IGlobalOptions {
         prop.setProperty(key, value);
     }
     
+    @Override
     public void removeProperty(String key){
         prop.remove(key);
     }
     
+    @Override
     public String getProperty(String key){
         return prop.getProperty(key);
     }
     
+    @Override
     public void writeProperties(){
         try{
             prop.store(new FileOutputStream(CONF_PROPERTY), "RESTClient Properties");
@@ -82,10 +86,12 @@ final public class GlobalOptions implements IGlobalOptions {
         }
     }
     
+    @Override
     public void acquire(){
         lock.lock();
     }
     
+    @Override
     public void release(){
         lock.unlock();
     }
