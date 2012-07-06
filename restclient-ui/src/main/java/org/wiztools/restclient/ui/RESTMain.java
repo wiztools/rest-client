@@ -33,11 +33,10 @@ class RESTMain implements RESTUserInterface {
     
     private final Application application = new DefaultApplication();
     
-    @Inject
-    private RESTView view;
-    private AboutDialog aboutDialog;
-    private OptionsDialog optionsDialog;
-    private PasswordGenDialog passwordGenDialog;
+    @Inject private RESTView view;
+    @Inject private AboutDialog aboutDialog;
+    @Inject private OptionsDialog optionsDialog;
+    @Inject private PasswordGenDialog passwordGenDialog;
     
     // Requests and responses are generally saved in different dirs
     private JFileChooser jfc_request = UIUtil.getNewJFileChooser();
@@ -45,8 +44,7 @@ class RESTMain implements RESTUserInterface {
     private JFileChooser jfc_generic = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
     
-    @Inject
-    private RecentFilesHelper recentFilesHelper;
+    @Inject private RecentFilesHelper recentFilesHelper;
     
     private final JFrame frame;
 
@@ -280,17 +278,13 @@ class RESTMain implements RESTUserInterface {
                 view.showSessionFrame();
             }
         });
-        // Commenting it out for 2.x release. This will be the focus of 3.x release:
-        // jm_tools.add(jmi_session);
+        jm_tools.add(jmi_session);
         
         JMenuItem jmi_pwd_gen = new JMenuItem("Password Encoder/Decoder");
         jmi_pwd_gen.setMnemonic('p');
         jmi_pwd_gen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                if(passwordGenDialog == null){
-                    passwordGenDialog = new PasswordGenDialog(frame);
-                }
                 passwordGenDialog.setVisible(true);
             }
         });
@@ -401,9 +395,6 @@ class RESTMain implements RESTUserInterface {
         jfc_request.addChoosableFileFilter(new RCFileFilter(FileType.REQUEST_EXT));
         jfc_response.addChoosableFileFilter(new RCFileFilter(FileType.RESPONSE_EXT));
         jfc_archive.addChoosableFileFilter(new RCFileFilter(FileType.ARCHIVE_EXT));
-
-        // Create AboutDialog
-        aboutDialog = new AboutDialog(frame);
     }
     
     @PostConstruct
@@ -426,9 +417,6 @@ class RESTMain implements RESTUserInterface {
     }
     
     private void showOptionsDialog(){
-        if(optionsDialog == null){
-            optionsDialog = new OptionsDialog(frame);
-        }
         optionsDialog.setVisible(true);
     }
     

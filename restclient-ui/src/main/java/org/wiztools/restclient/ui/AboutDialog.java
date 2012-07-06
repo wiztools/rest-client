@@ -4,7 +4,6 @@ import java.awt.AWTEvent;
 import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,12 +20,10 @@ import javax.swing.JTextPane;
  */
 class AboutDialog extends EscapableDialog {
 
-    private Frame frame;
     private AboutDialog me;
     
-    public AboutDialog(Frame f){
-        super(f, true);
-        frame = f;
+    public AboutDialog(){
+        super(ServiceLocator.getInstance(RESTUserInterface.class).getFrame(), true);
         me = this;
         init();
     }

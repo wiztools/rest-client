@@ -21,16 +21,14 @@ class OptionsDialog extends EscapableDialog {
     
     private static final Logger LOG = Logger.getLogger(OptionsDialog.class.getName());
     
-    private final JFrame frame;
     private final OptionsDialog me;
     
     private Map<String, IOptionsPanel> panels = new LinkedHashMap<String, IOptionsPanel>();
     
     private static final ResourceBundle rb = ResourceBundle.getBundle("org.wiztools.restclient.uioptionsdialog");
     
-    public OptionsDialog(JFrame f){
-        super(f, true);
-        frame = f;
+    public OptionsDialog(){
+        super(ServiceLocator.getInstance(RESTUserInterface.class).getFrame(), true);
         me = this;
         init();
     }

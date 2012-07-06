@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import javax.swing.*;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.Base64Exception;
+import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.Util;
 
 /**
@@ -56,8 +57,8 @@ class PasswordGenDialog extends EscapableDialog {
     
     private final PasswordGenDialog me;
     
-    public PasswordGenDialog(Frame f){
-        super(f, true);
+    public PasswordGenDialog(){
+        super(ServiceLocator.getInstance(RESTUserInterface.class).getFrame(), true);
         me = this;
         this.setTitle("Password Encoder/Decoder");
         init();
