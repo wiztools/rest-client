@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import javax.inject.Inject;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
@@ -128,6 +127,20 @@ class RESTMain implements RESTUserInterface {
                         @Override
                         public void actionPerformed(ActionEvent ae) {
                             FileOpenUtil.open(view, f);
+                        }
+                    });
+                    jm_open_recent.add(jmi);
+                }
+
+                // Add clear option:
+                if(!uiPrefs.isEmpty()) {
+                    jm_open_recent.addSeparator();
+
+                    JMenuItem jmi = new JMenuItem("Clear");
+                    jmi.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            uiPrefs.clear();
                         }
                     });
                     jm_open_recent.add(jmi);

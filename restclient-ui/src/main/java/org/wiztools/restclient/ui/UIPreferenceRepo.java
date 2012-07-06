@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.wiztools.commons.Charsets;
+import org.wiztools.commons.StringUtil;
 
 /**
  *
@@ -26,7 +27,7 @@ class UIPreferenceRepo {
     UIPreferenceRepo() {
         final String recentOpenedFilesStr = prefs.get(KEY_RECENT_FILES, null);
         if(recentOpenedFilesStr != null) {
-            LinkedList<File> l = getListRepresentation(recentOpenedFilesStr);
+            List<File> l = getListRepresentation(recentOpenedFilesStr);
             recentFiles.addAll(l);
         }
     }
@@ -43,11 +44,14 @@ class UIPreferenceRepo {
                 throw new RuntimeException(ex);
             }
         }
-        sb.deleteCharAt(sb.length() - 1);
+        if(sb.length() > 0) sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
     
-    protected final LinkedList<File> getListRepresentation(String recentFilesStr) {
+    protected final List<File> getListRepresentation(String recentFilesStr) {
+        if(StringUtil.isEmpty(recentFilesStr)) {
+            return Collections.EMPTY_LIST;
+        }
         LinkedList<File> out = new LinkedList<File>();
         String[] arr = recentFilesStr.split(SPLIT_KEY);
         for(String str: arr) {
@@ -78,8 +82,21 @@ class UIPreferenceRepo {
         return Collections.unmodifiableList(recentFiles);
     }
     
+    boolean isEmpty() {
+        return recentFiles.isEmpty();
+    }
+    
+    void clear() {
+        recentFiles.clear();
+    }
+    
     void store() {
-        prefs.put(KEY_RECENT_FILES, getStringRepresentation(recentFiles));
+        if(recentFiles.isEmpty()) {
+            prefs.remove(KEY_RECENT_FILES);
+        }
+        else {
+            prefs.put(KEY_RECENT_FILES, getStringRepresentation(recentFiles));
+        }
         try {
             prefs.flush();
         }

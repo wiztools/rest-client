@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.LinkedList;
+import java.util.List;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -74,7 +75,7 @@ public class UIPreferenceRepoTest {
         expResult.add(file2);
         
         String recentFilesStr = instance.getStringRepresentation(expResult);
-        LinkedList result = instance.getListRepresentation(recentFilesStr);
+        List<File> result = instance.getListRepresentation(recentFilesStr);
         assertEquals(expResult, result);
     }
 }
