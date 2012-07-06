@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.*;
@@ -405,7 +406,7 @@ class RESTMain implements RESTUserInterface {
         aboutDialog = new AboutDialog(frame);
     }
     
-    @Override
+    @PostConstruct
     public void show() {
         frame.setContentPane(view);
         createMenu();

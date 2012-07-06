@@ -55,7 +55,6 @@ public class Main {
             public void run() {
                 RESTUserInterface ui = ServiceLocator.getInstance(
                         RESTUserInterface.class);
-                ui.show();
             }
         });
         

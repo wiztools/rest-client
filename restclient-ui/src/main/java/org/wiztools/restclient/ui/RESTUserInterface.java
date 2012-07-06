@@ -21,7 +21,5 @@ interface RESTUserInterface {
     public File getSaveFile(final FileChooserType type);
 
     public RESTView getView();
-    
-    public void show();
 
 }
