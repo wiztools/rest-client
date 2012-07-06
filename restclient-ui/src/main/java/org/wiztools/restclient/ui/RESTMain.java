@@ -40,7 +40,7 @@ class RESTMain implements RESTUserInterface {
     private JFileChooser jfc_generic = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
     
-    private UIPreferenceRepo uiPrefs = ServiceLocator.getInstance(UIPreferenceRepo.class);
+    private RecentFilesHelper recentFilesHelper = ServiceLocator.getInstance(RecentFilesHelper.class);
     
     private final JFrame frame;
 
@@ -118,7 +118,7 @@ class RESTMain implements RESTUserInterface {
 
             @Override
             public void menuSelected(MenuEvent me) {
-                List<File> recentFiles = uiPrefs.getRecentFiles();
+                List<File> recentFiles = recentFilesHelper.getRecentFiles();
                 jm_open_recent.removeAll();
                 for(final File f: recentFiles) {
                     JMenuItem jmi = new JMenuItem(f.getName());
@@ -133,14 +133,14 @@ class RESTMain implements RESTUserInterface {
                 }
 
                 // Add clear option:
-                if(!uiPrefs.isEmpty()) {
+                if(!recentFilesHelper.isEmpty()) {
                     jm_open_recent.addSeparator();
 
                     JMenuItem jmi = new JMenuItem("Clear");
                     jmi.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent ae) {
-                            uiPrefs.clear();
+                            recentFilesHelper.clear();
                         }
                     });
                     jm_open_recent.add(jmi);
@@ -473,7 +473,7 @@ class RESTMain implements RESTUserInterface {
         File f = getOpenFile(FileChooserType.OPEN_REQUEST);
         if(f != null){
             FileOpenUtil.openRequest(view, f);
-            uiPrefs.openedFile(f);
+            recentFilesHelper.openedFile(f);
         }
     }
     
@@ -481,7 +481,7 @@ class RESTMain implements RESTUserInterface {
         File f = getOpenFile(FileChooserType.OPEN_RESPONSE);
         if(f != null){
             FileOpenUtil.openResponse(view, f);
-            uiPrefs.openedFile(f);
+            recentFilesHelper.openedFile(f);
         }
     }
     
@@ -489,7 +489,7 @@ class RESTMain implements RESTUserInterface {
         File f = getOpenFile(FileChooserType.OPEN_ARCHIVE);
         if(f != null){
             FileOpenUtil.openArchive(view, f);
-            uiPrefs.openedFile(f);
+            recentFilesHelper.openedFile(f);
         }
     }
     
@@ -718,7 +718,7 @@ class RESTMain implements RESTUserInterface {
     }
     
     private void shutdownCall(){
-        uiPrefs.store();
+        recentFilesHelper.store();
         System.out.println("Exiting...");
         System.exit(0);
     }

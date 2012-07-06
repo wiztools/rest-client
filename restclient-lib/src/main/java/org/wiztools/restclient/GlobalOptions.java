@@ -1,19 +1,18 @@
 package org.wiztools.restclient;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Singleton;
 
 /**
  *
  * @author Subhash
  */
+@Singleton
 final public class GlobalOptions implements IGlobalOptions {
     
     private final static Logger LOG = Logger.getLogger(GlobalOptions.class.getName());
@@ -41,6 +40,8 @@ final public class GlobalOptions implements IGlobalOptions {
     }
     
     public GlobalOptions(){
+        me = this;
+        
         // Load default properties:
         prop.setProperty("request-timeout-in-millis", "60000");
 
@@ -56,6 +57,14 @@ final public class GlobalOptions implements IGlobalOptions {
                 LOG.log(Level.WARNING, "Failed loading default properties!", ex);
             }
         }
+        
+        // Register shutdownhook to write properties on shutdown:
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                me.writeProperties();
+            }
+        }));
     }
     
     @Override
@@ -79,7 +88,9 @@ final public class GlobalOptions implements IGlobalOptions {
     @Override
     public void writeProperties(){
         try{
-            prop.store(new FileOutputStream(CONF_PROPERTY), "RESTClient Properties");
+            final OutputStream os = new FileOutputStream(CONF_PROPERTY);
+            prop.store(os, "RESTClient Properties");
+            os.close();
         }
         catch(IOException ex){
             LOG.log(Level.WARNING, "Error writing to properties!", ex);
@@ -95,5 +106,4 @@ final public class GlobalOptions implements IGlobalOptions {
     public void release(){
         lock.unlock();
     }
-    
 }

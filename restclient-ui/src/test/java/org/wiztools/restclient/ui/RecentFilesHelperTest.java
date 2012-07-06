@@ -5,16 +5,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
+import static org.junit.Assert.assertEquals;
 import org.junit.*;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author subwiz
  */
-public class UIPreferenceRepoTest {
+public class RecentFilesHelperTest {
     
-    public UIPreferenceRepoTest() {
+    public RecentFilesHelperTest() {
     }
 
     @BeforeClass
@@ -53,7 +53,7 @@ public class UIPreferenceRepoTest {
         recentFiles.add(file1);
         File file2 = new File("aarthi.txt");
         recentFiles.add(file2);
-        UIPreferenceRepo instance = new UIPreferenceRepo();
+        RecentFilesHelper instance = new RecentFilesHelper();
         String expResult = encode(file1.getAbsolutePath()) + ";" + encode(file2.getAbsolutePath());
         String result = instance.getStringRepresentation(recentFiles);
         assertEquals(expResult, result);
@@ -65,7 +65,7 @@ public class UIPreferenceRepoTest {
     @Test
     public void testGetListRepresentation() {
         System.out.println("getListRepresentation");
-        UIPreferenceRepo instance = new UIPreferenceRepo();
+        RecentFilesHelper instance = new RecentFilesHelper();
         
         File file1 = new File(new File(System.getProperty("user.dir")), "subhash.txt");
         File file2 = new File(new File(System.getProperty("user.dir")), "aarthi.txt");

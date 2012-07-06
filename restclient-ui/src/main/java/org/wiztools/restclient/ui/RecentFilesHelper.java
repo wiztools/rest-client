@@ -7,28 +7,48 @@ import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
+import java.util.logging.Logger;
+import javax.inject.Singleton;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.IGlobalOptions;
+import org.wiztools.restclient.ServiceLocator;
 
 /**
  *
  * @author subwiz
  */
-class UIPreferenceRepo {
-    private static final Preferences prefs = Preferences.userNodeForPackage(
-            UIPreferenceRepo.class);
-    private static final String KEY_RECENT_FILES = "recent.opened.files";
+@Singleton
+class RecentFilesHelper {
+    private static final String KEY_RECENT_FILES = "recent.files";
+    private static final String KEY_RECENT_FILES_COUNT = "recent.files.count";
     private static final String SPLIT_KEY = ";";
     
+    private static final int DEFAULT_RECENT_FILES_COUNT = 10;
+    private int recentFilesCount = DEFAULT_RECENT_FILES_COUNT;
+    
     private final LinkedList<File> recentFiles = new LinkedList<File>();
+    
+    private final IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
+    
+    private static final Logger LOG = Logger.getLogger(RecentFilesHelper.class.getName());
 
-    UIPreferenceRepo() {
-        final String recentOpenedFilesStr = prefs.get(KEY_RECENT_FILES, null);
-        if(recentOpenedFilesStr != null) {
+    RecentFilesHelper() {
+        final String recentOpenedFilesStr = options.getProperty(KEY_RECENT_FILES);
+        if(StringUtil.isNotEmpty(recentOpenedFilesStr)) {
             List<File> l = getListRepresentation(recentOpenedFilesStr);
             recentFiles.addAll(l);
+        }
+        
+        // Load recent files count:
+        try {
+            recentFilesCount = Integer.parseInt(options.getProperty(KEY_RECENT_FILES_COUNT));
+            if(recentFilesCount < DEFAULT_RECENT_FILES_COUNT) {
+                recentFilesCount = DEFAULT_RECENT_FILES_COUNT;
+            }
+        }
+        catch(NumberFormatException ex) {
+            LOG.warning("Property contains non-numeric value: " + KEY_RECENT_FILES_COUNT);
         }
     }
     
@@ -92,16 +112,11 @@ class UIPreferenceRepo {
     
     void store() {
         if(recentFiles.isEmpty()) {
-            prefs.remove(KEY_RECENT_FILES);
+            options.removeProperty(KEY_RECENT_FILES);
         }
         else {
-            prefs.put(KEY_RECENT_FILES, getStringRepresentation(recentFiles));
+            options.setProperty(KEY_RECENT_FILES, getStringRepresentation(recentFiles));
         }
-        try {
-            prefs.flush();
-        }
-        catch(BackingStoreException ex) {
-            throw new RuntimeException(ex);
-        }
+        options.setProperty(KEY_RECENT_FILES_COUNT, String.valueOf(recentFilesCount));
     }
 }
