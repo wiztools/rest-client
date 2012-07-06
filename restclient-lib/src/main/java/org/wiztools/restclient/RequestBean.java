@@ -215,12 +215,16 @@ public final class RequestBean implements Request{
     public Object clone(){
         RequestBean cloned = new RequestBean();
         cloned.setAuthHost(authHost);
-        cloned.setAuthPassword(authPassword);
+        cloned.setAuthPassword(Arrays.copyOf(authPassword, authPassword.length));
         cloned.setAuthPreemptive(authPreemptive);
         cloned.setAuthRealm(authRealm);
         cloned.setAuthUsername(authUsername);
         cloned.setSslTrustStore(sslTrustStore);
-        cloned.setSslTrustStorePassword(sslTrustStorePassword);
+        cloned.setSslTrustStorePassword(
+                Arrays.copyOf(sslTrustStorePassword, sslTrustStorePassword.length));
+        cloned.setSslKeyStore(sslKeyStore);
+        cloned.setSslKeyStorePassword(
+                Arrays.copyOf(sslKeyStorePassword, sslKeyStorePassword.length));
         cloned.setHttpVersion(httpVersion);
         if(body != null){
             cloned.setBody((ReqEntityBean)body.clone());
@@ -258,6 +262,8 @@ public final class RequestBean implements Request{
             isEqual = isEqual && (this.authUsername == null? bean.getAuthUsername() == null: this.authUsername.equals(bean.getAuthUsername()));
             isEqual = isEqual && (this.sslTrustStore == null? bean.getSslTrustStore() == null: this.sslTrustStore.equals(bean.getSslTrustStore()));
             isEqual = isEqual && (this.sslTrustStorePassword == null? bean.getSslTrustStorePassword() == null: Arrays.equals(this.sslTrustStorePassword, bean.getSslTrustStorePassword()));
+            isEqual = isEqual && (this.sslKeyStore == null? bean.getSslKeyStore() == null: this.sslKeyStore.equals(bean.getSslKeyStore()));
+            isEqual = isEqual && (this.sslKeyStorePassword == null? bean.getSslKeyStorePassword() == null: Arrays.equals(this.sslKeyStorePassword, bean.getSslKeyStorePassword()));
             isEqual = isEqual && (this.sslHostNameVerifier == null? bean.getSslHostNameVerifier() == null: this.sslHostNameVerifier == bean.getSslHostNameVerifier());
             isEqual = isEqual && (this.httpVersion == null? bean.getHttpVersion() == null: this.httpVersion == bean.getHttpVersion());
             isEqual = isEqual && (this.testScript == null? bean.getTestScript() == null: this.testScript.equals(bean.getTestScript()));
@@ -285,9 +291,9 @@ public final class RequestBean implements Request{
         hash = 61 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
         hash = 61 * hash + (this.sslTrustStore != null ? this.sslTrustStore.hashCode() : 0);
         hash = 61 * hash + (this.sslTrustStorePassword != null ? this.sslTrustStorePassword.hashCode() : 0);
-        hash = 61 * hash + (this.sslHostNameVerifier != null ? this.sslHostNameVerifier.hashCode() : 0);
         hash = 61 * hash + (this.sslKeyStore != null ? this.sslKeyStore.hashCode() : 0);
         hash = 61 * hash + (this.sslKeyStorePassword != null ? this.sslKeyStorePassword.hashCode() : 0);
+        hash = 61 * hash + (this.sslHostNameVerifier != null ? this.sslHostNameVerifier.hashCode() : 0);
         hash = 61 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
         hash = 61 * hash + (this.isFollowRedirect ? 1 : 0);
         return hash;
@@ -309,9 +315,9 @@ public final class RequestBean implements Request{
         sb.append(authPassword==null?"null": new String(authPassword).replaceAll(".", "X")).append(", ");
         sb.append(sslTrustStore).append(", ");
         sb.append(sslTrustStorePassword==null?"null": new String(sslTrustStorePassword).replaceAll(".", "X")).append(", ");
-        sb.append(sslHostNameVerifier).append(", ");
         sb.append(sslKeyStore).append(", ");
         sb.append(sslKeyStorePassword==null?"null": new String(sslKeyStorePassword).replaceAll(".", "X")).append(", ");
+        sb.append(sslHostNameVerifier).append(", ");
         sb.append(httpVersion).append(", ");
         sb.append(isFollowRedirect).append(", ");
         sb.append(testScript);
