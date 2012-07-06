@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.wiztools.restclient.ui;
 
+import com.google.inject.ImplementedBy;
 import java.awt.Component;
 import java.io.File;
 import javax.swing.JFrame;
@@ -13,6 +9,7 @@ import javax.swing.JFrame;
  *
  * @author subwiz
  */
+@ImplementedBy(RESTMain.class)
 interface RESTUserInterface {
 
     public JFrame getFrame();
@@ -24,5 +21,7 @@ interface RESTUserInterface {
     public File getSaveFile(final FileChooserType type);
 
     public RESTView getView();
+    
+    public void show();
 
 }

@@ -10,6 +10,8 @@ import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.TitledBorder;
@@ -21,6 +23,7 @@ import org.wiztools.restclient.*;
  *
  * @author Subhash
  */
+@Singleton
 class RESTView extends JPanel implements View {
     private static final Logger LOG = Logger.getLogger(RESTView.class.getName());
     
@@ -178,6 +181,7 @@ class RESTView extends JPanel implements View {
         templateTestScript = t;
     }
 
+    @Inject
     protected RESTView(final RESTUserInterface ui){
         this(ui, null, null);
     }

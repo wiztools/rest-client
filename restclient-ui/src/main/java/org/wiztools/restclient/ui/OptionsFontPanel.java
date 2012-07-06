@@ -115,7 +115,7 @@ class OptionsFontPanel extends JPanel implements IOptionsPanel {
         jl_font.setSelectedValue(f.getFamily(), true);
         jl_fontSize.setSelectedValue(String.valueOf(f.getSize()), true);
         
-        UIRegistry.getInstance().view.setTextAreaFont(f);
+        ServiceLocator.getInstance(RESTView.class).setTextAreaFont(f);
     }
 
     @Override
@@ -135,13 +135,13 @@ class OptionsFontPanel extends JPanel implements IOptionsPanel {
         String fontSizeStr = (String)jl_fontSize.getSelectedValue();
         int fontSize = Integer.parseInt(fontSizeStr);
         Font f = new Font(fontName, Font.PLAIN, fontSize);
-        UIRegistry.getInstance().view.setTextAreaFont(f);
+        ServiceLocator.getInstance(RESTView.class).setTextAreaFont(f);
         return true;
     }
 
     @Override
     public boolean revertOptions() {
-        Font f = UIRegistry.getInstance().view.getTextAreaFont();
+        Font f = ServiceLocator.getInstance(RESTView.class).getTextAreaFont();
         jl_font.setSelectedValue(f.getFamily(), true);
         jl_fontSize.setSelectedValue(String.valueOf(f.getSize()), true);
         return true;

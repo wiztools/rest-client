@@ -4,9 +4,9 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.logging.Logger;
-import org.wiztools.restclient.RCConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import org.wiztools.restclient.ServiceLocator;
 
 /**
  *
@@ -53,7 +53,9 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new RESTMain(RCConstants.TITLE + RCConstants.VERSION);
+                RESTUserInterface ui = ServiceLocator.getInstance(
+                        RESTUserInterface.class);
+                ui.show();
             }
         });
         

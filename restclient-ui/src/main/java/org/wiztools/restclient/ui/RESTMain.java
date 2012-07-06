@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
@@ -25,10 +27,12 @@ import org.wiztools.restclient.server.TraceServer;
  *
  * @author schandran
  */
+@Singleton
 class RESTMain implements RESTUserInterface {
     
     private final Application application = new DefaultApplication();
     
+    @Inject
     private RESTView view;
     private AboutDialog aboutDialog;
     private OptionsDialog optionsDialog;
@@ -40,7 +44,8 @@ class RESTMain implements RESTUserInterface {
     private JFileChooser jfc_generic = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
     
-    private RecentFilesHelper recentFilesHelper = ServiceLocator.getInstance(RecentFilesHelper.class);
+    @Inject
+    private RecentFilesHelper recentFilesHelper;
     
     private final JFrame frame;
 
@@ -52,18 +57,19 @@ class RESTMain implements RESTUserInterface {
      */
     public RESTMain(final JFrame frame, ScriptEditor scriptEditor, ScriptEditor responseViewer) {
         this.frame = frame;
-        init(true, scriptEditor, responseViewer); // true means isPlugin==true
+        view = new RESTView(this, scriptEditor, responseViewer);
+        init();
     }
     
-    public RESTMain(final String title){
+    public RESTMain(){
         // Macify:
         application.addAboutMenuItem();
         application.addApplicationListener(new RCApplicationListener());
         application.addPreferencesMenuItem();
         
         // Application logic:
-        frame = new JFrame(title);
-        init(false, null, null); // false means isPlugin==false
+        frame = new JFrame(RCConstants.TITLE + RCConstants.VERSION);
+        init();
     }
     
     @Override
@@ -389,34 +395,33 @@ class RESTMain implements RESTUserInterface {
         frame.setJMenuBar(jmb);
     }
     
-    private void init(final boolean isPlugin, ScriptEditor editor, ScriptEditor responseViewer) {
+    private void init() {
         // JFileChooser: Initialize
         jfc_request.addChoosableFileFilter(new RCFileFilter(FileType.REQUEST_EXT));
         jfc_response.addChoosableFileFilter(new RCFileFilter(FileType.RESPONSE_EXT));
         jfc_archive.addChoosableFileFilter(new RCFileFilter(FileType.ARCHIVE_EXT));
 
-        // Set the view on the pane
-        view = new RESTView(this, editor, responseViewer);
-        UIRegistry.getInstance().view = view;
         // Create AboutDialog
         aboutDialog = new AboutDialog(frame);
-        if(!isPlugin){
-            frame.setContentPane(view);
-            createMenu();
-            ImageIcon icon =
-                    UIUtil.getIconFromClasspath("org/wiztools/restclient/WizLogo.png");
-            frame.setIconImage(icon.getImage());
-            frame.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent event){
-                    shutdownCall();
-                }
-            });
+    }
+    
+    @Override
+    public void show() {
+        frame.setContentPane(view);
+        createMenu();
+        ImageIcon icon =
+                UIUtil.getIconFromClasspath("org/wiztools/restclient/WizLogo.png");
+        frame.setIconImage(icon.getImage());
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event){
+                shutdownCall();
+            }
+        });
 
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-        }
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
     
     private void showOptionsDialog(){
