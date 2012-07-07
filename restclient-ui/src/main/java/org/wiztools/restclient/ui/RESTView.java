@@ -102,6 +102,7 @@ class RESTView extends JPanel implements View {
     
     // SSL - misc
     private JComboBox jcb_ssl_hostname_verifier = new JComboBox(SSLHostnameVerifier.getAll());
+    private JCheckBox jcb_ssl_trust_self_signed_cert = new JCheckBox("Trust self-signed certificates? ");
     
     // HTTP Version Combo box
     private JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
@@ -517,12 +518,24 @@ class RESTView extends JPanel implements View {
                 jtp_ssl.addTab("Keystore", UIUtil.getFlowLayoutPanelLeftAligned(jp));
             }
             
-            { // Hostname verifier:
-                JPanel jp = new JPanel();
-                jp.setLayout(new FlowLayout(FlowLayout.LEFT));
-                jp.add(new JLabel("Hostname verifier:"));
-                jp.add(jcb_ssl_hostname_verifier);
-                jtp_ssl.addTab("Others", jp);
+            { // SSl Etc.:
+                JPanel jpGrid = new JPanel(new GridLayout(2, 1));
+                { // Trust self-signed cert:
+                    JPanel jp = new JPanel();
+                    jp.setLayout(new FlowLayout(FlowLayout.LEFT));
+                    jcb_ssl_trust_self_signed_cert.setHorizontalTextPosition(SwingConstants.LEFT);
+                    jp.add(jcb_ssl_trust_self_signed_cert);
+                    jpGrid.add(jp);
+                }
+                { // Hostname verifier:
+                    JPanel jp = new JPanel();
+                    jp.setLayout(new FlowLayout(FlowLayout.LEFT));
+                    jp.add(new JLabel(" Hostname verifier:"));
+                    jp.add(jcb_ssl_hostname_verifier);
+                    jpGrid.add(jp);
+                }
+                    
+                jtp_ssl.addTab("Etc.", UIUtil.getFlowLayoutPanelLeftAligned(jpGrid));
             }
             
             jp_ssl.add(jtp_ssl);
@@ -1169,6 +1182,7 @@ class RESTView extends JPanel implements View {
         request.setSslKeyStore(jtf_ssl_keystore_file.getText());
         request.setSslKeyStorePassword(jpf_ssl_keystore_pwd.getPassword());
         request.setSslHostNameVerifier((SSLHostnameVerifier)jcb_ssl_hostname_verifier.getSelectedItem());
+        request.setSslTrustSelfSignedCert(jcb_ssl_trust_self_signed_cert.isSelected());
         
         // HTTP version
         request.setHttpVersion((HTTPVersion)jcb_http_version.getSelectedItem());
@@ -1581,6 +1595,7 @@ class RESTView extends JPanel implements View {
         jtf_ssl_truststore_file.setText("");
         jpf_ssl_truststore_pwd.setText("");
         jcb_ssl_hostname_verifier.setSelectedIndex(0);
+        jcb_ssl_trust_self_signed_cert.setSelected(false);
         
         // HTTP version
         jcb_http_version.setSelectedItem(HTTPVersion.getDefault());
@@ -1750,6 +1765,8 @@ class RESTView extends JPanel implements View {
         if(sslHostnameVerifier != null){
             jcb_ssl_hostname_verifier.setSelectedItem(sslHostnameVerifier);
         }
+        jcb_ssl_trust_self_signed_cert.setSelected(request.isSslTrustSelfSignedCert());
+
         String sslKeystore = request.getSslKeyStore();
         char[] sslKeystorePassword = request.getSslKeyStorePassword();
         if(sslKeystore != null){
