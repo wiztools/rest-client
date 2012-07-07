@@ -154,32 +154,17 @@ public final class XMLUtil {
             // Creating SSL elements
             String sslTruststore = bean.getSslTrustStore();
             if (StringUtil.isNotEmpty(sslTruststore)) {
-                { // 1. Create truststore entry
+                { // 1. Create trust-store entry
                     Element e = new Element("ssl-truststore");
                     e.appendChild(sslTruststore);
                     reqChildElement.appendChild(e);
                 }
-
                 { // 2. Create password entry
                     String sslPassword = new String(bean.getSslTrustStorePassword());
                     String encPassword = Util.base64encode(sslPassword);
                     Element e = new Element("ssl-truststore-password");
                     e.appendChild(encPassword);
                     reqChildElement.appendChild(e);
-                }
-
-                { // 3. Create Hostname Verifier entry
-                    String sslHostnameVerifier = bean.getSslHostNameVerifier().name();
-                    Element e = new Element("ssl-hostname-verifier");
-                    e.appendChild(sslHostnameVerifier);
-                    reqChildElement.appendChild(e);
-                }
-                
-                { // 4. Create Trust Self-signed cert entry:
-                    if(bean.isSslTrustSelfSignedCert()) {
-                        Element e = new Element("ssl-trust-self-signed-cert");
-                        reqChildElement.appendChild(e);
-                    }
                 }
             }
             
@@ -198,6 +183,18 @@ public final class XMLUtil {
             		e.appendChild(encPassword);
             		reqChildElement.appendChild(e);
             	}
+            }
+            { // Create Hostname Verifier entry
+                String sslHostnameVerifier = bean.getSslHostNameVerifier().name();
+                Element e = new Element("ssl-hostname-verifier");
+                e.appendChild(sslHostnameVerifier);
+                reqChildElement.appendChild(e);
+            }   
+            { // Create Trust Self-signed cert entry:
+                if(bean.isSslTrustSelfSignedCert()) {
+                    Element e = new Element("ssl-trust-self-signed-cert");
+                    reqChildElement.appendChild(e);
+                }
             }
 
             // creating the headers child element
