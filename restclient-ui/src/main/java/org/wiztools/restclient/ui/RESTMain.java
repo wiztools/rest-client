@@ -611,6 +611,7 @@ class RESTMain implements RESTUserInterface {
             if(f != null){
                 try{
                     XMLUtil.writeRequestXML(request, f);
+                    recentFilesHelper.openedFile(f);
                 }
                 catch(IOException ex){
                     view.showError(Util.getStackTrace(ex));
@@ -639,6 +640,7 @@ class RESTMain implements RESTUserInterface {
             if(f != null){
                 try{
                     XMLUtil.writeResponseXML(response, f);
+                    recentFilesHelper.openedFile(f);
                 }
                 catch(IOException ex){
                     view.showError(Util.getStackTrace(ex));
@@ -696,6 +698,7 @@ class RESTMain implements RESTUserInterface {
                 Exception e = null;
                 try{
                     Util.createReqResArchive(request, response, f);
+                    recentFilesHelper.openedFile(f);
                 }
                 catch(IOException ex){
                     e = ex;
