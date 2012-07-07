@@ -174,6 +174,13 @@ public final class XMLUtil {
                     e.appendChild(sslHostnameVerifier);
                     reqChildElement.appendChild(e);
                 }
+                
+                { // 4. Create Trust Self-signed cert entry:
+                    if(bean.isSslTrustSelfSignedCert()) {
+                        Element e = new Element("ssl-trust-self-signed-cert");
+                        reqChildElement.appendChild(e);
+                    }
+                }
             }
             
             String sslKeystore = bean.getSslKeyStore();
@@ -353,6 +360,9 @@ public final class XMLUtil {
                 String sslHostnameVerifierStr = tNode.getValue();
                 SSLHostnameVerifier sslHostnameVerifier = SSLHostnameVerifier.valueOf(sslHostnameVerifierStr);
                 requestBean.setSslHostNameVerifier(sslHostnameVerifier);
+            }
+            else if("ssl-trust-self-signed-cert".equals(nodeName)) {
+                requestBean.setSslTrustSelfSignedCert(true);
             }
             else if ("ssl-keystore".equals(nodeName)) {
                 String sslKeyStore = tNode.getValue();

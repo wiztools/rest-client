@@ -26,6 +26,7 @@ public class RoRequestBean implements Request {
     private final String sslKeyStore;
     private final char[] sslKeyStorePassword;
     private final SSLHostnameVerifier sslHostNameVerifier;
+    private final boolean sslTrustSelfSignedCert;
     private final HTTPVersion httpVersion;
     private final boolean isFollowRedirect;
 
@@ -52,6 +53,11 @@ public class RoRequestBean implements Request {
     @Override
     public char[] getSslKeyStorePassword() {
         return sslKeyStorePassword;
+    }
+    
+    @Override
+    public boolean isSslTrustSelfSignedCert() {
+        return this.sslTrustSelfSignedCert;
     }
     
     @Override
@@ -137,6 +143,7 @@ public class RoRequestBean implements Request {
         sslKeyStorePassword = request.getSslKeyStorePassword();
         httpVersion = request.getHttpVersion();
         sslHostNameVerifier = request.getSslHostNameVerifier();
+        sslTrustSelfSignedCert = request.isSslTrustSelfSignedCert();
         isFollowRedirect = request.isFollowRedirect();
     }
 

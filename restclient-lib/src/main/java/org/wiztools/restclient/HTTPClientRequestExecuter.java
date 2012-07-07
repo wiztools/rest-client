@@ -25,6 +25,8 @@ import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
@@ -247,12 +249,17 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 final KeyStore keyStore = StringUtil.isEmpty(keyStorePath)?
                         null:
                 	getKeyStore(keyStorePath, request.getSslKeyStorePassword());
+                
+                final TrustStrategy trustStrategy = request.isSslTrustSelfSignedCert()
+                        ? new TrustSelfSignedStrategy(): null;
+                
                 SSLSocketFactory socketFactory = new SSLSocketFactory(
                         "TLS", // Algorithm
                         keyStore,  // Keystore
                         new String(request.getSslKeyStorePassword()),  // Keystore password
                         trustStore,
                         null,  // Secure Random
+                        trustStrategy, // Trust strategy
                         hcVerifier);
                 Scheme sch = new Scheme(urlProtocol, urlPort, socketFactory);
                 httpclient.getConnectionManager().getSchemeRegistry().register(sch);

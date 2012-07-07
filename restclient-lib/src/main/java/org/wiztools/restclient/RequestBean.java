@@ -32,6 +32,7 @@ public final class RequestBean implements Request{
     private String sslKeyStore;
     private char[] sslKeyStorePassword;
     private SSLHostnameVerifier sslHostNameVerifier = SSLHostnameVerifier.STRICT; // Default to strict!
+    private boolean sslTrustSelfSignedCert = false;
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
     private boolean isFollowRedirect;
 
@@ -87,6 +88,15 @@ public final class RequestBean implements Request{
 
     public void setSslHostNameVerifier(SSLHostnameVerifier sslHostNameVerifier) {
         this.sslHostNameVerifier = sslHostNameVerifier;
+    }
+    
+    public void setSslTrustSelfSignedCert(boolean sslTrustSelfSignedCert) {
+        this.sslTrustSelfSignedCert = sslTrustSelfSignedCert;
+    }
+    
+    @Override
+    public boolean isSslTrustSelfSignedCert() {
+        return this.sslTrustSelfSignedCert;
     }
     
     @Override
@@ -265,6 +275,7 @@ public final class RequestBean implements Request{
             isEqual = isEqual && (this.sslKeyStore == null? bean.getSslKeyStore() == null: this.sslKeyStore.equals(bean.getSslKeyStore()));
             isEqual = isEqual && (this.sslKeyStorePassword == null? bean.getSslKeyStorePassword() == null: Arrays.equals(this.sslKeyStorePassword, bean.getSslKeyStorePassword()));
             isEqual = isEqual && (this.sslHostNameVerifier == null? bean.getSslHostNameVerifier() == null: this.sslHostNameVerifier == bean.getSslHostNameVerifier());
+            isEqual = isEqual && (this.isSslTrustSelfSignedCert() == bean.isSslTrustSelfSignedCert());
             isEqual = isEqual && (this.httpVersion == null? bean.getHttpVersion() == null: this.httpVersion == bean.getHttpVersion());
             isEqual = isEqual && (this.testScript == null? bean.getTestScript() == null: this.testScript.equals(bean.getTestScript()));
             isEqual = isEqual && (this.url == null? bean.getUrl() == null: this.url.equals(bean.getUrl()));
@@ -294,6 +305,7 @@ public final class RequestBean implements Request{
         hash = 61 * hash + (this.sslKeyStore != null ? this.sslKeyStore.hashCode() : 0);
         hash = 61 * hash + (this.sslKeyStorePassword != null ? this.sslKeyStorePassword.hashCode() : 0);
         hash = 61 * hash + (this.sslHostNameVerifier != null ? this.sslHostNameVerifier.hashCode() : 0);
+        hash = 61 * hash + (this.sslTrustSelfSignedCert ? 1 : 0);
         hash = 61 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
         hash = 61 * hash + (this.isFollowRedirect ? 1 : 0);
         return hash;
@@ -318,6 +330,7 @@ public final class RequestBean implements Request{
         sb.append(sslKeyStore).append(", ");
         sb.append(sslKeyStorePassword==null?"null": new String(sslKeyStorePassword).replaceAll(".", "X")).append(", ");
         sb.append(sslHostNameVerifier).append(", ");
+        sb.append(sslTrustSelfSignedCert).append(", ");
         sb.append(httpVersion).append(", ");
         sb.append(isFollowRedirect).append(", ");
         sb.append(testScript);

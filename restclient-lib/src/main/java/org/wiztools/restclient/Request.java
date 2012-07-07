@@ -39,6 +39,8 @@ public interface Request extends Cloneable {
     String getSslKeyStore();
     
     char[] getSslKeyStorePassword();
+    
+    boolean isSslTrustSelfSignedCert();
 
     String getTestScript();
 
