@@ -278,7 +278,8 @@ class RESTMain implements RESTUserInterface {
                 view.showSessionFrame();
             }
         });
-        jm_tools.add(jmi_session);
+        // Commenting for 2.x release:
+        // jm_tools.add(jmi_session);
         
         JMenuItem jmi_pwd_gen = new JMenuItem("Password Encoder/Decoder");
         jmi_pwd_gen.setMnemonic('p');
