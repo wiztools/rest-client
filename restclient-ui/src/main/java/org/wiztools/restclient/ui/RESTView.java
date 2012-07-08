@@ -102,7 +102,7 @@ class RESTView extends JPanel implements View {
     
     // SSL - misc
     private JComboBox jcb_ssl_hostname_verifier = new JComboBox(SSLHostnameVerifier.getAll());
-    private JCheckBox jcb_ssl_trust_self_signed_cert = new JCheckBox("Trust self-signed certificates? ");
+    private JCheckBox jcb_ssl_trust_self_signed_cert = new JCheckBox("Trust self-signed certificate? ");
     
     // HTTP Version Combo box
     private JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
