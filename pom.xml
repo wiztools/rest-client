@@ -5,7 +5,7 @@
     <groupId>org.wiztools.restclient</groupId>
     <artifactId>restclient</artifactId>
     <packaging>pom</packaging>
-    <version>2.5-SNAPSHOT</version>
+    <version>2.5</version>
     <name>restclient</name>
     <url>http://rest-client.googlecode.com/</url>
     <properties>
@@ -24,9 +24,9 @@
         <url>http://code.google.com/p/rest-client/issues/list</url>
     </issueManagement>
     <scm>
-        <connection>scm:svn:http://rest-client.googlecode.com/svn/trunk/</connection>
-        <developerConnection>scm:svn:https://rest-client.googlecode.com/svn/trunk/</developerConnection>
-        <url>http://rest-client.googlecode.com/svn/trunk/</url>
+        <connection>scm:svn:http://rest-client.googlecode.com/svn/tags/restclient-2.5</connection>
+        <developerConnection>scm:svn:https://rest-client.googlecode.com/svn/tags/restclient-2.5</developerConnection>
+        <url>http://rest-client.googlecode.com/svn/tags/restclient-2.5</url>
     </scm>
     <developers>
         <developer>
