@@ -67,12 +67,15 @@ class AboutDialog extends EscapableDialog {
                 hideMe();
             }
         });
+        getRootPane().setDefaultButton(jb_ok);
         jp_south.add(jb_ok);
         jp.add(jp_south, BorderLayout.SOUTH);
         
         setContentPane(jp);
         
         pack();
+        
+        jb_ok.requestFocus();
     }
     
     @Override
