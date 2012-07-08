@@ -9,7 +9,6 @@
     <name>restclient</name>
     <url>http://rest-client.googlecode.com/</url>
     <properties>
-        <restclientVersion>${project.version}</restclientVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <description>
