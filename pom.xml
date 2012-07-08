@@ -34,8 +34,8 @@
             <id>subwiz</id>
             <name>Subhash Chandran</name>
             <email>subwiz in the gmail.com server</email>
-            <organization>SpikeSource</organization>
-            <organizationUrl>http://www.spikesource.com/</organizationUrl>
+            <organization>WizTools.org</organization>
+            <organizationUrl>http://www.wiztools.org/</organizationUrl>
             <roles>
                 <role>Project admin and main developer</role>
             </roles>
@@ -53,6 +53,17 @@
             <timezone>+1</timezone>
         </developer>
     </developers>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <tagBase>https://rest-client.googlecode.com/svn/tags</tagBase>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <reporting>
         <plugins>
             <plugin>
