@@ -939,6 +939,7 @@ class RESTView extends JPanel implements View {
         // AutoCompleteDecorator.decorate(jcb_url);
         AutoCompletion ac = new AutoCompletion(jcb_url);
         ac.setStrict(false);
+        ac.setStrictCompletion(false);
         jp_north.add(jcb_url, BorderLayout.CENTER);
         jb_request = new JButton(icon_go);
         jb_request.setToolTipText("Go!");
