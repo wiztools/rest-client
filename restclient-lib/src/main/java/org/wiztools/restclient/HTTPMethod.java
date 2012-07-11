@@ -7,7 +7,7 @@ import java.util.logging.Logger;
  * @author subwiz
  */
 public enum HTTPMethod {
-    GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE;
+    GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS, TRACE;
 
     private static final Logger LOG = Logger.getLogger(HTTPMethod.class.getName());
 
@@ -20,6 +20,9 @@ public enum HTTPMethod {
         }
         else if("PUT".equals(method)){
             return PUT;
+        }
+        else if("PATCH".equals(method)) {
+            return PATCH;
         }
         else if("DELETE".equals(method)){
             return DELETE;

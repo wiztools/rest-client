@@ -173,6 +173,9 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 case PUT:
                     method = new HttpPut(urlStr);
                     break;
+                case PATCH:
+                    method = new HttpPatch(urlStr);
+                    break;
                 case DELETE:
                     method = new HttpDelete(urlStr);
                     break;
@@ -197,7 +200,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 }
             }
 
-            // POST/PUT method specific logic
+            // POST/PUT/PATCH method specific logic
             if (method instanceof HttpEntityEnclosingRequest) {
 
                 HttpEntityEnclosingRequest eeMethod = (HttpEntityEnclosingRequest) method;
