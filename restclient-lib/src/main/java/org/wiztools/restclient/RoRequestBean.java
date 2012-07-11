@@ -29,6 +29,7 @@ public class RoRequestBean implements Request {
     private final boolean sslTrustSelfSignedCert;
     private final HTTPVersion httpVersion;
     private final boolean isFollowRedirect;
+    private final boolean isIgnoreResponseBody;
 
     @Override
     public HTTPVersion getHttpVersion() {
@@ -120,6 +121,11 @@ public class RoRequestBean implements Request {
         return this.isFollowRedirect;
     }
     
+    @Override
+    public boolean isIgnoreResponseBody() {
+        return isIgnoreResponseBody;
+    }
+    
     public RoRequestBean(final Request request){
         url = request.getUrl();
         method = request.getMethod();
@@ -145,6 +151,7 @@ public class RoRequestBean implements Request {
         sslHostNameVerifier = request.getSslHostNameVerifier();
         sslTrustSelfSignedCert = request.isSslTrustSelfSignedCert();
         isFollowRedirect = request.isFollowRedirect();
+        isIgnoreResponseBody = request.isIgnoreResponseBody();
     }
 
     @Override

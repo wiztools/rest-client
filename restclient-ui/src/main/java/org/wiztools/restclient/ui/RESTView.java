@@ -110,6 +110,9 @@ class RESTView extends JPanel implements View {
     // Follow redirect
     private JCheckBox jcb_followRedirects = new JCheckBox("Follow HTTP Redirects? ");
     
+    // Ignore body
+    private JCheckBox jcb_ignoreResponseBody = new JCheckBox("Ignore Response Body? ");
+    
     // Response
     // private JScrollPane jsp_res_body = new JScrollPane();
     private ScriptEditor se_response;
@@ -544,7 +547,7 @@ class RESTView extends JPanel implements View {
         
         // Etc panel
         JPanel jp_etc = new JPanel();
-        jp_etc.setLayout(new GridLayout(2, 1));
+        jp_etc.setLayout(new GridLayout(3, 1));
         { // Http Version
             JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
             jp.add(new JLabel("HTTP Version: "));
@@ -559,6 +562,13 @@ class RESTView extends JPanel implements View {
             jcb_followRedirects.setHorizontalTextPosition(SwingConstants.LEFT);
             jcb_followRedirects.setBorder(null);
             jp.add(jcb_followRedirects);
+            jp_etc.add(jp);
+        }
+        { // Ignore response body
+            JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            jcb_ignoreResponseBody.setHorizontalTextPosition(SwingConstants.LEFT);
+            jcb_ignoreResponseBody.setBorder(null);
+            jp.add(jcb_ignoreResponseBody);
             jp_etc.add(jp);
         }
         { // add jp_etc in an enclosing panel
@@ -1191,6 +1201,9 @@ class RESTView extends JPanel implements View {
         // Follow redirect
         request.setFollwoRedirect(jcb_followRedirects.isSelected());
         
+        // Ignore response body
+        request.setIgnoreResponseBody(jcb_ignoreResponseBody.isSelected());
+        
         // Test script specific
         String testScript = se_test_script.getText();
         testScript = testScript == null || testScript.trim().equals("")?
@@ -1601,6 +1614,12 @@ class RESTView extends JPanel implements View {
         // HTTP version
         jcb_http_version.setSelectedItem(HTTPVersion.getDefault());
         
+        // Follow HTTP redirects
+        jcb_followRedirects.setSelected(true);
+        
+        // Ignore response body
+        jcb_ignoreResponseBody.setSelected(false);
+        
         // Script
         se_test_script.setText("");
     }
@@ -1787,6 +1806,9 @@ class RESTView extends JPanel implements View {
 
         // Follow redirect
         jcb_followRedirects.setSelected(request.isFollowRedirect());
+        
+        // Ignore response body
+        jcb_ignoreResponseBody.setSelected(request.isIgnoreResponseBody());
 
         // Test script
         se_test_script.setText(request.getTestScript()==null?"":request.getTestScript());

@@ -42,6 +42,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.NullOutputStream;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
 
@@ -321,24 +322,30 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 charset = c;
             }
 
+            // Response body:
             final HttpEntity entity = http_res.getEntity();
-            if(entity != null){
-                InputStream is = entity.getContent();
-                try{
-                    String responseBody = StreamUtil.inputStream2String(is, charset);
-                    if (responseBody != null) {
-                        response.setResponseBody(responseBody);
+            if(request.isIgnoreResponseBody()) {
+                entity.writeTo(new NullOutputStream());
+            }
+            else {
+                if(entity != null){
+                    InputStream is = entity.getContent();
+                    try{
+                        String responseBody = StreamUtil.inputStream2String(is, charset);
+                        if (responseBody != null) {
+                            response.setResponseBody(responseBody);
+                        }
                     }
-                }
-                catch(IOException ex) {
-                    final String msg = "Response body conversion to string using "
-                            + charset.displayName()
-                            + " encoding failed. Response body not set!";
+                    catch(IOException ex) {
+                        final String msg = "Response body conversion to string using "
+                                + charset.displayName()
+                                + " encoding failed. Response body not set!";
 
-                    for(View view: views) {
-                        view.doError(msg);
+                        for(View view: views) {
+                            view.doError(msg);
+                        }
+                        LOG.log(Level.WARNING, msg);
                     }
-                    LOG.log(Level.WARNING, msg);
                 }
             }
 

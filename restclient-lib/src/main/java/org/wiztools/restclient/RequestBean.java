@@ -35,6 +35,7 @@ public final class RequestBean implements Request{
     private boolean sslTrustSelfSignedCert = false;
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
     private boolean isFollowRedirect;
+    private boolean isIgnoreResponseBody = false;
 
     @Override
     public HTTPVersion getHttpVersion() {
@@ -216,6 +217,15 @@ public final class RequestBean implements Request{
         this.isFollowRedirect = isFollowRedirect;
     }
     
+    public void setIgnoreResponseBody(boolean isIgnoreResponseBody) {
+        this.isIgnoreResponseBody = isIgnoreResponseBody;
+    }
+    
+    @Override
+    public boolean isIgnoreResponseBody() {
+        return isIgnoreResponseBody;
+    }
+    
     public RequestBean(){
         headers = new MultiValueMapArrayList<String, String>();
         authMethods = new ArrayList<HTTPAuthMethod>();
@@ -250,6 +260,7 @@ public final class RequestBean implements Request{
         cloned.setTestScript(testScript);
         cloned.setUrl(url);
         cloned.setFollwoRedirect(isFollowRedirect);
+        cloned.setIgnoreResponseBody(isIgnoreResponseBody);
         return cloned;
     }
 
@@ -280,6 +291,7 @@ public final class RequestBean implements Request{
             isEqual = isEqual && (this.testScript == null? bean.getTestScript() == null: this.testScript.equals(bean.getTestScript()));
             isEqual = isEqual && (this.url == null? bean.getUrl() == null: this.url.equals(bean.getUrl()));
             isEqual = isEqual && (this.isFollowRedirect == bean.isFollowRedirect());
+            isEqual = isEqual && (this.isIgnoreResponseBody == bean.isIgnoreResponseBody());
             return isEqual;
         }
         return false;
@@ -308,6 +320,7 @@ public final class RequestBean implements Request{
         hash = 61 * hash + (this.sslTrustSelfSignedCert ? 1 : 0);
         hash = 61 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
         hash = 61 * hash + (this.isFollowRedirect ? 1 : 0);
+        hash = 61 * hash + (this.isIgnoreResponseBody ? 1 : 0);
         return hash;
     }
 
@@ -333,6 +346,7 @@ public final class RequestBean implements Request{
         sb.append(sslTrustSelfSignedCert).append(", ");
         sb.append(httpVersion).append(", ");
         sb.append(isFollowRedirect).append(", ");
+        sb.append(isIgnoreResponseBody).append(", ");
         sb.append(testScript);
         sb.append("]");
         return sb.toString();
