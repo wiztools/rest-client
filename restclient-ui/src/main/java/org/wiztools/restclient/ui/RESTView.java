@@ -33,6 +33,7 @@ class RESTView extends JPanel implements View {
     private JRadioButton jrb_req_get = new JRadioButton("GET");
     private JRadioButton jrb_req_post = new JRadioButton("POST");
     private JRadioButton jrb_req_put = new JRadioButton("PUT");
+    private JRadioButton jrb_req_patch = new JRadioButton("PATCH");
     private JRadioButton jrb_req_delete = new JRadioButton("DELETE");
     private JRadioButton jrb_req_head = new JRadioButton("HEAD");
     private JRadioButton jrb_req_options = new JRadioButton("OPTIONS");
@@ -220,6 +221,7 @@ class RESTView extends JPanel implements View {
         bg.add(jrb_req_get);
         bg.add(jrb_req_post);
         bg.add(jrb_req_put);
+        bg.add(jrb_req_patch);
         bg.add(jrb_req_delete);
         bg.add(jrb_req_head);
         bg.add(jrb_req_options);
@@ -240,7 +242,9 @@ class RESTView extends JPanel implements View {
         ActionListener jrbAL = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
+                if(jrb_req_post.isSelected()
+                        || jrb_req_put.isSelected()
+                        || jrb_req_patch.isSelected()){
                     setUIReqBodyEnabled(true);
                 }
                 else{
@@ -252,6 +256,7 @@ class RESTView extends JPanel implements View {
         jrb_req_get.addActionListener(jrbAL);
         jrb_req_post.addActionListener(jrbAL);
         jrb_req_put.addActionListener(jrbAL);
+        jrb_req_patch.addActionListener(jrbAL);
         jrb_req_delete.addActionListener(jrbAL);
         jrb_req_head.addActionListener(jrbAL);
         jrb_req_options.addActionListener(jrbAL);
@@ -265,6 +270,7 @@ class RESTView extends JPanel implements View {
         jp_method.add(jrb_req_get);
         jp_method.add(jrb_req_post);
         jp_method.add(jrb_req_put);
+        jp_method.add(jrb_req_patch);
         jp_method.add(jrb_req_delete);
         jp_method.add(jrb_req_head);
         jp_method.add(jrb_req_options);
@@ -1153,6 +1159,9 @@ class RESTView extends JPanel implements View {
         else if(jrb_req_put.isSelected()){
             request.setMethod(HTTPMethod.PUT);
         }
+        else if(jrb_req_patch.isSelected()) {
+            request.setMethod(HTTPMethod.PATCH);
+        }
         else if(jrb_req_delete.isSelected()){
             request.setMethod(HTTPMethod.DELETE);
         }
@@ -1174,7 +1183,9 @@ class RESTView extends JPanel implements View {
         }
         
         // EntityEnclosing method specific
-        if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
+        if(jrb_req_post.isSelected()
+                || jrb_req_put.isSelected()
+                || jrb_req_patch.isSelected()){
             // Get request body
             String req_body = se_req_body.getText();
             if(!StringUtil.isEmpty(req_body)){
@@ -1719,6 +1730,9 @@ class RESTView extends JPanel implements View {
             case PUT:
                 jrb_req_put.setSelected(true);
                 break;
+            case PATCH:
+                jrb_req_patch.setSelected(true);
+                break;
             case DELETE:
                 jrb_req_delete.setSelected(true);
                 break;
@@ -1740,7 +1754,9 @@ class RESTView extends JPanel implements View {
         // Body
         ReqEntity body = request.getBody();
         if(body != null){
-            if(jrb_req_post.isSelected() || jrb_req_put.isSelected()){
+            if(jrb_req_post.isSelected()
+                    || jrb_req_put.isSelected()
+                    || jrb_req_patch.isSelected()){
                 setUIReqBodyEnabled(true);
             }
             jd_body_content_type.setContentType(body.getContentType());
