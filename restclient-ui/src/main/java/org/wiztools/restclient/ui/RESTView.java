@@ -456,6 +456,26 @@ class RESTView extends JPanel implements View {
             JTabbedPane jtp_ssl = new JTabbedPane();
             // jtp_ssl.setTabPlacement(JTabbedPane.LEFT);
             
+            { // SSL General:
+                JPanel jpGrid = new JPanel(new GridLayout(2, 1));
+                { // Trust self-signed cert:
+                    JPanel jp = new JPanel();
+                    jp.setLayout(new FlowLayout(FlowLayout.LEFT));
+                    jcb_ssl_trust_self_signed_cert.setHorizontalTextPosition(SwingConstants.LEFT);
+                    jp.add(jcb_ssl_trust_self_signed_cert);
+                    jpGrid.add(jp);
+                }
+                { // Hostname verifier:
+                    JPanel jp = new JPanel();
+                    jp.setLayout(new FlowLayout(FlowLayout.LEFT));
+                    jp.add(new JLabel(" Hostname verifier:"));
+                    jp.add(jcb_ssl_hostname_verifier);
+                    jpGrid.add(jp);
+                }
+                    
+                jtp_ssl.addTab("General", UIUtil.getFlowLayoutPanelLeftAligned(jpGrid));
+            }
+            
             { // Trust store:
                 JPanel jp = new JPanel(new BorderLayout(BORDER_WIDTH, 2));
                 
@@ -525,26 +545,6 @@ class RESTView extends JPanel implements View {
                 jp.add(jp_input, BorderLayout.CENTER);
                 
                 jtp_ssl.addTab("Keystore", UIUtil.getFlowLayoutPanelLeftAligned(jp));
-            }
-            
-            { // SSl Etc.:
-                JPanel jpGrid = new JPanel(new GridLayout(2, 1));
-                { // Trust self-signed cert:
-                    JPanel jp = new JPanel();
-                    jp.setLayout(new FlowLayout(FlowLayout.LEFT));
-                    jcb_ssl_trust_self_signed_cert.setHorizontalTextPosition(SwingConstants.LEFT);
-                    jp.add(jcb_ssl_trust_self_signed_cert);
-                    jpGrid.add(jp);
-                }
-                { // Hostname verifier:
-                    JPanel jp = new JPanel();
-                    jp.setLayout(new FlowLayout(FlowLayout.LEFT));
-                    jp.add(new JLabel(" Hostname verifier:"));
-                    jp.add(jcb_ssl_hostname_verifier);
-                    jpGrid.add(jp);
-                }
-                    
-                jtp_ssl.addTab("Etc.", UIUtil.getFlowLayoutPanelLeftAligned(jpGrid));
             }
             
             jp_ssl.add(jtp_ssl);
