@@ -78,9 +78,8 @@ class RESTView extends JPanel implements View {
     private RunTestDialog jd_runTestDialog;
     
     // Authentication resources
-    private JCheckBox jcb_auth_basic = new JCheckBox("BASIC");
-    private JCheckBox jcb_auth_digest = new JCheckBox("DIGEST");
-    private JCheckBox jcb_auth_preemptive = new JCheckBox("Preemptive");
+    private JComboBox jcb_auth_types = new JComboBox(new String[]{"None", "BASIC / DIGEST", "NTLM", "OAuth2 Bearer"});
+    private JCheckBox jcb_auth_preemptive = new JCheckBox();
     private JLabel jl_auth_host = new JLabel("<html>Host: </html>");
     private JLabel jl_auth_realm = new JLabel("<html>Realm: </html>");
     private JLabel jl_auth_username = new JLabel("<html>Username: <font color=red>*</font></html>");
@@ -388,65 +387,66 @@ class RESTView extends JPanel implements View {
         jp_body.add(jp_body_center, BorderLayout.CENTER);
         jtp.addTab("Body", jp_body);
         
-        // Auth Tab
-        JPanel jp_auth = new JPanel();
-        jp_auth.setLayout(new BorderLayout());
-        JPanel jp_auth_west = new JPanel();
-        jp_auth_west.setLayout(new BorderLayout());
-        JPanel jp_auth_west_center = new JPanel();
-        jp_auth_west_center.setBorder(BorderFactory.createTitledBorder("Auth Type"));
-        jp_auth_west_center.setLayout(new GridLayout(2,1));
-        jcb_auth_basic.setSelected(false);
-        ActionListener action = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                auth_enableActionPerformed(event);
-            }
-        };
-        jcb_auth_basic.addActionListener(action);
-        jcb_auth_digest.addActionListener(action);
-        jp_auth_west_center.add(jcb_auth_basic);
-        jp_auth_west_center.add(jcb_auth_digest);
-        jp_auth_west.add(jp_auth_west_center, BorderLayout.CENTER);
-        JPanel jp_auth_west_south = new JPanel();
-        jp_auth_west_south.setBorder(BorderFactory.createTitledBorder("Preemptive?"));
-        jp_auth_west_south.setLayout(new GridLayout(1, 1));
-        jcb_auth_preemptive.setToolTipText("Send authentication credentials before challenge");
-        jcb_auth_preemptive.setSelected(true);
-        jcb_auth_preemptive.setEnabled(false);
-        jp_auth_west_south.add(jcb_auth_preemptive);
-        jp_auth_west.add(jp_auth_west_south, BorderLayout.SOUTH);
-        jp_auth.add(jp_auth_west, BorderLayout.WEST);
-        JPanel jp_auth_center = new JPanel();
-        jp_auth_center.setBorder(BorderFactory.createTitledBorder("Details"));
-        jp_auth_center.setLayout(new BorderLayout());
-        JPanel jp_auth_center_west = new JPanel();
-        jp_auth_center_west.setLayout(new GridLayout(4, 1, BORDER_WIDTH, BORDER_WIDTH));
-        jl_auth_host.setEnabled(false);
-        jl_auth_realm.setEnabled(false);
-        jl_auth_username.setEnabled(false);
-        jl_auth_password.setEnabled(false);
-        jp_auth_center_west.add(jl_auth_host);
-        jp_auth_center_west.add(jl_auth_realm);
-        jp_auth_center_west.add(jl_auth_username);
-        jp_auth_center_west.add(jl_auth_password);
-        jp_auth_center.add(jp_auth_center_west, BorderLayout.WEST);
-        JPanel jp_auth_center_center = new JPanel();
-        jp_auth_center_center.setLayout(new GridLayout(4, 1, BORDER_WIDTH, BORDER_WIDTH));
-        jtf_auth_host.setEnabled(false);
-        jtf_auth_realm.setEnabled(false);
-        jtf_auth_username.setEnabled(false);
-        jpf_auth_password.setEnabled(false);
-        jp_auth_center_center.add(jtf_auth_host);
-        jp_auth_center_center.add(jtf_auth_realm);
-        jp_auth_center_center.add(jtf_auth_username);
-        jp_auth_center_center.add(jpf_auth_password);
-        jp_auth_center.add(jp_auth_center_center, BorderLayout.CENTER);
-        jp_auth.add(jp_auth_center, BorderLayout.CENTER);
-        JPanel jp_auth_encp = new JPanel();
-        jp_auth_encp.setLayout(new FlowLayout(FlowLayout.LEFT));
-        jp_auth_encp.add(jp_auth);
-        jtp.addTab("Auth", jp_auth_encp);
+        {   
+            JPanel jp = new JPanel(new BorderLayout());
+            jp.add(jcb_auth_types, BorderLayout.NORTH);
+            
+            JPanel jp_form_label = new JPanel(new GridLayout(5, 1, BORDER_WIDTH, BORDER_WIDTH));
+            jp_form_label.add(jl_auth_host);
+            jp_form_label.add(jl_auth_realm);
+            jp_form_label.add(jl_auth_username);
+            jp_form_label.add(jl_auth_password);
+            JLabel jl_premptive = new JLabel("Preemptive?");
+            String toolTipText = "Send authentication credentials before challenge";
+            jl_premptive.setToolTipText(toolTipText);
+            jcb_auth_preemptive.setToolTipText(toolTipText);
+            jl_premptive.setLabelFor(jcb_auth_preemptive);
+            jl_premptive.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent me) {
+                    if(jcb_auth_preemptive.isSelected()) {
+                        jcb_auth_preemptive.setSelected(false);
+                    }
+                    else {
+                        jcb_auth_preemptive.setSelected(true);
+                    }
+                }
+            });
+            jp_form_label.add(jl_premptive);
+            
+            JPanel jp_form_input = new JPanel(new GridLayout(5, 1, BORDER_WIDTH, BORDER_WIDTH));
+            jp_form_input.add(jtf_auth_host);
+            jp_form_input.add(jtf_auth_realm);
+            jp_form_input.add(jtf_auth_username);
+            jp_form_input.add(jpf_auth_password);
+            jp_form_input.add(jcb_auth_preemptive);
+            
+            JPanel jp_form = new JPanel(new BorderLayout());
+            jp_form.add(jp_form_label, BorderLayout.WEST);
+            jp_form.add(jp_form_input, BorderLayout.CENTER);
+            final JPanel jp_jsp_form = UIUtil.getFlowLayoutPanelLeftAligned(jp_form);
+            
+            final JPanel jp_none = UIUtil.getFlowLayoutPanelLeftAligned(new JPanel());
+         
+            final JScrollPane jsp = new JScrollPane();
+            jsp.setViewportView(jp_none);
+            jcb_auth_types.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    final String selected = (String) jcb_auth_types.getSelectedItem();
+                    if(selected.equals("None")) {
+                        jsp.setViewportView(jp_none);
+                    }
+                    else if(selected.equals("BASIC / DIGEST")) {
+                        jsp.setViewportView(jp_jsp_form);
+                    }
+                }
+            });
+            
+            jp.add(jsp, BorderLayout.CENTER);
+            
+            jtp.addTab("Auth", jp);
+        }
         
         // SSL Tab
         JPanel jp_ssl = new JPanel();
@@ -1115,11 +1115,13 @@ class RESTView extends JPanel implements View {
         RequestBean request = new RequestBean();
         boolean authEnabled = false;
         
-        if(jcb_auth_basic.isSelected()){
-            request.addAuthMethod(HTTPAuthMethod.BASIC);
+        final String authSelected = (String) jcb_auth_types.getSelectedItem();
+        if(!authSelected.equals("None")) {
             authEnabled = true;
         }
-        if(jcb_auth_digest.isSelected()){
+        
+        if("BASIC / DIGEST".equals(authSelected)){
+            request.addAuthMethod(HTTPAuthMethod.BASIC);
             request.addAuthMethod(HTTPAuthMethod.DIGEST);
             authEnabled = true;
         }
@@ -1390,29 +1392,6 @@ class RESTView extends JPanel implements View {
         }
     }
     
-    private void auth_enableActionPerformed(final ActionEvent event){
-        if(jcb_auth_basic.isSelected() || jcb_auth_digest.isSelected()){
-            setUIReqAuthEnabled(true);
-        }
-        else{
-            setUIReqAuthEnabled(false);
-        }
-    }
-    
-    private void setUIReqAuthEnabled(final boolean boo){
-        jcb_auth_preemptive.setEnabled(boo);
-        jtf_auth_host.setEnabled(boo);
-        jtf_auth_realm.setEnabled(boo);
-        jtf_auth_username.setEnabled(boo);
-        jpf_auth_password.setEnabled(boo);
-
-        // Disable/enable labels:
-        jl_auth_host.setEnabled(boo);
-        jl_auth_realm.setEnabled(boo);
-        jl_auth_username.setEnabled(boo);
-        jl_auth_password.setEnabled(boo);
-    }
-    
     private void jb_body_fileActionPerformed(ActionEvent event){
         if(!canSetReqBodyText()){
             return;
@@ -1607,14 +1586,11 @@ class RESTView extends JPanel implements View {
         setUIReqBodyEnabled(false);
         
         // Auth
-        jcb_auth_basic.setSelected(false);
-        jcb_auth_digest.setSelected(false);
         jcb_auth_preemptive.setSelected(true);
         jtf_auth_host.setText("");
         jtf_auth_realm.setText("");
         jtf_auth_username.setText("");
         jpf_auth_password.setText("");
-        setUIReqAuthEnabled(false);
         
         // SSL
         jtf_ssl_truststore_file.setText("");
@@ -1767,16 +1743,13 @@ class RESTView extends JPanel implements View {
 
         // Authentication
         List<HTTPAuthMethod> authMethods = request.getAuthMethods();
-        if(authMethods.size() > 0){
-            setUIReqAuthEnabled(true);
-        }
         for(HTTPAuthMethod authMethod: authMethods){
             switch(authMethod){
                 case BASIC:
-                    jcb_auth_basic.setSelected(true);
+                    jcb_auth_types.setSelectedItem("BASIC / DIGEST");
                     break;
                 case DIGEST:
-                    jcb_auth_digest.setSelected(true);
+                    jcb_auth_types.setSelectedItem("BASIC / DIGEST");
                     break;
             }
         }
