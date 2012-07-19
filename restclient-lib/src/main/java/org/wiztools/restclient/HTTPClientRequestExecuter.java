@@ -140,6 +140,9 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                     case DIGEST:
                         authPrefs.add(AuthPolicy.DIGEST);
                         break;
+                    case NTLM:
+                        authPrefs.add(AuthPolicy.NTLM);
+                        break;
                 }
             }
             httpclient.getParams().setParameter("http.auth.scheme-pref", authPrefs);
