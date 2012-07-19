@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.NTCredentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.methods.*;
@@ -45,6 +46,7 @@ import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.NullOutputStream;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.ntlm.NTLMSchemeFactory;
 
 /**
  *
@@ -147,9 +149,18 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             }
             httpclient.getParams().setParameter("http.auth.scheme-pref", authPrefs);
 
-            httpclient.getCredentialsProvider().setCredentials(
+            if(request.getAuthMethods().contains(HTTPAuthMethod.BASIC)
+                    || request.getAuthMethods().contains(HTTPAuthMethod.DIGEST)) {
+                httpclient.getCredentialsProvider().setCredentials(
                     new AuthScope(host, urlPort, realm),
                     new UsernamePasswordCredentials(uid, pwd));
+            }
+            if(request.getAuthMethods().contains(HTTPAuthMethod.NTLM)) {
+                httpclient.getAuthSchemes().register("ntlm", new NTLMSchemeFactory());
+                httpclient.getCredentialsProvider().setCredentials(
+                    new AuthScope(host, -1), 
+                    new NTCredentials(uid, pwd, "MYSERVER", "MYDOMAIN"));
+            }
 
             // preemptive mode
             if (request.isAuthPreemptive()) {
