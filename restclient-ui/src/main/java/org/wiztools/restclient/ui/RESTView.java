@@ -89,6 +89,7 @@ class RESTView extends JPanel implements View {
     private JTextField jtf_auth_realm = new JTextField(auth_text_size);
     private JTextField jtf_auth_username = new JTextField(auth_text_size);
     private JPasswordField jpf_auth_password = new JPasswordField(auth_text_size);
+    private JTextField jtf_auth_oauth2_token = new JTextField(auth_text_size);
     
     // SSL - trust store
     private JTextField jtf_ssl_truststore_file = new JTextField(auth_text_size);
@@ -387,7 +388,7 @@ class RESTView extends JPanel implements View {
         jp_body.add(jp_body_center, BorderLayout.CENTER);
         jtp.addTab("Body", jp_body);
         
-        {   
+        { // Auth
             JPanel jp = new JPanel(new BorderLayout());
             jp.add(jcb_auth_types, BorderLayout.NORTH);
             
@@ -427,6 +428,12 @@ class RESTView extends JPanel implements View {
             final JPanel jp_jsp_form = UIUtil.getFlowLayoutPanelLeftAligned(jp_form);
             
             final JPanel jp_none = UIUtil.getFlowLayoutPanelLeftAligned(new JPanel());
+            
+            JPanel jp_oauth2_bearer = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JLabel jl_oauth2_bearer = new JLabel("Bearer Token: ");
+            jp_oauth2_bearer.add(jl_oauth2_bearer);
+            jp_oauth2_bearer.add(jtf_auth_oauth2_token);
+            final JPanel jp_jsp_oauth2_bearer = UIUtil.getFlowLayoutPanelLeftAligned(jp_oauth2_bearer);
          
             final JScrollPane jsp = new JScrollPane();
             jsp.setViewportView(jp_none);
@@ -439,6 +446,9 @@ class RESTView extends JPanel implements View {
                     }
                     else if(selected.equals("BASIC / DIGEST")) {
                         jsp.setViewportView(jp_jsp_form);
+                    }
+                    else if(selected.equals("OAuth2 Bearer")) {
+                        jsp.setViewportView(jp_jsp_oauth2_bearer);
                     }
                 }
             });
