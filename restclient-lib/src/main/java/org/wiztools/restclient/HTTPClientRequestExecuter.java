@@ -46,7 +46,6 @@ import org.apache.http.util.EntityUtils;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.ntlm.NTLMSchemeFactory;
 
 /**
  *
@@ -149,29 +148,33 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             }
             httpclient.getParams().setParameter("http.auth.scheme-pref", authPrefs);
 
+            // BASIC & DIGEST:
             if(request.getAuthMethods().contains(HTTPAuthMethod.BASIC)
                     || request.getAuthMethods().contains(HTTPAuthMethod.DIGEST)) {
                 httpclient.getCredentialsProvider().setCredentials(
                     new AuthScope(host, urlPort, realm),
                     new UsernamePasswordCredentials(uid, pwd));
+                
+                // preemptive mode
+                if (request.isAuthPreemptive()) {
+                    AuthCache authCache = new BasicAuthCache();
+                    BasicScheme basicAuth = new BasicScheme();
+                    authCache.put(new HttpHost(urlHost, urlPort, urlProtocol), basicAuth);
+                    BasicHttpContext localcontext = new BasicHttpContext();
+                    localcontext.setAttribute(ClientContext.AUTH_CACHE, authCache);
+                    httpContext = localcontext;
+                }
             }
+            
+            // NTLM:
             if(request.getAuthMethods().contains(HTTPAuthMethod.NTLM)) {
-                httpclient.getAuthSchemes().register("ntlm", new NTLMSchemeFactory());
                 httpclient.getCredentialsProvider().setCredentials(
-                    new AuthScope(host, -1), 
+                    AuthScope.ANY,
                     new NTCredentials(uid, pwd,
                         request.getAuthWorkstation(), request.getAuthDomain()));
             }
 
-            // preemptive mode
-            if (request.isAuthPreemptive()) {
-                AuthCache authCache = new BasicAuthCache();
-                BasicScheme basicAuth = new BasicScheme();
-                authCache.put(new HttpHost(urlHost, urlPort, urlProtocol), basicAuth);
-                BasicHttpContext localcontext = new BasicHttpContext();
-                localcontext.setAttribute(ClientContext.AUTH_CACHE, authCache);
-                httpContext = localcontext;
-            }
+            
         }
 
         AbstractHttpMessage method = null;
