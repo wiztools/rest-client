@@ -44,7 +44,6 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.wiztools.commons.MultiValueMap;
-import org.wiztools.commons.NullOutputStream;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.ntlm.NTLMSchemeFactory;
@@ -344,7 +343,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             final HttpEntity entity = http_res.getEntity();
             if(entity != null) {
                 if(request.isIgnoreResponseBody()) {
-                    EntityUtils.consume(entity);
+                    EntityUtils.consumeQuietly(entity);
                 }
                 else {
                     InputStream is = entity.getContent();
