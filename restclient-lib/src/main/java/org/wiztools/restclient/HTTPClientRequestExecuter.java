@@ -42,6 +42,7 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.NullOutputStream;
 import org.wiztools.commons.StreamUtil;
@@ -341,11 +342,11 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
 
             // Response body:
             final HttpEntity entity = http_res.getEntity();
-            if(request.isIgnoreResponseBody()) {
-                entity.writeTo(new NullOutputStream());
-            }
-            else {
-                if(entity != null){
+            if(entity != null) {
+                if(request.isIgnoreResponseBody()) {
+                    EntityUtils.consume(entity);
+                }
+                else {
                     InputStream is = entity.getContent();
                     try{
                         String responseBody = StreamUtil.inputStream2String(is, charset);
