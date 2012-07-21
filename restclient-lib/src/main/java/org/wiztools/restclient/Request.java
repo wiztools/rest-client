@@ -21,6 +21,10 @@ public interface Request extends Cloneable {
     String getAuthUsername();
     
     String getAuthToken();
+    
+    String getAuthWorkstation();
+    
+    String getAuthDomain();
 
     ReqEntity getBody();
 

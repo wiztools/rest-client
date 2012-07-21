@@ -159,7 +159,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 httpclient.getAuthSchemes().register("ntlm", new NTLMSchemeFactory());
                 httpclient.getCredentialsProvider().setCredentials(
                     new AuthScope(host, -1), 
-                    new NTCredentials(uid, pwd, "MYSERVER", "MYDOMAIN"));
+                    new NTCredentials(uid, pwd,
+                        request.getAuthWorkstation(), request.getAuthDomain()));
             }
 
             // preemptive mode

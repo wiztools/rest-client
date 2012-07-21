@@ -23,6 +23,8 @@ public final class RequestBean implements Request{
     private String authRealm;
     private String authUsername;
     private char[] authPassword;
+    private String authDomain;
+    private String authWorkstation;
     private String authToken;
     private MultiValueMap<String, String> headers;
     private ReqEntity body;
@@ -180,6 +182,24 @@ public final class RequestBean implements Request{
     public void setAuthUsername(String authUsername) {
         this.authUsername = authUsername;
     }
+    
+    public void setAuthWorkstation(String authWorkstation) {
+        this.authWorkstation = authWorkstation;
+    }
+    
+    @Override
+    public String getAuthWorkstation() {
+        return authWorkstation;
+    }
+    
+    public void setAuthDomain(String authDomain) {
+        this.authDomain = authDomain;
+    }
+
+    @Override
+    public String getAuthDomain() {
+        return authDomain;
+    }
 
     @Override
     public MultiValueMap<String, String> getHeaders() {
@@ -265,62 +285,112 @@ public final class RequestBean implements Request{
     }
 
     @Override
-    public boolean equals(Object o){
-        if(this == o){
-            return true;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
         }
-        if(o instanceof Request){
-            final Request bean = (Request)o;
-            boolean isEqual = true;
-            isEqual = isEqual && (this.method == null? bean.getMethod() == null: this.method.equals(bean.getMethod()));
-            isEqual = isEqual && (this.headers == null? bean.getHeaders() == null: this.headers.equals(bean.getHeaders()));
-            isEqual = isEqual && (this.body == null? bean.getBody() == null: this.body.equals(bean.getBody()));
-            isEqual = isEqual && (this.authHost == null? bean.getAuthHost() == null: this.authHost.equals(bean.getAuthHost()));
-            isEqual = isEqual && (this.authMethods == null? bean.getAuthMethods() == null: this.authMethods.equals(bean.getAuthMethods()));
-            isEqual = isEqual && (this.authPassword == null? bean.getAuthPassword() == null: Arrays.equals(this.authPassword, bean.getAuthPassword()));
-            isEqual = isEqual && (this.authPreemptive == bean.isAuthPreemptive());
-            isEqual = isEqual && (this.authRealm == null? bean.getAuthRealm() == null: this.authRealm.equals(bean.getAuthRealm()));
-            isEqual = isEqual && (this.authUsername == null? bean.getAuthUsername() == null: this.authUsername.equals(bean.getAuthUsername()));
-            isEqual = isEqual && (this.sslTrustStore == null? bean.getSslTrustStore() == null: this.sslTrustStore.equals(bean.getSslTrustStore()));
-            isEqual = isEqual && (this.sslTrustStorePassword == null? bean.getSslTrustStorePassword() == null: Arrays.equals(this.sslTrustStorePassword, bean.getSslTrustStorePassword()));
-            isEqual = isEqual && (this.sslKeyStore == null? bean.getSslKeyStore() == null: this.sslKeyStore.equals(bean.getSslKeyStore()));
-            isEqual = isEqual && (this.sslKeyStorePassword == null? bean.getSslKeyStorePassword() == null: Arrays.equals(this.sslKeyStorePassword, bean.getSslKeyStorePassword()));
-            isEqual = isEqual && (this.sslHostNameVerifier == null? bean.getSslHostNameVerifier() == null: this.sslHostNameVerifier == bean.getSslHostNameVerifier());
-            isEqual = isEqual && (this.isSslTrustSelfSignedCert() == bean.isSslTrustSelfSignedCert());
-            isEqual = isEqual && (this.httpVersion == null? bean.getHttpVersion() == null: this.httpVersion == bean.getHttpVersion());
-            isEqual = isEqual && (this.testScript == null? bean.getTestScript() == null: this.testScript.equals(bean.getTestScript()));
-            isEqual = isEqual && (this.url == null? bean.getUrl() == null: this.url.equals(bean.getUrl()));
-            isEqual = isEqual && (this.isFollowRedirect == bean.isFollowRedirect());
-            isEqual = isEqual && (this.isIgnoreResponseBody == bean.isIgnoreResponseBody());
-            return isEqual;
+        if (getClass() != obj.getClass()) {
+            return false;
         }
-        return false;
+        final RequestBean other = (RequestBean) obj;
+        if (this.url != other.url && (this.url == null || !this.url.equals(other.url))) {
+            return false;
+        }
+        if (this.method != other.method) {
+            return false;
+        }
+        if (this.authPreemptive != other.authPreemptive) {
+            return false;
+        }
+        if (this.authMethods != other.authMethods && (this.authMethods == null || !this.authMethods.equals(other.authMethods))) {
+            return false;
+        }
+        if ((this.authHost == null) ? (other.authHost != null) : !this.authHost.equals(other.authHost)) {
+            return false;
+        }
+        if ((this.authRealm == null) ? (other.authRealm != null) : !this.authRealm.equals(other.authRealm)) {
+            return false;
+        }
+        if ((this.authUsername == null) ? (other.authUsername != null) : !this.authUsername.equals(other.authUsername)) {
+            return false;
+        }
+        if (!Arrays.equals(this.authPassword, other.authPassword)) {
+            return false;
+        }
+        if ((this.authDomain == null) ? (other.authDomain != null) : !this.authDomain.equals(other.authDomain)) {
+            return false;
+        }
+        if ((this.authWorkstation == null) ? (other.authWorkstation != null) : !this.authWorkstation.equals(other.authWorkstation)) {
+            return false;
+        }
+        if ((this.authToken == null) ? (other.authToken != null) : !this.authToken.equals(other.authToken)) {
+            return false;
+        }
+        if (this.headers != other.headers && (this.headers == null || !this.headers.equals(other.headers))) {
+            return false;
+        }
+        if (this.body != other.body && (this.body == null || !this.body.equals(other.body))) {
+            return false;
+        }
+        if ((this.testScript == null) ? (other.testScript != null) : !this.testScript.equals(other.testScript)) {
+            return false;
+        }
+        if ((this.sslTrustStore == null) ? (other.sslTrustStore != null) : !this.sslTrustStore.equals(other.sslTrustStore)) {
+            return false;
+        }
+        if (!Arrays.equals(this.sslTrustStorePassword, other.sslTrustStorePassword)) {
+            return false;
+        }
+        if ((this.sslKeyStore == null) ? (other.sslKeyStore != null) : !this.sslKeyStore.equals(other.sslKeyStore)) {
+            return false;
+        }
+        if (!Arrays.equals(this.sslKeyStorePassword, other.sslKeyStorePassword)) {
+            return false;
+        }
+        if (this.sslHostNameVerifier != other.sslHostNameVerifier) {
+            return false;
+        }
+        if (this.sslTrustSelfSignedCert != other.sslTrustSelfSignedCert) {
+            return false;
+        }
+        if (this.httpVersion != other.httpVersion) {
+            return false;
+        }
+        if (this.isFollowRedirect != other.isFollowRedirect) {
+            return false;
+        }
+        if (this.isIgnoreResponseBody != other.isIgnoreResponseBody) {
+            return false;
+        }
+        return true;
     }
-
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 61 * hash + (this.url != null ? this.url.hashCode() : 0);
-        hash = 61 * hash + (this.method != null ? this.method.hashCode() : 0);
-        hash = 61 * hash + (this.authPreemptive ? 1 : 0);
-        hash = 61 * hash + (this.authMethods != null ? this.authMethods.hashCode() : 0);
-        hash = 61 * hash + (this.authHost != null ? this.authHost.hashCode() : 0);
-        hash = 61 * hash + (this.authRealm != null ? this.authRealm.hashCode() : 0);
-        hash = 61 * hash + (this.authUsername != null ? this.authUsername.hashCode() : 0);
-        hash = 61 * hash + (this.authPassword != null ? this.authPassword.hashCode() : 0);
-        hash = 61 * hash + (this.headers != null ? this.headers.hashCode() : 0);
-        hash = 61 * hash + (this.body != null ? this.body.hashCode() : 0);
-        hash = 61 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
-        hash = 61 * hash + (this.sslTrustStore != null ? this.sslTrustStore.hashCode() : 0);
-        hash = 61 * hash + (this.sslTrustStorePassword != null ? this.sslTrustStorePassword.hashCode() : 0);
-        hash = 61 * hash + (this.sslKeyStore != null ? this.sslKeyStore.hashCode() : 0);
-        hash = 61 * hash + (this.sslKeyStorePassword != null ? this.sslKeyStorePassword.hashCode() : 0);
-        hash = 61 * hash + (this.sslHostNameVerifier != null ? this.sslHostNameVerifier.hashCode() : 0);
-        hash = 61 * hash + (this.sslTrustSelfSignedCert ? 1 : 0);
-        hash = 61 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
-        hash = 61 * hash + (this.isFollowRedirect ? 1 : 0);
-        hash = 61 * hash + (this.isIgnoreResponseBody ? 1 : 0);
+        hash = 59 * hash + (this.url != null ? this.url.hashCode() : 0);
+        hash = 59 * hash + (this.method != null ? this.method.hashCode() : 0);
+        hash = 59 * hash + (this.authPreemptive ? 1 : 0);
+        hash = 59 * hash + (this.authMethods != null ? this.authMethods.hashCode() : 0);
+        hash = 59 * hash + (this.authHost != null ? this.authHost.hashCode() : 0);
+        hash = 59 * hash + (this.authRealm != null ? this.authRealm.hashCode() : 0);
+        hash = 59 * hash + (this.authUsername != null ? this.authUsername.hashCode() : 0);
+        hash = 59 * hash + Arrays.hashCode(this.authPassword);
+        hash = 59 * hash + (this.authDomain != null ? this.authDomain.hashCode() : 0);
+        hash = 59 * hash + (this.authWorkstation != null ? this.authWorkstation.hashCode() : 0);
+        hash = 59 * hash + (this.authToken != null ? this.authToken.hashCode() : 0);
+        hash = 59 * hash + (this.headers != null ? this.headers.hashCode() : 0);
+        hash = 59 * hash + (this.body != null ? this.body.hashCode() : 0);
+        hash = 59 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
+        hash = 59 * hash + (this.sslTrustStore != null ? this.sslTrustStore.hashCode() : 0);
+        hash = 59 * hash + Arrays.hashCode(this.sslTrustStorePassword);
+        hash = 59 * hash + (this.sslKeyStore != null ? this.sslKeyStore.hashCode() : 0);
+        hash = 59 * hash + Arrays.hashCode(this.sslKeyStorePassword);
+        hash = 59 * hash + (this.sslHostNameVerifier != null ? this.sslHostNameVerifier.hashCode() : 0);
+        hash = 59 * hash + (this.sslTrustSelfSignedCert ? 1 : 0);
+        hash = 59 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
+        hash = 59 * hash + (this.isFollowRedirect ? 1 : 0);
+        hash = 59 * hash + (this.isIgnoreResponseBody ? 1 : 0);
         return hash;
     }
 

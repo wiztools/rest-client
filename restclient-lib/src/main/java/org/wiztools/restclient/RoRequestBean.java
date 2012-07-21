@@ -20,6 +20,8 @@ public class RoRequestBean implements Request {
     private final String authRealm;
     private final String authUsername;
     private final char[] authPassword;
+    private String authDomain;
+    private String authWorkstation;
     private final String authToken;
     private final String sslTrustStore;
     private final char[] sslTrustStorePassword;
@@ -97,6 +99,16 @@ public class RoRequestBean implements Request {
     }
     
     @Override
+    public String getAuthWorkstation() {
+        return authWorkstation;
+    }
+
+    @Override
+    public String getAuthDomain() {
+        return authDomain;
+    }
+    
+    @Override
     public RoReqEntityBean getBody() {
         return body;
     }
@@ -142,6 +154,8 @@ public class RoRequestBean implements Request {
         authRealm = request.getAuthRealm();
         authUsername = request.getAuthUsername();
         authPassword = request.getAuthPassword();
+        authWorkstation = request.getAuthWorkstation();
+        authDomain = request.getAuthDomain();
         authToken = request.getAuthToken();
         sslTrustStore = request.getSslTrustStore();
         sslTrustStorePassword = request.getSslTrustStorePassword();
@@ -168,4 +182,6 @@ public class RoRequestBean implements Request {
     public Object clone(){
         return null;
     }
+
+    
 }
