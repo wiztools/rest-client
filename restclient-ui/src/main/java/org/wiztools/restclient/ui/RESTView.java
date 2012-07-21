@@ -78,17 +78,17 @@ class RESTView extends JPanel implements View {
     private RunTestDialog jd_runTestDialog;
     
     // Authentication resources
-    private JComboBox jcb_auth_types = new JComboBox(new String[]{"None", "BASIC / DIGEST", "NTLM", "OAuth2 Bearer"});
+    private JComboBox jcb_auth_types = new JComboBox(new String[]{"None", "BASIC", "DIGEST", "NTLM", "OAuth2 Bearer"});
     private JCheckBox jcb_auth_preemptive = new JCheckBox();
-    private JLabel jl_auth_host = new JLabel("<html>Host: </html>");
-    private JLabel jl_auth_realm = new JLabel("<html>Realm: </html>");
-    private JLabel jl_auth_username = new JLabel("<html>Username: <font color=red>*</font></html>");
-    private JLabel jl_auth_password = new JLabel("<html>Password: <font color=red>*</font></html>");
     private static final int auth_text_size = 20;
     private JTextField jtf_auth_host = new JTextField(auth_text_size);
     private JTextField jtf_auth_realm = new JTextField(auth_text_size);
+    private JTextField jtf_auth_domain = new JTextField(auth_text_size);
+    private JTextField jtf_auth_workstation = new JTextField(auth_text_size);
     private JTextField jtf_auth_username = new JTextField(auth_text_size);
     private JPasswordField jpf_auth_password = new JPasswordField(auth_text_size);
+    private JTextField jtf_auth_ntlm_username = new JTextField(auth_text_size);
+    private JPasswordField jpf_auth_ntlm_password = new JPasswordField(auth_text_size);
     private JTextField jtf_auth_oauth2_token = new JTextField(auth_text_size);
     
     // SSL - trust store
@@ -392,11 +392,12 @@ class RESTView extends JPanel implements View {
             JPanel jp = new JPanel(new BorderLayout());
             jp.add(jcb_auth_types, BorderLayout.NORTH);
             
+            // BASIC / DIGEST form:
             JPanel jp_form_label = new JPanel(new GridLayout(5, 1, BORDER_WIDTH, BORDER_WIDTH));
-            jp_form_label.add(jl_auth_host);
-            jp_form_label.add(jl_auth_realm);
-            jp_form_label.add(jl_auth_username);
-            jp_form_label.add(jl_auth_password);
+            jp_form_label.add(new JLabel("<html>Host: </html>"));
+            jp_form_label.add(new JLabel("<html>Realm: </html>"));
+            jp_form_label.add(new JLabel("<html>Username: <font color=red>*</font></html>"));
+            jp_form_label.add(new JLabel("<html>Password: <font color=red>*</font></html>"));
             JLabel jl_premptive = new JLabel("Preemptive?");
             String toolTipText = "Send authentication credentials before challenge";
             jl_premptive.setToolTipText(toolTipText);
@@ -427,14 +428,36 @@ class RESTView extends JPanel implements View {
             jp_form.add(jp_form_input, BorderLayout.CENTER);
             final JPanel jp_jsp_form = UIUtil.getFlowLayoutPanelLeftAligned(jp_form);
             
+            // None Panel:
             final JPanel jp_none = UIUtil.getFlowLayoutPanelLeftAligned(new JPanel());
             
+            // OAuth 2 Panel:
             JPanel jp_oauth2_bearer = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JLabel jl_oauth2_bearer = new JLabel("Bearer Token: ");
             jp_oauth2_bearer.add(jl_oauth2_bearer);
             jp_oauth2_bearer.add(jtf_auth_oauth2_token);
             final JPanel jp_jsp_oauth2_bearer = UIUtil.getFlowLayoutPanelLeftAligned(jp_oauth2_bearer);
+            
+            // NTLM Panel:
+            JPanel jp_ntlm_label = new JPanel(new GridLayout(4, 1, BORDER_WIDTH, BORDER_WIDTH));
+            jp_ntlm_label.add(new JLabel("<html>Domain: <font color=red>*</font></html>"));
+            jp_ntlm_label.add(new JLabel("<html>Workstation: <font color=red>*</font></html>"));
+            jp_ntlm_label.add(new JLabel("<html>Username: <font color=red>*</font></html>"));
+            jp_ntlm_label.add(new JLabel("<html>Password: <font color=red>*</font></html>"));
+            
+            JPanel jp_ntlm_form = new JPanel(new GridLayout(4, 1, BORDER_WIDTH, BORDER_WIDTH));
+            jp_ntlm_form.add(jtf_auth_domain);
+            jp_ntlm_form.add(jtf_auth_workstation);
+            jp_ntlm_form.add(jtf_auth_ntlm_username);
+            jp_ntlm_form.add(jpf_auth_ntlm_password);
+            
+            JPanel jp_ntlm = new JPanel(new BorderLayout());
+            jp_ntlm.add(jp_ntlm_label, BorderLayout.WEST);
+            jp_ntlm.add(jp_ntlm_form, BorderLayout.CENTER);
+            
+            final JPanel jp_jsp_ntlm = UIUtil.getFlowLayoutPanelLeftAligned(jp_ntlm);
          
+            // The Scrollpane:
             final JScrollPane jsp = new JScrollPane();
             jsp.setViewportView(jp_none);
             jcb_auth_types.addActionListener(new ActionListener() {
@@ -444,11 +467,21 @@ class RESTView extends JPanel implements View {
                     if(selected.equals("None")) {
                         jsp.setViewportView(jp_none);
                     }
-                    else if(selected.equals("BASIC / DIGEST")) {
+                    else if(selected.equals("BASIC")) {
                         jsp.setViewportView(jp_jsp_form);
+                        jtf_auth_host.requestFocus();
+                    }
+                    else if(selected.equals("DIGEST")) {
+                        jsp.setViewportView(jp_jsp_form);
+                        jtf_auth_host.requestFocus();
+                    }
+                    else if(selected.equals("NTLM")) {
+                        jsp.setViewportView(jp_jsp_ntlm);
+                        jtf_auth_domain.requestFocus();
                     }
                     else if(selected.equals("OAuth2 Bearer")) {
                         jsp.setViewportView(jp_jsp_oauth2_bearer);
+                        jtf_auth_oauth2_token.requestFocus();
                     }
                 }
             });
@@ -1130,9 +1163,15 @@ class RESTView extends JPanel implements View {
             authEnabled = true;
         }
         
-        if("BASIC / DIGEST".equals(authSelected)){
+        if("BASIC".equals(authSelected)){
             request.addAuthMethod(HTTPAuthMethod.BASIC);
+        }
+        else if("DIGEST".equals(authSelected)) {
             request.addAuthMethod(HTTPAuthMethod.DIGEST);
+            authEnabled = true;
+        }
+        else if("NTLM".equals(authSelected)) {
+            request.addAuthMethod(HTTPAuthMethod.NTLM);
             authEnabled = true;
         }
         
@@ -1756,10 +1795,10 @@ class RESTView extends JPanel implements View {
         for(HTTPAuthMethod authMethod: authMethods){
             switch(authMethod){
                 case BASIC:
-                    jcb_auth_types.setSelectedItem("BASIC / DIGEST");
+                    jcb_auth_types.setSelectedItem("BASIC");
                     break;
                 case DIGEST:
-                    jcb_auth_types.setSelectedItem("BASIC / DIGEST");
+                    jcb_auth_types.setSelectedItem("DIGEST");
                     break;
             }
         }
