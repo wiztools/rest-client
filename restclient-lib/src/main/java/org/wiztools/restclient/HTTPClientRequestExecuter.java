@@ -17,6 +17,7 @@ import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.NTCredentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.auth.params.AuthPNames;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.params.AuthPolicy;
@@ -31,7 +32,9 @@ import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.auth.AuthSchemeBase;
 import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.auth.DigestScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
@@ -146,7 +149,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                         break;
                 }
             }
-            httpclient.getParams().setParameter("http.auth.scheme-pref", authPrefs);
+            httpclient.getParams().setParameter(AuthPNames.TARGET_AUTH_PREF, authPrefs);
 
             // BASIC & DIGEST:
             if(request.getAuthMethods().contains(HTTPAuthMethod.BASIC)
@@ -158,8 +161,9 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 // preemptive mode
                 if (request.isAuthPreemptive()) {
                     AuthCache authCache = new BasicAuthCache();
-                    BasicScheme basicAuth = new BasicScheme();
-                    authCache.put(new HttpHost(urlHost, urlPort, urlProtocol), basicAuth);
+                    AuthSchemeBase authScheme = request.getAuthMethods().contains(HTTPAuthMethod.BASIC)?
+                            new BasicScheme(): new DigestScheme();
+                    authCache.put(new HttpHost(urlHost, urlPort, urlProtocol), authScheme);
                     BasicHttpContext localcontext = new BasicHttpContext();
                     localcontext.setAttribute(ClientContext.AUTH_CACHE, authCache);
                     httpContext = localcontext;
