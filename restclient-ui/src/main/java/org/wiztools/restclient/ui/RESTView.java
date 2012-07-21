@@ -4,8 +4,10 @@ import com.jidesoft.swing.AutoCompletion;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
@@ -451,9 +453,29 @@ class RESTView extends JPanel implements View {
             jp_ntlm_form.add(jtf_auth_ntlm_username);
             jp_ntlm_form.add(jpf_auth_ntlm_password);
             
+            JButton jb_workstation_name = new JButton(UIUtil.getIconFromClasspath("org/wiztools/restclient/computer.png"));
+            jb_workstation_name.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    try {
+                        final String localHost = InetAddress.getLocalHost().getHostName();
+                        jtf_auth_workstation.setText(localHost);
+                        jtf_auth_workstation.selectAll();
+                        jtf_auth_workstation.requestFocus();
+                    }
+                    catch(UnknownHostException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+            JPanel jp_ntlm_east = new JPanel(new GridLayout(4, 1, BORDER_WIDTH, BORDER_WIDTH));
+            jp_ntlm_east.add(new JPanel());
+            jp_ntlm_east.add(jb_workstation_name);
+            
             JPanel jp_ntlm = new JPanel(new BorderLayout());
             jp_ntlm.add(jp_ntlm_label, BorderLayout.WEST);
             jp_ntlm.add(jp_ntlm_form, BorderLayout.CENTER);
+            jp_ntlm.add(jp_ntlm_east, BorderLayout.EAST);
             
             final JPanel jp_jsp_ntlm = UIUtil.getFlowLayoutPanelLeftAligned(jp_ntlm);
          
@@ -1176,19 +1198,32 @@ class RESTView extends JPanel implements View {
         }
         
         if(authEnabled){
-            // Pass the credentials
-            String uid = jtf_auth_username.getText();
-            char[] pwd = jpf_auth_password.getPassword();
+            { // BASIC & DIGEST:
+                String uid = jtf_auth_username.getText();
+                char[] pwd = jpf_auth_password.getPassword();
+
+                String realm = jtf_auth_realm.getText();
+                String host = jtf_auth_host.getText();
+                boolean preemptive = jcb_auth_preemptive.isSelected();
+
+                request.setAuthPreemptive(preemptive);
+                request.setAuthUsername(uid);
+                request.setAuthPassword(pwd);
+                request.setAuthRealm(realm);
+                request.setAuthHost(host);
+            }
             
-            String realm = jtf_auth_realm.getText();
-            String host = jtf_auth_host.getText();
-            boolean preemptive = jcb_auth_preemptive.isSelected();
-            
-            request.setAuthPreemptive(preemptive);
-            request.setAuthUsername(uid);
-            request.setAuthPassword(pwd);
-            request.setAuthRealm(realm);
-            request.setAuthHost(host);
+            { // NTLM:
+                String domain = jtf_auth_domain.getText();
+                String workstation = jtf_auth_workstation.getText();
+                String uid = jtf_auth_ntlm_username.getText();
+                char[] pwd = jpf_auth_ntlm_password.getPassword();
+
+                request.setAuthDomain(domain);
+                request.setAuthWorkstation(workstation);
+                request.setAuthUsername(uid);
+                request.setAuthPassword(pwd);
+            }
         }
         
         String url = (String)jcb_url.getSelectedItem();
@@ -1589,12 +1624,32 @@ class RESTView extends JPanel implements View {
         }
         
         // Auth check
-        if(request.getAuthMethods().size() > 0){
-            if(StringUtil.isEmpty(request.getAuthUsername())){
-                errors.add("Username is empty.");
+        final List<HTTPAuthMethod> authMethods = request.getAuthMethods();
+        if(!authMethods.isEmpty()){
+            // BASIC & DIGEST:
+            if(authMethods.contains(HTTPAuthMethod.BASIC)
+                    || authMethods.contains(HTTPAuthMethod.DIGEST)) {
+                if(StringUtil.isEmpty(request.getAuthUsername())){
+                    errors.add("Username is empty.");
+                }
+                if(StringUtil.isEmpty(new String(request.getAuthPassword()))){
+                    errors.add("Password is empty.");
+                }
             }
-            if(StringUtil.isEmpty(new String(request.getAuthPassword()))){
-                errors.add("Password is empty.");
+            // NTLM:
+            if(authMethods.contains(HTTPAuthMethod.NTLM)) {
+                if(StringUtil.isEmpty(request.getAuthDomain())){
+                    errors.add("Domain is empty.");
+                }
+                if(StringUtil.isEmpty(new String(request.getAuthWorkstation()))){
+                    errors.add("Workstation is empty.");
+                }
+                if(StringUtil.isEmpty(request.getAuthUsername())){
+                    errors.add("Username is empty.");
+                }
+                if(StringUtil.isEmpty(new String(request.getAuthPassword()))){
+                    errors.add("Password is empty.");
+                }
             }
         }
         
