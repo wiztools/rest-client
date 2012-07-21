@@ -259,6 +259,8 @@ public final class RequestBean implements Request{
         cloned.setAuthPreemptive(authPreemptive);
         cloned.setAuthRealm(authRealm);
         cloned.setAuthUsername(authUsername);
+        cloned.setAuthDomain(authDomain);
+        cloned.setAuthWorkstation(authWorkstation);
         cloned.setSslTrustStore(sslTrustStore);
         cloned.setSslTrustStorePassword(
                 Arrays.copyOf(sslTrustStorePassword, sslTrustStorePassword.length));
