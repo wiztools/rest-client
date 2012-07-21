@@ -1641,7 +1641,7 @@ class RESTView extends JPanel implements View {
                 if(StringUtil.isEmpty(request.getAuthDomain())){
                     errors.add("Domain is empty.");
                 }
-                if(StringUtil.isEmpty(new String(request.getAuthWorkstation()))){
+                if(StringUtil.isEmpty(request.getAuthWorkstation())){
                     errors.add("Workstation is empty.");
                 }
                 if(StringUtil.isEmpty(request.getAuthUsername())){
