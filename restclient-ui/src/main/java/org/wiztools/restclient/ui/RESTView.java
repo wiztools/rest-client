@@ -80,7 +80,7 @@ class RESTView extends JPanel implements View {
     private RunTestDialog jd_runTestDialog;
     
     // Authentication resources
-    private JComboBox jcb_auth_types = new JComboBox(new String[]{"None", "BASIC", "DIGEST", "NTLM", "OAuth2 Bearer"});
+    private JComboBox jcb_auth_types = new JComboBox(AuthHelper.getAll());
     private JCheckBox jcb_auth_preemptive = new JCheckBox();
     private static final int auth_text_size = 20;
     private JTextField jtf_auth_host = new JTextField(auth_text_size);
@@ -486,22 +486,18 @@ class RESTView extends JPanel implements View {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
                     final String selected = (String) jcb_auth_types.getSelectedItem();
-                    if(selected.equals("None")) {
+                    if(AuthHelper.isNone(selected)) {
                         jsp.setViewportView(jp_none);
                     }
-                    else if(selected.equals("BASIC")) {
+                    else if(AuthHelper.isBasicOrDigest(selected)) {
                         jsp.setViewportView(jp_jsp_form);
                         jtf_auth_host.requestFocus();
                     }
-                    else if(selected.equals("DIGEST")) {
-                        jsp.setViewportView(jp_jsp_form);
-                        jtf_auth_host.requestFocus();
-                    }
-                    else if(selected.equals("NTLM")) {
+                    else if(AuthHelper.isNtlm(selected)) {
                         jsp.setViewportView(jp_jsp_ntlm);
                         jtf_auth_domain.requestFocus();
                     }
-                    else if(selected.equals("OAuth2 Bearer")) {
+                    else if(AuthHelper.isBearer(selected)) {
                         jsp.setViewportView(jp_jsp_oauth2_bearer);
                         jtf_auth_bearer_token.requestFocus();
                     }
@@ -1186,13 +1182,13 @@ class RESTView extends JPanel implements View {
         }
         
         if(authEnabled) {
-            if("BASIC".equals(authSelected)){
+            if(AuthHelper.isBasic(authSelected)){
                 request.addAuthMethod(HTTPAuthMethod.BASIC);
             }
-            else if("DIGEST".equals(authSelected)) {
+            else if(AuthHelper.isDigest(authSelected)) {
                 request.addAuthMethod(HTTPAuthMethod.DIGEST);
             }
-            else if("NTLM".equals(authSelected)) {
+            else if(AuthHelper.isNtlm(authSelected)) {
                 request.addAuthMethod(HTTPAuthMethod.NTLM);
                 
                 String domain = jtf_auth_domain.getText();
@@ -1205,28 +1201,26 @@ class RESTView extends JPanel implements View {
                 request.setAuthUsername(uid);
                 request.setAuthPassword(pwd);
             }
-            else if("OAuth2 Bearer".equals(authSelected)) {
+            else if(AuthHelper.isBearer(authSelected)) {
                 request.addAuthMethod(HTTPAuthMethod.OAUTH_20_BEARER);
                 
                 request.setAuthBearerToken(jtf_auth_bearer_token.getText());
             }
-        }
-        
-        boolean isBasicDigestAuthSelected = "BASIC".equals(authSelected) || "DIGEST".equals(authSelected);
-        
-        if(isBasicDigestAuthSelected){ // BASIC or DIGEST:
-            String uid = jtf_auth_username.getText();
-            char[] pwd = jpf_auth_password.getPassword();
+            
+            if(AuthHelper.isBasicOrDigest(authSelected)){ // BASIC or DIGEST:
+                String uid = jtf_auth_username.getText();
+                char[] pwd = jpf_auth_password.getPassword();
 
-            String realm = jtf_auth_realm.getText();
-            String host = jtf_auth_host.getText();
-            boolean preemptive = jcb_auth_preemptive.isSelected();
+                String realm = jtf_auth_realm.getText();
+                String host = jtf_auth_host.getText();
+                boolean preemptive = jcb_auth_preemptive.isSelected();
 
-            request.setAuthPreemptive(preemptive);
-            request.setAuthUsername(uid);
-            request.setAuthPassword(pwd);
-            request.setAuthRealm(realm);
-            request.setAuthHost(host);
+                request.setAuthPreemptive(preemptive);
+                request.setAuthUsername(uid);
+                request.setAuthPassword(pwd);
+                request.setAuthRealm(realm);
+                request.setAuthHost(host);
+            }
         }
         
         String url = (String)jcb_url.getSelectedItem();
@@ -1630,8 +1624,7 @@ class RESTView extends JPanel implements View {
         final List<HTTPAuthMethod> authMethods = request.getAuthMethods();
         if(!authMethods.isEmpty()){
             // BASIC & DIGEST:
-            if(authMethods.contains(HTTPAuthMethod.BASIC)
-                    || authMethods.contains(HTTPAuthMethod.DIGEST)) {
+            if(AuthHelper.isBasicOrDigest(authMethods)) {
                 if(StringUtil.isEmpty(request.getAuthUsername())){
                     errors.add("Username is empty.");
                 }
@@ -1640,7 +1633,7 @@ class RESTView extends JPanel implements View {
                 }
             }
             // NTLM:
-            if(authMethods.contains(HTTPAuthMethod.NTLM)) {
+            if(AuthHelper.isNtlm(authMethods)) {
                 if(StringUtil.isEmpty(request.getAuthDomain())){
                     errors.add("Domain is empty.");
                 }
@@ -1655,7 +1648,7 @@ class RESTView extends JPanel implements View {
                 }
             }
             // OAuth2 Bearer
-            if(authMethods.contains(HTTPAuthMethod.OAUTH_20_BEARER)) {
+            if(AuthHelper.isBearer(authMethods)) {
                 if(StringUtil.isEmpty(request.getAuthBearerToken())) {
                     errors.add("OAuth2 Bearer Token is empty.");
                 }
@@ -1864,19 +1857,36 @@ class RESTView extends JPanel implements View {
         for(HTTPAuthMethod authMethod: authMethods){
             switch(authMethod){
                 case BASIC:
-                    jcb_auth_types.setSelectedItem("BASIC");
+                    jcb_auth_types.setSelectedItem(AuthHelper.BASIC);
                     break;
                 case DIGEST:
-                    jcb_auth_types.setSelectedItem("DIGEST");
+                    jcb_auth_types.setSelectedItem(AuthHelper.DIGEST);
+                    break;
+                case NTLM:
+                    jcb_auth_types.setSelectedItem(AuthHelper.NTLM);
+                    break;
+                case OAUTH_20_BEARER:
+                    jcb_auth_types.setSelectedItem(AuthHelper.OAUTH2_BEARER);
                     break;
             }
         }
-        jcb_auth_preemptive.setSelected(request.isAuthPreemptive());
-        jtf_auth_host.setText(StringUtil.getNullStrIfNull(request.getAuthHost()));
-        jtf_auth_realm.setText(StringUtil.getNullStrIfNull(request.getAuthRealm()));
-        jtf_auth_username.setText(StringUtil.getNullStrIfNull(request.getAuthUsername()));
-        if(request.getAuthPassword() != null){
-            jpf_auth_password.setText(new String(request.getAuthPassword()));
+        if(AuthHelper.isBasicOrDigest(authMethods)) {
+            jcb_auth_preemptive.setSelected(request.isAuthPreemptive());
+            jtf_auth_host.setText(StringUtil.getNullStrIfNull(request.getAuthHost()));
+            jtf_auth_realm.setText(StringUtil.getNullStrIfNull(request.getAuthRealm()));
+            jtf_auth_username.setText(StringUtil.getNullStrIfNull(request.getAuthUsername()));
+            if(request.getAuthPassword() != null){
+                jpf_auth_password.setText(new String(request.getAuthPassword()));
+            }
+        }
+        if(AuthHelper.isNtlm(authMethods)) {
+            jtf_auth_domain.setText(request.getAuthDomain());
+            jtf_auth_workstation.setText(request.getAuthWorkstation());
+            jtf_auth_ntlm_username.setText(request.getAuthUsername());
+            jpf_auth_ntlm_password.setText(new String(request.getAuthPassword()));
+        }
+        if(AuthHelper.isBearer(authMethods)) {
+            jtf_auth_bearer_token.setText(request.getAuthBearerToken());
         }
 
         // SSL
