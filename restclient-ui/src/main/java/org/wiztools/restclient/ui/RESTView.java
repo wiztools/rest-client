@@ -1692,6 +1692,7 @@ class RESTView extends JPanel implements View {
         setUIReqBodyEnabled(false);
         
         // Auth
+        jcb_auth_types.setSelectedItem(AuthHelper.NONE);
         jcb_auth_preemptive.setSelected(true);
         jtf_auth_host.setText("");
         jtf_auth_realm.setText("");
