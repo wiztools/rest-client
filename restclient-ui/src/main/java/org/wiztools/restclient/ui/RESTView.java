@@ -1194,12 +1194,25 @@ class RESTView extends JPanel implements View {
             }
             else if("NTLM".equals(authSelected)) {
                 request.addAuthMethod(HTTPAuthMethod.NTLM);
+                
+                String domain = jtf_auth_domain.getText();
+                String workstation = jtf_auth_workstation.getText();
+                String uid = jtf_auth_ntlm_username.getText();
+                char[] pwd = jpf_auth_ntlm_password.getPassword();
+
+                request.setAuthDomain(domain);
+                request.setAuthWorkstation(workstation);
+                request.setAuthUsername(uid);
+                request.setAuthPassword(pwd);
+            }
+            else if("OAuth2 Bearer".equals(authSelected)) {
+                request.addAuthMethod(HTTPAuthMethod.OAUTH_20_BEARER);
+                
+                request.setAuthBearerToken(jtf_auth_oauth2_token.getText());
             }
         }
         
         boolean isBasicDigestAuthSelected = "BASIC".equals(authSelected) || "DIGEST".equals(authSelected);
-        boolean isNtlmAuthSelected = "NTLM".equals(authSelected);
-        
         
         if(isBasicDigestAuthSelected){ // BASIC or DIGEST:
             String uid = jtf_auth_username.getText();
@@ -1214,17 +1227,6 @@ class RESTView extends JPanel implements View {
             request.setAuthPassword(pwd);
             request.setAuthRealm(realm);
             request.setAuthHost(host);
-        }
-        if(isNtlmAuthSelected) { // NTLM:
-            String domain = jtf_auth_domain.getText();
-            String workstation = jtf_auth_workstation.getText();
-            String uid = jtf_auth_ntlm_username.getText();
-            char[] pwd = jpf_auth_ntlm_password.getPassword();
-
-            request.setAuthDomain(domain);
-            request.setAuthWorkstation(workstation);
-            request.setAuthUsername(uid);
-            request.setAuthPassword(pwd);
         }
         
         String url = (String)jcb_url.getSelectedItem();
@@ -1650,6 +1652,12 @@ class RESTView extends JPanel implements View {
                 }
                 if(StringUtil.isEmpty(new String(request.getAuthPassword()))){
                     errors.add("Password is empty.");
+                }
+            }
+            // OAuth2 Bearer
+            if(authMethods.contains(HTTPAuthMethod.OAUTH_20_BEARER)) {
+                if(StringUtil.isEmpty(request.getAuthBearerToken())) {
+                    errors.add("OAuth2 Bearer Token is empty.");
                 }
             }
         }

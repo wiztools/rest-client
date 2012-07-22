@@ -20,7 +20,7 @@ public interface Request extends Cloneable {
 
     String getAuthUsername();
     
-    String getAuthToken();
+    String getAuthBearerToken();
     
     String getAuthWorkstation();
     

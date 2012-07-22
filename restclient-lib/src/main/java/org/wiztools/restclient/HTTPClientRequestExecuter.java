@@ -126,13 +126,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         proxy.release();
 
         // HTTP Authentication
-        boolean authEnabled = request.getAuthMethods().size() > 0 ? true : false;
+        boolean authEnabled = !request.getAuthMethods().isEmpty();
         if (authEnabled) {
-            String uid = request.getAuthUsername();
-            String pwd = new String(request.getAuthPassword());
-            String host = StringUtil.isEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
-            String realm = StringUtil.isEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
-
             // Type of authentication
             List<String> authPrefs = new ArrayList<String>(2);
             List<HTTPAuthMethod> authMethods = request.getAuthMethods();
@@ -154,6 +149,11 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             // BASIC & DIGEST:
             if(request.getAuthMethods().contains(HTTPAuthMethod.BASIC)
                     || request.getAuthMethods().contains(HTTPAuthMethod.DIGEST)) {
+                String uid = request.getAuthUsername();
+                String pwd = new String(request.getAuthPassword());
+                String host = StringUtil.isEmpty(request.getAuthHost()) ? urlHost : request.getAuthHost();
+                String realm = StringUtil.isEmpty(request.getAuthRealm()) ? AuthScope.ANY_REALM : request.getAuthRealm();
+            
                 httpclient.getCredentialsProvider().setCredentials(
                     new AuthScope(host, urlPort, realm),
                     new UsernamePasswordCredentials(uid, pwd));
@@ -172,13 +172,19 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             
             // NTLM:
             if(request.getAuthMethods().contains(HTTPAuthMethod.NTLM)) {
+                String uid = request.getAuthUsername();
+                String pwd = new String(request.getAuthPassword());
+                
                 httpclient.getCredentialsProvider().setCredentials(
                     AuthScope.ANY,
                     new NTCredentials(uid, pwd,
                         request.getAuthWorkstation(), request.getAuthDomain()));
             }
 
-            
+            // OAuth2 Bearer
+            if(request.getAuthMethods().contains(HTTPAuthMethod.OAUTH_20_BEARER)) {
+                // Logic written in same place where Header is processed--a little down!
+            }
         }
 
         AbstractHttpMessage method = null;
@@ -218,6 +224,15 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             for (String key : header_data.keySet()) {
                 for(String value: header_data.get(key)) {
                     Header header = new BasicHeader(key, value);
+                    method.addHeader(header);
+                }
+            }
+            
+            // OAuth 2 Bearer Authentication:
+            if(request.getAuthMethods().contains(HTTPAuthMethod.OAUTH_20_BEARER)) {
+                final String bearerToken = request.getAuthBearerToken();
+                if(StringUtil.isNotEmpty(bearerToken)) {
+                    Header header = new BasicHeader("Authorization", "Bearer " + bearerToken);
                     method.addHeader(header);
                 }
             }

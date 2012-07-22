@@ -149,7 +149,7 @@ public final class XMLUtil {
                         }
                     }
                     // creating auth-token child element
-                    String authToken = bean.getAuthToken();
+                    String authToken = bean.getAuthBearerToken();
                     if(StringUtil.isNotEmpty(authToken)) {
                         Element e = new Element("auth-token");
                         e.appendChild(authToken);
@@ -353,7 +353,7 @@ public final class XMLUtil {
                 requestBean.setAuthPassword(password.toCharArray());
             }
             else if("auth-token".equals(nodeName)) {
-                requestBean.setAuthToken(tNode.getValue());
+                requestBean.setAuthBearerToken(tNode.getValue());
             }
             else if ("ssl-truststore".equals(nodeName)) {
                 String sslTrustStore = tNode.getValue();

@@ -22,7 +22,7 @@ public class RoRequestBean implements Request {
     private final char[] authPassword;
     private String authDomain;
     private String authWorkstation;
-    private final String authToken;
+    private final String authBearerToken;
     private final String sslTrustStore;
     private final char[] sslTrustStorePassword;
     private final String sslKeyStore;
@@ -94,8 +94,8 @@ public class RoRequestBean implements Request {
     }
 
     @Override
-    public String getAuthToken() {
-        return authToken;
+    public String getAuthBearerToken() {
+        return authBearerToken;
     }
     
     @Override
@@ -156,7 +156,7 @@ public class RoRequestBean implements Request {
         authPassword = request.getAuthPassword();
         authWorkstation = request.getAuthWorkstation();
         authDomain = request.getAuthDomain();
-        authToken = request.getAuthToken();
+        authBearerToken = request.getAuthBearerToken();
         sslTrustStore = request.getSslTrustStore();
         sslTrustStorePassword = request.getSslTrustStorePassword();
         sslKeyStore = request.getSslKeyStore();

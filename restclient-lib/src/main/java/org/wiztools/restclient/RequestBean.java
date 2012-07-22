@@ -25,7 +25,7 @@ public final class RequestBean implements Request{
     private char[] authPassword;
     private String authDomain;
     private String authWorkstation;
-    private String authToken;
+    private String authBearerToken;
     private MultiValueMap<String, String> headers;
     private ReqEntity body;
     private String testScript;
@@ -157,12 +157,12 @@ public final class RequestBean implements Request{
     }
 
     @Override
-    public String getAuthToken() {
-        return authToken;
+    public String getAuthBearerToken() {
+        return authBearerToken;
     }
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+    public void setAuthBearerToken(String authBearerToken) {
+        this.authBearerToken = authBearerToken;
     }
 
     @Override
@@ -325,7 +325,7 @@ public final class RequestBean implements Request{
         if ((this.authWorkstation == null) ? (other.authWorkstation != null) : !this.authWorkstation.equals(other.authWorkstation)) {
             return false;
         }
-        if ((this.authToken == null) ? (other.authToken != null) : !this.authToken.equals(other.authToken)) {
+        if ((this.authBearerToken == null) ? (other.authBearerToken != null) : !this.authBearerToken.equals(other.authBearerToken)) {
             return false;
         }
         if (this.headers != other.headers && (this.headers == null || !this.headers.equals(other.headers))) {
@@ -380,7 +380,7 @@ public final class RequestBean implements Request{
         hash = 59 * hash + Arrays.hashCode(this.authPassword);
         hash = 59 * hash + (this.authDomain != null ? this.authDomain.hashCode() : 0);
         hash = 59 * hash + (this.authWorkstation != null ? this.authWorkstation.hashCode() : 0);
-        hash = 59 * hash + (this.authToken != null ? this.authToken.hashCode() : 0);
+        hash = 59 * hash + (this.authBearerToken != null ? this.authBearerToken.hashCode() : 0);
         hash = 59 * hash + (this.headers != null ? this.headers.hashCode() : 0);
         hash = 59 * hash + (this.body != null ? this.body.hashCode() : 0);
         hash = 59 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
