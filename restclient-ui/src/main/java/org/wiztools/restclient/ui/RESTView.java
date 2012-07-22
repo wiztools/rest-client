@@ -91,7 +91,7 @@ class RESTView extends JPanel implements View {
     private JPasswordField jpf_auth_password = new JPasswordField(auth_text_size);
     private JTextField jtf_auth_ntlm_username = new JTextField(auth_text_size);
     private JPasswordField jpf_auth_ntlm_password = new JPasswordField(auth_text_size);
-    private JTextField jtf_auth_oauth2_token = new JTextField(auth_text_size);
+    private JTextField jtf_auth_bearer_token = new JTextField(auth_text_size);
     
     // SSL - trust store
     private JTextField jtf_ssl_truststore_file = new JTextField(auth_text_size);
@@ -437,7 +437,7 @@ class RESTView extends JPanel implements View {
             JPanel jp_oauth2_bearer = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JLabel jl_oauth2_bearer = new JLabel("Bearer Token: ");
             jp_oauth2_bearer.add(jl_oauth2_bearer);
-            jp_oauth2_bearer.add(jtf_auth_oauth2_token);
+            jp_oauth2_bearer.add(jtf_auth_bearer_token);
             final JPanel jp_jsp_oauth2_bearer = UIUtil.getFlowLayoutPanelLeftAligned(jp_oauth2_bearer);
             
             // NTLM Panel:
@@ -503,7 +503,7 @@ class RESTView extends JPanel implements View {
                     }
                     else if(selected.equals("OAuth2 Bearer")) {
                         jsp.setViewportView(jp_jsp_oauth2_bearer);
-                        jtf_auth_oauth2_token.requestFocus();
+                        jtf_auth_bearer_token.requestFocus();
                     }
                 }
             });
@@ -1208,7 +1208,7 @@ class RESTView extends JPanel implements View {
             else if("OAuth2 Bearer".equals(authSelected)) {
                 request.addAuthMethod(HTTPAuthMethod.OAUTH_20_BEARER);
                 
-                request.setAuthBearerToken(jtf_auth_oauth2_token.getText());
+                request.setAuthBearerToken(jtf_auth_bearer_token.getText());
             }
         }
         
@@ -1704,6 +1704,11 @@ class RESTView extends JPanel implements View {
         jtf_auth_realm.setText("");
         jtf_auth_username.setText("");
         jpf_auth_password.setText("");
+        jtf_auth_ntlm_username.setText("");
+        jpf_auth_ntlm_password.setText("");
+        jtf_auth_domain.setText("");
+        jtf_auth_workstation.setText("");
+        jtf_auth_bearer_token.setText("");
         
         // SSL
         jtf_ssl_truststore_file.setText("");
