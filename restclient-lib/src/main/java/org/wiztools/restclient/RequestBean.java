@@ -408,6 +408,8 @@ public final class RequestBean implements Request{
         sb.append(authPreemptive).append(", ");
         sb.append(authHost).append(", ");
         sb.append(authRealm).append(", ");
+        sb.append(authDomain).append(", ");
+        sb.append(authWorkstation).append(", ");
         sb.append(authUsername).append(", ");
         sb.append(authPassword==null?"null": new String(authPassword).replaceAll(".", "X")).append(", ");
         sb.append(sslTrustStore).append(", ");
