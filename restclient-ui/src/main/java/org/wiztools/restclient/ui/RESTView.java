@@ -1185,45 +1185,46 @@ class RESTView extends JPanel implements View {
             authEnabled = true;
         }
         
-        if("BASIC".equals(authSelected)){
-            request.addAuthMethod(HTTPAuthMethod.BASIC);
-        }
-        else if("DIGEST".equals(authSelected)) {
-            request.addAuthMethod(HTTPAuthMethod.DIGEST);
-            authEnabled = true;
-        }
-        else if("NTLM".equals(authSelected)) {
-            request.addAuthMethod(HTTPAuthMethod.NTLM);
-            authEnabled = true;
+        if(authEnabled) {
+            if("BASIC".equals(authSelected)){
+                request.addAuthMethod(HTTPAuthMethod.BASIC);
+            }
+            else if("DIGEST".equals(authSelected)) {
+                request.addAuthMethod(HTTPAuthMethod.DIGEST);
+            }
+            else if("NTLM".equals(authSelected)) {
+                request.addAuthMethod(HTTPAuthMethod.NTLM);
+            }
         }
         
-        if(authEnabled){
-            { // BASIC & DIGEST:
-                String uid = jtf_auth_username.getText();
-                char[] pwd = jpf_auth_password.getPassword();
+        boolean isBasicDigestAuthSelected = "BASIC".equals(authSelected) || "DIGEST".equals(authSelected);
+        boolean isNtlmAuthSelected = "NTLM".equals(authSelected);
+        
+        
+        if(isBasicDigestAuthSelected){ // BASIC or DIGEST:
+            String uid = jtf_auth_username.getText();
+            char[] pwd = jpf_auth_password.getPassword();
 
-                String realm = jtf_auth_realm.getText();
-                String host = jtf_auth_host.getText();
-                boolean preemptive = jcb_auth_preemptive.isSelected();
+            String realm = jtf_auth_realm.getText();
+            String host = jtf_auth_host.getText();
+            boolean preemptive = jcb_auth_preemptive.isSelected();
 
-                request.setAuthPreemptive(preemptive);
-                request.setAuthUsername(uid);
-                request.setAuthPassword(pwd);
-                request.setAuthRealm(realm);
-                request.setAuthHost(host);
-            }
-            
-            { // NTLM:
-                String domain = jtf_auth_domain.getText();
-                String workstation = jtf_auth_workstation.getText();
-                String uid = jtf_auth_ntlm_username.getText();
-                char[] pwd = jpf_auth_ntlm_password.getPassword();
+            request.setAuthPreemptive(preemptive);
+            request.setAuthUsername(uid);
+            request.setAuthPassword(pwd);
+            request.setAuthRealm(realm);
+            request.setAuthHost(host);
+        }
+        if(isNtlmAuthSelected) { // NTLM:
+            String domain = jtf_auth_domain.getText();
+            String workstation = jtf_auth_workstation.getText();
+            String uid = jtf_auth_ntlm_username.getText();
+            char[] pwd = jpf_auth_ntlm_password.getPassword();
 
-                request.setAuthDomain(domain);
-                request.setAuthWorkstation(workstation);
-                request.setAuthUsername(uid);
-                request.setAuthPassword(pwd);
-            }
+            request.setAuthDomain(domain);
+            request.setAuthWorkstation(workstation);
+            request.setAuthUsername(uid);
+            request.setAuthPassword(pwd);
         }
         
         String url = (String)jcb_url.getSelectedItem();
