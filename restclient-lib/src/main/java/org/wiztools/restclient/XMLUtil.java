@@ -109,7 +109,9 @@ public final class XMLUtil {
                         reqChildElement.appendChild(e);
                     }
 
-                    { // creating the auth-preemptive child element
+                    // creating the auth-preemptive child element
+                    if(authMethods.contains(HTTPAuthMethod.BASIC)
+                            || authMethods.contains(HTTPAuthMethod.DIGEST)) {
                         Element e = new Element("auth-preemptive");
                         e.appendChild(String.valueOf(bean.isAuthPreemptive()));
                         reqChildElement.appendChild(e);
@@ -148,12 +150,29 @@ public final class XMLUtil {
                             reqChildElement.appendChild(e);
                         }
                     }
-                    // creating auth-token child element
-                    String authToken = bean.getAuthBearerToken();
-                    if(StringUtil.isNotEmpty(authToken)) {
-                        Element e = new Element("auth-token");
-                        e.appendChild(authToken);
+                    // auth-domain
+                    String authDomain = bean.getAuthDomain();
+                    if(StringUtil.isNotEmpty(authDomain)) {
+                        Element e = new Element("auth-domain");
+                        e.appendChild(authDomain);
                         reqChildElement.appendChild(e);
+                    }
+                    // auth-workstation
+                    String authWorkstation = bean.getAuthWorkstation();
+                    if(StringUtil.isNotEmpty(authWorkstation)) {
+                        Element e = new Element("auth-workstation");
+                        e.appendChild(authWorkstation);
+                        reqChildElement.appendChild(e);
+                    }
+
+                    // creating auth-token child element
+                    if(authMethods.contains(HTTPAuthMethod.OAUTH_20_BEARER)) {
+                        String authToken = bean.getAuthBearerToken();
+                        if(StringUtil.isNotEmpty(authToken)) {
+                            Element e = new Element("auth-bearer-token");
+                            e.appendChild(authToken);
+                            reqChildElement.appendChild(e);
+                        }
                     }
                 }
             }
@@ -345,6 +364,12 @@ public final class XMLUtil {
             else if ("auth-realm".equals(nodeName)) {
                 requestBean.setAuthRealm(tNode.getValue());
             }
+            else if("auth-domain".equals(nodeName)) {
+                requestBean.setAuthDomain(tNode.getValue());
+            }
+            else if("auth-workstation".equals(nodeName)) {
+                requestBean.setAuthWorkstation(tNode.getValue());
+            }
             else if ("auth-username".equals(nodeName)) {
                 requestBean.setAuthUsername(tNode.getValue());
             }
@@ -352,7 +377,7 @@ public final class XMLUtil {
                 String password = base64decode(rcVersion, tNode.getValue());
                 requestBean.setAuthPassword(password.toCharArray());
             }
-            else if("auth-token".equals(nodeName)) {
+            else if("auth-bearer-token".equals(nodeName)) {
                 requestBean.setAuthBearerToken(tNode.getValue());
             }
             else if ("ssl-truststore".equals(nodeName)) {
