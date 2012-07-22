@@ -218,21 +218,21 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                     break;
             }
             method.setParams(new BasicHttpParams().setParameter(urlStr, url));
-
-            // Get request headers
-            MultiValueMap<String, String> header_data = request.getHeaders();
-            for (String key : header_data.keySet()) {
-                for(String value: header_data.get(key)) {
-                    Header header = new BasicHeader(key, value);
-                    method.addHeader(header);
-                }
-            }
             
             // OAuth 2 Bearer Authentication:
             if(request.getAuthMethods().contains(HTTPAuthMethod.OAUTH_20_BEARER)) {
                 final String bearerToken = request.getAuthBearerToken();
                 if(StringUtil.isNotEmpty(bearerToken)) {
                     Header header = new BasicHeader("Authorization", "Bearer " + bearerToken);
+                    method.addHeader(header);
+                }
+            }
+
+            // Get request headers
+            MultiValueMap<String, String> header_data = request.getHeaders();
+            for (String key : header_data.keySet()) {
+                for(String value: header_data.get(key)) {
+                    Header header = new BasicHeader(key, value);
                     method.addHeader(header);
                 }
             }
