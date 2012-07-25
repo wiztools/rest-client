@@ -49,6 +49,7 @@ import org.apache.http.util.EntityUtils;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.http.EntityEnclosingDelete;
 
 /**
  *
@@ -205,7 +206,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                     method = new HttpPatch(urlStr);
                     break;
                 case DELETE:
-                    method = new HttpDelete(urlStr);
+                    method = new EntityEnclosingDelete(urlStr);
                     break;
                 case HEAD:
                     method = new HttpHead(urlStr);
@@ -237,9 +238,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 }
             }
 
-            // POST/PUT/PATCH method specific logic
+            // POST/PUT/PATCH/DELETE method specific logic
             if (method instanceof HttpEntityEnclosingRequest) {
-
                 HttpEntityEnclosingRequest eeMethod = (HttpEntityEnclosingRequest) method;
 
                 // Create and set RequestEntity
