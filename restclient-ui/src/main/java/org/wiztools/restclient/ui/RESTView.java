@@ -244,9 +244,7 @@ class RESTView extends JPanel implements View {
         ActionListener jrbAL = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                if(jrb_req_post.isSelected()
-                        || jrb_req_put.isSelected()
-                        || jrb_req_patch.isSelected()){
+                if(isSelectedMethodWithEntityBody()){
                     setUIReqBodyEnabled(true);
                 }
                 else{
@@ -1266,9 +1264,7 @@ class RESTView extends JPanel implements View {
         }
         
         // EntityEnclosing method specific
-        if(jrb_req_post.isSelected()
-                || jrb_req_put.isSelected()
-                || jrb_req_patch.isSelected()){
+        if(isSelectedMethodWithEntityBody()){
             // Get request body
             String req_body = se_req_body.getText();
             if(!StringUtil.isEmpty(req_body)){
@@ -1585,6 +1581,13 @@ class RESTView extends JPanel implements View {
         }
     }
     
+    private boolean isSelectedMethodWithEntityBody() {
+        return jrb_req_post.isSelected()
+                || jrb_req_put.isSelected()
+                || jrb_req_patch.isSelected()
+                || jrb_req_delete.isSelected();
+    }
+    
     private void setUIReqBodyEnabled(final boolean boo){
         se_req_body.getEditorComponent().setEnabled(boo);
         jb_body_content_type.setEnabled(boo);
@@ -1842,9 +1845,7 @@ class RESTView extends JPanel implements View {
         // Body
         ReqEntity body = request.getBody();
         if(body != null){
-            if(jrb_req_post.isSelected()
-                    || jrb_req_put.isSelected()
-                    || jrb_req_patch.isSelected()){
+            if(isSelectedMethodWithEntityBody()){
                 setUIReqBodyEnabled(true);
             }
             jd_body_content_type.setContentType(body.getContentType());
