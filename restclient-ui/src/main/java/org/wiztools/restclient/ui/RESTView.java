@@ -244,7 +244,7 @@ class RESTView extends JPanel implements View {
         ActionListener jrbAL = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                if(isSelectedMethodWithEntityBody()){
+                if(doesSelectedMethodSupportEntityBody()){
                     setUIReqBodyEnabled(true);
                 }
                 else{
@@ -1264,7 +1264,7 @@ class RESTView extends JPanel implements View {
         }
         
         // EntityEnclosing method specific
-        if(isSelectedMethodWithEntityBody()){
+        if(doesSelectedMethodSupportEntityBody()){
             // Get request body
             String req_body = se_req_body.getText();
             if(!StringUtil.isEmpty(req_body)){
@@ -1581,7 +1581,7 @@ class RESTView extends JPanel implements View {
         }
     }
     
-    private boolean isSelectedMethodWithEntityBody() {
+    private boolean doesSelectedMethodSupportEntityBody() {
         return jrb_req_post.isSelected()
                 || jrb_req_put.isSelected()
                 || jrb_req_patch.isSelected()
@@ -1845,7 +1845,7 @@ class RESTView extends JPanel implements View {
         // Body
         ReqEntity body = request.getBody();
         if(body != null){
-            if(isSelectedMethodWithEntityBody()){
+            if(doesSelectedMethodSupportEntityBody()){
                 setUIReqBodyEnabled(true);
             }
             jd_body_content_type.setContentType(body.getContentType());
