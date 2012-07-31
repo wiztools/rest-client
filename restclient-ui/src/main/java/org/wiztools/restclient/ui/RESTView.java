@@ -4,10 +4,7 @@ import com.jidesoft.swing.AutoCompletion;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
@@ -139,6 +136,7 @@ class RESTView extends JPanel implements View {
     private TestResultPanel jp_testResultPanel = new TestResultPanel();
 
     private TwoColumnTablePanel jp_2col_req_headers;
+    private TwoColumnTablePanel jp_2col_req_cookies;
     
     private ParameterDialog jd_req_paramDialog;
     
@@ -281,6 +279,10 @@ class RESTView extends JPanel implements View {
         // Headers Tab
         jp_2col_req_headers = new TwoColumnTablePanel(new String[]{"Header", "Value"}, rest_ui);
         jtp.addTab("Headers", jp_2col_req_headers);
+        
+        // Cookies Tab
+        jp_2col_req_cookies = new TwoColumnTablePanel(new String[]{"Cookie", "Value"}, rest_ui);
+        jtp.addTab("Cookies", jp_2col_req_cookies);
         
         // Body Tab
         setUIReqBodyEnabled(false); // disable control by default
@@ -1253,13 +1255,31 @@ class RESTView extends JPanel implements View {
             request.setMethod(HTTPMethod.TRACE);
         }
         
-        // Get request headers
-        Object[][] header_data = jp_2col_req_headers.getTableModel().getData();
-        if(header_data.length > 0){
-            for(int i=0; i<header_data.length; i++){
-                String key = (String)header_data[i][0];
-                String value = (String)header_data[i][1];
-                request.addHeader(key, value);
+        { // Get request headers
+            Object[][] header_data = jp_2col_req_headers.getTableModel().getData();
+            if(header_data.length > 0){
+                for(int i=0; i<header_data.length; i++){
+                    String key = (String)header_data[i][0];
+                    String value = (String)header_data[i][1];
+                    request.addHeader(key, value);
+                }
+            }
+        }
+        
+        { // Cookies
+            Object[][] cookie_data = jp_2col_req_cookies.getTableModel().getData();
+            if(cookie_data.length > 0) {
+                for(int i=0; i<cookie_data.length; i++){
+                    String key = (String)cookie_data[i][0];
+                    String value = (String)cookie_data[i][1];
+                    try {
+                        HttpCookie cookie = new HttpCookie(key, value);
+                        request.addCookie(cookie);
+                    }
+                    catch(IllegalArgumentException ex) {
+                        doError(Util.getStackTrace(ex));
+                    }
+                }
             }
         }
         
@@ -1688,6 +1708,9 @@ class RESTView extends JPanel implements View {
         // Headers
         jp_2col_req_headers.getTableModel().setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
         
+        // Cookies
+        jp_2col_req_cookies.getTableModel().setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
+        
         // Body
         jd_body_content_type.setContentType(BodyContentTypeDialog.DEFAULT_CONTENT_TYPE);
         jd_body_content_type.setCharSet(BodyContentTypeDialog.DEFAULT_CHARSET);
@@ -1841,6 +1864,14 @@ class RESTView extends JPanel implements View {
         // Headers
         MultiValueMap<String, String> headers = request.getHeaders();
         jp_2col_req_headers.getTableModel().setData(headers);
+        
+        // Cookies
+        List<HttpCookie> cookies = request.getCookies();
+        MultiValueMap<String, String> cookiesMap = new MultiValueMapArrayList<String, String>();
+        for(HttpCookie cookie: cookies) {
+            cookiesMap.put(cookie.getName(), cookie.getValue());
+        }
+        jp_2col_req_cookies.getTableModel().setData(cookiesMap);
 
         // Body
         ReqEntity body = request.getBody();
