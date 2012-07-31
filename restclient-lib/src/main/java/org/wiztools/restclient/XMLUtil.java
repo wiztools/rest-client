@@ -1,8 +1,10 @@
 package org.wiztools.restclient;
 
 import java.io.*;
+import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -237,6 +239,19 @@ public final class XMLUtil {
                 }
                 reqChildElement.appendChild(e);
             }
+            
+            // Cookies
+            List<HttpCookie> cookies = bean.getCookies();
+            if(!cookies.isEmpty()) {
+                Element e = new Element("cookies");
+                for(HttpCookie cookie: cookies) {
+                    Element ee = new Element("cookie");
+                    ee.addAttribute(new Attribute("name", cookie.getName()));
+                    ee.addAttribute(new Attribute("value", cookie.getValue()));
+                    e.appendChild(ee);
+                }
+                reqChildElement.appendChild(e);
+            }
 
             // creating the body child element
             ReqEntity rBean = bean.getBody();
@@ -285,7 +300,23 @@ public final class XMLUtil {
         return m;
     }
     
-    
+    private static List<HttpCookie> getCookiesFromCookiesNode(final Element node) 
+            throws XMLException {
+        List<HttpCookie> out = new ArrayList<HttpCookie>();
+        
+        for (int i = 0; i < node.getChildElements().size(); i++) {
+            Element e = node.getChildElements().get(i);
+            if(!"cookie".equals(e.getQualifiedName())) {
+                throw new XMLException("<cookies> element should contain only <cookie> elements");
+            }
+            
+            HttpCookie cookie = new HttpCookie(e.getAttributeValue("name"),
+                    e.getAttributeValue("value"));
+            out.add(cookie);
+        }
+        
+        return out;
+    }
     
     private static String base64decode(String rcVersion, String base64Str) {
         if(LEGACY_BASE64_VERSIONS.contains(rcVersion)) {
@@ -408,6 +439,12 @@ public final class XMLUtil {
                 Map<String, String> m = getHeadersFromHeaderNode(tNode);
                 for (String key : m.keySet()) {
                     requestBean.addHeader(key, m.get(key));
+                }
+            }
+            else if ("cookies".equals(nodeName)) {
+                List<HttpCookie> cookies = getCookiesFromCookiesNode(tNode);
+                for (HttpCookie cookie: cookies) {
+                    requestBean.addCookie(cookie);
                 }
             }
             else if ("body".equals(nodeName)) {
