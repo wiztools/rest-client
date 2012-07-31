@@ -1,6 +1,7 @@
 package org.wiztools.restclient;
 
 import java.io.*;
+import java.net.HttpCookie;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
@@ -19,9 +20,11 @@ import org.apache.http.auth.NTCredentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.auth.params.AuthPNames;
 import org.apache.http.client.AuthCache;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.params.AuthPolicy;
 import org.apache.http.client.params.ClientPNames;
+import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnRoutePNames;
@@ -38,6 +41,7 @@ import org.apache.http.impl.auth.DigestScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.AbstractHttpMessage;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.params.BasicHttpParams;
@@ -50,6 +54,7 @@ import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.http.EntityEnclosingDelete;
+import org.wiztools.restclient.http.RESTClientCookieStore;
 
 /**
  *
@@ -237,6 +242,29 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                     method.addHeader(header);
                 }
             }
+            
+            // Cookies
+            {
+                // Set cookie policy:
+                httpclient.getParams().setParameter(
+                        ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
+                
+                // Add to CookieStore:
+                CookieStore store = new RESTClientCookieStore();
+                List<HttpCookie> cookies = request.getCookies();
+                for(HttpCookie cookie: cookies) {
+                    BasicClientCookie c = new BasicClientCookie(
+                            cookie.getName(), cookie.getValue());
+                    c.setVersion(cookie.getVersion());
+                    c.setDomain(urlHost);
+                    c.setPath("/");
+                    
+                    store.addCookie(c);
+                }
+                
+                // Attach store to client:
+                httpclient.setCookieStore(store);
+            }    
 
             // POST/PUT/PATCH/DELETE method specific logic
             if (method instanceof HttpEntityEnclosingRequest) {
