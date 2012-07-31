@@ -8,7 +8,7 @@ import org.apache.http.params.HttpParams;
  *
  * @author subwiz
  */
-public class RESTClientCookieSpec implements CookieSpecFactory {
+public class NoValidationCookieSpecFactory implements CookieSpecFactory {
     
     public static final String NAME = "RESTClient_Cookie_Spec";
 

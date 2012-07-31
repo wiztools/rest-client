@@ -54,7 +54,7 @@ import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.http.EntityEnclosingDelete;
-import org.wiztools.restclient.http.RESTClientCookieSpec;
+import org.wiztools.restclient.http.NoValidationCookieSpecFactory;
 import org.wiztools.restclient.http.RESTClientCookieStore;
 
 /**
@@ -248,9 +248,9 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             {
                 // Set cookie policy:
                 httpclient.getCookieSpecs().register(
-                        RESTClientCookieSpec.NAME, new RESTClientCookieSpec());
+                        NoValidationCookieSpecFactory.NAME, new NoValidationCookieSpecFactory());
                 httpclient.getParams().setParameter(
-                        ClientPNames.COOKIE_POLICY, RESTClientCookieSpec.NAME);
+                        ClientPNames.COOKIE_POLICY, NoValidationCookieSpecFactory.NAME);
                 
                 // Add to CookieStore:
                 CookieStore store = new RESTClientCookieStore();
