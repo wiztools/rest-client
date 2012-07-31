@@ -1,5 +1,6 @@
 package org.wiztools.restclient;
 
+import java.net.HttpCookie;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +19,7 @@ public final class RequestBean implements Request{
     private URL url;
     private HTTPMethod method;
     private boolean authPreemptive;
-    private List<HTTPAuthMethod> authMethods;
+    private final List<HTTPAuthMethod> authMethods = new ArrayList<HTTPAuthMethod>();
     private String authHost;
     private String authRealm;
     private String authUsername;
@@ -26,7 +27,8 @@ public final class RequestBean implements Request{
     private String authDomain;
     private String authWorkstation;
     private String authBearerToken;
-    private MultiValueMap<String, String> headers;
+    private final MultiValueMap<String, String> headers = new MultiValueMapArrayList<String, String>();
+    private final List<HttpCookie> cookies = new ArrayList<HttpCookie>();
     private ReqEntity body;
     private String testScript;
     private String sslTrustStore;
@@ -209,6 +211,15 @@ public final class RequestBean implements Request{
     public void addHeader(final String key, final String value){
         this.headers.put(key, value);
     }
+    
+    public void addCookie(HttpCookie cookie) {
+        this.cookies.add(cookie);
+    }
+    
+    @Override
+    public List<HttpCookie> getCookies() {
+        return Collections.unmodifiableList(this.cookies);
+    }
 
     @Override
     public HTTPMethod getMethod() {
@@ -246,11 +257,6 @@ public final class RequestBean implements Request{
         return isIgnoreResponseBody;
     }
     
-    public RequestBean(){
-        headers = new MultiValueMapArrayList<String, String>();
-        authMethods = new ArrayList<HTTPAuthMethod>();
-    }
-    
     @Override
     public Object clone(){
         RequestBean cloned = new RequestBean();
@@ -276,6 +282,11 @@ public final class RequestBean implements Request{
                 for(String value: headers.get(header)) {
                     cloned.addHeader(header, value);
                 }
+            }
+        }
+        if(!cookies.isEmpty()) {
+            for(HttpCookie cookie: cookies) {
+                cloned.addCookie(cookie);
             }
         }
         cloned.setMethod(method);
@@ -331,6 +342,9 @@ public final class RequestBean implements Request{
         if (this.headers != other.headers && (this.headers == null || !this.headers.equals(other.headers))) {
             return false;
         }
+        if (this.cookies != other.cookies && (this.cookies == null || !this.cookies.equals(other.cookies))) {
+            return false;
+        }
         if (this.body != other.body && (this.body == null || !this.body.equals(other.body))) {
             return false;
         }
@@ -382,6 +396,7 @@ public final class RequestBean implements Request{
         hash = 59 * hash + (this.authWorkstation != null ? this.authWorkstation.hashCode() : 0);
         hash = 59 * hash + (this.authBearerToken != null ? this.authBearerToken.hashCode() : 0);
         hash = 59 * hash + (this.headers != null ? this.headers.hashCode() : 0);
+        hash = 59 * hash + (this.cookies != null ? this.cookies.hashCode() : 0);
         hash = 59 * hash + (this.body != null ? this.body.hashCode() : 0);
         hash = 59 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
         hash = 59 * hash + (this.sslTrustStore != null ? this.sslTrustStore.hashCode() : 0);
@@ -403,6 +418,7 @@ public final class RequestBean implements Request{
         sb.append(url).append(", ");
         sb.append(method).append(", ");
         sb.append(headers.toString()).append(", ");
+        sb.append(cookies.toString()).append(", ");
         sb.append(body).append(", ");
         sb.append(authMethods).append(", ");
         sb.append(authPreemptive).append(", ");

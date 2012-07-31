@@ -1,5 +1,6 @@
 package org.wiztools.restclient;
 
+import java.net.HttpCookie;
 import java.net.URL;
 import java.util.List;
 import org.wiztools.commons.MultiValueMap;
@@ -29,6 +30,8 @@ public interface Request extends Cloneable {
     ReqEntity getBody();
 
     MultiValueMap<String, String> getHeaders();
+    
+    List<HttpCookie> getCookies();
 
     HTTPVersion getHttpVersion();
 

@@ -1,5 +1,6 @@
 package org.wiztools.restclient;
 
+import java.net.HttpCookie;
 import java.net.URL;
 import java.util.List;
 import org.wiztools.commons.MultiValueMap;
@@ -13,6 +14,7 @@ public class RoRequestBean implements Request {
     private final URL url;
     private final HTTPMethod method;
     private final MultiValueMap<String, String> headers;
+    private final List<HttpCookie> cookies;
     private final RoReqEntityBean body;
     private final List<HTTPAuthMethod> authMethods;
     private final boolean authPreemptive;
@@ -119,6 +121,11 @@ public class RoRequestBean implements Request {
     }
 
     @Override
+    public List<HttpCookie> getCookies() {
+        return cookies;
+    }
+
+    @Override
     public HTTPMethod getMethod() {
         return method;
     }
@@ -142,6 +149,7 @@ public class RoRequestBean implements Request {
         url = request.getUrl();
         method = request.getMethod();
         headers = request.getHeaders();
+        cookies = request.getCookies();
         if(request.getBody() != null){
             body = new RoReqEntityBean(request.getBody());
         }
