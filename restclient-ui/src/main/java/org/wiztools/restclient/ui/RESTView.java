@@ -278,11 +278,11 @@ class RESTView extends JPanel implements View {
         
         // Headers Tab
         jp_2col_req_headers = new TwoColumnTablePanel(new String[]{"Header", "Value"}, rest_ui);
-        jtp.addTab("Headers", jp_2col_req_headers);
+        jtp.addTab("Header", jp_2col_req_headers);
         
         // Cookies Tab
         jp_2col_req_cookies = new TwoColumnTablePanel(new String[]{"Cookie", "Value"}, rest_ui);
-        jtp.addTab("Cookies", jp_2col_req_cookies);
+        jtp.addTab("Cookie", jp_2col_req_cookies);
         
         // Body Tab
         setUIReqBodyEnabled(false); // disable control by default
@@ -735,7 +735,7 @@ class RESTView extends JPanel implements View {
         jp_test.add(jp_test_north, BorderLayout.NORTH);
         
         jp_test.add(se_test_script.getEditorView(), BorderLayout.CENTER);
-        jtp.addTab("Test Script", jp_test);
+        jtp.addTab("Test", jp_test);
         
         return jtp;
     }
