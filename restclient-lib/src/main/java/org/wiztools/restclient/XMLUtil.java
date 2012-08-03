@@ -67,17 +67,14 @@ public final class XMLUtil {
                 reqChildElement.appendChild(e);
             }
 
-            { // HTTP Follow Redirect
+            if(bean.isFollowRedirect()) { // HTTP Follow Redirect
                 Element e = new Element("http-follow-redirects");
-                e.appendChild(String.valueOf(bean.isFollowRedirect()));
                 reqChildElement.appendChild(e);
             }
             
-            { // Response body ignored
-                if(bean.isIgnoreResponseBody()) {
-                    Element e = new Element("ignore-response-body");
-                    reqChildElement.appendChild(e);
-                }
+            if(bean.isIgnoreResponseBody()) { // Response body ignored
+                Element e = new Element("ignore-response-body");
+                reqChildElement.appendChild(e);
             }
 
             { // creating the URL child element
@@ -110,9 +107,10 @@ public final class XMLUtil {
                     // creating the auth-preemptive child element
                     if(authMethods.contains(HTTPAuthMethod.BASIC)
                             || authMethods.contains(HTTPAuthMethod.DIGEST)) {
-                        Element e = new Element("auth-preemptive");
-                        e.appendChild(String.valueOf(bean.isAuthPreemptive()));
-                        reqChildElement.appendChild(e);
+                        if(bean.isAuthPreemptive()) {
+                            Element e = new Element("auth-preemptive");
+                            reqChildElement.appendChild(e);
+                        }
                     }
 
                     // creating the auth-host child element
@@ -360,7 +358,12 @@ public final class XMLUtil {
                 requestBean.setHttpVersion(httpVersion);
             }
             else if("http-follow-redirects".equals(nodeName)) {
-                requestBean.setFollwoRedirect(Boolean.valueOf(tNode.getValue()));
+                if(StringUtil.isEmpty(tNode.getValue())) {
+                    requestBean.setFollowRedirect(true);
+                }
+                else { // old format!
+                    requestBean.setFollowRedirect(Boolean.valueOf(tNode.getValue()));
+                }
             }
             else if("ignore-response-body".equals(nodeName)) {
                 requestBean.setIgnoreResponseBody(true);
@@ -379,9 +382,14 @@ public final class XMLUtil {
                 }
             }
             else if ("auth-preemptive".equals(nodeName)) {
-                if (tNode.getValue().equals("true")) {
+                if(StringUtil.isEmpty(tNode.getValue())) {
                     requestBean.setAuthPreemptive(true);
-                } else {
+                }
+                // old format follows!
+                else if (tNode.getValue().equals("true")) {
+                    requestBean.setAuthPreemptive(true);
+                }
+                else {
                     requestBean.setAuthPreemptive(false);
                 }
             }

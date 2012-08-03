@@ -1309,7 +1309,7 @@ class RESTView extends JPanel implements View {
         request.setHttpVersion((HTTPVersion)jcb_http_version.getSelectedItem());
 
         // Follow redirect
-        request.setFollwoRedirect(jcb_followRedirects.isSelected());
+        request.setFollowRedirect(jcb_followRedirects.isSelected());
         
         // Ignore response body
         request.setIgnoreResponseBody(jcb_ignoreResponseBody.isSelected());

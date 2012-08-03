@@ -244,7 +244,7 @@ public final class RequestBean implements Request{
         return isFollowRedirect;
     }
 
-    public void setFollwoRedirect(boolean isFollowRedirect) {
+    public void setFollowRedirect(boolean isFollowRedirect) {
         this.isFollowRedirect = isFollowRedirect;
     }
     
@@ -292,7 +292,7 @@ public final class RequestBean implements Request{
         cloned.setMethod(method);
         cloned.setTestScript(testScript);
         cloned.setUrl(url);
-        cloned.setFollwoRedirect(isFollowRedirect);
+        cloned.setFollowRedirect(isFollowRedirect);
         cloned.setIgnoreResponseBody(isIgnoreResponseBody);
         return cloned;
     }
