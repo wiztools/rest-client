@@ -49,6 +49,9 @@ class RESTView extends JPanel implements View {
     
     private JTextField jtf_res_status = new JTextField();
     
+    private JComboBox jcb_body_type = new JComboBox(
+            new String[]{"None", "String body", "File body", "Multipart body"});
+    
     private JTextField jtf_body_content_type = new JTextField();
     private ScriptEditor se_req_body;
     {
@@ -286,6 +289,7 @@ class RESTView extends JPanel implements View {
         
         // Body Tab
         setUIReqBodyEnabled(false); // disable control by default
+        
         JPanel jp_body = new JPanel();
         jp_body.setLayout(new BorderLayout());
         JPanel jp_body_north = new JPanel();
@@ -388,7 +392,13 @@ class RESTView extends JPanel implements View {
         jp_body_center.setLayout(new GridLayout(1, 1));
         jp_body_center.add(se_req_body.getEditorView());
         jp_body.add(jp_body_center, BorderLayout.CENTER);
-        jtp.addTab("Body", jp_body);
+        
+        JPanel jp_body_encp = new JPanel(new BorderLayout());
+        jp_body_encp.add(jcb_body_type, BorderLayout.NORTH);
+        
+        jp_body_encp.add(jp_body, BorderLayout.CENTER);
+        
+        jtp.addTab("Body", jp_body_encp);
         
         { // Auth
             JPanel jp = new JPanel(new BorderLayout());
