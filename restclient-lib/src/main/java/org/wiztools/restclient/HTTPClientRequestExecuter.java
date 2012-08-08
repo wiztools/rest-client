@@ -34,6 +34,10 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.*;
+import org.apache.http.entity.mime.FormBodyPart;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.auth.AuthSchemeBase;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.auth.DigestScheme;
@@ -276,22 +280,28 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 ReqEntity bean = request.getBody();
                 if (bean != null) {
                     try {
-                        AbstractHttpEntity entity = null;
-                        if(bean instanceof ReqEntityString) {
-                            entity = new StringEntity(((ReqEntityString)bean).getBody());
+                        if(bean instanceof ReqEntitySimple) {
+                            AbstractHttpEntity e = HTTPClientUtil.getEntity((ReqEntitySimple)bean);
+                            e.setContentType(bean.getContentTypeCharsetFormatted());
+                            eeMethod.setEntity(e);
                         }
-                        else if(bean instanceof ReqEntityByteArray) {
-                            entity = new ByteArrayEntity(((ReqEntityByteArray)bean).getBody());
+                        else if(bean instanceof ReqEntityMultipart) {
+                            ReqEntityMultipart multipart = (ReqEntityMultipart)bean;
+                            MultipartEntity me = new MultipartEntity();
+                            for(ReqEntityPart part: multipart.getBody()) {
+                                if(part instanceof ReqEntityStringPart) {
+                                    String body = ((ReqEntityStringPart)part).getPart();
+                                    me.addPart(part.getName(), new StringBody(body));
+                                }
+                                else if(part instanceof ReqEntityFilePart) {
+                                    File body = ((ReqEntityFilePart)part).getPart();
+                                    me.addPart(part.getName(), new FileBody(body));
+                                }
+                            }
+                            eeMethod.setEntity(me);
                         }
-                        else if(bean instanceof ReqEntityStream) {
-                            entity = new InputStreamEntity(((ReqEntityStream)bean).getBody(),
-                                    ((ReqEntityStream)bean).getLength());
-                        }
-                        else if(bean instanceof ReqEntityFile) {
-                            entity = new FileEntity(((ReqEntityFile)bean).getBody());
-                        }
-                        entity.setContentType(bean.getContentTypeCharsetFormatted());
-                        eeMethod.setEntity(entity);
+                        
+                        
                     }
                     catch (UnsupportedEncodingException ex) {
                         for(View view: views){

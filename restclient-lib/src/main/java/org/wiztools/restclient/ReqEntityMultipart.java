@@ -7,5 +7,5 @@ import java.util.List;
  * @author subwiz
  */
 public interface ReqEntityMultipart extends ReqEntity {
-    List<ReqEntitySimple> getBody();
+    List<ReqEntityPart> getBody();
 }
