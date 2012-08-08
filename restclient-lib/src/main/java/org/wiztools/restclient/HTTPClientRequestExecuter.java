@@ -33,8 +33,7 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
-import org.apache.http.entity.AbstractHttpEntity;
-import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.*;
 import org.apache.http.impl.auth.AuthSchemeBase;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.auth.DigestScheme;
@@ -277,10 +276,24 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 ReqEntity bean = request.getBody();
                 if (bean != null) {
                     try {
-                        AbstractHttpEntity entity = new ByteArrayEntity(bean.getBody().getBytes(bean.getCharSet()));
+                        AbstractHttpEntity entity = null;
+                        if(bean instanceof ReqEntityString) {
+                            entity = new StringEntity(((ReqEntityString)bean).getBody());
+                        }
+                        else if(bean instanceof ReqEntityByteArray) {
+                            entity = new ByteArrayEntity(((ReqEntityByteArray)bean).getBody());
+                        }
+                        else if(bean instanceof ReqEntityStream) {
+                            entity = new InputStreamEntity(((ReqEntityStream)bean).getBody(),
+                                    ((ReqEntityStream)bean).getLength());
+                        }
+                        else if(bean instanceof ReqEntityFile) {
+                            entity = new FileEntity(((ReqEntityFile)bean).getBody());
+                        }
                         entity.setContentType(bean.getContentTypeCharsetFormatted());
                         eeMethod.setEntity(entity);
-                    } catch (UnsupportedEncodingException ex) {
+                    }
+                    catch (UnsupportedEncodingException ex) {
                         for(View view: views){
                             view.doError(Util.getStackTrace(ex));
                             view.doEnd();

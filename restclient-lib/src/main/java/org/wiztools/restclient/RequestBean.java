@@ -275,7 +275,7 @@ public final class RequestBean implements Request{
                 Arrays.copyOf(sslKeyStorePassword, sslKeyStorePassword.length));
         cloned.setHttpVersion(httpVersion);
         if(body != null){
-            cloned.setBody((ReqEntityBean)body.clone());
+            cloned.setBody((ReqEntityStringBean)body.clone());
         }
         if(!headers.isEmpty()){
             for(String header: headers.keySet()){

@@ -41,7 +41,7 @@ public class XMLUtilTest {
         expResult.setUrl(new URL("http://localhost:10101/"));
         expResult.setMethod(HTTPMethod.POST);
         expResult.addHeader("key1", "value1");
-        expResult.setBody(new ReqEntityBean("Body Text", "text/plain", "UTF-8"));
+        expResult.setBody(new ReqEntityStringBean("Body Text", "text/plain", "UTF-8"));
         expResult.addAuthMethod(HTTPAuthMethod.BASIC);
         expResult.setAuthPreemptive(true);
         expResult.setAuthRealm("realm");

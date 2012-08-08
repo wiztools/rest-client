@@ -6,9 +6,7 @@ package org.wiztools.restclient;
  */
 public interface ReqEntity extends Cloneable {
 
-    String getBody();
-
-    String getCharSet();
+    String getCharset();
 
     String getContentType();
 

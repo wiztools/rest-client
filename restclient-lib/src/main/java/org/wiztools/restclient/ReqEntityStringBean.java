@@ -4,18 +4,19 @@ package org.wiztools.restclient;
  *
  * @author schandran
  */
-public final class ReqEntityBean implements ReqEntity{
+public final class ReqEntityStringBean implements ReqEntityString {
     
     private String contentType;
     private String charSet;
     private String body;
     
-    public ReqEntityBean(String body, String contentType, String charSet){
+    public ReqEntityStringBean(String body, String contentType, String charSet){
         this.body = body;
         this.contentType = contentType;
         this.charSet = charSet;
     }
 
+    @Override
     public String getBody() {
         return body;
     }
@@ -24,14 +25,16 @@ public final class ReqEntityBean implements ReqEntity{
         this.body = body;
     }
 
-    public String getCharSet() {
+    @Override
+    public String getCharset() {
         return charSet;
     }
 
-    public void setCharSet(String charSet) {
+    public void setCharset(String charSet) {
         this.charSet = charSet;
     }
 
+    @Override
     public String getContentType() {
         return contentType;
     }
@@ -40,13 +43,14 @@ public final class ReqEntityBean implements ReqEntity{
         this.contentType = contentType;
     }
     
+    @Override
     public String getContentTypeCharsetFormatted(){
         return Util.getFormattedContentType(contentType, charSet);
     }
     
     @Override
     public Object clone(){
-        ReqEntityBean cloned = new ReqEntityBean(body, contentType, charSet);
+        ReqEntityStringBean cloned = new ReqEntityStringBean(body, contentType, charSet);
         return cloned;
     }
     
@@ -55,8 +59,8 @@ public final class ReqEntityBean implements ReqEntity{
         if(this == o){
             return true;
         }
-        if(o instanceof ReqEntityBean){
-            ReqEntityBean bean = (ReqEntityBean)o;
+        if(o instanceof ReqEntityStringBean){
+            ReqEntityStringBean bean = (ReqEntityStringBean)o;
             boolean isEqual = true;
             isEqual = isEqual && (this.body == null? bean.body == null: this.body.equals(bean.body));
             isEqual = isEqual && (this.charSet == null? bean.charSet == null: this.charSet.equals(bean.charSet));

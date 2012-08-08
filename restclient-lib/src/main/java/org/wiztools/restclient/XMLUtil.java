@@ -25,13 +25,9 @@ public final class XMLUtil {
     }
     private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
     private static final String[] VERSIONS = new String[]{
-        "2.0", "2.1", "2.2a1", "2.2a2", "2.2", "2.3b1", "2.3", "2.3.1", "2.3.2",
-        "2.3.3", "2.4", "2.5", RCConstants.VERSION
+        "2.6", RCConstants.VERSION
     };
-    private static final List<String> LEGACY_BASE64_VERSIONS = Arrays.asList(new String[]{
-        "2.0", "2.1", "2.2a1", "2.2a2", "2.2", "2.3b1", "2.3", "2.3.1", "2.3.2",
-        "2.3.3", "2.4"
-    });
+
     public static final String XML_MIME = "application/xml";
     
     static {
@@ -251,13 +247,13 @@ public final class XMLUtil {
             ReqEntity rBean = bean.getBody();
             if (rBean != null) {
                 String contentType = rBean.getContentType();
-                String charSet = rBean.getCharSet();
-                String body = rBean.getBody();
+                String charSet = rBean.getCharset();
+                /*String body = rBean.getBody(); TODO
                 Element e = new Element("body");
                 e.addAttribute(new Attribute("content-type", contentType));
                 e.addAttribute(new Attribute("charset", charSet));
                 e.appendChild(body);
-                reqChildElement.appendChild(e);
+                reqChildElement.appendChild(e);*/
             }
             // creating the test-script child element
             String testScript = bean.getTestScript();
@@ -311,15 +307,6 @@ public final class XMLUtil {
         
         return out;
     }
-    
-    private static String base64decode(String rcVersion, String base64Str) {
-        if(LEGACY_BASE64_VERSIONS.contains(rcVersion)) {
-            return (String) LegacyBase64.decodeToObject(base64Str);
-        }
-        else {
-            return Util.base64decode(base64Str);
-        }
-    }
 
     private static Request xml2Request(final Document doc)
             throws MalformedURLException, XMLException {
@@ -358,12 +345,7 @@ public final class XMLUtil {
                 requestBean.setHttpVersion(httpVersion);
             }
             else if("http-follow-redirects".equals(nodeName)) {
-                if(StringUtil.isEmpty(tNode.getValue())) {
-                    requestBean.setFollowRedirect(true);
-                }
-                else { // old format!
-                    requestBean.setFollowRedirect(Boolean.valueOf(tNode.getValue()));
-                }
+                requestBean.setFollowRedirect(true);
             }
             else if("ignore-response-body".equals(nodeName)) {
                 requestBean.setIgnoreResponseBody(true);
@@ -382,16 +364,7 @@ public final class XMLUtil {
                 }
             }
             else if ("auth-preemptive".equals(nodeName)) {
-                if(StringUtil.isEmpty(tNode.getValue())) {
-                    requestBean.setAuthPreemptive(true);
-                }
-                // old format follows!
-                else if (tNode.getValue().equals("true")) {
-                    requestBean.setAuthPreemptive(true);
-                }
-                else {
-                    requestBean.setAuthPreemptive(false);
-                }
+                requestBean.setAuthPreemptive(true);
             }
             else if ("auth-host".equals(nodeName)) {
                 requestBean.setAuthHost(tNode.getValue());
@@ -409,7 +382,7 @@ public final class XMLUtil {
                 requestBean.setAuthUsername(tNode.getValue());
             }
             else if ("auth-password".equals(nodeName)) {
-                String password = base64decode(rcVersion, tNode.getValue());
+                String password = Util.base64decode(tNode.getValue());
                 requestBean.setAuthPassword(password.toCharArray());
             }
             else if("auth-bearer-token".equals(nodeName)) {
@@ -420,7 +393,7 @@ public final class XMLUtil {
                 requestBean.setSslTrustStore(sslTrustStore);
             }
             else if ("ssl-truststore-password".equals(nodeName)) {
-                String sslTrustStorePassword = base64decode(rcVersion, tNode.getValue());
+                String sslTrustStorePassword = Util.base64decode(tNode.getValue());
                 requestBean.setSslTrustStorePassword(sslTrustStorePassword.toCharArray());
             }
             else if("ssl-hostname-verifier".equals(nodeName)){
@@ -436,7 +409,7 @@ public final class XMLUtil {
                 requestBean.setSslKeyStore(sslKeyStore);
             }
             else if ("ssl-keystore-password".equals(nodeName)) {
-                String sslKeyStorePassword = base64decode(rcVersion, tNode.getValue());
+                String sslKeyStorePassword = Util.base64decode(tNode.getValue());
                 requestBean.setSslKeyStorePassword(sslKeyStorePassword.toCharArray());
             }
             else if ("headers".equals(nodeName)) {
@@ -452,7 +425,7 @@ public final class XMLUtil {
                 }
             }
             else if ("body".equals(nodeName)) {
-                requestBean.setBody(new ReqEntityBean(tNode.getValue(), tNode.getAttributeValue("content-type"),
+                requestBean.setBody(new ReqEntityStringBean(tNode.getValue(), tNode.getAttributeValue("content-type"),
                         tNode.getAttributeValue("charset")));
             }
             else if ("test-script".equals(nodeName)) {

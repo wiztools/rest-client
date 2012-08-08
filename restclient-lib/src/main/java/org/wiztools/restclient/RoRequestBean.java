@@ -15,7 +15,7 @@ public class RoRequestBean implements Request {
     private final HTTPMethod method;
     private final MultiValueMap<String, String> headers;
     private final List<HttpCookie> cookies;
-    private final RoReqEntityBean body;
+    private final RoReqEntityStringBean body;
     private final List<HTTPAuthMethod> authMethods;
     private final boolean authPreemptive;
     private final String authHost;
@@ -111,7 +111,7 @@ public class RoRequestBean implements Request {
     }
     
     @Override
-    public RoReqEntityBean getBody() {
+    public RoReqEntityStringBean getBody() {
         return body;
     }
 
@@ -151,7 +151,7 @@ public class RoRequestBean implements Request {
         headers = request.getHeaders();
         cookies = request.getCookies();
         if(request.getBody() != null){
-            body = new RoReqEntityBean(request.getBody());
+            body = new RoReqEntityStringBean((ReqEntityString)request.getBody());
         }
         else{
             body = null;

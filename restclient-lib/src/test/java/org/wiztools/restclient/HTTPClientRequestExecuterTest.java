@@ -95,7 +95,7 @@ public class HTTPClientRequestExecuterTest {
         final String charset = "UTF-8";
         RequestBean request = getRequestBean();
         request.setMethod(HTTPMethod.POST);
-        ReqEntityBean rBean = new ReqEntityBean("", contentType, charset);
+        ReqEntityStringBean rBean = new ReqEntityStringBean("", contentType, charset);
         request.setBody(rBean);
         
         View view = new View() {
