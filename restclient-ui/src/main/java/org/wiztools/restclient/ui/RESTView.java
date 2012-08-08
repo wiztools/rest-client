@@ -1290,7 +1290,7 @@ class RESTView extends JPanel implements View {
             if(!StringUtil.isEmpty(req_body)){
                 String req_content_type = jd_body_content_type.getContentType();
                 String req_char_set = jd_body_content_type.getCharSet();
-                ReqEntityBean body = new ReqEntityBean(req_body,
+                ReqEntityStringBean body = new ReqEntityStringBean(req_body,
                         req_content_type,
                         req_char_set);
                 request.setBody(body);
@@ -1682,12 +1682,12 @@ class RESTView extends JPanel implements View {
         final HTTPMethod METHOD = request.getMethod();
         if(METHOD == HTTPMethod.POST || METHOD == HTTPMethod.PUT){
             // Get request body
-            ReqEntity reBean = request.getBody();
+            ReqEntityString reBean = (ReqEntityString) request.getBody();
             if(reBean != null){
                 String req_body = reBean.getBody();
                 if(!StringUtil.isEmpty(req_body)){
                     String req_content_type = reBean.getContentType();
-                    String req_char_set = reBean.getCharSet();
+                    String req_char_set = reBean.getCharset();
                     if(StringUtil.isEmpty(req_content_type)
                             || StringUtil.isEmpty(req_char_set)){
                         errors.add("Body content is set, but `Content-type' and/or `Char-set' not set.");
@@ -1880,8 +1880,8 @@ class RESTView extends JPanel implements View {
                 setUIReqBodyEnabled(true);
             }
             jd_body_content_type.setContentType(body.getContentType());
-            jd_body_content_type.setCharSet(body.getCharSet());
-            se_req_body.setText(body.getBody());
+            jd_body_content_type.setCharSet(body.getCharset());
+            se_req_body.setText(((ReqEntityString)body).getBody());
             se_req_body.setCaretPosition(0);
         }
 
