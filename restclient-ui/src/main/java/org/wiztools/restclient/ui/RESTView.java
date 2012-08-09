@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.*;
@@ -52,7 +53,8 @@ class RESTView extends JPanel implements View {
     private JComboBox jcb_body_type = new JComboBox(
             new String[]{"None", "String body", "File body", "Multipart body"});
     
-    // private ReqBodyPanelString jp_req_body_string;
+    // @Inject private ReqBodyPanelString jp_req_body_string;
+    @Inject private ReqBodyPanelFile jp_req_body_file;
     
     // private JScrollPane jsp_test_script;
     private ScriptEditor se_test_script = ScriptEditorFactory.getGroovyScriptEditor();
@@ -183,7 +185,7 @@ class RESTView extends JPanel implements View {
         if (responseViewer != null)
             this.se_response = responseViewer;
         this.rest_ui = ui;
-        init();
+        // init();
         view = this;
         
         // Start status clear timer:
@@ -270,17 +272,40 @@ class RESTView extends JPanel implements View {
         jp_2col_req_cookies = new TwoColumnTablePanel(new String[]{"Cookie", "Value"}, rest_ui);
         jtp.addTab("Cookie", jp_2col_req_cookies);
         
-        // Body Tab
-        setUIReqBodyEnabled(false); // disable control by default
-        
-        final JPanel jp_body_none = new JPanel();
-        
-        JPanel jp_body_encp = new JPanel(new BorderLayout());
-        jp_body_encp.add(jcb_body_type, BorderLayout.NORTH);
-        
-        jp_body_encp.add(jp_body_none, BorderLayout.CENTER);
-        
-        jtp.addTab("Body", jp_body_encp);
+        { // Body Tab
+            setUIReqBodyEnabled(false); // disable control by default
+
+            final JPanel jp_body_none = new JPanel();
+
+            final JScrollPane jsp = new JScrollPane();
+            jsp.setViewportView(jp_body_none);
+            
+            final JPanel jp_body_encp = new JPanel(new BorderLayout());
+            jp_body_encp.add(jcb_body_type, BorderLayout.NORTH);
+            
+            jp_body_encp.add(jsp, BorderLayout.CENTER);
+
+            
+            jcb_body_type.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    if(jcb_body_type.getSelectedItem().equals("None")) {
+                        jsp.setViewportView(jp_body_none);
+                    }
+                    else if(jcb_body_type.getSelectedItem().equals("String body")) {
+                        jsp.setViewportView(jp_req_body_file);
+                    }
+                    else if(jcb_body_type.getSelectedItem().equals("File body")) {
+                        jsp.setViewportView(jp_req_body_file);
+                    }
+                    else if(jcb_body_type.getSelectedItem().equals("Multipart body")) {
+                        jsp.setViewportView(jp_req_body_file);
+                    }
+                }
+            });
+
+            jtp.addTab("Body", jp_body_encp);
+        }
         
         { // Auth
             JPanel jp = new JPanel(new BorderLayout());
@@ -972,6 +997,7 @@ class RESTView extends JPanel implements View {
         return jp;
     }
     
+    @PostConstruct
     private void init(){
         // Initialize the messageDialog
         messageDialog = new MessageDialog(rest_ui.getFrame());

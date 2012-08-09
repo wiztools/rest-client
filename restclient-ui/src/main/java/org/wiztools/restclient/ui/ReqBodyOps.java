@@ -7,8 +7,9 @@ import org.wiztools.restclient.ReqEntity;
  * @author subwiz
  */
 public interface ReqBodyOps {
-    void enable();
-    void disable();
+    void enableBody();
+    void disableBody();
+    void clear();
     
     ReqEntity getEntity();
 }

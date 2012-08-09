@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
 import org.wiztools.commons.Charsets;
@@ -48,7 +49,8 @@ public class ReqBodyPanelString extends JPanel implements ReqBodyOps {
     
     private JPanel jp_body = this;
 
-    public ReqBodyPanelString() {
+    @PostConstruct
+    public void init() {
         // Initialize parameter dialog
         ParameterView pv = new ParameterView(){
             @Override
@@ -286,13 +288,18 @@ public class ReqBodyPanelString extends JPanel implements ReqBodyOps {
     }
     
     @Override
-    public void enable() {
+    public void enableBody() {
         setUIReqBodyEnabled(true);
     }
     
     @Override
-    public void disable() {
+    public void disableBody() {
         setUIReqBodyEnabled(false);
+    }
+    
+    @Override
+    public void clear() {
+        // enable control
     }
     
     @Override

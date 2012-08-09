@@ -9,13 +9,18 @@ import org.wiztools.restclient.ReqEntity;
  */
 public class ReqBodyPanelMultipart extends JPanel implements ReqBodyOps {
     @Override
-    public void enable() {
+    public void enableBody() {
         // enable control
     }
     
     @Override
-    public void disable() {
+    public void disableBody() {
         // disable control
+    }
+    
+    @Override
+    public void clear() {
+        // enable control
     }
     
     @Override
