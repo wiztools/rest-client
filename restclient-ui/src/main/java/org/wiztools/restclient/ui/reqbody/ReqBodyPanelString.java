@@ -21,7 +21,7 @@ import org.wiztools.restclient.ui.*;
  *
  * @author subwiz
  */
-public class ReqBodyPanelString extends JPanel implements ReqBodyOps {
+class ReqBodyPanelString extends JPanel implements ReqBodyOps {
     
     @Inject RESTView view;
     @Inject RESTUserInterface rest_ui;
@@ -99,11 +99,15 @@ public class ReqBodyPanelString extends JPanel implements ReqBodyOps {
     @Override
     public void enableBody() {
         jp_content_type_charset.enableComponent();
+        jb_body_file.setEnabled(true);
+        jb_body_params.setEnabled(true);
     }
 
     @Override
     public void disableBody() {
         jp_content_type_charset.disableComponent();
+        jb_body_file.setEnabled(false);
+        jb_body_params.setEnabled(false);
     }
 
     @Override
