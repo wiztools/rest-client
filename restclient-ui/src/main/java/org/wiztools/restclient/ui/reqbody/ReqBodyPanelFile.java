@@ -17,7 +17,6 @@ import org.wiztools.restclient.ReqEntityFile;
 import org.wiztools.restclient.ReqEntityFileBean;
 import org.wiztools.restclient.Util;
 import org.wiztools.restclient.ui.*;
-import org.wiztools.restclient.ui.reqbody.ContentTypeCharsetComponent;
 
 /**
  *
