@@ -97,7 +97,10 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
     public void setEntity(ReqEntity entity) {
         if(entity instanceof ReqEntityFile) {
             ReqEntityFile e = (ReqEntityFile) entity;
-            e.getContentTypeCharsetFormatted();
+            jp_content_type_charset.setContentTypeCharsetString(
+                    e.getContentTypeCharsetFormatted());
+            File body = e.getBody();
+            jtf_file.setText(body.getAbsolutePath());
         }
     }
     
