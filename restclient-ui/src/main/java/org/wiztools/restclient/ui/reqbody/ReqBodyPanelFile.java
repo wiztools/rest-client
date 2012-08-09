@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.wiztools.restclient.ReqEntity;
+import org.wiztools.restclient.ReqEntityFile;
 import org.wiztools.restclient.ReqEntityFileBean;
 import org.wiztools.restclient.Util;
 import org.wiztools.restclient.ui.*;
@@ -90,6 +91,14 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
     public void clearBody() {
         jp_content_type_charset.clearComponent();
         jtf_file.setText("");
+    }
+
+    @Override
+    public void setEntity(ReqEntity entity) {
+        if(entity instanceof ReqEntityFile) {
+            ReqEntityFile e = (ReqEntityFile) entity;
+            e.getContentTypeCharsetFormatted();
+        }
     }
     
     @Override

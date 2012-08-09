@@ -11,5 +11,6 @@ public interface ReqBodyOps {
     void disableBody();
     void clearBody();
     
+    void setEntity(ReqEntity entity);
     ReqEntity getEntity();
 }

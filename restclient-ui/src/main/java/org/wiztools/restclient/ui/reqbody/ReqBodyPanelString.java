@@ -14,10 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
-import org.wiztools.restclient.IGlobalOptions;
-import org.wiztools.restclient.ReqEntity;
-import org.wiztools.restclient.ReqEntityStringBean;
-import org.wiztools.restclient.ServiceLocator;
+import org.wiztools.restclient.*;
 import org.wiztools.restclient.ui.*;
 
 /**
@@ -112,6 +109,13 @@ public class ReqBodyPanelString extends JPanel implements ReqBodyOps {
     @Override
     public void clearBody() {
         jp_content_type_charset.clearComponent();
+    }
+    
+    @Override
+    public void setEntity(ReqEntity entity) {
+        if(entity instanceof ReqEntityString) {
+            // 
+        }
     }
 
     @Override
