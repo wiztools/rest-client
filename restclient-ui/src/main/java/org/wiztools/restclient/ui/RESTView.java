@@ -1,15 +1,12 @@
 package org.wiztools.restclient.ui;
 
-import org.wiztools.restclient.ui.reqbody.ParameterDialog;
-import org.wiztools.restclient.ui.reqbody.ReqBodyPanelFile;
-import org.wiztools.restclient.ui.reqbody.ReqBodyPanelMultipart;
-import org.wiztools.restclient.ui.reqbody.ReqBodyPanelString;
 import com.jidesoft.swing.AutoCompletion;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.net.*;
-import java.nio.charset.Charset;
+import java.net.HttpCookie;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,10 +20,14 @@ import javax.swing.border.TitledBorder;
 import junit.framework.TestSuite;
 import org.wiztools.commons.*;
 import org.wiztools.restclient.*;
+import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
+import org.wiztools.restclient.ui.reqauth.ReqSSLPanel;
+import org.wiztools.restclient.ui.reqbody.ReqBodyPanel;
+import org.wiztools.restclient.ui.reqmethod.ReqMethodPanel;
 
 /**
  *
- * @author Subhash
+ * @author subwiz
  */
 @Singleton
 public class RESTView extends JPanel implements View {
@@ -35,14 +36,10 @@ public class RESTView extends JPanel implements View {
     private ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
     private ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
     
-    private JRadioButton jrb_req_get = new JRadioButton("GET");
-    private JRadioButton jrb_req_post = new JRadioButton("POST");
-    private JRadioButton jrb_req_put = new JRadioButton("PUT");
-    private JRadioButton jrb_req_patch = new JRadioButton("PATCH");
-    private JRadioButton jrb_req_delete = new JRadioButton("DELETE");
-    private JRadioButton jrb_req_head = new JRadioButton("HEAD");
-    private JRadioButton jrb_req_options = new JRadioButton("OPTIONS");
-    private JRadioButton jrb_req_trace = new JRadioButton("TRACE");
+    @Inject private ReqMethodPanel jp_req_method;
+    @Inject private ReqBodyPanel jp_req_body;
+    @Inject private ReqAuthPanel jp_req_auth;
+    @Inject private ReqSSLPanel jp_req_ssl;
     
     private JProgressBar jpb_status = new JProgressBar();
     
@@ -55,13 +52,6 @@ public class RESTView extends JPanel implements View {
     
     private JTextField jtf_res_status = new JTextField();
     
-    private JComboBox jcb_body_type = new JComboBox(
-            new String[]{"None", "String body", "File body", "Multipart body"});
-    
-    @Inject private ReqBodyPanelString jp_req_body_string;
-    @Inject private ReqBodyPanelFile jp_req_body_file;
-    @Inject private ReqBodyPanelMultipart jp_req_body_multipart;
-    
     // private JScrollPane jsp_test_script;
     private ScriptEditor se_test_script = ScriptEditorFactory.getGroovyScriptEditor();
     private JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
@@ -69,34 +59,6 @@ public class RESTView extends JPanel implements View {
     private JButton jb_req_test_run = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "wand.png"));
     private JButton jb_req_test_quick = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "quick_test.png"));
     private RunTestDialog jd_runTestDialog;
-    
-    // Authentication resources
-    private JComboBox jcb_auth_types = new JComboBox(AuthHelper.getAll());
-    private JCheckBox jcb_auth_preemptive = new JCheckBox();
-    private static final int auth_text_size = 20;
-    private JTextField jtf_auth_host = new JTextField(auth_text_size);
-    private JTextField jtf_auth_realm = new JTextField(auth_text_size);
-    private JTextField jtf_auth_domain = new JTextField(auth_text_size);
-    private JTextField jtf_auth_workstation = new JTextField(auth_text_size);
-    private JTextField jtf_auth_username = new JTextField(auth_text_size);
-    private JPasswordField jpf_auth_password = new JPasswordField(auth_text_size);
-    private JTextField jtf_auth_ntlm_username = new JTextField(auth_text_size);
-    private JPasswordField jpf_auth_ntlm_password = new JPasswordField(auth_text_size);
-    private JTextField jtf_auth_bearer_token = new JTextField(auth_text_size);
-    
-    // SSL - trust store
-    private JTextField jtf_ssl_truststore_file = new JTextField(auth_text_size);
-    private JButton jb_ssl_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private JPasswordField jpf_ssl_truststore_pwd = new JPasswordField(auth_text_size);
-    
-    // SSL - key store
-    private JTextField jtf_ssl_keystore_file = new JTextField(auth_text_size);
-    private JButton jb_ssl_keystore_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private JPasswordField jpf_ssl_keystore_pwd = new JPasswordField(auth_text_size);
-    
-    // SSL - misc
-    private JComboBox jcb_ssl_hostname_verifier = new JComboBox(SSLHostnameVerifier.getAll());
-    private JCheckBox jcb_ssl_trust_self_signed_cert = new JCheckBox("Trust self-signed certificate? ");
     
     // HTTP Version Combo box
     private JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
@@ -131,8 +93,6 @@ public class RESTView extends JPanel implements View {
 
     private TwoColumnTablePanel jp_2col_req_headers;
     private TwoColumnTablePanel jp_2col_req_cookies;
-    
-    private ParameterDialog jd_req_paramDialog;
     
     private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();
     
@@ -211,64 +171,7 @@ public class RESTView extends JPanel implements View {
     private JTabbedPane initJTPRequest(){
         JTabbedPane jtp = new JTabbedPane();
         
-        ButtonGroup bg = new ButtonGroup();
-        bg.add(jrb_req_get);
-        bg.add(jrb_req_post);
-        bg.add(jrb_req_put);
-        bg.add(jrb_req_patch);
-        bg.add(jrb_req_delete);
-        bg.add(jrb_req_head);
-        bg.add(jrb_req_options);
-        bg.add(jrb_req_trace);
-        
-        // Default selected button
-        jrb_req_get.setSelected(true);
-        
-        // Mnemonic
-        jrb_req_get.setMnemonic('g');
-        jrb_req_post.setMnemonic('p');
-        jrb_req_put.setMnemonic('t');
-        jrb_req_delete.setMnemonic('d');
-        //jrb_req_head.setMnemonic('h');
-        //jrb_req_options.setMnemonic('o');
-        //jrb_req_trace.setMnemonic('e');
-        
-        ActionListener jrbAL = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                if(doesSelectedMethodSupportEntityBody()){
-                    setUIReqBodyEnabled(true);
-                }
-                else{
-                    setUIReqBodyEnabled(false);
-                }
-            }
-        };
-        
-        jrb_req_get.addActionListener(jrbAL);
-        jrb_req_post.addActionListener(jrbAL);
-        jrb_req_put.addActionListener(jrbAL);
-        jrb_req_patch.addActionListener(jrbAL);
-        jrb_req_delete.addActionListener(jrbAL);
-        jrb_req_head.addActionListener(jrbAL);
-        jrb_req_options.addActionListener(jrbAL);
-        jrb_req_trace.addActionListener(jrbAL);
-        
-        JPanel jp_method_encp = new JPanel();
-        jp_method_encp.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JPanel jp_method = new JPanel();
-        jp_method.setBorder(BorderFactory.createTitledBorder("HTTP Method"));
-        jp_method.setLayout(new GridLayout(4, 2));
-        jp_method.add(jrb_req_get);
-        jp_method.add(jrb_req_post);
-        jp_method.add(jrb_req_put);
-        jp_method.add(jrb_req_patch);
-        jp_method.add(jrb_req_delete);
-        jp_method.add(jrb_req_head);
-        jp_method.add(jrb_req_options);
-        jp_method.add(jrb_req_trace);
-        jp_method_encp.add(jp_method);
-        jtp.addTab("Method", jp_method_encp);
+        jtp.addTab("Method", jp_req_method);
         
         // Headers Tab
         jp_2col_req_headers = new TwoColumnTablePanel(new String[]{"Header", "Value"}, rest_ui);
@@ -278,262 +181,15 @@ public class RESTView extends JPanel implements View {
         jp_2col_req_cookies = new TwoColumnTablePanel(new String[]{"Cookie", "Value"}, rest_ui);
         jtp.addTab("Cookie", jp_2col_req_cookies);
         
-        { // Body Tab
-            setUIReqBodyEnabled(false); // disable control by default
-
-            final JPanel jp_body_none = new JPanel();
-
-            final JScrollPane jsp = new JScrollPane();
-            jsp.setViewportView(jp_body_none);
-            
-            final JPanel jp_body_encp = new JPanel(new BorderLayout());
-            jp_body_encp.add(jcb_body_type, BorderLayout.NORTH);
-            
-            jp_body_encp.add(jsp, BorderLayout.CENTER);
-
-            
-            jcb_body_type.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    if(jcb_body_type.getSelectedItem().equals("None")) {
-                        jsp.setViewportView(jp_body_none);
-                    }
-                    else if(jcb_body_type.getSelectedItem().equals("String body")) {
-                        jsp.setViewportView(jp_req_body_string);
-                    }
-                    else if(jcb_body_type.getSelectedItem().equals("File body")) {
-                        jsp.setViewportView(jp_req_body_file);
-                    }
-                    else if(jcb_body_type.getSelectedItem().equals("Multipart body")) {
-                        jsp.setViewportView(jp_req_body_multipart);
-                    }
-                }
-            });
-
-            jtp.addTab("Body", jp_body_encp);
-        }
+        // Body Tab
+        jp_req_body.disableBody(); // disable control by default
+        jtp.addTab("Body", jp_req_body);
         
-        { // Auth
-            JPanel jp = new JPanel(new BorderLayout());
-            jp.add(jcb_auth_types, BorderLayout.NORTH);
-            
-            // BASIC / DIGEST form:
-            JPanel jp_form_label = new JPanel(new GridLayout(5, 1, BORDER_WIDTH, BORDER_WIDTH));
-            jp_form_label.add(new JLabel("<html>Host: </html>"));
-            jp_form_label.add(new JLabel("<html>Realm: </html>"));
-            jp_form_label.add(new JLabel("<html>Username: <font color=red>*</font></html>"));
-            jp_form_label.add(new JLabel("<html>Password: <font color=red>*</font></html>"));
-            JLabel jl_premptive = new JLabel("Preemptive?");
-            String toolTipText = "Send authentication credentials before challenge";
-            jl_premptive.setToolTipText(toolTipText);
-            jcb_auth_preemptive.setToolTipText(toolTipText);
-            jl_premptive.setLabelFor(jcb_auth_preemptive);
-            jl_premptive.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent me) {
-                    if(jcb_auth_preemptive.isSelected()) {
-                        jcb_auth_preemptive.setSelected(false);
-                    }
-                    else {
-                        jcb_auth_preemptive.setSelected(true);
-                    }
-                }
-            });
-            jp_form_label.add(jl_premptive);
-            
-            JPanel jp_form_input = new JPanel(new GridLayout(5, 1, BORDER_WIDTH, BORDER_WIDTH));
-            jp_form_input.add(jtf_auth_host);
-            jp_form_input.add(jtf_auth_realm);
-            jp_form_input.add(jtf_auth_username);
-            jp_form_input.add(jpf_auth_password);
-            jp_form_input.add(jcb_auth_preemptive);
-            
-            JPanel jp_form = new JPanel(new BorderLayout());
-            jp_form.add(jp_form_label, BorderLayout.WEST);
-            jp_form.add(jp_form_input, BorderLayout.CENTER);
-            final JPanel jp_jsp_form = UIUtil.getFlowLayoutPanelLeftAligned(jp_form);
-            
-            // None Panel:
-            final JPanel jp_none = UIUtil.getFlowLayoutPanelLeftAligned(new JPanel());
-            
-            // OAuth 2 Panel:
-            JPanel jp_oauth2_bearer = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            JLabel jl_oauth2_bearer = new JLabel("Bearer Token: ");
-            jp_oauth2_bearer.add(jl_oauth2_bearer);
-            jp_oauth2_bearer.add(jtf_auth_bearer_token);
-            final JPanel jp_jsp_oauth2_bearer = UIUtil.getFlowLayoutPanelLeftAligned(jp_oauth2_bearer);
-            
-            // NTLM Panel:
-            JPanel jp_ntlm_label = new JPanel(new GridLayout(4, 1, BORDER_WIDTH, BORDER_WIDTH));
-            jp_ntlm_label.add(new JLabel("<html>Domain: <font color=red>*</font></html>"));
-            jp_ntlm_label.add(new JLabel("<html>Workstation: <font color=red>*</font></html>"));
-            jp_ntlm_label.add(new JLabel("<html>Username: <font color=red>*</font></html>"));
-            jp_ntlm_label.add(new JLabel("<html>Password: <font color=red>*</font></html>"));
-            
-            JPanel jp_ntlm_form = new JPanel(new GridLayout(4, 1, BORDER_WIDTH, BORDER_WIDTH));
-            jp_ntlm_form.add(jtf_auth_domain);
-            jp_ntlm_form.add(jtf_auth_workstation);
-            jp_ntlm_form.add(jtf_auth_ntlm_username);
-            jp_ntlm_form.add(jpf_auth_ntlm_password);
-            
-            JButton jb_workstation_name = new JButton(UIUtil.getIconFromClasspath("org/wiztools/restclient/computer.png"));
-            jb_workstation_name.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    try {
-                        final String localHost = InetAddress.getLocalHost().getHostName();
-                        jtf_auth_workstation.setText(localHost);
-                        jtf_auth_workstation.selectAll();
-                        jtf_auth_workstation.requestFocus();
-                    }
-                    catch(UnknownHostException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-            });
-            JPanel jp_ntlm_east = new JPanel(new GridLayout(4, 1, BORDER_WIDTH, BORDER_WIDTH));
-            jp_ntlm_east.add(new JPanel());
-            jp_ntlm_east.add(jb_workstation_name);
-            
-            JPanel jp_ntlm = new JPanel(new BorderLayout());
-            jp_ntlm.add(jp_ntlm_label, BorderLayout.WEST);
-            jp_ntlm.add(jp_ntlm_form, BorderLayout.CENTER);
-            jp_ntlm.add(jp_ntlm_east, BorderLayout.EAST);
-            
-            final JPanel jp_jsp_ntlm = UIUtil.getFlowLayoutPanelLeftAligned(jp_ntlm);
-         
-            // The Scrollpane:
-            final JScrollPane jsp = new JScrollPane();
-            jsp.setViewportView(jp_none);
-            jcb_auth_types.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    final String selected = (String) jcb_auth_types.getSelectedItem();
-                    if(AuthHelper.isNone(selected)) {
-                        jsp.setViewportView(jp_none);
-                    }
-                    else if(AuthHelper.isBasicOrDigest(selected)) {
-                        jsp.setViewportView(jp_jsp_form);
-                        jtf_auth_host.requestFocus();
-                    }
-                    else if(AuthHelper.isNtlm(selected)) {
-                        jsp.setViewportView(jp_jsp_ntlm);
-                        jtf_auth_domain.requestFocus();
-                    }
-                    else if(AuthHelper.isBearer(selected)) {
-                        jsp.setViewportView(jp_jsp_oauth2_bearer);
-                        jtf_auth_bearer_token.requestFocus();
-                    }
-                }
-            });
-            
-            jp.add(jsp, BorderLayout.CENTER);
-            
-            jtp.addTab("Auth", jp);
-        }
+        // Auth
+        jtp.addTab("Auth", jp_req_auth);
         
         // SSL Tab
-        JPanel jp_ssl = new JPanel();
-        jp_ssl.setLayout(new BorderLayout(BORDER_WIDTH, 2));
-        
-        {
-            JTabbedPane jtp_ssl = new JTabbedPane();
-            // jtp_ssl.setTabPlacement(JTabbedPane.LEFT);
-            
-            { // SSL General:
-                JPanel jpGrid = new JPanel(new GridLayout(2, 1));
-                { // Trust self-signed cert:
-                    JPanel jp = new JPanel();
-                    jp.setLayout(new FlowLayout(FlowLayout.LEFT));
-                    jcb_ssl_trust_self_signed_cert.setHorizontalTextPosition(SwingConstants.LEFT);
-                    jp.add(jcb_ssl_trust_self_signed_cert);
-                    jpGrid.add(jp);
-                }
-                { // Hostname verifier:
-                    JPanel jp = new JPanel();
-                    jp.setLayout(new FlowLayout(FlowLayout.LEFT));
-                    jp.add(new JLabel(" Hostname verifier:"));
-                    jp.add(jcb_ssl_hostname_verifier);
-                    jpGrid.add(jp);
-                }
-                    
-                jtp_ssl.addTab("General", UIUtil.getFlowLayoutPanelLeftAligned(jpGrid));
-            }
-            
-            { // Trust store:
-                JPanel jp = new JPanel(new BorderLayout(BORDER_WIDTH, 2));
-                
-                JPanel jp_label = new JPanel(new GridLayout(2, 1));
-                jp_label.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Truststore file:")));
-                jp_label.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Truststore password:")));
-                jp.add(jp_label, BorderLayout.WEST);
-                
-                JPanel jp_input = new JPanel(new GridLayout(2, 1));
-                JPanel jp_truststore_file = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_truststore_file);
-                jb_ssl_browse.setToolTipText("Open truststore file.");
-                jb_ssl_browse.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent arg0) {
-                        File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
-                        if(f == null){
-                            // do nothing--cancel pressed
-                        }
-                        else if(f.canRead()){
-                            jtf_ssl_truststore_file.setText(f.getAbsolutePath());
-                        }
-                        else{
-                            setStatusMessage("Truststore file cannot be read.");
-                        }
-                    }
-                });
-                jp_truststore_file.add(jb_ssl_browse);
-                jp_input.add(jp_truststore_file);
-                
-                jp_input.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_truststore_pwd));
-                jp.add(jp_input, BorderLayout.CENTER);
-                
-                jtp_ssl.addTab("Truststore", UIUtil.getFlowLayoutPanelLeftAligned(jp));
-            }
-            
-            { // Key store
-                JPanel jp = new JPanel(new BorderLayout(BORDER_WIDTH, 2));
-            
-                JPanel jp_label = new JPanel(new GridLayout(2, 1));
-                jp_label.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Keystore file:")));
-                jp_label.add(UIUtil.getFlowLayoutPanelLeftAligned(new JLabel("Keystore password:")));
-                jp.add(jp_label, BorderLayout.WEST);
-                
-                JPanel jp_input = new JPanel(new GridLayout(2, 1));
-                JPanel jp_keystore_file = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_keystore_file);
-                jb_ssl_keystore_browse.setToolTipText("Open keystore file.");
-                jb_ssl_keystore_browse.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent arg0) {
-                        File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
-                        if(f == null){
-                            // do nothing--cancel pressed
-                        }
-                        else if(f.canRead()){
-                            jtf_ssl_keystore_file.setText(f.getAbsolutePath());
-                        }
-                        else{
-                            setStatusMessage("Keystore file cannot be read.");
-                        }
-                    }
-                });
-                jp_keystore_file.add(jb_ssl_keystore_browse);
-                jp_input.add(jp_keystore_file);
-                
-                jp_input.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_keystore_pwd));
-                
-                jp.add(jp_input, BorderLayout.CENTER);
-                
-                jtp_ssl.addTab("Keystore", UIUtil.getFlowLayoutPanelLeftAligned(jp));
-            }
-            
-            jp_ssl.add(jtp_ssl);
-        }
-        jtp.addTab("SSL", jp_ssl);
+        jtp.addTab("SSL", jp_req_ssl);
         
         // Etc panel
         JPanel jp_etc = new JPanel();
@@ -1086,11 +742,11 @@ public class RESTView extends JPanel implements View {
         RequestBean request = new RequestBean();
         boolean authEnabled = false;
         
-        final String authSelected = (String) jcb_auth_types.getSelectedItem();
-        if(!authSelected.equals("None")) {
+        if(jp_req_auth.isAuthSelected()) {
             authEnabled = true;
         }
         
+        final String authSelected = jp_req_auth.getAuthMethod();
         if(authEnabled) {
             if(AuthHelper.isBasic(authSelected)){
                 request.addAuthMethod(HTTPAuthMethod.BASIC);
@@ -1101,10 +757,10 @@ public class RESTView extends JPanel implements View {
             else if(AuthHelper.isNtlm(authSelected)) {
                 request.addAuthMethod(HTTPAuthMethod.NTLM);
                 
-                String domain = jtf_auth_domain.getText();
-                String workstation = jtf_auth_workstation.getText();
-                String uid = jtf_auth_ntlm_username.getText();
-                char[] pwd = jpf_auth_ntlm_password.getPassword();
+                String domain = jp_req_auth.getDomain();
+                String workstation = jp_req_auth.getWorkstation();
+                String uid = jp_req_auth.getUsername();
+                char[] pwd = jp_req_auth.getPassword();
 
                 request.setAuthDomain(domain);
                 request.setAuthWorkstation(workstation);
@@ -1114,16 +770,16 @@ public class RESTView extends JPanel implements View {
             else if(AuthHelper.isBearer(authSelected)) {
                 request.addAuthMethod(HTTPAuthMethod.OAUTH_20_BEARER);
                 
-                request.setAuthBearerToken(jtf_auth_bearer_token.getText());
+                request.setAuthBearerToken(jp_req_auth.getBearerToken());
             }
             
             if(AuthHelper.isBasicOrDigest(authSelected)){ // BASIC or DIGEST:
-                String uid = jtf_auth_username.getText();
-                char[] pwd = jpf_auth_password.getPassword();
+                String uid = jp_req_auth.getUsername();
+                char[] pwd = jp_req_auth.getPassword();
 
-                String realm = jtf_auth_realm.getText();
-                String host = jtf_auth_host.getText();
-                boolean preemptive = jcb_auth_preemptive.isSelected();
+                String realm = jp_req_auth.getRealm();
+                String host = jp_req_auth.getHost();
+                boolean preemptive = jp_req_auth.isPreemptive();
 
                 request.setAuthPreemptive(preemptive);
                 request.setAuthUsername(uid);
@@ -1140,30 +796,10 @@ public class RESTView extends JPanel implements View {
         catch(MalformedURLException ex){
             // URL is left null!
         }
-        if(jrb_req_get.isSelected()){
-            request.setMethod(HTTPMethod.GET);
-        }
-        else if(jrb_req_head.isSelected()){
-            request.setMethod(HTTPMethod.HEAD);
-        }
-        else if(jrb_req_post.isSelected()){
-            request.setMethod(HTTPMethod.POST);
-        }
-        else if(jrb_req_put.isSelected()){
-            request.setMethod(HTTPMethod.PUT);
-        }
-        else if(jrb_req_patch.isSelected()) {
-            request.setMethod(HTTPMethod.PATCH);
-        }
-        else if(jrb_req_delete.isSelected()){
-            request.setMethod(HTTPMethod.DELETE);
-        }
-        else if(jrb_req_options.isSelected()){
-            request.setMethod(HTTPMethod.OPTIONS);
-        }
-        else if(jrb_req_trace.isSelected()){
-            request.setMethod(HTTPMethod.TRACE);
-        }
+        
+        // Method
+        HTTPMethod method = jp_req_method.getSelectedMethod();
+        request.setMethod(method);
         
         { // Get request headers
             Object[][] header_data = jp_2col_req_headers.getTableModel().getData();
@@ -1194,18 +830,18 @@ public class RESTView extends JPanel implements View {
         }
         
         // EntityEnclosing method specific
-        if(doesSelectedMethodSupportEntityBody()){
+        if(jp_req_method.doesSelectedMethodSupportEntityBody()){
             // Get request body
-            // TODO
+            request.setBody(jp_req_body.getEntity());
         }
         
         // SSL specific
-        request.setSslTrustStore(jtf_ssl_truststore_file.getText());
-        request.setSslTrustStorePassword(jpf_ssl_truststore_pwd.getPassword());
-        request.setSslKeyStore(jtf_ssl_keystore_file.getText());
-        request.setSslKeyStorePassword(jpf_ssl_keystore_pwd.getPassword());
-        request.setSslHostNameVerifier((SSLHostnameVerifier)jcb_ssl_hostname_verifier.getSelectedItem());
-        request.setSslTrustSelfSignedCert(jcb_ssl_trust_self_signed_cert.isSelected());
+        request.setSslTrustStore(jp_req_ssl.getTrustStoreFile());
+        request.setSslTrustStorePassword(jp_req_ssl.getTrustStorePassword());
+        request.setSslKeyStore(jp_req_ssl.getKeyStoreFile());
+        request.setSslKeyStorePassword(jp_req_ssl.getKeyStorePassword());
+        request.setSslHostNameVerifier((SSLHostnameVerifier)jp_req_ssl.getHostnameVerifier());
+        request.setSslTrustSelfSignedCert(jp_req_ssl.isTrustSelfSignedCert());
         
         // HTTP version
         request.setHttpVersion((HTTPVersion)jcb_http_version.getSelectedItem());
@@ -1391,17 +1027,13 @@ public class RESTView extends JPanel implements View {
         }
     }
     
-    private boolean doesSelectedMethodSupportEntityBody() {
-        return jrb_req_post.isSelected()
-                || jrb_req_put.isSelected()
-                || jrb_req_patch.isSelected()
-                || jrb_req_delete.isSelected();
+    public void enableBody() {
+        jp_req_body.enableBody();
     }
     
-    private void setUIReqBodyEnabled(final boolean boo){
-        // TODO
+    public void disableBody() {
+        jp_req_body.disableBody();
     }
-    
    
     // Checks if URL starts with http:// or https://
     // If not, appends http:// to the hostname
@@ -1466,22 +1098,20 @@ public class RESTView extends JPanel implements View {
         }
         
         // Req Entity check
-        final HTTPMethod METHOD = request.getMethod();
-        if(METHOD == HTTPMethod.POST || METHOD == HTTPMethod.PUT){
-            // Get request body
-            ReqEntityString reBean = (ReqEntityString) request.getBody();
-            if(reBean != null){
-                String req_body = reBean.getBody();
-                if(!StringUtil.isEmpty(req_body)){
-                    String req_content_type = reBean.getContentType();
-                    Charset req_charset = reBean.getCharset();
-                    if(StringUtil.isEmpty(req_content_type)
-                            || req_charset == null){
-                        errors.add("Body content is set, but `Content-type' and/or `Char-set' not set.");
+        if(jp_req_method.doesSelectedMethodSupportEntityBody()) {
+            ReqEntity entity = jp_req_body.getEntity();
+            if(entity instanceof ReqEntitySimple) {
+                if(entity != null) {
+                    if(entity.getCharset() == null) {
+                        errors.add("Charset not set for body.");
+                    }
+                    if(entity.getContentType() == null) {
+                        errors.add("Content type not set for body.");
                     }
                 }
             }
         }
+        
         return errors;
     }
     
@@ -1490,7 +1120,7 @@ public class RESTView extends JPanel implements View {
         jcb_url.setSelectedItem(null);
         
         // Method
-        jrb_req_get.setSelected(true);
+        jp_req_method.setSelectedMethod(HTTPMethod.GET);
         
         // Headers
         jp_2col_req_headers.getTableModel().setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
@@ -1499,27 +1129,14 @@ public class RESTView extends JPanel implements View {
         jp_2col_req_cookies.getTableModel().setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
         
         // Body
-        // TODO
-        setUIReqBodyEnabled(false);
+        jp_req_body.clearBody();
+        jp_req_body.disableBody();
         
         // Auth
-        jcb_auth_types.setSelectedItem(AuthHelper.NONE);
-        jcb_auth_preemptive.setSelected(true);
-        jtf_auth_host.setText("");
-        jtf_auth_realm.setText("");
-        jtf_auth_username.setText("");
-        jpf_auth_password.setText("");
-        jtf_auth_ntlm_username.setText("");
-        jpf_auth_ntlm_password.setText("");
-        jtf_auth_domain.setText("");
-        jtf_auth_workstation.setText("");
-        jtf_auth_bearer_token.setText("");
+        jp_req_auth.clear();
         
         // SSL
-        jtf_ssl_truststore_file.setText("");
-        jpf_ssl_truststore_pwd.setText("");
-        jcb_ssl_hostname_verifier.setSelectedIndex(0);
-        jcb_ssl_trust_self_signed_cert.setSelected(false);
+        jp_req_ssl.clear();
         
         // HTTP version
         jcb_http_version.setSelectedItem(HTTPVersion.getDefault());
@@ -1619,32 +1236,7 @@ public class RESTView extends JPanel implements View {
 
         // Method
         final HTTPMethod reqMethod = request.getMethod();
-        switch(reqMethod){
-            case GET:
-                jrb_req_get.setSelected(true);
-                break;
-            case POST:
-                jrb_req_post.setSelected(true);
-                break;
-            case PUT:
-                jrb_req_put.setSelected(true);
-                break;
-            case PATCH:
-                jrb_req_patch.setSelected(true);
-                break;
-            case DELETE:
-                jrb_req_delete.setSelected(true);
-                break;
-            case HEAD:
-                jrb_req_head.setSelected(true);
-                break;
-            case OPTIONS:
-                jrb_req_options.setSelected(true);
-                break;
-            case TRACE:
-                jrb_req_trace.setSelected(true);
-                break;
-        }
+        jp_req_method.setSelectedMethod(reqMethod);
 
         // Headers
         MultiValueMap<String, String> headers = request.getHeaders();
@@ -1661,71 +1253,58 @@ public class RESTView extends JPanel implements View {
         // Body
         ReqEntity body = request.getBody();
         if(body != null){
-            if(doesSelectedMethodSupportEntityBody()){
-                setUIReqBodyEnabled(true);
+            if(jp_req_method.doesSelectedMethodSupportEntityBody()){
+                jp_req_body.enableBody();
             }
-            // TODO
+            jp_req_body.setEntity(body);
         }
 
         // Authentication
         List<HTTPAuthMethod> authMethods = request.getAuthMethods();
         for(HTTPAuthMethod authMethod: authMethods){
-            switch(authMethod){
-                case BASIC:
-                    jcb_auth_types.setSelectedItem(AuthHelper.BASIC);
-                    break;
-                case DIGEST:
-                    jcb_auth_types.setSelectedItem(AuthHelper.DIGEST);
-                    break;
-                case NTLM:
-                    jcb_auth_types.setSelectedItem(AuthHelper.NTLM);
-                    break;
-                case OAUTH_20_BEARER:
-                    jcb_auth_types.setSelectedItem(AuthHelper.OAUTH2_BEARER);
-                    break;
-            }
+            jp_req_auth.setAuthMethod(authMethod);
         }
         if(AuthHelper.isBasicOrDigest(authMethods)) {
-            jcb_auth_preemptive.setSelected(request.isAuthPreemptive());
-            jtf_auth_host.setText(StringUtil.getNullStrIfNull(request.getAuthHost()));
-            jtf_auth_realm.setText(StringUtil.getNullStrIfNull(request.getAuthRealm()));
-            jtf_auth_username.setText(StringUtil.getNullStrIfNull(request.getAuthUsername()));
+            jp_req_auth.setPreemptive(request.isAuthPreemptive());
+            jp_req_auth.setHost(StringUtil.getNullStrIfNull(request.getAuthHost()));
+            jp_req_auth.setRealm(StringUtil.getNullStrIfNull(request.getAuthRealm()));
+            jp_req_auth.setUsername(StringUtil.getNullStrIfNull(request.getAuthUsername()));
             if(request.getAuthPassword() != null){
-                jpf_auth_password.setText(new String(request.getAuthPassword()));
+                jp_req_auth.setPassword(new String(request.getAuthPassword()));
             }
         }
         if(AuthHelper.isNtlm(authMethods)) {
-            jtf_auth_domain.setText(request.getAuthDomain());
-            jtf_auth_workstation.setText(request.getAuthWorkstation());
-            jtf_auth_ntlm_username.setText(request.getAuthUsername());
-            jpf_auth_ntlm_password.setText(new String(request.getAuthPassword()));
+            jp_req_auth.setDomain(request.getAuthDomain());
+            jp_req_auth.setWorkstation(request.getAuthWorkstation());
+            jp_req_auth.setNtlmUsername(request.getAuthUsername());
+            jp_req_auth.setNtlmPassword(new String(request.getAuthPassword()));
         }
         if(AuthHelper.isBearer(authMethods)) {
-            jtf_auth_bearer_token.setText(request.getAuthBearerToken());
+            jp_req_auth.setBearerToken(request.getAuthBearerToken());
         }
 
         // SSL
         String sslTruststore = request.getSslTrustStore();
         char[] sslTruststorePassword = request.getSslTrustStorePassword();
         if(sslTruststore != null){
-            jtf_ssl_truststore_file.setText(sslTruststore);
+            jp_req_ssl.setTrustStoreFile(sslTruststore);
         }
         if(sslTruststorePassword != null){
-            jpf_ssl_truststore_pwd.setText(new String(sslTruststorePassword));
+            jp_req_ssl.setTrustStorePassword(new String(sslTruststorePassword));
         }
         SSLHostnameVerifier sslHostnameVerifier = request.getSslHostNameVerifier();
         if(sslHostnameVerifier != null){
-            jcb_ssl_hostname_verifier.setSelectedItem(sslHostnameVerifier);
+            jp_req_ssl.setHostnameVerifier(sslHostnameVerifier);
         }
-        jcb_ssl_trust_self_signed_cert.setSelected(request.isSslTrustSelfSignedCert());
+        jp_req_ssl.setTrustSelfSignedCert(request.isSslTrustSelfSignedCert());
 
         String sslKeystore = request.getSslKeyStore();
         char[] sslKeystorePassword = request.getSslKeyStorePassword();
         if(sslKeystore != null){
-        	jtf_ssl_keystore_file.setText(sslKeystore);
+        	jp_req_ssl.setKeyStoreFile(sslKeystore);
         }
         if(sslKeystorePassword != null){
-        	jpf_ssl_keystore_pwd.setText(new String(sslKeystorePassword));
+        	jp_req_ssl.setKeyStorePassword(new String(sslKeystorePassword));
         }
 
         // HTTP Version
