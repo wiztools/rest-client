@@ -4,12 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.charset.Charset;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.wiztools.restclient.ReqEntity;
+import org.wiztools.restclient.ReqEntityFileBean;
 import org.wiztools.restclient.Util;
 
 /**
@@ -92,6 +95,10 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
     
     @Override
     public ReqEntity getEntity() {
-        return null;
+        ReqEntityFileBean entity = new ReqEntityFileBean();
+        entity.setBody(new File(jtf_file.getText()));
+        entity.setCharset(Charset.forName(Util.getCharsetFromContentType(jtf_content_type_charset.getText())));
+        entity.setContentType(Util.getMimeFromContentType(jtf_content_type_charset.getText()));
+        return entity;
     }
 }
