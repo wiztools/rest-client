@@ -10,7 +10,7 @@ import javax.swing.JFrame;
  * @author subwiz
  */
 @ImplementedBy(RESTMain.class)
-interface RESTUserInterface {
+public interface RESTUserInterface {
 
     public JFrame getFrame();
 
