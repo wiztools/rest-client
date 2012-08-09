@@ -9,15 +9,13 @@ import java.nio.charset.Charset;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.wiztools.restclient.ReqEntity;
 import org.wiztools.restclient.ReqEntityFileBean;
 import org.wiztools.restclient.Util;
-import org.wiztools.restclient.ui.RCFileView;
-import org.wiztools.restclient.ui.RESTUserInterface;
-import org.wiztools.restclient.ui.RESTView;
-import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.ui.*;
 import org.wiztools.restclient.ui.reqbody.ContentTypeCharsetComponent;
 
 /**
@@ -45,10 +43,11 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
         add(jp_north, BorderLayout.NORTH);
         
         // Center
+        jb_body_file.setToolTipText("Select file");
         jb_body_file.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                // TODO
+                selectFile();
             }
         });
         JPanel jp_center = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -56,6 +55,21 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
         jp_center.add(jb_body_file);
         
         add(UIUtil.getFlowLayoutPanelLeftAligned(jp_center), BorderLayout.CENTER);
+    }
+    
+    private void selectFile() {
+        File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
+        if(f == null){ // Pressed cancel?
+            return;
+        }
+        if(!f.canRead()){
+            JOptionPane.showMessageDialog(rest_ui.getFrame(),
+                    "File not readable: " + f.getAbsolutePath(),
+                    "IO Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        jtf_file.setText(f.getAbsolutePath());
     }
     
     @Override
