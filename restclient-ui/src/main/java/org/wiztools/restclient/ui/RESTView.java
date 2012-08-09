@@ -55,6 +55,7 @@ class RESTView extends JPanel implements View {
     
     // @Inject private ReqBodyPanelString jp_req_body_string;
     @Inject private ReqBodyPanelFile jp_req_body_file;
+    @Inject private ReqBodyPanelMultipart jp_req_body_multipart;
     
     // private JScrollPane jsp_test_script;
     private ScriptEditor se_test_script = ScriptEditorFactory.getGroovyScriptEditor();
@@ -299,7 +300,7 @@ class RESTView extends JPanel implements View {
                         jsp.setViewportView(jp_req_body_file);
                     }
                     else if(jcb_body_type.getSelectedItem().equals("Multipart body")) {
-                        jsp.setViewportView(jp_req_body_file);
+                        jsp.setViewportView(jp_req_body_multipart);
                     }
                 }
             });
