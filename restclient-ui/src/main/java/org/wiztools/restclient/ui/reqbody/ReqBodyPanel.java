@@ -62,13 +62,19 @@ public class ReqBodyPanel extends JPanel implements ReqBodyOps {
     @Override
     public void setEntity(ReqEntity entity) {
         if(entity instanceof ReqEntityString) {
+            jcb_body_type.setSelectedItem(STRING_BODY);
             jp_req_body_string.setEntity(entity);
         }
         else if(entity instanceof ReqEntityFile) {
+            jcb_body_type.setSelectedItem(FILE_BODY);
             jp_req_body_file.setEntity(entity);
         }
         else if(entity instanceof ReqEntityMultipart) {
+            jcb_body_type.setSelectedItem(MULTIPART_BODY);
             jp_req_body_multipart.setEntity(entity);
+        }
+        else {
+            jcb_body_type.setSelectedItem(NONE_BODY);
         }
     }
 
