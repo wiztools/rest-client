@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLEventReader;
@@ -247,7 +248,7 @@ public final class XMLUtil {
             ReqEntity rBean = bean.getBody();
             if (rBean != null) {
                 String contentType = rBean.getContentType();
-                String charSet = rBean.getCharset();
+                Charset charset = rBean.getCharset();
                 /*String body = rBean.getBody(); TODO
                 Element e = new Element("body");
                 e.addAttribute(new Attribute("content-type", contentType));
@@ -426,7 +427,7 @@ public final class XMLUtil {
             }
             else if ("body".equals(nodeName)) {
                 requestBean.setBody(new ReqEntityStringBean(tNode.getValue(), tNode.getAttributeValue("content-type"),
-                        tNode.getAttributeValue("charset")));
+                        Charset.forName(tNode.getAttributeValue("charset"))));
             }
             else if ("test-script".equals(nodeName)) {
                 requestBean.setTestScript(tNode.getValue());

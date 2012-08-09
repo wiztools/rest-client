@@ -2,12 +2,14 @@ package org.wiztools.restclient;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.wiztools.commons.Charsets;
 import org.wiztools.restclient.server.TraceServer;
 
 /**
@@ -92,7 +94,7 @@ public class HTTPClientRequestExecuterTest {
         System.out.println("run");
         
         final String contentType = "test/text";
-        final String charset = "UTF-8";
+        final Charset charset = Charsets.UTF_8;
         RequestBean request = getRequestBean();
         request.setMethod(HTTPMethod.POST);
         ReqEntityStringBean rBean = new ReqEntityStringBean("", contentType, charset);

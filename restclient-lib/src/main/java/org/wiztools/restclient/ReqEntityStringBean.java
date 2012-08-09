@@ -1,5 +1,7 @@
 package org.wiztools.restclient;
 
+import java.nio.charset.Charset;
+
 /**
  *
  * @author schandran
@@ -7,13 +9,13 @@ package org.wiztools.restclient;
 public final class ReqEntityStringBean implements ReqEntityString {
     
     private String contentType;
-    private String charSet;
+    private Charset charset;
     private String body;
     
-    public ReqEntityStringBean(String body, String contentType, String charSet){
+    public ReqEntityStringBean(String body, String contentType, Charset charset){
         this.body = body;
         this.contentType = contentType;
-        this.charSet = charSet;
+        this.charset = charset;
     }
 
     @Override
@@ -26,12 +28,12 @@ public final class ReqEntityStringBean implements ReqEntityString {
     }
 
     @Override
-    public String getCharset() {
-        return charSet;
+    public Charset getCharset() {
+        return charset;
     }
 
-    public void setCharset(String charSet) {
-        this.charSet = charSet;
+    public void setCharset(Charset charset) {
+        this.charset = charset;
     }
 
     @Override
@@ -45,12 +47,12 @@ public final class ReqEntityStringBean implements ReqEntityString {
     
     @Override
     public String getContentTypeCharsetFormatted(){
-        return Util.getFormattedContentType(contentType, charSet);
+        return Util.getFormattedContentType(contentType, charset);
     }
     
     @Override
     public Object clone(){
-        ReqEntityStringBean cloned = new ReqEntityStringBean(body, contentType, charSet);
+        ReqEntityStringBean cloned = new ReqEntityStringBean(body, contentType, charset);
         return cloned;
     }
     
@@ -63,7 +65,7 @@ public final class ReqEntityStringBean implements ReqEntityString {
             ReqEntityStringBean bean = (ReqEntityStringBean)o;
             boolean isEqual = true;
             isEqual = isEqual && (this.body == null? bean.body == null: this.body.equals(bean.body));
-            isEqual = isEqual && (this.charSet == null? bean.charSet == null: this.charSet.equals(bean.charSet));
+            isEqual = isEqual && (this.charset == null? bean.charset == null: this.charset.equals(bean.charset));
             isEqual = isEqual && (this.contentType == null? bean.contentType == null: this.contentType.equals(bean.contentType));
             return isEqual;
         }
@@ -74,7 +76,7 @@ public final class ReqEntityStringBean implements ReqEntityString {
     public int hashCode() {
         int hash = 3;
         hash = 29 * hash + (this.contentType != null ? this.contentType.hashCode() : 0);
-        hash = 29 * hash + (this.charSet != null ? this.charSet.hashCode() : 0);
+        hash = 29 * hash + (this.charset != null ? this.charset.hashCode() : 0);
         hash = 29 * hash + (this.body != null ? this.body.hashCode() : 0);
         return hash;
     }
@@ -84,7 +86,7 @@ public final class ReqEntityStringBean implements ReqEntityString {
         StringBuilder sb = new StringBuilder();
         sb.append("@RequestBody[");
         sb.append(contentType).append(", ");
-        sb.append(charSet).append(", ");
+        sb.append(charset).append(", ");
         sb.append(body);
         sb.append("]");
         return sb.toString();

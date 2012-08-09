@@ -1,12 +1,14 @@
 package org.wiztools.restclient;
 
+import java.nio.charset.Charset;
+
 /**
  *
  * @author subwiz
  */
 public interface ReqEntity extends Cloneable {
 
-    String getCharset();
+    Charset getCharset();
 
     String getContentType();
 

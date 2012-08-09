@@ -1,5 +1,7 @@
 package org.wiztools.restclient;
 
+import java.nio.charset.Charset;
+
 /**
  *
  * @author schandran
@@ -7,7 +9,7 @@ package org.wiztools.restclient;
 public class RoReqEntityStringBean implements ReqEntityString {
     
     private final String contentType;
-    private final String charSet;
+    private final Charset charset;
     private final String body;
 
     @Override
@@ -16,8 +18,8 @@ public class RoReqEntityStringBean implements ReqEntityString {
     }
 
     @Override
-    public String getCharset() {
-        return charSet;
+    public Charset getCharset() {
+        return charset;
     }
 
     @Override
@@ -27,13 +29,13 @@ public class RoReqEntityStringBean implements ReqEntityString {
     
     public RoReqEntityStringBean(final ReqEntityString requestEntity){
         contentType = requestEntity.getContentType();
-        charSet = requestEntity.getCharset();
+        charset = requestEntity.getCharset();
         body = requestEntity.getBody();
     }
 
     @Override
     public String getContentTypeCharsetFormatted() {
-        return Util.getFormattedContentType(contentType, charSet);
+        return Util.getFormattedContentType(contentType, charset);
     }
 
     @Override
