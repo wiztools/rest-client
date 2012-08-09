@@ -8,11 +8,11 @@ import org.wiztools.restclient.HTTPAuthMethod;
  * @author subwiz
  */
 public class AuthHelper {
-    static final String NONE = "None";
-    static final String BASIC = "BASIC";
-    static final String DIGEST = "DIGEST";
-    static final String NTLM = "NTLM";
-    static final String OAUTH2_BEARER = "OAuth2 Bearer";
+    public static final String NONE = "None";
+    public static final String BASIC = "BASIC";
+    public static final String DIGEST = "DIGEST";
+    public static final String NTLM = "NTLM";
+    public static final String OAUTH2_BEARER = "OAuth2 Bearer";
     
     private static final String[] ALL = new String[]{NONE, BASIC, DIGEST, NTLM, OAUTH2_BEARER};
     
