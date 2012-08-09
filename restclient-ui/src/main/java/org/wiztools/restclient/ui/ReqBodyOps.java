@@ -9,7 +9,7 @@ import org.wiztools.restclient.ReqEntity;
 public interface ReqBodyOps {
     void enableBody();
     void disableBody();
-    void clear();
+    void clearBody();
     
     ReqEntity getEntity();
 }

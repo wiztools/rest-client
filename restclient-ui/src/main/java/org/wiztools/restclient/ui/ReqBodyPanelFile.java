@@ -85,7 +85,7 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
     }
     
     @Override
-    public void clear() {
+    public void clearBody() {
         jtf_content_type_charset.setText("");
         jtf_file.setText("");
     }
