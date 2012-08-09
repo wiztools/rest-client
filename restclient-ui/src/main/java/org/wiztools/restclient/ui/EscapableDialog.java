@@ -16,7 +16,7 @@ import javax.swing.JDialog;
  *
  * @author schandran
  */
-abstract class EscapableDialog extends JDialog implements KeyListener, ContainerListener {
+public abstract class EscapableDialog extends JDialog implements KeyListener, ContainerListener {
     
     private final Frame _frame;
 
@@ -35,6 +35,7 @@ abstract class EscapableDialog extends JDialog implements KeyListener, Container
     public abstract void doEscape(AWTEvent event);
 
     //KeyListener interface
+    @Override
     public void keyPressed(KeyEvent e) {
 
 
@@ -44,17 +45,21 @@ abstract class EscapableDialog extends JDialog implements KeyListener, Container
         }
     }
 
+    @Override
     public void keyReleased(KeyEvent e) {
     }
 
+    @Override
     public void keyTyped(KeyEvent e) {
     }
 
     //ContainerListener interface
+    @Override
     public void componentAdded(ContainerEvent e) {
         registerKeyAction(e.getChild());
     }
 
+    @Override
     public void componentRemoved(ContainerEvent e) {
         registerKeyAction(e.getChild());
     }

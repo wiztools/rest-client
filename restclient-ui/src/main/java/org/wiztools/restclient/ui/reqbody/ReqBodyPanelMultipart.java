@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.reqbody;
 
 import javax.swing.JPanel;
 import org.wiztools.restclient.ReqEntity;

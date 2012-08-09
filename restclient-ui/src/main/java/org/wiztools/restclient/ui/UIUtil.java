@@ -16,7 +16,7 @@ import javax.swing.JPanel;
  *
  * @author Subhash
  */
-final class UIUtil {
+public final class UIUtil {
     
     private UIUtil(){}
     

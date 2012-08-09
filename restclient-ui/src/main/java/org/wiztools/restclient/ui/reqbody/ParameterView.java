@@ -1,9 +1,9 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.reqbody;
 
 /**
  *
  * @author schandran
  */
-interface ParameterView {
+public interface ParameterView {
     public void setParameter(String params);
 }

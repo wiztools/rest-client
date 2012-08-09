@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.reqbody;
 
 import org.wiztools.restclient.ReqEntity;
 

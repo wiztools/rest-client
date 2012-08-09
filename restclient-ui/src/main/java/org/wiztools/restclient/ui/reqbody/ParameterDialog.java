@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.reqbody;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
@@ -13,12 +13,17 @@ import javax.swing.JPanel;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapLinkedHashSet;
 import org.wiztools.restclient.Util;
+import org.wiztools.restclient.ui.EscapableDialog;
+import org.wiztools.restclient.ui.RESTUserInterface;
+import org.wiztools.restclient.ui.RESTView;
+import org.wiztools.restclient.ui.TwoColumnTableModel;
+import org.wiztools.restclient.ui.TwoColumnTablePanel;
 
 /**
  *
  * @author schandran
  */
-class ParameterDialog extends EscapableDialog {
+public class ParameterDialog extends EscapableDialog {
     
     private final ParameterView view;
     private TwoColumnTablePanel jp_2col_center;

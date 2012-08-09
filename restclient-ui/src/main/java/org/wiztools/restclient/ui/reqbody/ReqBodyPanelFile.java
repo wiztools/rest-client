@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.reqbody;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -14,6 +14,11 @@ import javax.swing.JTextField;
 import org.wiztools.restclient.ReqEntity;
 import org.wiztools.restclient.ReqEntityFileBean;
 import org.wiztools.restclient.Util;
+import org.wiztools.restclient.ui.RCFileView;
+import org.wiztools.restclient.ui.RESTUserInterface;
+import org.wiztools.restclient.ui.RESTView;
+import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.ui.reqbody.ContentTypeCharsetComponent;
 
 /**
  *
@@ -24,9 +29,7 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
     @Inject RESTView view;
     @Inject RESTUserInterface rest_ui;
     
-    private JTextField jtf_content_type_charset = new JTextField(20);
-    private JButton jb_body_content_type = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "edit.png"));
-    private BodyContentTypeDialog jd_body_content_type;
+    @Inject ContentTypeCharsetComponent jp_content_type_charset;
     
     private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JTextField jtf_file = new JTextField(20);
@@ -35,61 +38,43 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
     public void init() {
         setLayout(new BorderLayout());
         
-        jtf_content_type_charset.setEditable(false);
-        
-        jd_body_content_type = new BodyContentTypeDialog(rest_ui.getFrame());
-        jd_body_content_type.addContentTypeCharSetChangeListener(new ContentTypeCharSetChangeListener() {
-            @Override
-            public void changed(String contentType, String charSet) {
-                final String formatted = Util.getFormattedContentType(contentType, charSet);
-                jtf_content_type_charset.setText(formatted);
-            }
-        });
-        
-        jb_body_content_type.setToolTipText("Edit Content-type & Charset");
-        jb_body_content_type.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                jd_body_content_type.setVisible(true);
-            }
-        });
-        
         // North
         JPanel jp_north = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jp_north.add(jtf_content_type_charset);
-        jp_north.add(jb_body_content_type);
+        jp_north.add(jp_content_type_charset);
         
         add(jp_north, BorderLayout.NORTH);
         
         // Center
+        jb_body_file.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                // TODO
+            }
+        });
         JPanel jp_center = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jp_center.add(jtf_file);
         jp_center.add(jb_body_file);
         
-        add(jp_center, BorderLayout.CENTER);
+        add(UIUtil.getFlowLayoutPanelLeftAligned(jp_center), BorderLayout.CENTER);
     }
     
     @Override
     public void enableBody() {
-        jtf_content_type_charset.setEnabled(true);
+        jp_content_type_charset.enableComponent();
         jtf_file.setEnabled(true);
-        
-        jb_body_content_type.setEnabled(true);
         jb_body_file.setEnabled(true);
     }
     
     @Override
     public void disableBody() {
-        jtf_content_type_charset.setEnabled(false);
+        jp_content_type_charset.disableComponent();
         jtf_file.setEnabled(false);
-        
-        jb_body_content_type.setEnabled(false);
         jb_body_file.setEnabled(false);
     }
     
     @Override
     public void clearBody() {
-        jtf_content_type_charset.setText("");
+        jp_content_type_charset.clearComponent();
         jtf_file.setText("");
     }
     
@@ -97,8 +82,10 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
     public ReqEntity getEntity() {
         ReqEntityFileBean entity = new ReqEntityFileBean();
         entity.setBody(new File(jtf_file.getText()));
-        entity.setCharset(Charset.forName(Util.getCharsetFromContentType(jtf_content_type_charset.getText())));
-        entity.setContentType(Util.getMimeFromContentType(jtf_content_type_charset.getText()));
+        entity.setCharset(Charset.forName(Util.getCharsetFromContentType(
+                jp_content_type_charset.getContentTypeCharsetString())));
+        entity.setContentType(Util.getMimeFromContentType(
+                jp_content_type_charset.getContentTypeCharsetString()));
         return entity;
     }
 }

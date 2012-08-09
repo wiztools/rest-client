@@ -4,7 +4,7 @@ package org.wiztools.restclient.ui;
  *
  * @author Subhash
  */
-enum FileChooserType {
+public enum FileChooserType {
     OPEN_REQUEST,
     OPEN_RESPONSE,
     OPEN_ARCHIVE,

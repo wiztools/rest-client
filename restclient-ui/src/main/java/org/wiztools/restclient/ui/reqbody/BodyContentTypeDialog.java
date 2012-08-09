@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.reqbody;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,12 +13,13 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.*;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import org.wiztools.restclient.ui.EscapableDialog;
 
 /**
  *
  * @author schandran
  */
-class BodyContentTypeDialog extends EscapableDialog {
+public class BodyContentTypeDialog extends EscapableDialog {
     
     private static final String[] contentTypeArr;
     public static final String DEFAULT_CONTENT_TYPE = "text/plain";
@@ -81,7 +82,7 @@ class BodyContentTypeDialog extends EscapableDialog {
     private String contentType = DEFAULT_CONTENT_TYPE;
     private String charSet = DEFAULT_CHARSET;
     
-    BodyContentTypeDialog(Frame f){
+    public BodyContentTypeDialog(Frame f){
         // true means Modal:
         super(f, true);
         me = this;
@@ -161,7 +162,7 @@ class BodyContentTypeDialog extends EscapableDialog {
             charSet = (String)jcb_char_set.getSelectedItem();
 
             // Fire all listeners:
-            for(ContentTypeCharSetChangeListener listener: listeners){
+            for(ContentTypeCharsetChangeListener listener: listeners){
                 listener.changed(contentType, charSet);
             }
         }
@@ -179,7 +180,7 @@ class BodyContentTypeDialog extends EscapableDialog {
     void setContentType(final String contentType){
         this.contentType = contentType;
         jcb_content_type.setSelectedItem(contentType);
-        for(ContentTypeCharSetChangeListener listener: listeners){
+        for(ContentTypeCharsetChangeListener listener: listeners){
             listener.changed(contentType, charSet);
         }
     }
@@ -191,14 +192,14 @@ class BodyContentTypeDialog extends EscapableDialog {
     void setCharSet(final String charSet){
         this.charSet = charSet;
         jcb_char_set.setSelectedItem(charSet);
-        for(ContentTypeCharSetChangeListener listener: listeners){
+        for(ContentTypeCharsetChangeListener listener: listeners){
             listener.changed(contentType, charSet);
         }
     }
     
-    private List<ContentTypeCharSetChangeListener> listeners = new ArrayList<ContentTypeCharSetChangeListener>();
+    private List<ContentTypeCharsetChangeListener> listeners = new ArrayList<ContentTypeCharsetChangeListener>();
     
-    void addContentTypeCharSetChangeListener(ContentTypeCharSetChangeListener listener){
+    public void addContentTypeCharSetChangeListener(ContentTypeCharsetChangeListener listener){
         listeners.add(listener);
     }
 }

@@ -7,7 +7,7 @@ import org.wiztools.commons.MultiValueMap;
  *
  * @author schandran
  */
-class TwoColumnTableModel extends AbstractTableModel {
+public class TwoColumnTableModel extends AbstractTableModel {
 
     private final String[] colNames;
     private Object[][] data = new String[0][0];

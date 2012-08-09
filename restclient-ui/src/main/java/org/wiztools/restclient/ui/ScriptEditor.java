@@ -6,7 +6,7 @@ import javax.swing.text.JTextComponent;
 /**
  *
  */
-interface ScriptEditor {
+public interface ScriptEditor {
 
     /**
      * view component for test script editor

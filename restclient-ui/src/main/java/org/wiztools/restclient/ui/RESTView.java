@@ -1,10 +1,15 @@
 package org.wiztools.restclient.ui;
 
+import org.wiztools.restclient.ui.reqbody.ParameterDialog;
+import org.wiztools.restclient.ui.reqbody.ReqBodyPanelFile;
+import org.wiztools.restclient.ui.reqbody.ReqBodyPanelMultipart;
+import org.wiztools.restclient.ui.reqbody.ReqBodyPanelString;
 import com.jidesoft.swing.AutoCompletion;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
@@ -24,7 +29,7 @@ import org.wiztools.restclient.*;
  * @author Subhash
  */
 @Singleton
-class RESTView extends JPanel implements View {
+public class RESTView extends JPanel implements View {
     private static final Logger LOG = Logger.getLogger(RESTView.class.getName());
     
     private ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
@@ -53,7 +58,7 @@ class RESTView extends JPanel implements View {
     private JComboBox jcb_body_type = new JComboBox(
             new String[]{"None", "String body", "File body", "Multipart body"});
     
-    // @Inject private ReqBodyPanelString jp_req_body_string;
+    @Inject private ReqBodyPanelString jp_req_body_string;
     @Inject private ReqBodyPanelFile jp_req_body_file;
     @Inject private ReqBodyPanelMultipart jp_req_body_multipart;
     
@@ -294,7 +299,7 @@ class RESTView extends JPanel implements View {
                         jsp.setViewportView(jp_body_none);
                     }
                     else if(jcb_body_type.getSelectedItem().equals("String body")) {
-                        jsp.setViewportView(jp_req_body_file);
+                        jsp.setViewportView(jp_req_body_string);
                     }
                     else if(jcb_body_type.getSelectedItem().equals("File body")) {
                         jsp.setViewportView(jp_req_body_file);
@@ -1469,9 +1474,9 @@ class RESTView extends JPanel implements View {
                 String req_body = reBean.getBody();
                 if(!StringUtil.isEmpty(req_body)){
                     String req_content_type = reBean.getContentType();
-                    String req_char_set = reBean.getCharset();
+                    Charset req_charset = reBean.getCharset();
                     if(StringUtil.isEmpty(req_content_type)
-                            || StringUtil.isEmpty(req_char_set)){
+                            || req_charset == null){
                         errors.add("Body content is set, but `Content-type' and/or `Char-set' not set.");
                     }
                 }

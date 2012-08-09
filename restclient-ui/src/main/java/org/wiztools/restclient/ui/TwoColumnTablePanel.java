@@ -27,7 +27,7 @@ import org.wiztools.commons.StringUtil;
  *
  * @author schandran
  */
-final class TwoColumnTablePanel extends JPanel {
+public final class TwoColumnTablePanel extends JPanel {
 
     private RESTUserInterface rest_ui;
     
