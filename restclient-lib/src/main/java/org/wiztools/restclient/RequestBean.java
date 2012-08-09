@@ -12,7 +12,7 @@ import org.wiztools.commons.MultiValueMapArrayList;
 
 /**
  *
- * @author schandran
+ * @author subwiz
  */
 public final class RequestBean implements Request{
     
