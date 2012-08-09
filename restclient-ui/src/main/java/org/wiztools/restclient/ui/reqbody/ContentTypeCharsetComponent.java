@@ -3,6 +3,7 @@ package org.wiztools.restclient.ui.reqbody;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.charset.Charset;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JButton;
@@ -52,6 +53,15 @@ public class ContentTypeCharsetComponent extends JPanel {
     
     public String getContentTypeCharsetString() {
         return jtf_content_type_charset.getText();
+    }
+    
+    public String getContentType() {
+        return Util.getMimeFromContentType(jtf_content_type_charset.getText());
+    }
+    
+    public Charset getCharset() {
+        return Charset.forName(Util.getCharsetFromContentType(
+                jtf_content_type_charset.getText()));
     }
     
     public void enableComponent() {

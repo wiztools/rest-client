@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JButton;
@@ -15,6 +16,7 @@ import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ReqEntity;
+import org.wiztools.restclient.ReqEntityStringBean;
 import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.ui.*;
 
@@ -114,7 +116,14 @@ public class ReqBodyPanelString extends JPanel implements ReqBodyOps {
 
     @Override
     public ReqEntity getEntity() {
-        return null;
+        String body = se_req_body.getText();
+        String contentType = jp_content_type_charset.getContentType();
+        Charset charset = jp_content_type_charset.getCharset();
+        ReqEntityStringBean entity = new ReqEntityStringBean(
+                body,
+                contentType,
+                charset);
+        return entity;
     }
     
 }
