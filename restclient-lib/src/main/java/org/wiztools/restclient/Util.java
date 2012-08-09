@@ -228,6 +228,10 @@ public final class Util {
         String charsetFormatted = StringUtil.isEmpty(charset)? "": "; charset=" + charset;
         return contentType + charsetFormatted;
     }
+    
+    public static String getFormattedContentType(final String contentType, final Charset charset){
+        return getFormattedContentType(contentType, charset.name());
+    }
 
     public static String getCharsetFromContentType(final String contentType) {
         Pattern p = Pattern.compile("^.+charset=([^;]+).*$");
