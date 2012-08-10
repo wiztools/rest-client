@@ -250,5 +250,9 @@ class ReqBodyPanelString extends JPanel implements ReqBodyOps {
                 charset);
         return entity;
     }
-    
+
+    @Override
+    public void requestFocus() {
+        se_req_body.getEditorComponent().requestFocus();
+    }
 }

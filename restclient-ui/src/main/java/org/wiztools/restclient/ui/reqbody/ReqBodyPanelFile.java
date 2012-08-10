@@ -113,4 +113,9 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
                 jp_content_type_charset.getContentTypeCharsetString()));
         return entity;
     }
+
+    @Override
+    public void requestFocus() {
+        jp_content_type_charset.requestFocus();
+    }
 }

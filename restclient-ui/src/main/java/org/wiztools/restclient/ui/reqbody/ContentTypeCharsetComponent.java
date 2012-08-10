@@ -52,6 +52,11 @@ public class ContentTypeCharsetComponent extends JPanel {
         });
         add(jb_body_content_type);
     }
+
+    @Override
+    public void requestFocus() {
+        jb_body_content_type.requestFocus();
+    }
     
     public void setContentTypeCharset(String contentType, Charset charset) {
         jd_body_content_type.setContentType(contentType);

@@ -123,7 +123,9 @@ public class ReqBodyPanel extends JPanel implements ReqBodyOps {
         jcb_body_type.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                jsp.setViewportView(getPanelFromSelection());
+                JPanel jp = getPanelFromSelection();
+                jsp.setViewportView(jp);
+                jp.requestFocus();
             }
         });
     }
