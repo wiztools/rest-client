@@ -121,6 +121,14 @@
         </plugins>
     </reporting>
     
+    <dependencies>
+        <dependency>
+            <groupId>org.wiztools.commons</groupId>
+            <artifactId>wiztools-commons-lib</artifactId>
+            <version>0.3.0</version>
+        </dependency>
+    </dependencies>
+    
     <modules>
         <module>restclient-server</module>
         <module>restclient-lib</module>
