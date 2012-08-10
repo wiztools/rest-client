@@ -17,13 +17,13 @@ import org.wiztools.restclient.ui.*;
  * @author subwiz
  */
 public class ContentTypeCharsetComponent extends JPanel {
-    @Inject RESTUserInterface rest_ui;
+    @Inject private BodyContentTypeDialog jd_body_content_type;
     
     private static final String DEFAULT_CONTENT_CHARSET = "text/plain; charset=UTF-8";
     
     private JTextField jtf_content_type_charset = new JTextField(DEFAULT_CONTENT_CHARSET, 20);
     private JButton jb_body_content_type = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "edit.png"));
-    private BodyContentTypeDialog jd_body_content_type;
+    
     
     @PostConstruct
     protected void init() {
@@ -32,7 +32,6 @@ public class ContentTypeCharsetComponent extends JPanel {
         jtf_content_type_charset.setEditable(false);
         add(jtf_content_type_charset);
         
-        jd_body_content_type = new BodyContentTypeDialog(rest_ui.getFrame());
         jd_body_content_type.addContentTypeCharSetChangeListener(new ContentTypeCharsetChangeListener() {
             @Override
             public void changed(String contentType, String charSet) {
@@ -51,8 +50,11 @@ public class ContentTypeCharsetComponent extends JPanel {
         add(jb_body_content_type);
     }
     
-    public void setContentTypeCharsetString(String str) {
-        jtf_content_type_charset.setText(str);
+    public void setContentTypeCharset(String contentType, Charset charset) {
+        jd_body_content_type.setContentType(contentType);
+        jd_body_content_type.setCharset(charset);
+        jtf_content_type_charset.setText(
+                Util.getFormattedContentType(contentType, charset));
     }
     
     public String getContentTypeCharsetString() {

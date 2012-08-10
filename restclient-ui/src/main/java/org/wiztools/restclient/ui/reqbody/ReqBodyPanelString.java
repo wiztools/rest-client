@@ -146,10 +146,9 @@ class ReqBodyPanelString extends JPanel implements ReqBodyOps {
                     "Parameter Content-type and Charset",
                     JOptionPane.YES_NO_OPTION);
             if(status == JOptionPane.YES_OPTION){
-                jp_content_type_charset.setContentTypeCharsetString(
-                        Util.getFormattedContentType(
+                jp_content_type_charset.setContentTypeCharset(                        
                             BodyContentTypeDialog.PARAM_CONTENT_TYPE,
-                            BodyContentTypeDialog.PARAM_CHARSET));
+                            BodyContentTypeDialog.PARAM_CHARSET);
             }
         }
     }
