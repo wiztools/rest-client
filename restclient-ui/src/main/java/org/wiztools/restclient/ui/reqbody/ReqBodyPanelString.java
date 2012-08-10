@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.*;
 import org.wiztools.restclient.ui.*;
 
@@ -27,8 +28,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyOps {
     @Inject RESTUserInterface rest_ui;
     
     @Inject private ContentTypeCharsetComponent jp_content_type_charset;
-    
-    private ParameterDialog jd_req_paramDialog;
+    @Inject private ParameterDialog jd_req_paramDialog;
     
     private ScriptEditor se_req_body;
     {
@@ -49,6 +49,15 @@ class ReqBodyPanelString extends JPanel implements ReqBodyOps {
     
     @PostConstruct
     protected void init() {
+        // Parameter dialog initialization
+        jd_req_paramDialog.addParameterGenerationListener(new ParameterGenerationListener() {
+            @Override
+            public void onParameterGeneration(String params) {
+                se_req_body.setText(params);
+            }
+        });
+        
+        // Layout
         setLayout(new BorderLayout());
         
         // North
@@ -62,6 +71,18 @@ class ReqBodyPanelString extends JPanel implements ReqBodyOps {
             }
         });
         jp_north.add(jb_body_file);
+        
+        jb_body_params.setToolTipText("Insert parameters");
+        jb_body_params.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if(canSetReqBodyText()) {
+                    checkAndSetParameterContentType();
+                    jd_req_paramDialog.setLocationRelativeTo(rest_ui.getFrame());
+                    jd_req_paramDialog.setVisible(true);
+                }
+            }
+        });
         jp_north.add(jb_body_params);
         
         add(jp_north, BorderLayout.NORTH);
@@ -93,6 +114,43 @@ class ReqBodyPanelString extends JPanel implements ReqBodyOps {
                     JOptionPane.ERROR_MESSAGE);
             // jd_body_content_type.setContentType(oldContentType);
             // jd_body_content_type.setCharSet(oldCharset);
+        }
+    }
+    
+    private boolean canSetReqBodyText(){
+        if(StringUtil.isEmpty(se_req_body.getText())){
+            return true;
+        }
+        else{
+            int response = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
+                    "Body text exists. Erase?",
+                    "Erase?",
+                    JOptionPane.YES_NO_OPTION);
+            if(response == JOptionPane.YES_OPTION){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private void checkAndSetParameterContentType(){
+        if(!jp_content_type_charset.getContentType().equals(BodyContentTypeDialog.PARAM_CONTENT_TYPE)
+                || !jp_content_type_charset.getCharset().equals(BodyContentTypeDialog.PARAM_CHARSET)){
+            int status = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
+                    "<html>For parameter the Content-type and Charset needs <br>" +
+                    "to be `" + BodyContentTypeDialog.PARAM_CONTENT_TYPE +
+                    "' and `"+
+                    BodyContentTypeDialog.PARAM_CHARSET +
+                    "' respectively.<br>"+
+                    "Do you want to set this option?</html>",
+                    "Parameter Content-type and Charset",
+                    JOptionPane.YES_NO_OPTION);
+            if(status == JOptionPane.YES_OPTION){
+                jp_content_type_charset.setContentTypeCharsetString(
+                        Util.getFormattedContentType(
+                            BodyContentTypeDialog.PARAM_CONTENT_TYPE,
+                            BodyContentTypeDialog.PARAM_CHARSET));
+            }
         }
     }
 

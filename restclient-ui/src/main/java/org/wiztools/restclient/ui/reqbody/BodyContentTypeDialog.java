@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.*;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import org.wiztools.commons.Charsets;
 import org.wiztools.restclient.ui.EscapableDialog;
 
 /**
@@ -28,7 +29,7 @@ public class BodyContentTypeDialog extends EscapableDialog {
     public static final String DEFAULT_CHARSET = "UTF-8";
     
     public static final String PARAM_CONTENT_TYPE = "application/x-www-form-urlencoded";
-    public static final String PARAM_CHARSET = "UTF-8";
+    public static final Charset PARAM_CHARSET = Charsets.UTF_8;
 
     // Content-type
     static{

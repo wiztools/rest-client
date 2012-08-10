@@ -6,6 +6,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -13,11 +17,7 @@ import javax.swing.JPanel;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapLinkedHashSet;
 import org.wiztools.restclient.Util;
-import org.wiztools.restclient.ui.EscapableDialog;
-import org.wiztools.restclient.ui.RESTUserInterface;
-import org.wiztools.restclient.ui.RESTView;
-import org.wiztools.restclient.ui.TwoColumnTableModel;
-import org.wiztools.restclient.ui.TwoColumnTablePanel;
+import org.wiztools.restclient.ui.*;
 
 /**
  *
@@ -25,7 +25,7 @@ import org.wiztools.restclient.ui.TwoColumnTablePanel;
  */
 public class ParameterDialog extends EscapableDialog {
     
-    private final ParameterView view;
+    private final List<ParameterGenerationListener> listeners = new ArrayList<ParameterGenerationListener>();
     private TwoColumnTablePanel jp_2col_center;
     
     private JButton jb_generate = new JButton("Generate");
@@ -33,19 +33,23 @@ public class ParameterDialog extends EscapableDialog {
     
     private ParameterDialog me;
     
-    private final RESTUserInterface ui;
+    private RESTUserInterface ui;
     
-    ParameterDialog(RESTUserInterface ui, ParameterView view){
+    @Inject
+    public ParameterDialog(RESTUserInterface ui){
         // true means modal:
         super(ui.getFrame(), true);
         this.setTitle("Insert Parameter");
         this.ui = ui;
-        this.view = view;
         this.me = this;
-        init();
     }
     
-    private void init(){
+    public void addParameterGenerationListener(ParameterGenerationListener listener) {
+        listeners.add(listener);
+    }
+
+    @PostConstruct
+    protected void init(){
         JPanel jp = new JPanel();
         
         jp.setBorder(BorderFactory.createEmptyBorder(
@@ -107,7 +111,9 @@ public class ParameterDialog extends EscapableDialog {
             m.put((String)data[i][0], (String)data[i][1]);
         }
         String generatedParam = Util.parameterEncode(m);
-        view.setParameter(generatedParam);
+        for(ParameterGenerationListener listener: listeners) {
+            listener.onParameterGeneration(generatedParam);
+        }
         setVisible(false);
     }
     
