@@ -10,7 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.wiztools.restclient.Util;
-import org.wiztools.restclient.ui.*;
+import org.wiztools.restclient.ui.RCFileView;
+import org.wiztools.restclient.ui.UIUtil;
 
 /**
  *
@@ -21,7 +22,9 @@ public class ContentTypeCharsetComponent extends JPanel {
     
     private static final String DEFAULT_CONTENT_CHARSET = "text/plain; charset=UTF-8";
     
-    private JTextField jtf_content_type_charset = new JTextField(DEFAULT_CONTENT_CHARSET, 20);
+    public static final int TEXT_FIELD_LENGTH = 26;
+    
+    private JTextField jtf_content_type_charset = new JTextField(DEFAULT_CONTENT_CHARSET, TEXT_FIELD_LENGTH);
     private JButton jb_body_content_type = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "edit.png"));
     
     

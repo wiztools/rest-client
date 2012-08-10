@@ -30,7 +30,7 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
     @Inject ContentTypeCharsetComponent jp_content_type_charset;
     
     private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private JTextField jtf_file = new JTextField(20);
+    private JTextField jtf_file = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
     
     @PostConstruct
     public void init() {
