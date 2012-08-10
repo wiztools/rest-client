@@ -54,7 +54,7 @@ public class TraceServlet extends HttpServlet {
             }
         }
         
-        out.println("\n*Body*");
+        out.println("\n*Body (First 100 characters only)*");
         String body = Util.inputStreamToString(request.getInputStream());
         String[] arr = body.split("\n");
         for(String s: arr) {
