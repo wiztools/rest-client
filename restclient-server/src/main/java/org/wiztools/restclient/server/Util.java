@@ -19,9 +19,13 @@ class Util {
     static String inputStreamToString(InputStream is) throws IOException {
         CharsetDecoder decoder = Charsets.US_ASCII.newDecoder();
         decoder.onMalformedInput(CodingErrorAction.IGNORE);
-        decoder.onUnmappableCharacter(CodingErrorAction.IGNORE);
+        decoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+        decoder.replaceWith("?");
         CharBuffer buffer = decoder.decode(
             ByteBuffer.wrap(StreamUtil.inputStream2Bytes(is)));
-        return buffer.toString().replaceAll("\\p{C}", "?");
+        return buffer
+                .toString()
+                .substring(0, 100)
+                .replaceAll("\\p{C}", "") + "...";
     }
 }
