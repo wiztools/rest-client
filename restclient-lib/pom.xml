@@ -36,11 +36,6 @@
             <version>2.8.ga</version>
         </dependency>
         <dependency>
-            <groupId>org.wiztools.commons</groupId>
-            <artifactId>wiztools-commons-lib</artifactId>
-            <version>0.3.0</version>
-        </dependency>
-        <dependency>
             <groupId>xom</groupId>
             <artifactId>xom</artifactId>
             <version>1.2.5</version>
