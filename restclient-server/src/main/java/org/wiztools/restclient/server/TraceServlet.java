@@ -1,8 +1,6 @@
 package org.wiztools.restclient.server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import javax.servlet.ServletException;
@@ -57,18 +55,14 @@ public class TraceServlet extends HttpServlet {
         }
         
         out.println("\n*Body*");
-        BufferedReader br = null;
-        try{
-            br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-            String str = null;
-            while((str = br.readLine())!=null){
-                out.println("\t" + str);
-            }
+        String body = Util.inputStreamToString(request.getInputStream());
+        String[] arr = body.split("\n");
+        for(String s: arr) {
+            out.print("\t");
+            out.println(s);
         }
-        finally{
-            if(br != null)
-                br.close();
-        }
+        
+        out.println();
         
         out.flush();
         out.close();
