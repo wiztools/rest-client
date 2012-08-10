@@ -4,6 +4,6 @@ package org.wiztools.restclient.ui;
  *
  * @author subwiz
  */
-enum TextEditorSyntax {
+public enum TextEditorSyntax {
     DEFAULT, GROOVY, XML, JSON;
 }
