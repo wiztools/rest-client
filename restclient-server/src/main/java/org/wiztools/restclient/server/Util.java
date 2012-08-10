@@ -26,6 +26,6 @@ class Util {
         return buffer
                 .toString()
                 .substring(0, 100)
-                .replaceAll("\\p{C}", "") + "...";
+                .replaceAll("\\p{C}", "?") + "...";
     }
 }
