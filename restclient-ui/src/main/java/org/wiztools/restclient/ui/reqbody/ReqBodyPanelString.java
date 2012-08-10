@@ -4,14 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.commons.StringUtil;
@@ -86,6 +86,66 @@ class ReqBodyPanelString extends JPanel implements ReqBodyOps {
         jp_north.add(jb_body_params);
         
         add(jp_north, BorderLayout.NORTH);
+        
+        // Center
+        // Popup menu for body content tab
+        final JPopupMenu jpm_req_body = new JPopupMenu();
+        
+        JMenu jm_syntax = new JMenu("Syntax Color");
+        JMenuItem jmi_syntax_none = new JMenuItem("None");
+        jmi_syntax_none.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.DEFAULT);
+            }
+        });
+        jm_syntax.add(jmi_syntax_none);
+        JMenuItem jmi_syntax_xml = new JMenuItem("XML");
+        jmi_syntax_xml.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.XML);
+            }
+        });
+        jm_syntax.add(jmi_syntax_xml);
+        JMenuItem jmi_syntax_json = new JMenuItem("JSON");
+        jmi_syntax_json.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.JSON);
+            }
+        });
+        jm_syntax.add(jmi_syntax_json);
+        
+        jpm_req_body.add(jm_syntax);
+        
+        if (se_req_body.getEditorComponent() instanceof JEditorPane) {
+            se_req_body.getEditorComponent().addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    showPopup(e);
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    showPopup(e);
+                }
+                private void showPopup(final MouseEvent e) {
+                    if(!se_req_body.getEditorComponent().isEnabled()){
+                        // do not show popup menu when component is disabled:
+                        return;
+                    }
+                    if (e.isPopupTrigger()) {
+                        jpm_req_body.show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
+            });
+        }
+        add(se_req_body.getEditorView(), BorderLayout.CENTER);
+    }
+    
+    private void actionTextEditorSyntaxChange(final ScriptEditor editor, final TextEditorSyntax syntax){
+        ((JSyntaxPaneScriptEditor)editor).setSyntax(syntax);
     }
     
     private void loadFile() {
