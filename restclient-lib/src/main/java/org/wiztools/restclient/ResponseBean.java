@@ -1,5 +1,6 @@
 package org.wiztools.restclient;
 
+import org.wiztools.restclient.util.HttpUtil;
 import java.util.Arrays;
 import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;

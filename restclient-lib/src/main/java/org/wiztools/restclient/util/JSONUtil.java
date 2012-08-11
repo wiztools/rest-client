@@ -1,4 +1,4 @@
-package org.wiztools.restclient;
+package org.wiztools.restclient.util;
 
 import java.io.IOException;
 import java.io.StringReader;

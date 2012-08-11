@@ -1,4 +1,4 @@
-package org.wiztools.restclient;
+package org.wiztools.restclient.util;
 
 import java.nio.charset.Charset;
 import java.util.regex.Matcher;
@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.ContentType;
+import org.wiztools.restclient.ContentTypeBean;
 
 /**
  *

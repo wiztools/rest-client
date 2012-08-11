@@ -1,5 +1,7 @@
 package org.wiztools.restclient;
 
+import org.wiztools.restclient.util.HttpUtil;
+import org.wiztools.restclient.util.Util;
 import java.io.*;
 import java.net.HttpCookie;
 import java.net.URL;
