@@ -27,6 +27,9 @@ class Util {
             ByteBuffer.wrap(StreamUtil.inputStream2Bytes(is)));
         String t = buffer.toString();
         t = (t.length()<(MAX_BODY_CHARS+1))? t: t.substring(MAX_BODY_CHARS);
+        if(t.isEmpty()) {
+            return "";
+        }
         return t.replaceAll("\\p{C}", "?") + "...";
     }
 }
