@@ -834,6 +834,7 @@ public class RESTView extends JPanel implements View {
     }
     
     void clearUIResponse(){
+        lastResponse = null;
         jtf_res_status.setText("");
         jp_res_body.clearBody();
         ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
@@ -970,6 +971,9 @@ public class RESTView extends JPanel implements View {
     }
     
     void clearUIRequest(){
+        // Clear last cached request
+        lastRequest = null;
+        
         // URL
         jcb_url.setSelectedItem(null);
         
