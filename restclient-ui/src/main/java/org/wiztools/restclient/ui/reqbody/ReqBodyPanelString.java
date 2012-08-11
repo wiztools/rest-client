@@ -2,6 +2,7 @@ package org.wiztools.restclient.ui.reqbody;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -22,7 +23,7 @@ import org.wiztools.restclient.ui.*;
  *
  * @author subwiz
  */
-class ReqBodyPanelString extends JPanel implements ReqBodyOps {
+class ReqBodyPanelString extends JPanel implements ReqBodyOps, FontableEditor {
     
     @Inject RESTView view;
     @Inject RESTUserInterface rest_ui;
@@ -254,5 +255,15 @@ class ReqBodyPanelString extends JPanel implements ReqBodyOps {
     @Override
     public void requestFocus() {
         se_req_body.getEditorComponent().requestFocus();
+    }
+    
+    @Override
+    public void setEditorFont(Font font) {
+        se_req_body.getEditorComponent().setFont(font);
+    }
+
+    @Override
+    public Font getEditorFont() {
+        return se_req_body.getEditorComponent().getFont();
     }
 }

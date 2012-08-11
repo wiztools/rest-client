@@ -19,7 +19,7 @@ import org.wiztools.restclient.util.JSONUtil;
  *
  * @author subwiz
  */
-public class ResBodyTextPanel extends AbstractResBody {
+public class ResBodyTextPanel extends AbstractResBody implements FontableEditor {
     @Inject RESTView view;
     
     // Response
@@ -158,8 +158,14 @@ public class ResBodyTextPanel extends AbstractResBody {
         add(se_response.getEditorView());
     }
     
+    @Override
     public void setEditorFont(Font font) {
         se_response.getEditorComponent().setFont(font);
+    }
+
+    @Override
+    public Font getEditorFont() {
+        return se_response.getEditorComponent().getFont();
     }
 
     @Override

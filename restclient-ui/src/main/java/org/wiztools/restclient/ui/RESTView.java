@@ -1140,13 +1140,12 @@ public class RESTView extends JPanel implements View {
         return lastResponse;
     }
     
-    public Font getTextAreaFont(){
-        // return se_req_body.getEditorComponent().getFont(); TODO
-        return null;
+    public Font getTextAreaFont() {
+        return jp_req_body.getEditorFont();
     }
     
     public void setTextAreaFont(final Font f){
-        // se_req_body.getEditorComponent().setFont(f); TODO
+        jp_req_body.setEditorFont(f);
         jp_res_body.setEditorFont(f);
     }
     

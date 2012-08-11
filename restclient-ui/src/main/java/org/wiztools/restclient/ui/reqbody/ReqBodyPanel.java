@@ -1,6 +1,7 @@
 package org.wiztools.restclient.ui.reqbody;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import org.wiztools.restclient.ReqEntity;
 import org.wiztools.restclient.ReqEntityFile;
 import org.wiztools.restclient.ReqEntityMultipart;
 import org.wiztools.restclient.ReqEntityString;
+import org.wiztools.restclient.ui.FontableEditor;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;
 
@@ -21,7 +23,7 @@ import org.wiztools.restclient.ui.RESTView;
  *
  * @author subwiz
  */
-public class ReqBodyPanel extends JPanel implements ReqBodyOps {
+public class ReqBodyPanel extends JPanel implements ReqBodyOps, FontableEditor {
     @Inject RESTView view;
     @Inject RESTUserInterface rest_ui;
     
@@ -128,5 +130,15 @@ public class ReqBodyPanel extends JPanel implements ReqBodyOps {
                 jp.requestFocus();
             }
         });
+    }
+
+    @Override
+    public void setEditorFont(Font font) {
+        jp_req_body_string.setEditorFont(font);
+    }
+
+    @Override
+    public Font getEditorFont() {
+        return jp_req_body_string.getEditorFont();
     }
 }

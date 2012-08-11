@@ -6,13 +6,14 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JScrollPane;
 import org.wiztools.restclient.ContentType;
+import org.wiztools.restclient.ui.FontableEditor;
 import org.wiztools.restclient.util.HttpUtil;
 
 /**
  *
  * @author subwiz
  */
-public class ResBodyPanel extends AbstractResBody {
+public class ResBodyPanel extends AbstractResBody implements FontableEditor {
     
     @Inject private ResBodyTextPanel jp_text;
     @Inject private ResBodyImagePanel jp_image;
@@ -49,8 +50,14 @@ public class ResBodyPanel extends AbstractResBody {
         }
     }
     
+    @Override
     public void setEditorFont(Font font) {
         jp_text.setEditorFont(font);
+    }
+
+    @Override
+    public Font getEditorFont() {
+        return jp_text.getEditorFont();
     }
 
     @Override
