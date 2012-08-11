@@ -103,6 +103,16 @@ public final class HttpUtil {
                 contentType;
     }
     
+    public static boolean isWebImageContentType(final String contentType) {
+        final String ct = getContentTypeBeforeSemiColon(contentType);
+        if(ct.equals("image/jpeg")
+                || ct.equals("image/png")
+                || ct.equals("image/gif")) {
+            return true;
+        }
+        return false;
+    }
+    
     public static boolean isTextContentType(final String contentType) {
         final String ct = getContentTypeBeforeSemiColon(contentType);
         if(ct.startsWith("text/")
