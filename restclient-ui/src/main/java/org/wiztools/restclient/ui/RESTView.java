@@ -715,7 +715,7 @@ public class RESTView extends JPanel implements View {
     
     Response getResponseFromUI(){
         ResponseBean response = new ResponseBean();
-        response.setResponseBody(unindentedResponseBody);
+        response.setResponseBody(unindentedResponseBody.getBytes(Charsets.UTF_8));
         String statusLine = jtf_res_status.getText();
         response.setStatusLine(statusLine);
         response.setStatusCode(Util.getStatusCodeFromStatusLine(statusLine));
@@ -1163,7 +1163,7 @@ public class RESTView extends JPanel implements View {
 
         // Response body
         //// Set the unindentedResponseBody:
-        unindentedResponseBody = response.getResponseBody();
+        unindentedResponseBody = new String(response.getResponseBody(), Charsets.UTF_8);
         IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         String indentStr = options.getProperty("response.body.indent");
         boolean indent = indentStr==null? false: (indentStr.equals("true")? true: false);
@@ -1185,7 +1185,7 @@ public class RESTView extends JPanel implements View {
                     }
                 }
             }
-            final String responseBody = response.getResponseBody();
+            final String responseBody = new String(response.getResponseBody(), Charsets.UTF_8);
             if(isXml){
                 try{
                     String indentedResponseBody = XMLUtil.indentXML(responseBody);
@@ -1219,7 +1219,7 @@ public class RESTView extends JPanel implements View {
             }
         }
         else{
-            se_response.setText(response.getResponseBody());
+            se_response.setText(new String(response.getResponseBody(), Charsets.UTF_8));
         }
         se_response.setCaretPosition(0);
 
