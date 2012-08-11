@@ -24,6 +24,8 @@ public abstract class AbstractResBody extends JPanel implements ResBodyOps {
     @Override
     public final void clearBody() {
         body = null;
+        
+        clearUI();
     }
     
     public abstract void clearUI();
