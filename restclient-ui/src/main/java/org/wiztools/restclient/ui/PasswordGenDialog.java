@@ -11,7 +11,7 @@ import javax.swing.*;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.Base64Exception;
 import org.wiztools.restclient.ServiceLocator;
-import org.wiztools.restclient.Util;
+import org.wiztools.restclient.util.Util;
 
 /**
  *

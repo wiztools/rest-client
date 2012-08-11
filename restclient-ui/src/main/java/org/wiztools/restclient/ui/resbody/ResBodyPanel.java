@@ -1,6 +1,7 @@
 package org.wiztools.restclient.ui.resbody;
 
-import org.wiztools.restclient.HttpUtil;
+import org.wiztools.restclient.util.JSONUtil;
+import org.wiztools.restclient.util.HttpUtil;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;

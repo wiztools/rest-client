@@ -1,5 +1,6 @@
 package org.wiztools.restclient.ui;
 
+import org.wiztools.restclient.util.Util;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JOptionPane;

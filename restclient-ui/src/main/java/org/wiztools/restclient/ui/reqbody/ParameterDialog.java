@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapLinkedHashSet;
-import org.wiztools.restclient.Util;
+import org.wiztools.restclient.util.Util;
 import org.wiztools.restclient.ui.*;
 
 /**

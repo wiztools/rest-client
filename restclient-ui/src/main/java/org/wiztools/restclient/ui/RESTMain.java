@@ -1,5 +1,6 @@
 package org.wiztools.restclient.ui;
 
+import org.wiztools.restclient.util.Util;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.*;

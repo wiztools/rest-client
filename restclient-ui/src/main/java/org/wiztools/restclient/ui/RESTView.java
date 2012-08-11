@@ -1,5 +1,7 @@
 package org.wiztools.restclient.ui;
 
+import org.wiztools.restclient.util.HttpUtil;
+import org.wiztools.restclient.util.Util;
 import com.jidesoft.swing.AutoCompletion;
 import java.awt.*;
 import java.awt.event.*;

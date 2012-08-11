@@ -1,5 +1,6 @@
 package org.wiztools.restclient.ui.reqbody;
 
+import org.wiztools.restclient.util.HttpUtil;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;

@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
-import org.wiztools.restclient.Util;
+import org.wiztools.restclient.util.Util;
 
 /**
  *

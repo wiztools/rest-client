@@ -9,8 +9,8 @@ import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.wiztools.restclient.HttpUtil;
-import org.wiztools.restclient.Util;
+import org.wiztools.restclient.util.HttpUtil;
+import org.wiztools.restclient.util.Util;
 import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.UIUtil;
 

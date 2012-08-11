@@ -16,7 +16,7 @@ import javax.swing.*;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.MessageI18N;
-import org.wiztools.restclient.Util;
+import org.wiztools.restclient.util.Util;
 
 /**
  *
