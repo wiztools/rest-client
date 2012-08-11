@@ -11,9 +11,10 @@ public class RoResponseBean implements Response {
     private final int statusCode;
     private final String statusLine;
     private final MultiValueMap<String, String> headers;
-    private final String responseBody;
+    private final byte[] responseBody;
     private long executionTime;
 
+    @Override
     public long getExecutionTime() {
         return executionTime;
     }
@@ -22,18 +23,22 @@ public class RoResponseBean implements Response {
         this.executionTime = executionTime;
     }
 
+    @Override
     public MultiValueMap<String, String> getHeaders() {
         return headers;
     }
 
-    public String getResponseBody() {
+    @Override
+    public byte[] getResponseBody() {
         return responseBody;
     }
 
+    @Override
     public int getStatusCode() {
         return statusCode;
     }
 
+    @Override
     public String getStatusLine() {
         return statusLine;
     }
@@ -46,6 +51,7 @@ public class RoResponseBean implements Response {
         responseBody = response.getResponseBody();
     }
 
+    @Override
     public TestResult getTestResult() {
         return null;
     }

@@ -12,7 +12,7 @@ public interface Response extends Cloneable {
 
     MultiValueMap<String, String> getHeaders();
 
-    String getResponseBody();
+    byte[] getResponseBody();
 
     int getStatusCode();
 

@@ -46,11 +46,19 @@ public final class Util {
         return Base64.encodeBase64String(arr);
     }
     
-    public static String base64decode(String base64Str) throws Base64Exception {
+    public static byte[] base64decodeByteArray(String base64Str) throws Base64Exception {
         if(!Base64.isBase64(base64Str)) {
             throw new Base64Exception("Provided string is not Base64 encoded");
         }
         byte[] out = Base64.decodeBase64(base64Str);
+        return out;
+    }
+    
+    public static String base64decode(String base64Str) throws Base64Exception {
+        if(!Base64.isBase64(base64Str)) {
+            throw new Base64Exception("Provided string is not Base64 encoded");
+        }
+        byte[] out = base64decodeByteArray(base64Str);
         CharsetDecoder decoder = Charsets.UTF_8.newDecoder();
         try {
             decoder.onMalformedInput(CodingErrorAction.REPORT);

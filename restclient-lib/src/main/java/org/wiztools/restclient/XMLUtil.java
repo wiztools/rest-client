@@ -486,11 +486,12 @@ public final class XMLUtil {
                 respChildElement.appendChild(respChildSubElement);
             }
 
-            String responseBody = bean.getResponseBody();
+            byte[] responseBody = bean.getResponseBody();
             if (responseBody != null) {
                 //creating the body child element and append to response child element
                 respChildSubElement = new Element("body");
-                respChildSubElement.appendChild(responseBody);
+                String base64encodedBody = Util.base64encode(XML_MIME);
+                respChildSubElement.appendChild(base64encodedBody);
                 respChildElement.appendChild(respChildSubElement);
             }
             // test result 
@@ -604,7 +605,8 @@ public final class XMLUtil {
                     responseBean.addHeader(key, m.get(key));
                 }
             } else if ("body".equals(nodeName)) {
-                responseBean.setResponseBody(tNode.getValue());
+                final String base64body = tNode.getValue();
+                responseBean.setResponseBody(Util.base64decodeByteArray(base64body));
             } else if ("test-result".equals(nodeName)) {
                 //responseBean.setTestResult(node.getTextContent()); TODO
                 TestResultBean testResultBean = new TestResultBean();

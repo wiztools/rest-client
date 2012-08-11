@@ -24,7 +24,6 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.params.AuthPolicy;
 import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnRoutePNames;
@@ -33,8 +32,7 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
-import org.apache.http.entity.*;
-import org.apache.http.entity.mime.FormBodyPart;
+import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -425,7 +423,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 else {
                     InputStream is = entity.getContent();
                     try{
-                        String responseBody = StreamUtil.inputStream2String(is, charset);
+                        byte[] responseBody = StreamUtil.inputStream2Bytes(is);
                         if (responseBody != null) {
                             response.setResponseBody(responseBody);
                         }

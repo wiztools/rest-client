@@ -1,5 +1,6 @@
 package org.wiztools.restclient;
 
+import java.util.Arrays;
 import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapArrayList;
@@ -13,10 +14,11 @@ public final class ResponseBean implements Response{
     private int statusCode;
     private String statusLine;
     private MultiValueMap<String, String> headers;
-    private String responseBody;
+    private byte[] responseBody;
     private TestResult testResult;
     private long executionTime;
 
+    @Override
     public long getExecutionTime() {
         return executionTime;
     }
@@ -25,6 +27,7 @@ public final class ResponseBean implements Response{
         this.executionTime = executionTime;
     }
     
+    @Override
     public int getStatusCode() {
         return statusCode;
     }
@@ -33,6 +36,7 @@ public final class ResponseBean implements Response{
         this.statusCode = statusCode;
     }
 
+    @Override
     public MultiValueMap<String, String> getHeaders() {
         return CollectionsUtil.unmodifiableMultiValueMap(headers);
     }
@@ -45,14 +49,16 @@ public final class ResponseBean implements Response{
         this.headers.put(key, value);
     }
 
-    public String getResponseBody() {
+    @Override
+    public byte[] getResponseBody() {
         return responseBody;
     }
 
-    public void setResponseBody(String responseBody) {
+    public void setResponseBody(byte[] responseBody) {
         this.responseBody = responseBody;
     }
 
+    @Override
     public String getStatusLine() {
         return statusLine;
     }
@@ -61,6 +67,7 @@ public final class ResponseBean implements Response{
         this.statusLine = statusLine;
     }
     
+    @Override
     public TestResult getTestResult() {
         return testResult;
     }
@@ -80,7 +87,7 @@ public final class ResponseBean implements Response{
         response.statusCode = statusCode;
         response.statusLine = statusLine;
         response.responseBody = responseBody;
-        if(headers.size() != 0){
+        if(!headers.isEmpty()){
             for(String header: headers.keySet()){
                 for(String value: headers.get(header)) {
                     response.addHeader(header, value);
@@ -104,7 +111,7 @@ public final class ResponseBean implements Response{
             isEqual = isEqual && (this.statusCode == bean.getStatusCode());
             isEqual = isEqual && (this.statusLine == null? bean.getStatusLine() == null: this.statusLine.equals(bean.getStatusLine()));
             isEqual = isEqual && (this.headers == null? bean.getHeaders() == null: this.headers.equals(bean.getHeaders()));
-            isEqual = isEqual && (this.responseBody == null? bean.getResponseBody() == null: this.responseBody.equals(bean.getResponseBody()));
+            isEqual = isEqual && (this.responseBody == null? bean.getResponseBody() == null: Arrays.equals(this.responseBody, bean.getResponseBody()));
             isEqual = isEqual && (this.testResult == null? bean.getTestResult() == null: this.testResult.equals(bean.getTestResult()));
             return isEqual;
         }
