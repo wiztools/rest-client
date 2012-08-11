@@ -76,8 +76,8 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
             if(!mime.equals(origContentType)) {
                 final int result = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
                         "The content-type selected (" + origContentType + ") does NOT match\n"
-                        + "the computed file mime type (" + mime + ")"
-                        + "Do you want to update the content-type?",
+                        + "the computed file mime type (" + mime + ")\n"
+                        + "Do you want to update the content-type to " + mime + "?",
                         "Mime-type mismatch correction",
                         JOptionPane.YES_NO_OPTION);
                 if(result == JOptionPane.YES_OPTION) {
