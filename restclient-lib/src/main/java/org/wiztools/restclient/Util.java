@@ -77,6 +77,28 @@ public final class Util {
             throw new Base64Exception(ex);
         }
     }
+    
+    public static ContentType getContentType(String header) {
+        Pattern p = Pattern.compile("([^;]+);\\s*charset=([^;]+)");
+        Matcher m = p.matcher(header);
+        if(m.matches()) {
+            String contentType = m.group(1);
+            Charset charset = Charset.forName(m.group(2));
+            return new ContentTypeBean(contentType, charset);
+        }
+        return null;
+    }
+    
+    public static ContentType getContentType(MultiValueMap<String, String> headers) {
+        String ct;
+        String cs;
+        for(String key: headers.keySet()) {
+            if("content-type".equalsIgnoreCase(key.trim())) {
+                return getContentType(headers.get(key).iterator().next());
+            }
+        }
+        return null;
+    }
 
     public static String getStackTrace(final Throwable aThrowable) {
         String errorMsg = aThrowable.getMessage();
