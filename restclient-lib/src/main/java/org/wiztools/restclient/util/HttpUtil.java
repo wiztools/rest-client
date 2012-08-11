@@ -16,14 +16,20 @@ import org.wiztools.restclient.ContentTypeBean;
 public final class HttpUtil {
     
     private static final ContentType DEFAULT_CONTENT_TYPE = new ContentTypeBean("text/plain", Charsets.UTF_8);
+    private static final Charset DEFAULT_CHARSET = Charsets.UTF_8;
     
     public static ContentType getContentType(String header) {
-        Pattern p = Pattern.compile("([^;]+);\\s*charset=([^;]+)");
-        Matcher m = p.matcher(header);
-        if(m.matches()) {
-            String contentType = m.group(1);
-            Charset charset = Charset.forName(m.group(2));
-            return new ContentTypeBean(contentType, charset);
+        if(header.contains("charset")) {
+            Pattern p = Pattern.compile("([^;]+);\\s*charset=([^;]+)");
+            Matcher m = p.matcher(header);
+            if(m.matches()) {
+                String contentType = m.group(1);
+                Charset charset = Charset.forName(m.group(2));
+                return new ContentTypeBean(contentType, charset);
+            }
+        }
+        else { // no charset header
+            return new ContentTypeBean(header, DEFAULT_CHARSET);
         }
         return DEFAULT_CONTENT_TYPE;
     }
