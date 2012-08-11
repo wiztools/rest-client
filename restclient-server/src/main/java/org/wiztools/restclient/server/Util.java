@@ -16,6 +16,8 @@ import org.wiztools.commons.StreamUtil;
 class Util {
     private Util() {}
     
+    private static final int MAX_BODY_CHARS = 100;
+    
     static String inputStreamToString(InputStream is) throws IOException {
         CharsetDecoder decoder = Charsets.US_ASCII.newDecoder();
         decoder.onMalformedInput(CodingErrorAction.IGNORE);
@@ -23,9 +25,8 @@ class Util {
         decoder.replaceWith("?");
         CharBuffer buffer = decoder.decode(
             ByteBuffer.wrap(StreamUtil.inputStream2Bytes(is)));
-        return buffer
-                .toString()
-                .substring(0, 100)
-                .replaceAll("\\p{C}", "?") + "...";
+        String t = buffer.toString();
+        t = (t.length()<(MAX_BODY_CHARS+1))? t: t.substring(MAX_BODY_CHARS);
+        return t.replaceAll("\\p{C}", "?") + "...";
     }
 }
