@@ -39,7 +39,11 @@ public final class Util {
     private Util(){}
     
     public static String base64encode(String inStr) {
-        return Base64.encodeBase64String(inStr.getBytes(Charsets.UTF_8));
+        return base64encode(inStr.getBytes(Charsets.UTF_8));
+    }
+    
+    public static String base64encode(byte[] arr) {
+        return Base64.encodeBase64String(arr);
     }
     
     public static String base64decode(String base64Str) throws Base64Exception {
