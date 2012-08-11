@@ -770,14 +770,15 @@ public class RESTView extends JPanel implements View {
     }
     
     @Override
-    public void doResponse(final Response response){
-        lastResponse = response;
-    
+    public void doResponse(final Response response) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 // Update the UI:
                 setUIFromResponse(response);
+                
+                // Set lastResponse:
+                lastResponse = response;
 
                 // Update status message
                 setStatusMessage("Response received in: " + response.getExecutionTime() + " ms");
