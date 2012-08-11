@@ -103,6 +103,16 @@ public final class HttpUtil {
                 contentType;
     }
     
+    public static boolean isTextContentType(final String contentType) {
+        final String ct = getContentTypeBeforeSemiColon(contentType);
+        if(ct.startsWith("text/")
+                || isXmlContentType(ct)
+                || isJsonContentType(ct)) {
+            return true;
+        }
+        return false;
+    }
+    
     public static boolean isXmlContentType(final String contentType) {
         final String ct = getContentTypeBeforeSemiColon(contentType);
         if(ct.startsWith("application/xml")
