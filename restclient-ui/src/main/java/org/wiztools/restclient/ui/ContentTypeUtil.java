@@ -4,7 +4,7 @@ package org.wiztools.restclient.ui;
  *
  * @author subwiz
  */
-final class ContentTypeUtil {
+public final class ContentTypeUtil {
     
     private static String getContentTypeBeforeSemiColon(String contentType) {
         return (contentType.indexOf(';') != -1)?
@@ -12,7 +12,7 @@ final class ContentTypeUtil {
                 contentType;
     }
     
-    static boolean isXmlContentType(final String contentType) {
+    public static boolean isXmlContentType(final String contentType) {
         final String ct = getContentTypeBeforeSemiColon(contentType);
         if(ct.startsWith("application/xml")
                 || ct.startsWith("text/xml")
@@ -22,7 +22,7 @@ final class ContentTypeUtil {
         return false;
     }
     
-    static boolean isJsonContentType(final String contentType) {
+    public static boolean isJsonContentType(final String contentType) {
         final String ct = getContentTypeBeforeSemiColon(contentType);
         if(ct.startsWith("application/json")
                 || ct.endsWith("+json")){
