@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.ReqEntity;
 import org.wiztools.restclient.ReqEntityFile;
 import org.wiztools.restclient.ReqEntityFileBean;
@@ -68,6 +69,21 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
                     "IO Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
+        }
+        final String mime = FileUtil.getMimeType(f);
+        if(!mime.equals("content/unknown")) {
+            final String origContentType = jp_content_type_charset.getContentType();
+            if(!mime.equals(origContentType)) {
+                final int result = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
+                        "The content-type selected (" + origContentType + ") does NOT match\n"
+                        + "the computed file mime type (" + mime + ")"
+                        + "Do you want to update the content-type?",
+                        "Mime-type mismatch correction",
+                        JOptionPane.YES_NO_OPTION);
+                if(result == JOptionPane.YES_OPTION) {
+                    jp_content_type_charset.setContentType(mime);
+                }
+            }
         }
         jtf_file.setText(f.getAbsolutePath());
     }

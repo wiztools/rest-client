@@ -65,6 +65,13 @@ public class ContentTypeCharsetComponent extends JPanel {
                 Util.getFormattedContentType(contentType, charset));
     }
     
+    public void setContentType(String contentType) {
+        jd_body_content_type.setContentType(contentType);
+        String charset = jd_body_content_type.getCharsetString();
+        jtf_content_type_charset.setText(
+                Util.getFormattedContentType(contentType, charset));
+    }
+    
     public String getContentTypeCharsetString() {
         return jtf_content_type_charset.getText();
     }

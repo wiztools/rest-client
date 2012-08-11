@@ -1,6 +1,9 @@
 package org.wiztools.restclient.ui.reqbody;
 
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -192,8 +195,12 @@ public class BodyContentTypeDialog extends EscapableDialog {
         }
     }
     
-    String getCharset(){
+    String getCharsetString(){
         return this.charset;
+    }
+    
+    Charset getCharset() {
+        return Charset.forName(charset);
     }
     
     void setCharset(Charset c) {
