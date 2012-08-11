@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import org.wiztools.restclient.ContentType;
 
 /**
  *
@@ -23,10 +24,15 @@ public class ResBodyImagePanel extends AbstractResBody {
         
         add(jl);
     }
-    
-    public void setImage(byte[] data) {
+
+    @Override
+    public void setBody(byte[] body, ContentType type) {
+        // Call parent:
+        super.setBody(body, type);
+        
+        // Generate UI:
         try {
-            BufferedImage img = ImageIO.read(new ByteArrayInputStream(data));
+            BufferedImage img = ImageIO.read(new ByteArrayInputStream(body));
             jl.setIcon(new ImageIcon(img));
         }
         catch(IOException ex) {
