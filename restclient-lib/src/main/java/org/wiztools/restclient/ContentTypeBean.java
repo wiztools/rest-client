@@ -28,6 +28,6 @@ public class ContentTypeBean implements ContentType {
 
     @Override
     public String toString() {
-        return Util.getFormattedContentType(contentType, charset);
+        return HttpUtil.getFormattedContentType(contentType, charset);
     }
 }

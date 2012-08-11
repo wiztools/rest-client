@@ -11,6 +11,7 @@ public class RoResponseBean implements Response {
     private final int statusCode;
     private final String statusLine;
     private final MultiValueMap<String, String> headers;
+    private final ContentType contentType;
     private final byte[] responseBody;
     private long executionTime;
 
@@ -26,6 +27,11 @@ public class RoResponseBean implements Response {
     @Override
     public MultiValueMap<String, String> getHeaders() {
         return headers;
+    }
+
+    @Override
+    public ContentType getContentType() {
+        return contentType;
     }
 
     @Override
@@ -48,6 +54,7 @@ public class RoResponseBean implements Response {
         statusCode = response.getStatusCode();
         statusLine = response.getStatusLine();
         headers = response.getHeaders();
+        contentType = response.getContentType();
         responseBody = response.getResponseBody();
     }
 

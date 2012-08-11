@@ -390,7 +390,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             {
                 Charset c;
                 if(contentType != null) {
-                    final String charsetStr = Util.getCharsetFromContentType(contentType);
+                    final String charsetStr = HttpUtil.getCharsetFromContentType(contentType);
                     try{
                         c = Charset.forName(charsetStr);
                     }

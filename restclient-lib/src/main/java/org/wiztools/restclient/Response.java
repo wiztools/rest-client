@@ -11,6 +11,8 @@ public interface Response extends Cloneable {
     long getExecutionTime();
 
     MultiValueMap<String, String> getHeaders();
+    
+    ContentType getContentType();
 
     byte[] getResponseBody();
 

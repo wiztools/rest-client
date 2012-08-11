@@ -86,13 +86,13 @@ public class UtilTest {
         System.out.println("getCharsetFromContentType");
         String contentType = "Content-type: text/html; charset=UTF-8";
         String expResult = "UTF-8";
-        String result = Util.getCharsetFromContentType(contentType);
+        String result = HttpUtil.getCharsetFromContentType(contentType);
         assertEquals(expResult, result);
 
         // when charset is not available, return null:
         contentType = "Content-type: text/html";
         expResult = null;
-        result = Util.getCharsetFromContentType(contentType);
+        result = HttpUtil.getCharsetFromContentType(contentType);
         assertEquals(expResult, result);
     }
 
@@ -101,7 +101,7 @@ public class UtilTest {
         System.out.println("getMimeFromContentType");
         String contentType = "application/xml;charset=UTF-8";
         String expResult = "application/xml";
-        String result = Util.getMimeFromContentType(contentType);
+        String result = HttpUtil.getMimeFromContentType(contentType);
         assertEquals(expResult, result);
     }
 }

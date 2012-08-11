@@ -47,7 +47,7 @@ public final class ReqEntityStringBean implements ReqEntityString {
     
     @Override
     public String getContentTypeCharsetFormatted(){
-        return Util.getFormattedContentType(contentType, charset);
+        return HttpUtil.getFormattedContentType(contentType, charset);
     }
     
     @Override

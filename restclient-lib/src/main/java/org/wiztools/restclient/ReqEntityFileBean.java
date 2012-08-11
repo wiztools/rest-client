@@ -42,7 +42,7 @@ public class ReqEntityFileBean implements ReqEntityFile {
 
     @Override
     public String getContentTypeCharsetFormatted() {
-        return Util.getFormattedContentType(contentType, charset);
+        return HttpUtil.getFormattedContentType(contentType, charset);
     }
     
     @Override

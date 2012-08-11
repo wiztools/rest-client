@@ -50,6 +50,13 @@ public final class ResponseBean implements Response{
     }
 
     @Override
+    public ContentType getContentType() {
+        if(headers != null)
+            return HttpUtil.getContentType(headers);
+        return null;
+    }
+
+    @Override
     public byte[] getResponseBody() {
         return responseBody;
     }

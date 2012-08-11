@@ -1,16 +1,6 @@
 package org.wiztools.restclient;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.io.*;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -76,28 +66,6 @@ public final class Util {
         catch(CharacterCodingException ex) {
             throw new Base64Exception(ex);
         }
-    }
-    
-    public static ContentType getContentType(String header) {
-        Pattern p = Pattern.compile("([^;]+);\\s*charset=([^;]+)");
-        Matcher m = p.matcher(header);
-        if(m.matches()) {
-            String contentType = m.group(1);
-            Charset charset = Charset.forName(m.group(2));
-            return new ContentTypeBean(contentType, charset);
-        }
-        return null;
-    }
-    
-    public static ContentType getContentType(MultiValueMap<String, String> headers) {
-        String ct;
-        String cs;
-        for(String key: headers.keySet()) {
-            if("content-type".equalsIgnoreCase(key.trim())) {
-                return getContentType(headers.get(key).iterator().next());
-            }
-        }
-        return null;
     }
 
     public static String getStackTrace(final Throwable aThrowable) {
@@ -234,65 +202,5 @@ public final class Util {
             zis.close();
         }
         return encpBean;
-    }
-
-    /**
-     * Parses the HTTP response status line, and returns the status code.
-     * @param statusLine
-     * @return The status code from HTTP response status line.
-     */
-    public static int getStatusCodeFromStatusLine(final String statusLine){
-        int retVal = -1;
-        final String STATUS_PATTERN = "[^\\s]+\\s([0-9]{3})\\s.*";
-        Pattern p = Pattern.compile(STATUS_PATTERN);
-        Matcher m = p.matcher(statusLine);
-        if(m.matches()){
-            retVal = Integer.parseInt(m.group(1));
-        }
-        return retVal;
-    }
-
-    /**
-     * Method formats content-type and charset for use as HTTP header value
-     * @param contentType
-     * @param charset
-     * @return The formatted content-type and charset.
-     */
-    public static String getFormattedContentType(final String contentType, final String charset){
-        String charsetFormatted = StringUtil.isEmpty(charset)? "": "; charset=" + charset;
-        return contentType + charsetFormatted;
-    }
-    
-    public static String getFormattedContentType(final String contentType, final Charset charset){
-        return getFormattedContentType(contentType, charset.name());
-    }
-
-    public static String getCharsetFromContentType(final String contentType) {
-        Pattern p = Pattern.compile("^.+charset=([^;]+).*$");
-        Matcher m = p.matcher(contentType);
-        if(m.matches()) {
-            return m.group(1).trim();
-        }
-        return null;
-    }
-
-    /**
-     * Parses the Content-Type HTTP header and returns the MIME type part of the
-     * response. For example, when receiving Content-Type header like:
-     *
-     * application/xml;charset=UTF-8
-     *
-     * This method will return "application/xml".
-     * @param contentType
-     * @return
-     */
-    public static String getMimeFromContentType(final String contentType) {
-        final int occurance = contentType.indexOf(';');
-        if(occurance == -1) {
-            return contentType;
-        }
-        else {
-            return contentType.substring(0, occurance);
-        }
     }
 }
