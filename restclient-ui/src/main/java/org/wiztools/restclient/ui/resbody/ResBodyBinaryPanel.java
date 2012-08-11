@@ -17,7 +17,7 @@ public class ResBodyBinaryPanel extends AbstractResBody {
     }
 
     @Override
-    public void clearBody() {
-        // 
+    public void clearUI() {
+        // do nothing!
     }
 }

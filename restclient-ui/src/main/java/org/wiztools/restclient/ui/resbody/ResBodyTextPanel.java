@@ -220,7 +220,7 @@ public class ResBodyTextPanel extends AbstractResBody {
     }
     
     @Override
-    public void clearBody() {
+    public void clearUI() {
         se_response.setText("");
     }
 }

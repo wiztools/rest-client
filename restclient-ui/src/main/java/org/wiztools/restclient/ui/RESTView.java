@@ -1,7 +1,5 @@
 package org.wiztools.restclient.ui;
 
-import org.wiztools.restclient.util.HttpUtil;
-import org.wiztools.restclient.util.Util;
 import com.jidesoft.swing.AutoCompletion;
 import java.awt.*;
 import java.awt.event.*;
@@ -26,7 +24,9 @@ import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
 import org.wiztools.restclient.ui.reqauth.ReqSSLPanel;
 import org.wiztools.restclient.ui.reqbody.ReqBodyPanel;
 import org.wiztools.restclient.ui.reqmethod.ReqMethodPanel;
-import org.wiztools.restclient.ui.resbody.ResBodyTextPanel;
+import org.wiztools.restclient.ui.resbody.ResBodyPanel;
+import org.wiztools.restclient.util.HttpUtil;
+import org.wiztools.restclient.util.Util;
 
 /**
  *
@@ -43,7 +43,7 @@ public class RESTView extends JPanel implements View {
     @Inject private ReqBodyPanel jp_req_body;
     @Inject private ReqAuthPanel jp_req_auth;
     @Inject private ReqSSLPanel jp_req_ssl;
-    @Inject private ResBodyTextPanel jp_res_body;
+    @Inject private ResBodyPanel jp_res_body;
     
     private JProgressBar jpb_status = new JProgressBar();
     
@@ -56,7 +56,6 @@ public class RESTView extends JPanel implements View {
     
     private JTextField jtf_res_status = new JTextField();
     
-    // private JScrollPane jsp_test_script;
     private ScriptEditor se_test_script = ScriptEditorFactory.getGroovyScriptEditor();
     private JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
     private JButton jb_req_test_open = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
@@ -97,13 +96,6 @@ public class RESTView extends JPanel implements View {
 
     // RequestThread
     private Thread requestThread;
-
-    /*
-     * unindentedResponseBody holds the unindented version of the response body
-     * text which is shown in UI currently. This variable should be carefully
-     * be dealt with, as wrong handling could make this value stale.
-     */
-    private String unindentedResponseBody;
     
     // Cache the last request and response
     private Request lastRequest;
@@ -532,11 +524,6 @@ public class RESTView extends JPanel implements View {
         // Initialize the messageDialog
         messageDialog = new MessageDialog(rest_ui.getFrame());
         
-        // Initialize parameter dialog
-        
-        
-        // Initialize jd_body_content_type
-        
         // Set the font of ScriptEditors:
         String fontName = ServiceLocator.getInstance(IGlobalOptions.class).getProperty("font.options.font");
         String fontSizeStr = ServiceLocator.getInstance(IGlobalOptions.class).getProperty("font.options.fontSize");
@@ -583,7 +570,7 @@ public class RESTView extends JPanel implements View {
     
     Response getResponseFromUI(){
         ResponseBean response = new ResponseBean();
-        response.setResponseBody(unindentedResponseBody.getBytes(Charsets.UTF_8));
+        response.setResponseBody(jp_res_body.getBody());
         String statusLine = jtf_res_status.getText();
         response.setStatusLine(statusLine);
         response.setStatusCode(HttpUtil.getStatusCodeFromStatusLine(statusLine));
@@ -847,7 +834,6 @@ public class RESTView extends JPanel implements View {
     }
     
     void clearUIResponse(){
-        unindentedResponseBody = null;
         jtf_res_status.setText("");
         jp_res_body.clearBody();
         ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();

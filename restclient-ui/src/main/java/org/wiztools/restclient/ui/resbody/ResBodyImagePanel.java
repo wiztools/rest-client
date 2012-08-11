@@ -41,8 +41,7 @@ public class ResBodyImagePanel extends AbstractResBody {
     }
     
     @Override
-    public void clearBody() {
-        body = null;
+    public void clearUI() {
         jl.setIcon(null);
     }
 }
