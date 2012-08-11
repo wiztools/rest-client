@@ -88,8 +88,11 @@ public class ContentTypeCharsetComponent extends JPanel {
     }
     
     public Charset getCharset() {
-        return Charset.forName(Util.getCharsetFromContentType(
-                jtf_content_type_charset.getText()));
+        return jd_body_content_type.getCharset();
+    }
+    
+    public String getCharsetString() {
+        return jd_body_content_type.getCharsetString();
     }
     
     public void enableComponent() {
