@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.wiztools.commons.Charsets;
 
 /**
  *
@@ -57,7 +58,7 @@ public class XMLUtilTest {
         expResult.addHeader("Content-Type", "text/plain; charset=utf-8");
         expResult.addHeader("Transfer-Encoding", "chunked");
         expResult.addHeader("Server", "Jetty");
-        expResult.setResponseBody("**RESTClient TraceServlet**");
+        expResult.setResponseBody("**RESTClient TraceServlet**".getBytes(Charsets.UTF_8));
         return expResult;
     }
 

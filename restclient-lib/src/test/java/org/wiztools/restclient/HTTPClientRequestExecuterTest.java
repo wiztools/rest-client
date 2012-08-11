@@ -62,7 +62,8 @@ public class HTTPClientRequestExecuterTest {
 
             public void doResponse(Response response) {
                 System.out.println("in doResponse()...");
-                String body = response.getResponseBody();
+                byte[] bodyByte = response.getResponseBody();
+                String body = new String(bodyByte, Charsets.UTF_8);
                 if(!body.contains("Authorization: Basic c3ViaGFzaDpzdWJoYXNo")){
                     fail("Pre-emptive Authorization does not happen");
                 }
