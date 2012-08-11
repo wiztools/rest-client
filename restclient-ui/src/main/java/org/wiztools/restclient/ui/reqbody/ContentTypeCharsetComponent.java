@@ -80,6 +80,13 @@ public class ContentTypeCharsetComponent extends JPanel {
         return Util.getMimeFromContentType(jtf_content_type_charset.getText());
     }
     
+    public void setCharset(Charset charset) {
+        jd_body_content_type.setCharset(charset);
+        jtf_content_type_charset.setText(
+                Util.getFormattedContentType(
+                    jd_body_content_type.getContentType(), charset));
+    }
+    
     public Charset getCharset() {
         return Charset.forName(Util.getCharsetFromContentType(
                 jtf_content_type_charset.getText()));
