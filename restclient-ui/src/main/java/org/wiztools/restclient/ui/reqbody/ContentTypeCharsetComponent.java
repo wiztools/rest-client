@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.wiztools.restclient.HttpUtil;
 import org.wiztools.restclient.Util;
 import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.UIUtil;
@@ -38,7 +39,7 @@ public class ContentTypeCharsetComponent extends JPanel {
         jd_body_content_type.addContentTypeCharSetChangeListener(new ContentTypeCharsetChangeListener() {
             @Override
             public void changed(String contentType, String charSet) {
-                final String formatted = Util.getFormattedContentType(contentType, charSet);
+                final String formatted = HttpUtil.getFormattedContentType(contentType, charSet);
                 jtf_content_type_charset.setText(formatted);
             }
         });
@@ -62,14 +63,14 @@ public class ContentTypeCharsetComponent extends JPanel {
         jd_body_content_type.setContentType(contentType);
         jd_body_content_type.setCharset(charset);
         jtf_content_type_charset.setText(
-                Util.getFormattedContentType(contentType, charset));
+                HttpUtil.getFormattedContentType(contentType, charset));
     }
     
     public void setContentType(String contentType) {
         jd_body_content_type.setContentType(contentType);
         String charset = jd_body_content_type.getCharsetString();
         jtf_content_type_charset.setText(
-                Util.getFormattedContentType(contentType, charset));
+                HttpUtil.getFormattedContentType(contentType, charset));
     }
     
     public String getContentTypeCharsetString() {
@@ -77,13 +78,13 @@ public class ContentTypeCharsetComponent extends JPanel {
     }
     
     public String getContentType() {
-        return Util.getMimeFromContentType(jtf_content_type_charset.getText());
+        return HttpUtil.getMimeFromContentType(jtf_content_type_charset.getText());
     }
     
     public void setCharset(Charset charset) {
         jd_body_content_type.setCharset(charset);
         jtf_content_type_charset.setText(
-                Util.getFormattedContentType(
+                HttpUtil.getFormattedContentType(
                     jd_body_content_type.getContentType(), charset));
     }
     

@@ -24,6 +24,7 @@ import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
 import org.wiztools.restclient.ui.reqauth.ReqSSLPanel;
 import org.wiztools.restclient.ui.reqbody.ReqBodyPanel;
 import org.wiztools.restclient.ui.reqmethod.ReqMethodPanel;
+import org.wiztools.restclient.ui.resbody.ResBodyPanel;
 
 /**
  *
@@ -40,6 +41,7 @@ public class RESTView extends JPanel implements View {
     @Inject private ReqBodyPanel jp_req_body;
     @Inject private ReqAuthPanel jp_req_auth;
     @Inject private ReqSSLPanel jp_req_ssl;
+    @Inject private ResBodyPanel jp_res_body;
     
     private JProgressBar jpb_status = new JProgressBar();
     
@@ -70,20 +72,6 @@ public class RESTView extends JPanel implements View {
     private JCheckBox jcb_ignoreResponseBody = new JCheckBox("Ignore Response Body? ");
     
     // Response
-    // private JScrollPane jsp_res_body = new JScrollPane();
-    private ScriptEditor se_response;
-    {
-        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
-        final boolean enableSyntaxColoring = Boolean.valueOf(
-                options.getProperty("response.body.syntax.color")==null?
-                    "true": options.getProperty("response.body.syntax.color"));
-        if(enableSyntaxColoring) {
-            se_response = ScriptEditorFactory.getXMLScriptEditor();
-        }
-        else {
-            se_response = ScriptEditorFactory.getTextAreaScriptEditor();
-        }
-    }
     
     private JTable jt_res_headers = new JTable();
 
@@ -141,15 +129,7 @@ public class RESTView extends JPanel implements View {
     }
 
     @Inject
-    protected RESTView(final RESTUserInterface ui){
-        this(ui, null, null);
-    }
-
-    public RESTView(final RESTUserInterface ui, ScriptEditor scriptEditor, ScriptEditor responseViewer) {
-        if (scriptEditor != null)
-            this.se_test_script = scriptEditor;
-        if (responseViewer != null)
-            this.se_response = responseViewer;
+    protected RESTView(final RESTUserInterface ui) {
         this.rest_ui = ui;
         // init();
         view = this;
@@ -421,121 +401,7 @@ public class RESTView extends JPanel implements View {
         jtp.addTab("Headers", jp_headers);
         
         // Response body
-        // First the pop-up menu for xml formatting:
-        final JPopupMenu popupMenu = new JPopupMenu();
-        
-        JMenu jm_indent = new JMenu("Indent");
-        
-        // Indent XML
-        JMenuItem jmi_indentXml = new JMenuItem("Indent XML");
-        jmi_indentXml.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                String resText = se_response.getText();
-                if("".equals(resText.trim())){
-                    setStatusMessage("No response body!");
-                    return;
-                }
-                try {
-                    final String indentedXML = XMLUtil.indentXML(resText);
-                    se_response.setText(indentedXML);
-                    se_response.setCaretPosition(0);
-                    setStatusMessage("Indent XML: Success");
-                } catch (XMLException ex) {
-                    setStatusMessage("Indent XML: XML Parser Configuration Error.");
-                } catch (IOException ex) {
-                    setStatusMessage("Indent XML: IOError while processing XML.");
-                }
-            }
-        });
-        jm_indent.add(jmi_indentXml);
-        
-        // Indent JSON
-        JMenuItem jmi_indentJson = new JMenuItem("Indent JSON");
-        jmi_indentJson.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                String resText = se_response.getText();
-                if("".equals(resText.trim())){
-                    setStatusMessage("No response body!");
-                    return;
-                }
-                try{
-                    String indentedJSON = JSONUtil.indentJSON(resText);
-                    se_response.setText(indentedJSON);
-                    se_response.setCaretPosition(0);
-                    setStatusMessage("Indent JSON: Success");
-                }
-                catch(JSONUtil.JSONParseException ex){
-                    setStatusMessage("Indent JSON: Not a valid JSON text.");
-                }
-            };
-        });
-        jm_indent.add(jmi_indentJson);
-        
-        popupMenu.add(jm_indent);
-        
-        // Syntax color change
-        JMenu jm_syntax = new JMenu("Syntax Color");
-        JMenuItem jmi_syntax_xml = new JMenuItem("XML");
-        jmi_syntax_xml.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(se_response, TextEditorSyntax.XML);
-            }
-        });
-        jm_syntax.add(jmi_syntax_xml);
-        JMenuItem jmi_syntax_json = new JMenuItem("JSON");
-        jmi_syntax_json.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(se_response, TextEditorSyntax.JSON);
-            }
-        });
-        jm_syntax.add(jmi_syntax_json);
-        JMenuItem jmi_syntax_none = new JMenuItem("None");
-        jmi_syntax_none.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(se_response, TextEditorSyntax.DEFAULT);
-            }
-        });
-        jm_syntax.add(jmi_syntax_none);
-        
-        popupMenu.add(jm_syntax);
-        
-        // Attach popup menu
-        if (se_response.getEditorComponent() instanceof JEditorPane) {
-            se_response.getEditorComponent().addMouseListener(new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    showPopup(e);
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    showPopup(e);
-                }
-                private void showPopup(final MouseEvent e) {
-                    if("".equals(se_response.getText().trim())){
-                        // No response body
-                        return;
-                    }
-                    if (e.isPopupTrigger()) {
-                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                    }
-                }
-            });
-        }
-        JPanel jp_body = new JPanel();
-        jp_body.setLayout(new GridLayout(1,1));
-        se_response.setEditable(false);
-        jp_body.add(se_response.getEditorView());
-        JPanel jp_body_encp = new JPanel();
-        jp_body_encp.setBorder(BorderFactory.createEmptyBorder());
-        jp_body_encp.setLayout(new GridLayout(1, 1));
-        jp_body_encp.add(jp_body);
-        jtp.addTab("Body", jp_body_encp);
+        jtp.addTab("Body", jp_res_body);
         
         // Test result
         JPanel jp_test_result = new JPanel();
@@ -684,7 +550,7 @@ public class RESTView extends JPanel implements View {
         if(fontName != null){
             Font f = new Font(fontName, Font.PLAIN, fontSize);
             // se_req_body.getEditorComponent().setFont(f); TODO
-            se_response.getEditorComponent().setFont(f);
+            jp_res_body.setEditorFont(f);
         }
         
         this.setLayout(new BorderLayout());
@@ -718,7 +584,7 @@ public class RESTView extends JPanel implements View {
         response.setResponseBody(unindentedResponseBody.getBytes(Charsets.UTF_8));
         String statusLine = jtf_res_status.getText();
         response.setStatusLine(statusLine);
-        response.setStatusCode(Util.getStatusCodeFromStatusLine(statusLine));
+        response.setStatusCode(HttpUtil.getStatusCodeFromStatusLine(statusLine));
         String[][] headers = ((ResponseHeaderTableModel)jt_res_headers.getModel()).getHeaders();
         for(int i=0; i<headers.length; i++){
             response.addHeader(headers[i][0], headers[i][1]);
@@ -981,7 +847,7 @@ public class RESTView extends JPanel implements View {
     void clearUIResponse(){
         unindentedResponseBody = null;
         jtf_res_status.setText("");
-        se_response.setText("");
+        jp_res_body.clearBody();
         ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
         model.setHeaders(null);
         jp_testResultPanel.clear();
@@ -1162,66 +1028,7 @@ public class RESTView extends JPanel implements View {
         resHeaderTableModel.setHeaders(response.getHeaders());
 
         // Response body
-        //// Set the unindentedResponseBody:
-        unindentedResponseBody = new String(response.getResponseBody(), Charsets.UTF_8);
-        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
-        String indentStr = options.getProperty("response.body.indent");
-        boolean indent = indentStr==null? false: (indentStr.equals("true")? true: false);
-        if(indent){
-            boolean isXml = false;
-            boolean isJson = false;
-            MultiValueMap<String, String> headers = response.getHeaders();
-            for(String key: headers.keySet()){
-                if("content-type".equalsIgnoreCase(key)){
-                    for(String v: headers.get(key)) {
-                        final String contentType = Util.getMimeFromContentType(v);
-                        if(ContentTypeUtil.isXmlContentType(contentType)){
-                            isXml = true;
-                        }
-                        else if(ContentTypeUtil.isJsonContentType(contentType)){
-                            isJson = true;
-                        }
-                        break;
-                    }
-                }
-            }
-            final String responseBody = new String(response.getResponseBody(), Charsets.UTF_8);
-            if(isXml){
-                try{
-                    String indentedResponseBody = XMLUtil.indentXML(responseBody);
-                    se_response.setText(indentedResponseBody);
-                }
-                catch(IOException ex){
-                    setStatusMessage("XML indentation failed.");
-                    LOG.warning(ex.getMessage());
-                    se_response.setText(responseBody);
-                }
-                catch(XMLException ex){
-                    setStatusMessage("XML indentation failed.");
-                    LOG.warning(ex.getMessage());
-                    se_response.setText(responseBody);
-                }
-            }
-            else if(isJson){
-                try{
-                    String indentedResponseBody = JSONUtil.indentJSON(responseBody);
-                    se_response.setText(indentedResponseBody);
-                }
-                catch(JSONUtil.JSONParseException ex){
-                    setStatusMessage("JSON indentation failed.");
-                    LOG.warning(ex.getMessage());
-                    se_response.setText(responseBody);
-                }
-            }
-            else{
-                setStatusMessage("Response body neither XML nor JSON. No indentation.");
-                se_response.setText(responseBody);
-            }
-        }
-        else{
-            se_response.setText(new String(response.getResponseBody(), Charsets.UTF_8));
-        }
-        se_response.setCaretPosition(0);
+        jp_res_body.setBody(response.getResponseBody(), response.getContentType());
 
         // Response test result
         jp_testResultPanel.setTestResult(response.getTestResult());
@@ -1348,7 +1155,7 @@ public class RESTView extends JPanel implements View {
     
     public void setTextAreaFont(final Font f){
         // se_req_body.getEditorComponent().setFont(f); TODO
-        se_response.getEditorComponent().setFont(f);
+        jp_res_body.setEditorFont(f);
     }
     
 }

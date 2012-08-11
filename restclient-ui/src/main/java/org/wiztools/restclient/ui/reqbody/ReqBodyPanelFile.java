@@ -144,9 +144,9 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
     public ReqEntity getEntity() {
         ReqEntityFileBean entity = new ReqEntityFileBean();
         entity.setBody(new File(jtf_file.getText()));
-        entity.setCharset(Charset.forName(Util.getCharsetFromContentType(
+        entity.setCharset(Charset.forName(HttpUtil.getCharsetFromContentType(
                 jp_content_type_charset.getContentTypeCharsetString())));
-        entity.setContentType(Util.getMimeFromContentType(
+        entity.setContentType(HttpUtil.getMimeFromContentType(
                 jp_content_type_charset.getContentTypeCharsetString()));
         return entity;
     }

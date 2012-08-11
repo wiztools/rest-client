@@ -1,5 +1,6 @@
 package org.wiztools.restclient.ui.resbody;
 
+import org.wiztools.restclient.HttpUtil;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -172,10 +173,10 @@ public class ResBodyPanel extends AbstractResBody {
         if(indent) {
             boolean isXml = false;
             boolean isJson = false;
-            if(ContentTypeUtil.isXmlContentType(type.getContentType())){
+            if(HttpUtil.isXmlContentType(type.getContentType())){
                 isXml = true;
             }
-            else if(ContentTypeUtil.isJsonContentType(type.getContentType())){
+            else if(HttpUtil.isJsonContentType(type.getContentType())){
                 isJson = true;
             }
             final String responseBody = new String(getBody(), type.getCharset());

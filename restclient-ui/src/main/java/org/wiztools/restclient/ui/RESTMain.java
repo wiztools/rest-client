@@ -47,18 +47,6 @@ class RESTMain implements RESTUserInterface {
     @Inject private RecentFilesHelper recentFilesHelper;
     
     private final JFrame frame;
-
-    /**
-     * This constructor is used for plugin initialization
-     * @param frame
-     * @param scriptEditor script editor
-     * @param responseViewer response viewer
-     */
-    public RESTMain(final JFrame frame, ScriptEditor scriptEditor, ScriptEditor responseViewer) {
-        this.frame = frame;
-        view = new RESTView(this, scriptEditor, responseViewer);
-        init();
-    }
     
     public RESTMain(){
         // Macify:
