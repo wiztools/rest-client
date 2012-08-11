@@ -1,13 +1,10 @@
 package org.wiztools.restclient.ui;
 
-import org.wiztools.restclient.util.Util;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -22,8 +19,10 @@ import org.simplericity.macify.eawt.Application;
 import org.simplericity.macify.eawt.ApplicationEvent;
 import org.simplericity.macify.eawt.ApplicationListener;
 import org.simplericity.macify.eawt.DefaultApplication;
+import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.*;
 import org.wiztools.restclient.server.TraceServer;
+import org.wiztools.restclient.util.Util;
 
 /**
  *
@@ -649,20 +648,20 @@ class RESTMain implements RESTUserInterface {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            if(response.getResponseBody() == null) {
+                JOptionPane.showMessageDialog(view,
+                        "Last response does not have body.",
+                        "No Body in Response",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             File f = getSaveFile(FileChooserType.SAVE_RESPONSE_BODY);
             if(f != null){
-                PrintWriter pw = null;
                 try{
-                    pw = new PrintWriter(new FileWriter(f));
-                    pw.print(response.getResponseBody());
+                    FileUtil.writeBytes(f, response.getResponseBody());
                 }
                 catch(IOException ex){
                     view.showError(Util.getStackTrace(ex));
-                }
-                finally{
-                    if(pw != null){
-                        pw.close();
-                    }
                 }
             }
         }
