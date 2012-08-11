@@ -26,7 +26,7 @@ import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
 import org.wiztools.restclient.ui.reqauth.ReqSSLPanel;
 import org.wiztools.restclient.ui.reqbody.ReqBodyPanel;
 import org.wiztools.restclient.ui.reqmethod.ReqMethodPanel;
-import org.wiztools.restclient.ui.resbody.ResBodyPanel;
+import org.wiztools.restclient.ui.resbody.ResBodyTextPanel;
 
 /**
  *
@@ -43,7 +43,7 @@ public class RESTView extends JPanel implements View {
     @Inject private ReqBodyPanel jp_req_body;
     @Inject private ReqAuthPanel jp_req_auth;
     @Inject private ReqSSLPanel jp_req_ssl;
-    @Inject private ResBodyPanel jp_res_body;
+    @Inject private ResBodyTextPanel jp_res_body;
     
     private JProgressBar jpb_status = new JProgressBar();
     

@@ -1,7 +1,5 @@
 package org.wiztools.restclient.ui.resbody;
 
-import org.wiztools.restclient.util.JSONUtil;
-import org.wiztools.restclient.util.HttpUtil;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -14,12 +12,14 @@ import javax.inject.Inject;
 import javax.swing.*;
 import org.wiztools.restclient.*;
 import org.wiztools.restclient.ui.*;
+import org.wiztools.restclient.util.HttpUtil;
+import org.wiztools.restclient.util.JSONUtil;
 
 /**
  *
  * @author subwiz
  */
-public class ResBodyPanel extends AbstractResBody {
+public class ResBodyTextPanel extends AbstractResBody {
     @Inject RESTView view;
     
     // Response
