@@ -25,5 +25,9 @@ public class ContentTypeBean implements ContentType {
     public Charset getCharset() {
         return charset;
     }
-    
+
+    @Override
+    public String toString() {
+        return Util.getFormattedContentType(contentType, charset);
+    }
 }
