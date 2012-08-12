@@ -1,6 +1,5 @@
 package org.wiztools.restclient.ui.resbody;
 
-import com.google.inject.ImplementedBy;
 import java.awt.Font;
 import java.awt.GridLayout;
 import javax.annotation.PostConstruct;
@@ -14,7 +13,6 @@ import org.wiztools.restclient.util.HttpUtil;
  *
  * @author subwiz
  */
-@ImplementedBy(ResBodyPanelImpl.class)
 public class ResBodyPanelImpl extends AbstractResBody implements FontableEditor {
     
     @Inject private ResBodyTextPanel jp_text;
