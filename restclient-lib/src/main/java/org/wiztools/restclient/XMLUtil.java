@@ -249,8 +249,8 @@ public final class XMLUtil {
             ReqEntity rBean = bean.getBody();
             if (rBean != null) {
                 if(rBean instanceof ReqEntitySimple) {
-                    String contentType = rBean.getContentType();
-                    Charset charset = rBean.getCharset();
+                    String contentType = ((ReqEntitySimple)rBean).getContentType();
+                    Charset charset = ((ReqEntitySimple)rBean).getCharset();
                     
                     Element e = new Element("body");
                     e.addAttribute(new Attribute("type", "simple"));
