@@ -9,13 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
 import org.wiztools.restclient.*;
-import org.wiztools.restclient.ui.EscapableDialog;
-import org.wiztools.restclient.ui.FileChooserType;
-import org.wiztools.restclient.ui.RCFileFilter;
-import org.wiztools.restclient.ui.RESTUserInterface;
-import org.wiztools.restclient.ui.RESTView;
-import org.wiztools.restclient.ui.UIUtil;
-import org.wiztools.restclient.ui.reqtest.ReqTestPanel;
+import org.wiztools.restclient.ui.*;
 import org.wiztools.restclient.util.Util;
 
 /**
@@ -60,6 +54,7 @@ public class RunTestDialog extends EscapableDialog {
         jrb_archive.setSelected(true);
         
         ActionListener al = new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if(jrb_archive.isSelected()){
                     jb_archive_browse.setEnabled(true);
@@ -86,6 +81,7 @@ public class RunTestDialog extends EscapableDialog {
         jp_center_file.add(jtf_archive);
         jb_archive_browse.setMnemonic('b');
         jb_archive_browse.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 File f = ui.getOpenFile(FileChooserType.OPEN_ARCHIVE, me);
                 if(f == null){ // Cancel pressed
@@ -105,6 +101,7 @@ public class RunTestDialog extends EscapableDialog {
         jb_next.setMnemonic('n');
         getRootPane().setDefaultButton(jb_next);
         jb_next.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 jb_nextAction();
             }
@@ -112,6 +109,7 @@ public class RunTestDialog extends EscapableDialog {
         jp_south.add(jb_next);
         jb_cancel.setMnemonic('c');
         jb_cancel.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 close();
             }
