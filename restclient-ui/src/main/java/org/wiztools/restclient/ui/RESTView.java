@@ -819,7 +819,7 @@ public class RESTView extends JPanel implements View {
         
         // Body
         jp_req_body.clear();
-        // jp_req_body.disableBody();
+        jp_req_body.disableBody();
         
         // Auth
         jp_req_auth.clear();
