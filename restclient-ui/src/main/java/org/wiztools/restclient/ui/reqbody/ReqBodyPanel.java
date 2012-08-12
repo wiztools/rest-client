@@ -12,7 +12,6 @@ import org.wiztools.restclient.ui.ViewPanel;
 public interface ReqBodyPanel extends ViewPanel {
     void enableBody();
     void disableBody();
-    void clearBody();
     
     void setEntity(ReqEntity entity);
     ReqEntity getEntity();

@@ -56,6 +56,13 @@ public class ReqEtcPanelImpl extends JPanel implements ReqEtcPanel {
     }
 
     @Override
+    public void clear() {
+        jcb_http_version.setSelectedItem(HTTPVersion.HTTP_1_1);
+        jcb_followRedirects.setSelected(true);
+        jcb_ignoreResponseBody.setSelected(false);
+    }
+
+    @Override
     public Component getComponent() {
         return this;
     }

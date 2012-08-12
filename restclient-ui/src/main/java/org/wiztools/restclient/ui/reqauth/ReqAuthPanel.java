@@ -11,8 +11,6 @@ import org.wiztools.restclient.ui.ViewPanel;
 @ImplementedBy(ReqAuthPanelImpl.class)
 public interface ReqAuthPanel extends ViewPanel {
 
-    void clear();
-
     String getAuthMethod();
 
     String getBearerToken();

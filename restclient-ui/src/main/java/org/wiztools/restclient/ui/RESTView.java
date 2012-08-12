@@ -667,7 +667,7 @@ public class RESTView extends JPanel implements View {
     void clearUIResponse(){
         lastResponse = null;
         jtf_res_status.setText("");
-        jp_res_body.clearBody();
+        jp_res_body.clear();
         ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
         model.setHeaders(null);
         jp_testResultPanel.clear();
@@ -809,7 +809,7 @@ public class RESTView extends JPanel implements View {
         jcb_url.setSelectedItem(null);
         
         // Method
-        jp_req_method.setSelectedMethod(HTTPMethod.GET);
+        jp_req_method.clear();
         
         // Headers
         jp_2col_req_headers.getTableModel().setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
@@ -818,8 +818,8 @@ public class RESTView extends JPanel implements View {
         jp_2col_req_cookies.getTableModel().setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
         
         // Body
-        jp_req_body.clearBody();
-        jp_req_body.disableBody();
+        jp_req_body.clear();
+        // jp_req_body.disableBody();
         
         // Auth
         jp_req_auth.clear();
@@ -827,17 +827,11 @@ public class RESTView extends JPanel implements View {
         // SSL
         jp_req_ssl.clear();
         
-        // HTTP version
-        jp_req_etc.setHttpVersion(HTTPVersion.getDefault());
-        
-        // Follow HTTP redirects
-        jp_req_etc.setFollowRedirects(true);
-        
-        // Ignore response body
-        jp_req_etc.setIgnoreResponseBody(false);
+        // Etc panel
+        jp_req_etc.clear();
         
         // Script
-        jp_req_test.setTestScript("");
+        jp_req_test.clear();
     }
     
     void setUIFromResponse(final Response response){

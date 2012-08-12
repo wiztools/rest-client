@@ -21,7 +21,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     }
     
     @Override
-    public void clearBody() {
+    public void clear() {
         // enable control
     }
 

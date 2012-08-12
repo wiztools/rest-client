@@ -8,4 +8,6 @@ import java.awt.Component;
  */
 public interface ViewPanel {
     Component getComponent();
+    
+    void clear();
 }

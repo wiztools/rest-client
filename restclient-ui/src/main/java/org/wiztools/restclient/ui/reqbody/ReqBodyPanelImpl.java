@@ -100,10 +100,10 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     }
     
     @Override
-    public void clearBody() {
+    public void clear() {
         jcb_body_type.setSelectedItem(NONE_BODY);
-        for(ReqBodyPanel ops: allPanels) {
-            ops.clearBody();
+        for(ReqBodyPanel panel: allPanels) {
+            panel.clear();
         }
     }
     

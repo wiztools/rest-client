@@ -162,4 +162,9 @@ public class ReqMethodPanelImpl extends JPanel implements ReqMethodPanel {
     public Component getComponent() {
         return this;
     }
+
+    @Override
+    public void clear() {
+        jrb_req_get.setSelected(true);
+    }
 }

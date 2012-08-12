@@ -10,7 +10,6 @@ import org.wiztools.restclient.ui.ViewPanel;
  */
 @ImplementedBy(ResBodyPanelImpl.class)
 public interface ResBodyPanel extends ViewPanel {
-    void clearBody();
     void setBody(byte[] data, ContentType type);
     byte[] getBody();
 }

@@ -64,9 +64,9 @@ public class ResBodyPanelImpl extends AbstractResBody implements FontableEditor 
 
     @Override
     public void clearUI() {
-        jp_text.clearBody();
-        jp_image.clearBody();
-        jp_binary.clearBody();
+        jp_text.clear();
+        jp_image.clear();
+        jp_binary.clear();
         jsp.setViewportView(jp_none);
     }
 }

@@ -230,7 +230,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     }
 
     @Override
-    public void clearBody() {
+    public void clear() {
         jp_content_type_charset.clearComponent();
     }
     

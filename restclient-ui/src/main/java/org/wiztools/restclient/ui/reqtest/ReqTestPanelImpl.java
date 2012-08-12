@@ -167,6 +167,11 @@ public class ReqTestPanelImpl extends JPanel implements ReqTestPanel {
     }
 
     @Override
+    public void clear() {
+        se_test_script.setText("");
+    }
+
+    @Override
     public Component getComponent() {
         return this;
     }

@@ -21,7 +21,7 @@ class ReqBodyPanelNone extends JPanel implements ReqBodyPanel {
     }
 
     @Override
-    public void clearBody() {
+    public void clear() {
         // do nothing!
     }
 
