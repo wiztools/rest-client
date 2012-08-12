@@ -8,7 +8,7 @@ import org.wiztools.restclient.FileType;
  *
  * @author Subhash
  */
-class RCFileFilter extends FileFilter {
+public class RCFileFilter extends FileFilter {
     
     private final String type;
     public RCFileFilter(String type){
