@@ -1,19 +1,31 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.reqtest;
 
-import org.wiztools.restclient.util.Util;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.swing.*;
 import org.wiztools.restclient.*;
+import org.wiztools.restclient.ui.EscapableDialog;
+import org.wiztools.restclient.ui.FileChooserType;
+import org.wiztools.restclient.ui.RCFileFilter;
+import org.wiztools.restclient.ui.RESTUserInterface;
+import org.wiztools.restclient.ui.RESTView;
+import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.ui.reqtest.ReqTestPanel;
+import org.wiztools.restclient.util.Util;
 
 /**
  *
  * @author Subhash
  */
-class RunTestDialog extends EscapableDialog {
+public class RunTestDialog extends EscapableDialog {
+    
+    @Inject private RESTUserInterface ui;
+    @Inject private RESTView view;
     
     private JButton jb_next = new JButton("Next");
     private JButton jb_cancel = new JButton("Cancel");
@@ -25,22 +37,21 @@ class RunTestDialog extends EscapableDialog {
     private JButton jb_archive_browse = new JButton("Browse");
     
     private RunTestDialog me;
-    private RESTUserInterface ui;
     
     private JFileChooser jfc = UIUtil.getNewJFileChooser();
     
     private File archiveFile;
     
+    @Inject
     public RunTestDialog(RESTUserInterface ui){
         super(ui.getFrame(), true);
-        this.ui = ui;
         this.setTitle("Run Test");
         me = this;
-        init();
         this.pack();
     }
     
-    private void init(){
+    @PostConstruct
+    protected void init(){
         jfc.addChoosableFileFilter(new RCFileFilter(FileType.ARCHIVE_EXT));
         
         ButtonGroup group = new ButtonGroup();
@@ -124,8 +135,8 @@ class RunTestDialog extends EscapableDialog {
                 response = req_res.getResponseBean();
             }
             else{
-                request = ui.getView().getLastRequest();
-                response = ui.getView().getLastResponse();
+                request = view.getLastRequest();
+                response = view.getLastResponse();
                 if(request == null || response == null){
                     JOptionPane.showMessageDialog(me,
                             "No last Request/Response available!", "Error",
@@ -134,13 +145,13 @@ class RunTestDialog extends EscapableDialog {
                 }
             }
             me.setVisible(false);
-            ui.getView().runClonedRequestTest(request, response);
+            view.runClonedRequestTest(request, response);
         }
         catch(IOException ex){
-            ui.getView().showError(Util.getStackTrace(ex));
+            view.showError(Util.getStackTrace(ex));
         }
         catch(XMLException ex){
-            ui.getView().showError(Util.getStackTrace(ex));
+            view.showError(Util.getStackTrace(ex));
         }
     }
 
