@@ -261,7 +261,8 @@ public final class RequestBean implements Request{
     public Object clone(){
         RequestBean cloned = new RequestBean();
         cloned.setAuthHost(authHost);
-        cloned.setAuthPassword(Arrays.copyOf(authPassword, authPassword.length));
+        if(authPassword != null)
+            cloned.setAuthPassword(Arrays.copyOf(authPassword, authPassword.length));
         cloned.setAuthPreemptive(authPreemptive);
         cloned.setAuthRealm(authRealm);
         cloned.setAuthUsername(authUsername);
