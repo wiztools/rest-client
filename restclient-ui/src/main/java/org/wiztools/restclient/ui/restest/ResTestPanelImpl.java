@@ -1,29 +1,18 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.restest;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.Collections;
-import java.util.List;
-import javax.swing.Icon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.table.AbstractTableModel;
-import org.wiztools.restclient.TestExceptionResult;
+import javax.annotation.PostConstruct;
+import javax.swing.*;
 import org.wiztools.restclient.TestResult;
+import org.wiztools.restclient.ui.UIUtil;
 
 /**
  *
- * @author NEWUSER
+ * @author subwiz
  */
-class TestResultPanel extends JPanel {
-
+class ResTestPanelImpl extends JPanel implements ResTestPanel {
+    
     private TestResult lastTestResult;
     
     private JLabel jl_runCount = new JLabel("");
@@ -49,13 +38,8 @@ class TestResultPanel extends JPanel {
     
     private static final Font BOLD_FONT = new Font(Font.DIALOG, Font.PLAIN, 18);
     
-    TestResultPanel(){
-        super();
-        
-        init();
-    }
-    
-    private void init(){
+    @PostConstruct
+    protected void init() {
         JPanel jp = this;
         
         jp.setLayout(new BorderLayout(5, 5));
@@ -148,26 +132,14 @@ class TestResultPanel extends JPanel {
         
         jp.add(jtp, BorderLayout.CENTER);
     }
-    
-    void clear(){
-        // Clear Summary tab:
-        jl_icon.setIcon(ICON_DEFAULT);
-        jl_runCount.setText("");
-        jl_failureCount.setText("");
-        jl_errorCount.setText("");
-        jl_status.setText("");
-        
-        // Clear Failures tab:
-        tm_failures.setData(Collections.EMPTY_LIST);
-        
-        // Clear Errors tab:
-        tm_errors.setData(Collections.EMPTY_LIST);
-        
-        // Clear trace tab:
-        jta_trace.setText("");
+
+    @Override
+    public Component getComponent() {
+        return this;
     }
     
-    void setTestResult(TestResult result){
+    @Override
+    public void setTestResult(TestResult result) {
         if(result == null){
             return;
         }
@@ -199,52 +171,29 @@ class TestResultPanel extends JPanel {
         jta_trace.setCaretPosition(0);
         jsp_jta_trace.setPreferredSize(d);
     }
-
-    TestResult getTestResult(){
+    
+    @Override
+    public TestResult getTestResult(){
         return lastTestResult;
     }
-    
-    class FailureTableModel extends AbstractTableModel{
-        
-        private Object[] failures;
-        
-        public void setData(List<TestExceptionResult> failures){
-            if(failures != null){
-                this.failures = failures.toArray();
-            }
-            fireTableDataChanged();
-        }
-        
-        @Override
-        public String getColumnName(int col){
-            if(col == 0){
-                return "Message";
-            }
-            else{
-                return "Line";
-            }
-        }
 
-        public int getRowCount() {
-            if(failures == null){
-                return 0;
-            }
-            return failures.length;
-        }
-
-        public int getColumnCount() {
-            return 2;
-        }
-
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            TestExceptionResult bean = (TestExceptionResult)failures[rowIndex];
-            if(columnIndex == 0){
-                return bean.getExceptionMessage();
-            }
-            else{
-                return bean.getLineNumber();
-            }
-        }
+    @Override
+    public void clear() {
+        // Clear Summary tab:
+        jl_icon.setIcon(ICON_DEFAULT);
+        jl_runCount.setText("");
+        jl_failureCount.setText("");
+        jl_errorCount.setText("");
+        jl_status.setText("");
         
+        // Clear Failures tab:
+        tm_failures.setData(Collections.EMPTY_LIST);
+        
+        // Clear Errors tab:
+        tm_errors.setData(Collections.EMPTY_LIST);
+        
+        // Clear trace tab:
+        jta_trace.setText("");
     }
+    
 }

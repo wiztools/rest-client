@@ -30,6 +30,7 @@ import org.wiztools.restclient.ui.reqmethod.ReqMethodPanel;
 import org.wiztools.restclient.ui.reqtest.ReqTestPanel;
 import org.wiztools.restclient.ui.resbody.ResBodyPanel;
 import org.wiztools.restclient.ui.resheader.ResHeaderPanel;
+import org.wiztools.restclient.ui.restest.ResTestPanel;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.Util;
 
@@ -55,6 +56,7 @@ public class RESTView extends JPanel implements View {
     // Response panels:
     @Inject private ResHeaderPanel jp_res_headers;
     @Inject private ResBodyPanel jp_res_body;
+    @Inject private ResTestPanel jp_res_test;
     
     private JProgressBar jpb_status = new JProgressBar();
     
@@ -66,9 +68,6 @@ public class RESTView extends JPanel implements View {
     private JButton jb_request = null;
     
     private JTextField jtf_res_status = new JTextField();
-    
-    // Response
-    private TestResultPanel jp_testResultPanel = new TestResultPanel();
 
     private TwoColumnTablePanel jp_2col_req_headers;
     private TwoColumnTablePanel jp_2col_req_cookies;
@@ -155,10 +154,7 @@ public class RESTView extends JPanel implements View {
         jtp.addTab("Body", jp_res_body.getComponent());
         
         // Test result
-        JPanel jp_test_result = new JPanel();
-        jp_test_result.setLayout(new GridLayout(1, 1));
-        jp_test_result.add(jp_testResultPanel);
-        jtp.addTab("Test Result", jp_test_result);
+        jtp.addTab("Test Result", jp_res_test.getComponent());
         
         return jtp;
     }
@@ -337,7 +333,7 @@ public class RESTView extends JPanel implements View {
                 response.addHeader(key, value);
             }
         }
-        response.setTestResult(jp_testResultPanel.getTestResult());
+        response.setTestResult(jp_res_test.getTestResult());
         return response;
     }
     
@@ -598,7 +594,7 @@ public class RESTView extends JPanel implements View {
         jtf_res_status.setText("");
         jp_res_body.clear();
         jp_res_headers.clear();
-        jp_testResultPanel.clear();
+        jp_res_test.clear();
     }
     
     private void jcb_urlActionPerformed(final ActionEvent event){
@@ -776,7 +772,7 @@ public class RESTView extends JPanel implements View {
         jp_res_body.setBody(response.getResponseBody(), response.getContentType());
 
         // Response test result
-        jp_testResultPanel.setTestResult(response.getTestResult());
+        jp_res_test.setTestResult(response.getTestResult());
     }
     
     void setUIFromRequest(final Request request){

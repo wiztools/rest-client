@@ -5,9 +5,9 @@ import org.wiztools.commons.MultiValueMap;
 
 /**
  *
- * @author schandran
+ * @author subwiz
  */
-public class ResponseHeaderTableModel extends AbstractTableModel {
+class ResponseHeaderTableModel extends AbstractTableModel {
     
     private final String[] title = new String[]{"HTTP Header", "Value"};
     private String[][] headers;
