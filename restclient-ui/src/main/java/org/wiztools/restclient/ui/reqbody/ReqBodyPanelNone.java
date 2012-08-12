@@ -1,5 +1,6 @@
 package org.wiztools.restclient.ui.reqbody;
 
+import java.awt.Component;
 import javax.swing.JPanel;
 import org.wiztools.restclient.ReqEntity;
 
@@ -7,7 +8,7 @@ import org.wiztools.restclient.ReqEntity;
  *
  * @author subwiz
  */
-class ReqBodyPanelNone extends JPanel implements ReqBodyOps {
+class ReqBodyPanelNone extends JPanel implements ReqBodyPanel {
 
     @Override
     public void enableBody() {
@@ -34,4 +35,8 @@ class ReqBodyPanelNone extends JPanel implements ReqBodyOps {
         return null;
     }
     
+    @Override
+    public Component getComponent() {
+        return this;
+    }
 }

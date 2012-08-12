@@ -111,7 +111,7 @@ public class RESTView extends JPanel implements View {
     private JTabbedPane initJTPRequest(){
         JTabbedPane jtp = new JTabbedPane();
         
-        jtp.addTab("Method", jp_req_method);
+        jtp.addTab("Method", jp_req_method.getComponent());
         
         // Headers Tab
         jp_2col_req_headers = new TwoColumnTablePanel(new String[]{"Header", "Value"}, rest_ui);
@@ -123,13 +123,13 @@ public class RESTView extends JPanel implements View {
         
         // Body Tab
         jp_req_body.disableBody(); // disable control by default
-        jtp.addTab("Body", jp_req_body);
+        jtp.addTab("Body", jp_req_body.getComponent());
         
         // Auth
-        jtp.addTab("Auth", jp_req_auth);
+        jtp.addTab("Auth", jp_req_auth.getComponent());
         
         // SSL Tab
-        jtp.addTab("SSL", jp_req_ssl);
+        jtp.addTab("SSL", jp_req_ssl.getComponent());
         
         // Etc panel
         jtp.add("Etc.", jp_req_etc.getComponent());
@@ -225,7 +225,7 @@ public class RESTView extends JPanel implements View {
         jtp.addTab("Headers", jp_headers);
         
         // Response body
-        jtp.addTab("Body", jp_res_body);
+        jtp.addTab("Body", jp_res_body.getComponent());
         
         // Test result
         JPanel jp_test_result = new JPanel();
@@ -369,7 +369,7 @@ public class RESTView extends JPanel implements View {
         if(fontName != null){
             Font f = new Font(fontName, Font.PLAIN, fontSize);
             // se_req_body.getEditorComponent().setFont(f); TODO
-            jp_res_body.setEditorFont(f);
+            ((FontableEditor)jp_res_body).setEditorFont(f);
         }
         
         this.setLayout(new BorderLayout());
@@ -975,12 +975,12 @@ public class RESTView extends JPanel implements View {
     }
     
     public Font getTextAreaFont() {
-        return jp_req_body.getEditorFont();
+        return ((FontableEditor) jp_req_body).getEditorFont();
     }
     
     public void setTextAreaFont(final Font f){
-        jp_req_body.setEditorFont(f);
-        jp_res_body.setEditorFont(f);
+        ((FontableEditor) jp_req_body).setEditorFont(f);
+        ((FontableEditor)jp_res_body).setEditorFont(f);
     }
     
 }

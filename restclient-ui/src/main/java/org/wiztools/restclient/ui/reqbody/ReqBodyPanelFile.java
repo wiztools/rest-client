@@ -2,6 +2,7 @@ package org.wiztools.restclient.ui.reqbody;
 
 import org.wiztools.restclient.util.HttpUtil;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +23,7 @@ import org.wiztools.restclient.ui.*;
  *
  * @author subwiz
  */
-public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
+public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
     
     @Inject RESTView view;
     @Inject RESTUserInterface rest_ui;
@@ -155,5 +156,10 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyOps {
     @Override
     public void requestFocus() {
         jp_content_type_charset.requestFocus();
+    }
+
+    @Override
+    public Component getComponent() {
+        return this;
     }
 }

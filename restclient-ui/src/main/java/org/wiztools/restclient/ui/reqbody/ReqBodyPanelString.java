@@ -1,6 +1,7 @@
 package org.wiztools.restclient.ui.reqbody;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -23,7 +24,7 @@ import org.wiztools.restclient.ui.*;
  *
  * @author subwiz
  */
-class ReqBodyPanelString extends JPanel implements ReqBodyOps, FontableEditor {
+class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor {
     
     @Inject RESTView view;
     @Inject RESTUserInterface rest_ui;
@@ -265,5 +266,10 @@ class ReqBodyPanelString extends JPanel implements ReqBodyOps, FontableEditor {
     @Override
     public Font getEditorFont() {
         return se_req_body.getEditorComponent().getFont();
+    }
+    
+    @Override
+    public Component getComponent() {
+        return this;
     }
 }
