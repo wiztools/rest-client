@@ -248,8 +248,72 @@ public final class XMLUtil {
             // creating the body child element
             ReqEntity rBean = bean.getBody();
             if (rBean != null) {
-                String contentType = rBean.getContentType();
-                Charset charset = rBean.getCharset();
+                if(rBean instanceof ReqEntitySimple) {
+                    String contentType = rBean.getContentType();
+                    Charset charset = rBean.getCharset();
+                    
+                    Element e = new Element("body");
+                    e.addAttribute(new Attribute("type", "simple"));
+                    e.addAttribute(new Attribute("content-type", contentType));
+                    e.addAttribute(new Attribute("charset", charset.name()));
+                    
+                    if(rBean instanceof ReqEntityString) {
+                        ReqEntityString entityBean = (ReqEntityString) rBean;
+                        String bodyStr = entityBean.getBody();
+                        Element eContent = new Element("content");
+                        eContent.addAttribute(new Attribute("encoding", "none"));
+                        eContent.appendChild(bodyStr);
+                        e.appendChild(eContent);
+                    }
+                    else if(rBean instanceof ReqEntityFile) {
+                        ReqEntityFile entityBean = (ReqEntityFile) rBean;
+                        String bodyFile = entityBean.getBody().getAbsolutePath();
+                        Element eFileLink = new Element("file-link");
+                        eFileLink.addAttribute(new Attribute("path", bodyFile));
+                        e.appendChild(eFileLink);
+                    }
+                    
+                    reqChildElement.appendChild(e);
+                }
+                else if(rBean instanceof ReqEntityMultipart) {
+                    Element e = new Element("body");
+                    e.addAttribute(new Attribute("type", "multipart"));
+                    ReqEntityMultipart entityBody = (ReqEntityMultipart) rBean;
+                    for(ReqEntityPart part: entityBody.getBody()) {
+                        Element ePart = new Element("part");
+                        ePart.addAttribute(new Attribute("name", part.getName()));
+                        if(part instanceof ReqEntityStringPart) {
+                            ReqEntityStringPart strPart = (ReqEntityStringPart) part;
+                            String charset = strPart.getCharset().name();
+                            String contentType = strPart.getContentType();
+                            
+                            ePart.addAttribute(new Attribute("content-type", contentType));
+                            ePart.addAttribute(new Attribute("charset", charset));
+                            
+                            String partBody = strPart.getPart();
+                            
+                            Element eContent = new Element("content");
+                            eContent.addAttribute(new Attribute("encoding", "none"));
+                            eContent.appendChild(partBody);
+                            
+                            ePart.appendChild(eContent);
+                        }
+                        else if(part instanceof ReqEntityFilePart) {
+                            ReqEntityFilePart filePart = (ReqEntityFilePart) part;
+                            String fileName = filePart.getFileName();
+                            String filePath = filePart.getPart().getAbsolutePath();
+                            
+                            Element eFileLink = new Element("file-link");
+                            eFileLink.addAttribute(new Attribute("file-name", fileName));
+                            eFileLink.addAttribute(new Attribute("path", filePath));
+                            
+                            ePart.appendChild(eFileLink);
+                        }
+                        e.appendChild(ePart);
+                    }
+                    
+                    reqChildElement.appendChild(e);
+                }
                 /*String body = rBean.getBody(); TODO
                 Element e = new Element("body");
                 e.addAttribute(new Attribute("content-type", contentType));
