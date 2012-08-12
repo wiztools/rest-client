@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.resheader;
 
 import javax.swing.table.AbstractTableModel;
 import org.wiztools.commons.MultiValueMap;
@@ -7,7 +7,7 @@ import org.wiztools.commons.MultiValueMap;
  *
  * @author schandran
  */
-class ResponseHeaderTableModel extends AbstractTableModel {
+public class ResponseHeaderTableModel extends AbstractTableModel {
     
     private final String[] title = new String[]{"HTTP Header", "Value"};
     private String[][] headers;

@@ -6,7 +6,9 @@ import java.awt.event.*;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.*;
-import javax.swing.Timer;
 import javax.swing.border.TitledBorder;
 import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;
@@ -28,6 +29,7 @@ import org.wiztools.restclient.ui.reqetc.ReqEtcPanel;
 import org.wiztools.restclient.ui.reqmethod.ReqMethodPanel;
 import org.wiztools.restclient.ui.reqtest.ReqTestPanel;
 import org.wiztools.restclient.ui.resbody.ResBodyPanel;
+import org.wiztools.restclient.ui.resheader.ResHeaderPanel;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.Util;
 
@@ -42,12 +44,16 @@ public class RESTView extends JPanel implements View {
     private ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
     private ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
     
+    // Request panels:
     @Inject private ReqMethodPanel jp_req_method;
     @Inject private ReqBodyPanel jp_req_body;
     @Inject private ReqAuthPanel jp_req_auth;
     @Inject private ReqSSLPanel jp_req_ssl;
     @Inject private ReqEtcPanel jp_req_etc;
     @Inject private ReqTestPanel jp_req_test;
+    
+    // Response panels:
+    @Inject private ResHeaderPanel jp_res_headers;
     @Inject private ResBodyPanel jp_res_body;
     
     private JProgressBar jpb_status = new JProgressBar();
@@ -62,15 +68,10 @@ public class RESTView extends JPanel implements View {
     private JTextField jtf_res_status = new JTextField();
     
     // Response
-    
-    private JTable jt_res_headers = new JTable();
-
     private TestResultPanel jp_testResultPanel = new TestResultPanel();
 
     private TwoColumnTablePanel jp_2col_req_headers;
     private TwoColumnTablePanel jp_2col_req_cookies;
-    
-    private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();
     
     // Session Details
     SessionFrame sessionFrame = new SessionFrame("RESTClient: Session View");
@@ -148,81 +149,7 @@ public class RESTView extends JPanel implements View {
         JTabbedPane jtp = new JTabbedPane();
         
         // Header Tab
-        JPanel jp_headers = new JPanel();
-        jp_headers.setLayout(new BorderLayout());
-        
-        // Header Tab: Other Headers
-        JPanel jp_headers_others = new JPanel();
-        jp_headers_others.setLayout(new GridLayout(1, 1));
-        jt_res_headers.addMouseListener(new MouseAdapter() {
-            private JPopupMenu popup = new JPopupMenu();
-            private JMenuItem jmi_copy = new JMenuItem("Copy Selected Header(s)");
-            private JMenuItem jmi_copy_all = new JMenuItem("Copy All Headers");
-            {
-                jmi_copy.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        final int[] rows = jt_res_headers.getSelectedRows();
-                        Arrays.sort(rows);
-                        StringBuilder sb = new StringBuilder();
-                        for(final int row: rows) {
-                            final String key = (String) jt_res_headers.getValueAt(row, 0);
-                            final String value = (String) jt_res_headers.getValueAt(row, 1);
-                            sb.append(key).append(": ").append(value).append("\r\n");
-                        }
-                        UIUtil.clipboardCopy(sb.toString());
-                    }
-                });
-                popup.add(jmi_copy);
-
-                jmi_copy_all.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        final int totalRows = jt_res_headers.getRowCount();
-
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<totalRows; i++) {
-                            final String key = (String) jt_res_headers.getValueAt(i, 0);
-                            final String value = (String) jt_res_headers.getValueAt(i, 1);
-
-                            sb.append(key).append(": ").append(value).append("\r\n");
-                        }
-                        UIUtil.clipboardCopy(sb.toString());
-                    }
-                });
-                popup.add(jmi_copy_all);
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                showPopup(e);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                showPopup(e);
-            }
-
-            private void showPopup(MouseEvent e) {
-                if(jt_res_headers.getSelectedRowCount() == 0) {
-                    jmi_copy.setEnabled(false);
-                }
-                else {
-                    jmi_copy.setEnabled(true);
-                }
-                if (e.isPopupTrigger()) {
-                    popup.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-        });
-        jt_res_headers.setModel(resHeaderTableModel);
-        JScrollPane jsp = new JScrollPane(jt_res_headers);
-        Dimension d = jsp.getPreferredSize();
-        d.height = d.height / 2;
-        jsp.setPreferredSize(d);
-        jp_headers_others.add(jsp);
-        jp_headers.add(jp_headers_others, BorderLayout.CENTER);
-        jtp.addTab("Headers", jp_headers);
+        jtp.addTab("Headers", jp_res_headers.getComponent());
         
         // Response body
         jtp.addTab("Body", jp_res_body.getComponent());
@@ -404,9 +331,11 @@ public class RESTView extends JPanel implements View {
         String statusLine = jtf_res_status.getText();
         response.setStatusLine(statusLine);
         response.setStatusCode(HttpUtil.getStatusCodeFromStatusLine(statusLine));
-        String[][] headers = ((ResponseHeaderTableModel)jt_res_headers.getModel()).getHeaders();
-        for(int i=0; i<headers.length; i++){
-            response.addHeader(headers[i][0], headers[i][1]);
+        MultiValueMap<String, String> headers = jp_res_headers.getHeaders();
+        for(String key: headers.keySet()){
+            for(String value: headers.get(key)) {
+                response.addHeader(key, value);
+            }
         }
         response.setTestResult(jp_testResultPanel.getTestResult());
         return response;
@@ -668,8 +597,7 @@ public class RESTView extends JPanel implements View {
         lastResponse = null;
         jtf_res_status.setText("");
         jp_res_body.clear();
-        ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
-        model.setHeaders(null);
+        jp_res_headers.clear();
         jp_testResultPanel.clear();
     }
     
@@ -842,7 +770,7 @@ public class RESTView extends JPanel implements View {
         jtf_res_status.setText(response.getStatusLine());
 
         // Response header
-        resHeaderTableModel.setHeaders(response.getHeaders());
+        jp_res_headers.setHeaders(response.getHeaders());
 
         // Response body
         jp_res_body.setBody(response.getResponseBody(), response.getContentType());
