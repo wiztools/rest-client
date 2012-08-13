@@ -302,14 +302,16 @@ public class RESTViewImpl extends JPanel implements RESTView {
         this.add(initUIStatusBar(), BorderLayout.SOUTH);
     }
     
-    void setUIToLastRequestResponse(){
+    @Override
+    public void setUIToLastRequestResponse(){
         if(lastRequest != null && lastResponse != null){
             setUIFromRequest(lastRequest);
             setUIFromResponse(lastResponse);
         }
     }
     
-    Response getResponseFromUI(){
+    @Override
+    public Response getResponseFromUI(){
         ResponseBean response = new ResponseBean();
         response.setResponseBody(jp_res_body.getBody());
         String statusLine = jtf_res_status.getText();
@@ -575,7 +577,8 @@ public class RESTViewImpl extends JPanel implements RESTView {
         messageDialog.showMessage(title, message);
     }
     
-    void clearUIResponse(){
+    @Override
+    public void clearUIResponse(){
         lastResponse = null;
         jtf_res_status.setText("");
         jp_res_body.clear();
@@ -713,7 +716,8 @@ public class RESTViewImpl extends JPanel implements RESTView {
         return errors;
     }
     
-    void clearUIRequest(){
+    @Override
+    public void clearUIRequest(){
         // Clear last cached request
         lastRequest = null;
         
@@ -746,7 +750,8 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp_req_test.clear();
     }
     
-    void setUIFromResponse(final Response response){
+    @Override
+    public void setUIFromResponse(final Response response){
         // Clear first
         clearUIResponse();
 
@@ -763,7 +768,8 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp_res_test.setTestResult(response.getTestResult());
     }
     
-    void setUIFromRequest(final Request request){
+    @Override
+    public void setUIFromRequest(final Request request){
         // Clear first
         clearUIRequest();
 
@@ -903,6 +909,11 @@ public class RESTViewImpl extends JPanel implements RESTView {
     public void setTextAreaFont(final Font f){
         ((FontableEditor) jp_req_body).setEditorFont(f);
         ((FontableEditor)jp_res_body).setEditorFont(f);
+    }
+
+    @Override
+    public Container getContainer() {
+        return this;
     }
     
 }
