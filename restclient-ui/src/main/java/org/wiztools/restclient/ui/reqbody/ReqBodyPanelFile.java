@@ -75,7 +75,7 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
         }
         final String mime = FileUtil.getMimeType(f);
         if(!mime.equals("content/unknown")) {
-            final String origContentType = jp_content_type_charset.getContentType();
+            final String origContentType = jp_content_type_charset.getContentType().getContentType();
             if(!mime.equals(origContentType)) {
                 final int result = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
                         "The content-type selected (" + origContentType + ") does NOT match\n"
@@ -138,8 +138,7 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
     public void setEntity(ReqEntity entity) {
         if(entity instanceof ReqEntityFile) {
             ReqEntityFile e = (ReqEntityFile) entity;
-            jp_content_type_charset.setContentTypeCharset(
-                    e.getContentType(), e.getCharset());
+            jp_content_type_charset.setContentTypeCharset(e.getContentType());
             File body = e.getBody();
             jtf_file.setText(body.getAbsolutePath());
         }
@@ -148,10 +147,9 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
     @Override
     public ReqEntity getEntity() {
         File file = new File(jtf_file.getText());
-        String contentType = jp_content_type_charset.getContentType();
-        Charset charset = jp_content_type_charset.getCharset();
         
-        ReqEntityFileBean entity = new ReqEntityFileBean(file, contentType, charset);
+        ReqEntityFileBean entity = new ReqEntityFileBean(file,
+                jp_content_type_charset.getContentType());
         return entity;
     }
 

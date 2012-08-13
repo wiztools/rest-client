@@ -1,8 +1,5 @@
 package org.wiztools.restclient.ui.reqbody;
 
-import org.wiztools.restclient.bean.ReqEntityStringBean;
-import org.wiztools.restclient.bean.ReqEntityString;
-import org.wiztools.restclient.bean.ReqEntity;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -13,14 +10,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.*;
+import org.wiztools.restclient.IGlobalOptions;
+import org.wiztools.restclient.ServiceLocator;
+import org.wiztools.restclient.bean.ReqEntity;
+import org.wiztools.restclient.bean.ReqEntityString;
+import org.wiztools.restclient.bean.ReqEntityStringBean;
 import org.wiztools.restclient.ui.*;
 
 /**
@@ -247,12 +247,9 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     @Override
     public ReqEntity getEntity() {
         String body = se_req_body.getText();
-        String contentType = jp_content_type_charset.getContentType();
-        Charset charset = jp_content_type_charset.getCharset();
         ReqEntityStringBean entity = new ReqEntityStringBean(
                 body,
-                contentType,
-                charset);
+                jp_content_type_charset.getContentType());
         return entity;
     }
 

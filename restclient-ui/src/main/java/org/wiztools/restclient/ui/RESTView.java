@@ -716,10 +716,10 @@ public class RESTView extends JPanel implements View {
             ReqEntity entity = jp_req_body.getEntity();
             if(entity instanceof ReqEntitySimple) {
                 if(entity != null) {
-                    if(((ReqEntitySimple)entity).getCharset() == null) {
+                    if(((ReqEntitySimple)entity).getContentType().getCharset() == null) {
                         errors.add("Charset not set for body.");
                     }
-                    if(((ReqEntitySimple)entity).getContentType() == null) {
+                    if(((ReqEntitySimple)entity).getContentType().getContentType() == null) {
                         errors.add("Content type not set for body.");
                     }
                 }

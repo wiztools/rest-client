@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.wiztools.restclient.bean.ContentType;
+import org.wiztools.restclient.bean.ContentTypeBean;
 import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.UIUtil;
 import org.wiztools.restclient.util.HttpUtil;
@@ -19,7 +20,7 @@ import org.wiztools.restclient.util.HttpUtil;
  * @author subwiz
  */
 public class ContentTypeCharsetComponent extends JPanel {
-    @Inject private BodyContentTypeDialog jd_body_content_type;
+    @Inject private BodyContentTypeDialog jd;
     
     private static final String DEFAULT_CONTENT_CHARSET = HttpUtil.getFormattedContentType(
             BodyContentTypeDialog.DEFAULT_CONTENT_TYPE, BodyContentTypeDialog.DEFAULT_CHARSET);
@@ -37,7 +38,7 @@ public class ContentTypeCharsetComponent extends JPanel {
         jtf_content_type_charset.setEditable(false);
         add(jtf_content_type_charset);
         
-        jd_body_content_type.addContentTypeCharSetChangeListener(new ContentTypeCharsetChangeListener() {
+        jd.addContentTypeCharSetChangeListener(new ContentTypeCharsetChangeListener() {
             @Override
             public void changed(String contentType, String charSet) {
                 final String formatted = HttpUtil.getFormattedContentType(contentType, charSet);
@@ -49,7 +50,7 @@ public class ContentTypeCharsetComponent extends JPanel {
         jb_body_content_type.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                jd_body_content_type.setVisible(true);
+                jd.setVisible(true);
             }
         });
         add(jb_body_content_type);
@@ -64,16 +65,24 @@ public class ContentTypeCharsetComponent extends JPanel {
         setContentTypeCharset(contentType.getContentType(), contentType.getCharset());
     }
     
+    public ContentType getContentType() {
+        return new ContentTypeBean(jd.getContentType(), jd.getCharset());
+    }
+    
     public void setContentTypeCharset(String contentType, Charset charset) {
-        jd_body_content_type.setContentType(contentType);
-        jd_body_content_type.setCharset(charset);
+        jd.setContentType(contentType);
+        jd.setCharset(charset);
         jtf_content_type_charset.setText(
                 HttpUtil.getFormattedContentType(contentType, charset));
     }
     
+    public void setContentType(ContentType contentType) {
+        setContentTypeCharset(contentType.getContentType(), contentType.getCharset());
+    }
+    
     public void setContentType(String contentType) {
-        jd_body_content_type.setContentType(contentType);
-        String charset = jd_body_content_type.getCharsetString();
+        jd.setContentType(contentType);
+        String charset = jd.getCharsetString();
         jtf_content_type_charset.setText(
                 HttpUtil.getFormattedContentType(contentType, charset));
     }
@@ -82,23 +91,23 @@ public class ContentTypeCharsetComponent extends JPanel {
         return jtf_content_type_charset.getText();
     }
     
-    public String getContentType() {
+    public String getContentTypeString() {
         return HttpUtil.getMimeFromContentType(jtf_content_type_charset.getText());
     }
     
     public void setCharset(Charset charset) {
-        jd_body_content_type.setCharset(charset);
+        jd.setCharset(charset);
         jtf_content_type_charset.setText(
                 HttpUtil.getFormattedContentType(
-                    jd_body_content_type.getContentType(), charset));
+                    jd.getContentType(), charset));
     }
     
     public Charset getCharset() {
-        return jd_body_content_type.getCharset();
+        return jd.getCharset();
     }
     
     public String getCharsetString() {
-        return jd_body_content_type.getCharsetString();
+        return jd.getCharsetString();
     }
     
     public void enableComponent() {
