@@ -14,7 +14,6 @@ import javax.swing.*;
 import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapArrayList;
-import org.wiztools.restclient.ui.RESTView;
 import org.wiztools.restclient.ui.UIUtil;
 
 /**
@@ -22,8 +21,6 @@ import org.wiztools.restclient.ui.UIUtil;
  * @author subwiz
  */
 public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
-    
-    @Inject private RESTView view;
     
     private JTable jt_res_headers = new JTable();
     private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();

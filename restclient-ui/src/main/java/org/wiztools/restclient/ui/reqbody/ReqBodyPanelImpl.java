@@ -12,10 +12,7 @@ import javax.inject.Inject;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import org.wiztools.restclient.bean.ReqEntity;
-import org.wiztools.restclient.bean.ReqEntityFile;
-import org.wiztools.restclient.bean.ReqEntityMultipart;
-import org.wiztools.restclient.bean.ReqEntityString;
+import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.ui.FontableEditor;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;
@@ -76,6 +73,10 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
         else if(entity instanceof ReqEntityFile) {
             jcb_body_type.setSelectedItem(FILE_BODY);
             jp_req_body_file.setEntity(entity);
+        }
+        else if(entity instanceof ReqEntityByteArray) {
+            jcb_body_type.setSelectedItem(BYTE_ARRAY_BODY);
+            jp_req_body_byte_array.setEntity(entity);
         }
         else if(entity instanceof ReqEntityMultipart) {
             jcb_body_type.setSelectedItem(MULTIPART_BODY);

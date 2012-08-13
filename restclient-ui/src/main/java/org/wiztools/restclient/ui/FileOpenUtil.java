@@ -17,7 +17,7 @@ import org.wiztools.restclient.*;
 class FileOpenUtil {
     private FileOpenUtil() {}
     
-    static void openRequest(RESTView view, File f) {
+    static void openRequest(RESTViewImpl view, File f) {
         Exception e = null;
         try{
             Request request = XMLUtil.getRequestFromXMLFile(f);
@@ -34,7 +34,7 @@ class FileOpenUtil {
         }
     }
     
-    static void openResponse(final RESTView view, final File f) {
+    static void openResponse(final RESTViewImpl view, final File f) {
         Exception e = null;
         try{
             Response response = XMLUtil.getResponseFromXMLFile(f);
@@ -51,7 +51,7 @@ class FileOpenUtil {
         }
     }
     
-    static void openArchive(final RESTView view, final File f) {
+    static void openArchive(final RESTViewImpl view, final File f) {
         Exception e = null;
         try{
             ReqResBean encp = Util.getReqResArchive(f);
@@ -76,7 +76,7 @@ class FileOpenUtil {
         }
     }
     
-    static void open(final RESTView view, final File f) {
+    static void open(final RESTViewImpl view, final File f) {
         final String fileName = f.getName().toLowerCase();
         if(fileName.endsWith(".rcq")) { // Request
             openRequest(view, f);

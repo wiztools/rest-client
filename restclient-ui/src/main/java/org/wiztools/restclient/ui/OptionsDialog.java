@@ -61,7 +61,7 @@ class OptionsDialog extends EscapableDialog {
         // Tabbed pane
         JTabbedPane jtp = new JTabbedPane();
         jtp.setBorder(BorderFactory.createEmptyBorder(
-                RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+                RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         
         // Add all to tab:
         for(String key: panels.keySet()){
@@ -71,8 +71,8 @@ class OptionsDialog extends EscapableDialog {
         // Encapsulating
         JPanel jp_encp = new JPanel();
         jp_encp.setBorder(BorderFactory.createEmptyBorder(
-                RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
-        jp_encp.setLayout(new BorderLayout(RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+                RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
+        jp_encp.setLayout(new BorderLayout(RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         jp_encp.add(jtp, BorderLayout.CENTER);
         
         // South

@@ -1,16 +1,10 @@
 package org.wiztools.restclient.ui;
 
-import org.wiztools.restclient.util.XMLUtil;
-import org.wiztools.restclient.bean.RequestBean;
-import org.wiztools.restclient.bean.Request;
-import org.wiztools.restclient.bean.Response;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -24,9 +18,15 @@ import org.simplericity.macify.eawt.ApplicationEvent;
 import org.simplericity.macify.eawt.ApplicationListener;
 import org.simplericity.macify.eawt.DefaultApplication;
 import org.wiztools.commons.FileUtil;
-import org.wiztools.restclient.*;
+import org.wiztools.restclient.FileType;
+import org.wiztools.restclient.MessageI18N;
+import org.wiztools.restclient.RCConstants;
+import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.bean.Request;
+import org.wiztools.restclient.bean.Response;
 import org.wiztools.restclient.server.TraceServer;
 import org.wiztools.restclient.util.Util;
+import org.wiztools.restclient.util.XMLUtil;
 
 /**
  *
@@ -37,7 +37,7 @@ class RESTMain implements RESTUserInterface {
     
     private final Application application = new DefaultApplication();
     
-    @Inject private RESTView view;
+    @Inject private RESTViewImpl view;
     @Inject private AboutDialog aboutDialog;
     @Inject private OptionsDialog optionsDialog;
     @Inject private PasswordGenDialog passwordGenDialog;
@@ -64,7 +64,7 @@ class RESTMain implements RESTUserInterface {
     }
     
     @Override
-    public RESTView getView(){
+    public RESTViewImpl getView(){
         return view;
     }
     
@@ -262,17 +262,6 @@ class RESTMain implements RESTUserInterface {
         JMenu jm_tools = new JMenu("Tools");
         jm_tools.setMnemonic('o');
         
-        JMenuItem jmi_session = new JMenuItem("Open Session View");
-        jmi_session.setMnemonic('s');
-        jmi_session.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                view.showSessionFrame();
-            }
-        });
-        // Commenting for 2.x release:
-        // jm_tools.add(jmi_session);
-        
         JMenuItem jmi_pwd_gen = new JMenuItem("Password Encoder/Decoder");
         jmi_pwd_gen.setMnemonic('p');
         jmi_pwd_gen.addActionListener(new ActionListener() {
@@ -322,8 +311,8 @@ class RESTMain implements RESTUserInterface {
         jmi_server_fill_url.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                RequestBean request = (RequestBean) view.getRequestFromUI();
-                if(request.getUrl() != null){
+                String url = view.getUrl();
+                if(url != null){
                     int ret = JOptionPane.showConfirmDialog(frame,
                             "URL field not empty. Overwrite?",
                             "Request URL not empty",
@@ -332,12 +321,7 @@ class RESTMain implements RESTUserInterface {
                         return;
                     }
                 }
-                try {
-                    request.setUrl(new URL("http://localhost:" + TraceServer.PORT + "/"));
-                } catch (MalformedURLException ex) {
-                    assert true: ex;
-                }
-                view.setUIFromRequest(request);
+                view.setUrl("http://localhost:" + TraceServer.PORT + "/");
             }
         });
         jm_tools.add(jmi_server_fill_url);

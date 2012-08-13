@@ -34,10 +34,10 @@ class AboutDialog extends EscapableDialog {
         
         JPanel jp = new JPanel();
         jp.setBorder(BorderFactory.createEmptyBorder(
-                RESTView.BORDER_WIDTH,
-                RESTView.BORDER_WIDTH,
-                RESTView.BORDER_WIDTH,
-                RESTView.BORDER_WIDTH));
+                RESTViewImpl.BORDER_WIDTH,
+                RESTViewImpl.BORDER_WIDTH,
+                RESTViewImpl.BORDER_WIDTH,
+                RESTViewImpl.BORDER_WIDTH));
         jp.setLayout(new BorderLayout());
         
         JPanel jp_north = new JPanel();

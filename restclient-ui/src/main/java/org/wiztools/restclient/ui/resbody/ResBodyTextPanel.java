@@ -1,7 +1,5 @@
 package org.wiztools.restclient.ui.resbody;
 
-import org.wiztools.restclient.util.XMLUtil;
-import org.wiztools.restclient.bean.ContentType;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -12,10 +10,14 @@ import java.io.IOException;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
-import org.wiztools.restclient.*;
+import org.wiztools.restclient.IGlobalOptions;
+import org.wiztools.restclient.ServiceLocator;
+import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.ui.*;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.JSONUtil;
+import org.wiztools.restclient.util.XMLUtil;
 
 /**
  *

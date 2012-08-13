@@ -92,8 +92,8 @@ class KeyValMultiEntryDialog extends EscapableDialog {
 
         jp.add(jp_south, BorderLayout.SOUTH);
 
-        jp.setBorder(BorderFactory.createEmptyBorder(RESTView.BORDER_WIDTH,
-                RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+        jp.setBorder(BorderFactory.createEmptyBorder(RESTViewImpl.BORDER_WIDTH,
+                RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         setContentPane(jp);
         pack();
         

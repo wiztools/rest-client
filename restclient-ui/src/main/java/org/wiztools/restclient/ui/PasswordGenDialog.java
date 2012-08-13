@@ -86,7 +86,7 @@ class PasswordGenDialog extends EscapableDialog {
         // Layout
         JPanel jp = new JPanel();
         jp.setBorder(BorderFactory.createEmptyBorder(
-                RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+                RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         jp.setLayout(new BorderLayout());
         
         // North
@@ -100,7 +100,7 @@ class PasswordGenDialog extends EscapableDialog {
         JPanel jp_center = new JPanel();
         jp_center.setLayout(new BorderLayout());
         JPanel jp_center_west = new JPanel();
-        jp_center_west.setLayout(new GridLayout(2, 1, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+        jp_center_west.setLayout(new GridLayout(2, 1, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         JLabel jl_in = new JLabel("Input: ");
         jl_in.setDisplayedMnemonic('i');
         jl_in.setLabelFor(jtf_in);
@@ -109,7 +109,7 @@ class PasswordGenDialog extends EscapableDialog {
         jp_center_west.add(jl_out);
         jp_center.add(jp_center_west, BorderLayout.WEST);
         JPanel jp_center_center = new JPanel();
-        jp_center_center.setLayout(new GridLayout(2, 1, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+        jp_center_center.setLayout(new GridLayout(2, 1, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         jp_center_center.add(jtf_in);
         jp_center_center.add(jtf_out);
         jp_center.add(jp_center_center, BorderLayout.CENTER);
@@ -135,7 +135,7 @@ class PasswordGenDialog extends EscapableDialog {
         // Help Window
         JPanel jp_help = new JPanel();
         jp_help.setBorder(BorderFactory.createEmptyBorder(
-                RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+                RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         jp_help.setLayout(new BorderLayout());
         
         JTextPane jtp_help_center = new JTextPane();
@@ -156,7 +156,7 @@ class PasswordGenDialog extends EscapableDialog {
         
         JTabbedPane jtp = new JTabbedPane();
         jtp.setBorder(BorderFactory.createEmptyBorder(
-                RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+                RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         jtp.addTab("Encoder/Decoder", jp);
         jtp.addTab("Help", jp_help);
         

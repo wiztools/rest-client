@@ -44,8 +44,8 @@ class OptionsProxyPanel extends JPanel implements IOptionsPanel {
         
         JPanel jp = this;
         jp.setBorder(BorderFactory.createEmptyBorder(
-                RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
-        jp.setLayout(new BorderLayout(RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+                RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
+        jp.setLayout(new BorderLayout(RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         
         // North
         JPanel jp_north = new JPanel();
@@ -77,16 +77,16 @@ class OptionsProxyPanel extends JPanel implements IOptionsPanel {
         
         // Center
         JPanel jp_center = new JPanel();
-        jp_center.setLayout(new BorderLayout(RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+        jp_center.setLayout(new BorderLayout(RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         JPanel jp_center_west = new JPanel();
-        jp_center_west.setLayout(new GridLayout(4, 1, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+        jp_center_west.setLayout(new GridLayout(4, 1, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         jp_center_west.add(new JLabel("Host: "));
         jp_center_west.add(new JLabel("Port: "));
         jp_center_west.add(new JLabel("Username: "));
         jp_center_west.add(new JLabel("Password: "));
         jp_center.add(jp_center_west, BorderLayout.WEST);
         JPanel jp_center_center = new JPanel();
-        jp_center_center.setLayout(new GridLayout(4, 1, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
+        jp_center_center.setLayout(new GridLayout(4, 1, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         jp_center_center.add(jtf_host);
         jtf_port.setText("" + ProxyConfig.DEFAULT_PORT);
         jp_center_center.add(jtf_port);

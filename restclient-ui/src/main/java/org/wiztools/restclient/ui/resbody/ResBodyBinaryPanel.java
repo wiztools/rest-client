@@ -2,10 +2,8 @@ package org.wiztools.restclient.ui.resbody;
 
 import java.awt.GridLayout;
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.swing.JTextArea;
 import org.wiztools.restclient.bean.ContentType;
-import org.wiztools.restclient.ui.RESTView;
 import org.wiztools.restclient.util.HexDump;
 
 /**
@@ -13,7 +11,6 @@ import org.wiztools.restclient.util.HexDump;
  * @author subwiz
  */
 public class ResBodyBinaryPanel extends AbstractResBody {
-    @Inject private RESTView view;
     
     private JTextArea jta = new JTextArea();
     
