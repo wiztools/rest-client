@@ -1,8 +1,8 @@
 package org.wiztools.restclient;
 
-import org.wiztools.restclient.util.HttpUtil;
 import java.io.File;
 import java.nio.charset.Charset;
+import org.wiztools.restclient.util.HttpUtil;
 
 /**
  *
@@ -49,5 +49,35 @@ public class ReqEntityFileBean implements ReqEntityFile {
     @Override
     public Object clone() {
         return null;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ReqEntityFileBean other = (ReqEntityFileBean) obj;
+        if (this.body != other.body && (this.body == null || !this.body.equals(other.body))) {
+            return false;
+        }
+        if (this.charset != other.charset && (this.charset == null || !this.charset.equals(other.charset))) {
+            return false;
+        }
+        if ((this.contentType == null) ? (other.contentType != null) : !this.contentType.equals(other.contentType)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + (this.body != null ? this.body.hashCode() : 0);
+        hash = 79 * hash + (this.charset != null ? this.charset.hashCode() : 0);
+        hash = 79 * hash + (this.contentType != null ? this.contentType.hashCode() : 0);
+        return hash;
     }
 }
