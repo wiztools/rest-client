@@ -31,6 +31,7 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     @Inject private ReqBodyPanelNone jp_body_none;
     @Inject private ReqBodyPanelString jp_req_body_string;
     @Inject private ReqBodyPanelFile jp_req_body_file;
+    @Inject private ReqBodyPanelByteArray jp_req_body_byte_array;
     @Inject private ReqBodyPanelMultipart jp_req_body_multipart;
     
     private final List<ReqBodyPanel> allPanels = new ArrayList<ReqBodyPanel>();
@@ -38,10 +39,11 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     private static final String NONE_BODY = "None";
     private static final String STRING_BODY = "String body";
     private static final String FILE_BODY = "File body";
+    private static final String BYTE_ARRAY_BODY = "Byte-array body";
     private static final String MULTIPART_BODY = "Multipart body";
     
     
-    private static final String[] comboValues = new String[]{NONE_BODY, STRING_BODY, FILE_BODY, MULTIPART_BODY};
+    private static final String[] comboValues = new String[]{NONE_BODY, STRING_BODY, FILE_BODY, BYTE_ARRAY_BODY, MULTIPART_BODY};
     private JComboBox jcb_body_type = new JComboBox(comboValues);
     
     private JPanel getPanelFromSelection() {
@@ -53,6 +55,9 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
         }
         else if(jcb_body_type.getSelectedItem().equals(FILE_BODY)) {
             return jp_req_body_file;
+        }
+        else if(jcb_body_type.getSelectedItem().equals(BYTE_ARRAY_BODY)) {
+            return jp_req_body_byte_array;
         }
         else if(jcb_body_type.getSelectedItem().equals(MULTIPART_BODY)) {
             return jp_req_body_multipart;
@@ -83,8 +88,8 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
 
     @Override
     public ReqEntity getEntity() {
-        ReqBodyPanel ops = (ReqBodyPanel) getPanelFromSelection();
-        return ops.getEntity();
+        ReqBodyPanel panel = (ReqBodyPanel) getPanelFromSelection();
+        return panel.getEntity();
     }
     
     @Override
@@ -112,6 +117,7 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
         // Populate allPanels:
         allPanels.add(jp_req_body_string);
         allPanels.add(jp_req_body_file);
+        allPanels.add(jp_req_body_byte_array);
         allPanels.add(jp_req_body_multipart);
         
         // Create UI:

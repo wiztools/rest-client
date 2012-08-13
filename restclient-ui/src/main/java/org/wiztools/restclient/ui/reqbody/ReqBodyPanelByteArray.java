@@ -13,61 +13,64 @@ import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JTextArea;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.ReqEntity;
-import org.wiztools.restclient.bean.ReqEntityFile;
-import org.wiztools.restclient.bean.ReqEntityFileBean;
-import org.wiztools.restclient.ui.*;
+import org.wiztools.restclient.bean.ReqEntityByteArray;
+import org.wiztools.restclient.bean.ReqEntityByteArrayBean;
+import org.wiztools.restclient.ui.FileChooserType;
+import org.wiztools.restclient.ui.RCFileView;
+import org.wiztools.restclient.ui.RESTUserInterface;
+import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.util.HexDump;
+import org.wiztools.restclient.util.Util;
 import org.wiztools.restclient.util.XMLUtil;
 
 /**
  *
  * @author subwiz
  */
-public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
+public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
+    @Inject private RESTUserInterface ui;
+    @Inject private ContentTypeCharsetComponent jp_content_type_charset;
     
-    @Inject RESTView view;
-    @Inject RESTUserInterface rest_ui;
+    private JButton jb_body = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     
-    @Inject ContentTypeCharsetComponent jp_content_type_charset;
+    private JTextArea jta = new JTextArea();
     
-    private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private JTextField jtf_file = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
+    private byte[] body;
     
     @PostConstruct
-    public void init() {
+    protected void init() {
         setLayout(new BorderLayout());
         
-        // North
         JPanel jp_north = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jp_north.add(jp_content_type_charset);
         
-        add(jp_north, BorderLayout.NORTH);
-        
-        // Center
-        jb_body_file.setToolTipText("Select file");
-        jb_body_file.addActionListener(new ActionListener() {
+        jb_body.setToolTipText("Select file having body content");
+        jb_body.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                selectFile();
+                fileOpen();
             }
         });
-        JPanel jp_center = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jp_center.add(jtf_file);
-        jp_center.add(jb_body_file);
+        jp_north.add(jb_body);
         
-        add(UIUtil.getFlowLayoutPanelLeftAligned(jp_center), BorderLayout.CENTER);
+        add(jp_north, BorderLayout.NORTH);
+        
+        jta.setEditable(false);
+        
+        add(jta, BorderLayout.CENTER);
     }
     
-    private void selectFile() {
-        File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
+    private void fileOpen() {
+        File f = ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
         if(f == null){ // Pressed cancel?
             return;
         }
         if(!f.canRead()){
-            JOptionPane.showMessageDialog(rest_ui.getFrame(),
+            JOptionPane.showMessageDialog(ui.getFrame(),
                     "File not readable: " + f.getAbsolutePath(),
                     "IO Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -77,7 +80,7 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
         if(!mime.equals("content/unknown")) {
             final String origContentType = jp_content_type_charset.getContentType().getContentType();
             if(!mime.equals(origContentType)) {
-                final int result = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
+                final int result = JOptionPane.showConfirmDialog(ui.getFrame(),
                         "The content-type selected (" + origContentType + ") does NOT match\n"
                         + "the computed file mime type (" + mime + ")\n"
                         + "Do you want to update the content-type to `" + mime + "'?",
@@ -92,7 +95,7 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
                         try{
                             String charset = XMLUtil.getDocumentCharset(f);
                             if(charset != null && !(charset.equals(jp_content_type_charset.getCharsetString()))) {
-                                final int charsetYesNo = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
+                                final int charsetYesNo = JOptionPane.showConfirmDialog(ui.getFrame(),
                                         "Change charset to `" + charset + "'?",
                                         "Change charset?",
                                         JOptionPane.YES_NO_OPTION);
@@ -111,55 +114,72 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
                 }
             }
         }
-        jtf_file.setText(f.getAbsolutePath());
+        
+        final long fileSizeMB = f.length() / (1024l*1024l);
+        if(fileSizeMB > 2) {
+            final int yesNoOption = JOptionPane.showConfirmDialog(ui.getFrame(),
+                    "File size is more than 2 MB.\nDo you want to continue loading (may take some time!)?",
+                    "File exceeds threshold size",
+                    JOptionPane.YES_NO_OPTION);
+            if(yesNoOption == JOptionPane.NO_OPTION) {
+                return;
+            }
+        }
+        
+        try {
+            byte[] data = FileUtil.getContentAsBytes(f);
+            body = data;
+            jta.setText(HexDump.getHexDataDumpAsString(data));
+            jta.setCaretPosition(0);
+        }
+        catch(IOException ex) {
+            ui.getView().doError(Util.getStackTrace(ex));
+        }
     }
-    
+
     @Override
     public void enableBody() {
         jp_content_type_charset.enableComponent();
-        jtf_file.setEnabled(true);
-        jb_body_file.setEnabled(true);
+        jb_body.setEnabled(true);
+        jta.setEnabled(true);
     }
-    
+
     @Override
     public void disableBody() {
         jp_content_type_charset.disableComponent();
-        jtf_file.setEnabled(false);
-        jb_body_file.setEnabled(false);
-    }
-    
-    @Override
-    public void clear() {
-        jp_content_type_charset.clearComponent();
-        jtf_file.setText("");
+        jb_body.setEnabled(false);
+        jta.setEnabled(false);
     }
 
     @Override
     public void setEntity(ReqEntity entity) {
-        if(entity instanceof ReqEntityFile) {
-            ReqEntityFile e = (ReqEntityFile) entity;
+        if(entity instanceof ReqEntityByteArray) {
+            ReqEntityByteArray e = (ReqEntityByteArray) entity;
+            
+            // content-type charset
             jp_content_type_charset.setContentTypeCharset(e.getContentType());
-            File body = e.getBody();
-            jtf_file.setText(body.getAbsolutePath());
+            
+            // Set body:
+            jta.setText(HexDump.getHexDataDumpAsString(e.getBody()));
         }
-    }
-    
-    @Override
-    public ReqEntity getEntity() {
-        File file = new File(jtf_file.getText());
-        
-        ReqEntityFileBean entity = new ReqEntityFileBean(file,
-                jp_content_type_charset.getContentType());
-        return entity;
     }
 
     @Override
-    public void requestFocus() {
-        jp_content_type_charset.requestFocus();
+    public ReqEntity getEntity() {
+        ReqEntityByteArrayBean out = new ReqEntityByteArrayBean(body,
+                jp_content_type_charset.getContentType());
+        return out;
     }
 
     @Override
     public Component getComponent() {
         return this;
     }
+
+    @Override
+    public void clear() {
+        jp_content_type_charset.clearComponent();
+        jta.setText("");
+    }
+    
 }
