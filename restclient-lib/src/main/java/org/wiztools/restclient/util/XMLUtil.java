@@ -1,26 +1,5 @@
 package org.wiztools.restclient.util;
 
-import org.wiztools.restclient.bean.ReqEntityFilePart;
-import org.wiztools.restclient.bean.HTTPAuthMethod;
-import org.wiztools.restclient.bean.ReqEntityMultipart;
-import org.wiztools.restclient.bean.HTTPMethod;
-import org.wiztools.restclient.bean.ReqEntityFile;
-import org.wiztools.restclient.bean.ReqEntitySimple;
-import org.wiztools.restclient.bean.RequestBean;
-import org.wiztools.restclient.bean.ReqEntityStringPart;
-import org.wiztools.restclient.bean.ReqEntityPart;
-import org.wiztools.restclient.bean.Request;
-import org.wiztools.restclient.bean.ReqEntityStringBean;
-import org.wiztools.restclient.bean.ReqEntityString;
-import org.wiztools.restclient.bean.SSLHostnameVerifier;
-import org.wiztools.restclient.bean.TestResult;
-import org.wiztools.restclient.bean.ResponseBean;
-import org.wiztools.restclient.bean.TestResultBean;
-import org.wiztools.restclient.bean.Response;
-import org.wiztools.restclient.bean.ReqEntity;
-import org.wiztools.restclient.bean.TestExceptionResult;
-import org.wiztools.restclient.bean.HTTPVersion;
-import org.wiztools.restclient.util.Util;
 import java.io.*;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
@@ -38,6 +17,7 @@ import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.RCConstants;
 import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.bean.*;
 
 /**
  *
