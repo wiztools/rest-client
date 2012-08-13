@@ -11,7 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import org.wiztools.restclient.HTTPMethod;
+import org.wiztools.restclient.bean.HTTPMethod;
 import org.wiztools.restclient.ui.RESTView;
 
 /**

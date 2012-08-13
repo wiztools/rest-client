@@ -1,7 +1,7 @@
 package org.wiztools.restclient.ui;
 
 import java.util.List;
-import org.wiztools.restclient.HTTPAuthMethod;
+import org.wiztools.restclient.bean.HTTPAuthMethod;
 
 /**
  *

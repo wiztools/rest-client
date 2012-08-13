@@ -1,6 +1,5 @@
 package org.wiztools.restclient.ui.reqbody;
 
-import org.wiztools.restclient.util.HttpUtil;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -16,7 +15,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.wiztools.commons.FileUtil;
-import org.wiztools.restclient.*;
+import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.XMLUtil;
+import org.wiztools.restclient.bean.ReqEntity;
+import org.wiztools.restclient.bean.ReqEntityFile;
+import org.wiztools.restclient.bean.ReqEntityFileBean;
 import org.wiztools.restclient.ui.*;
 
 /**
@@ -144,12 +147,11 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
     
     @Override
     public ReqEntity getEntity() {
-        ReqEntityFileBean entity = new ReqEntityFileBean();
-        entity.setBody(new File(jtf_file.getText()));
-        entity.setCharset(Charset.forName(HttpUtil.getCharsetFromContentType(
-                jp_content_type_charset.getContentTypeCharsetString())));
-        entity.setContentType(HttpUtil.getMimeFromContentType(
-                jp_content_type_charset.getContentTypeCharsetString()));
+        File file = new File(jtf_file.getText());
+        String contentType = jp_content_type_charset.getContentType();
+        Charset charset = jp_content_type_charset.getCharset();
+        
+        ReqEntityFileBean entity = new ReqEntityFileBean(file, contentType, charset);
         return entity;
     }
 

@@ -1,7 +1,7 @@
 package org.wiztools.restclient.ui.reqbody;
 
 import com.google.inject.ImplementedBy;
-import org.wiztools.restclient.ReqEntity;
+import org.wiztools.restclient.bean.ReqEntity;
 import org.wiztools.restclient.ui.ViewPanel;
 
 /**

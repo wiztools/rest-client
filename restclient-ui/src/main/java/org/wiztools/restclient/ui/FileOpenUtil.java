@@ -1,5 +1,8 @@
 package org.wiztools.restclient.ui;
 
+import org.wiztools.restclient.bean.ReqResBean;
+import org.wiztools.restclient.bean.Request;
+import org.wiztools.restclient.bean.Response;
 import org.wiztools.restclient.util.Util;
 import java.io.File;
 import java.io.IOException;

@@ -1,5 +1,10 @@
 package org.wiztools.restclient.ui.reqtest;
 
+import org.wiztools.restclient.bean.RequestBean;
+import org.wiztools.restclient.bean.TestResult;
+import org.wiztools.restclient.bean.Request;
+import org.wiztools.restclient.bean.TestException;
+import org.wiztools.restclient.bean.Response;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;

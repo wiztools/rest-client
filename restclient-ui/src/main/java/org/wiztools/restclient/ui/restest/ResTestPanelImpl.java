@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.Collections;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import org.wiztools.restclient.TestResult;
+import org.wiztools.restclient.bean.TestResult;
 import org.wiztools.restclient.ui.UIUtil;
 
 /**

@@ -2,7 +2,7 @@ package org.wiztools.restclient.ui.restest;
 
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
-import org.wiztools.restclient.TestExceptionResult;
+import org.wiztools.restclient.bean.TestExceptionResult;
 
 /**
  *

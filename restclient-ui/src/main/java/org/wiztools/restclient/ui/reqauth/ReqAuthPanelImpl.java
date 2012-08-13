@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
-import org.wiztools.restclient.HTTPAuthMethod;
+import org.wiztools.restclient.bean.HTTPAuthMethod;
 import org.wiztools.restclient.ui.AuthHelper;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;

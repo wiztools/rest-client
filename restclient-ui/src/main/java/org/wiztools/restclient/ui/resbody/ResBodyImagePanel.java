@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import org.wiztools.restclient.ContentType;
+import org.wiztools.restclient.bean.ContentType;
 
 /**
  *

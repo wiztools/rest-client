@@ -2,7 +2,7 @@ package org.wiztools.restclient.ui.resbody;
 
 import java.awt.Component;
 import javax.swing.JPanel;
-import org.wiztools.restclient.ContentType;
+import org.wiztools.restclient.bean.ContentType;
 
 /**
  *

@@ -1,5 +1,8 @@
 package org.wiztools.restclient.ui.reqbody;
 
+import org.wiztools.restclient.bean.ReqEntityStringBean;
+import org.wiztools.restclient.bean.ReqEntityString;
+import org.wiztools.restclient.bean.ReqEntity;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;

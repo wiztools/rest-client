@@ -5,7 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import org.wiztools.restclient.HTTPVersion;
+import org.wiztools.restclient.bean.HTTPVersion;
 
 /**
  *

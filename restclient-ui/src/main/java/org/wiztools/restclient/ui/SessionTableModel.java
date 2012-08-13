@@ -3,8 +3,8 @@ package org.wiztools.restclient.ui;
 import java.util.Collections;
 import java.util.Map;
 import javax.swing.table.AbstractTableModel;
-import org.wiztools.restclient.Request;
-import org.wiztools.restclient.Response;
+import org.wiztools.restclient.bean.Request;
+import org.wiztools.restclient.bean.Response;
 
 /**
  *

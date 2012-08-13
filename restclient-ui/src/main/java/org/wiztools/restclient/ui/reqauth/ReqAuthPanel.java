@@ -1,7 +1,7 @@
 package org.wiztools.restclient.ui.reqauth;
 
 import com.google.inject.ImplementedBy;
-import org.wiztools.restclient.HTTPAuthMethod;
+import org.wiztools.restclient.bean.HTTPAuthMethod;
 import org.wiztools.restclient.ui.ViewPanel;
 
 /**

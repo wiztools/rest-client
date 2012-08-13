@@ -2,8 +2,8 @@ package org.wiztools.restclient.ui.reqbody;
 
 import java.awt.Component;
 import javax.swing.JPanel;
-import org.wiztools.restclient.ReqEntity;
-import org.wiztools.restclient.ReqEntityMultipart;
+import org.wiztools.restclient.bean.ReqEntity;
+import org.wiztools.restclient.bean.ReqEntityMultipart;
 
 /**
  *

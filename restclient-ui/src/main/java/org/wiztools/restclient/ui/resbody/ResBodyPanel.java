@@ -1,7 +1,7 @@
 package org.wiztools.restclient.ui.resbody;
 
 import com.google.inject.ImplementedBy;
-import org.wiztools.restclient.ContentType;
+import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.ui.ViewPanel;
 
 /**

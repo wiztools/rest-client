@@ -1,7 +1,7 @@
 package org.wiztools.restclient.ui;
 
-import org.wiztools.restclient.Request;
-import org.wiztools.restclient.Response;
+import org.wiztools.restclient.bean.Request;
+import org.wiztools.restclient.bean.Response;
 
 /**
  *

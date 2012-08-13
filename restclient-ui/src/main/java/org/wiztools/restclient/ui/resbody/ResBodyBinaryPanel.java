@@ -4,7 +4,7 @@ import java.awt.GridLayout;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JTextArea;
-import org.wiztools.restclient.ContentType;
+import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.ui.RESTView;
 import org.wiztools.restclient.util.HexDump;
 

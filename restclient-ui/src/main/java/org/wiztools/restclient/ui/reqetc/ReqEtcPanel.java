@@ -1,7 +1,7 @@
 package org.wiztools.restclient.ui.reqetc;
 
 import com.google.inject.ImplementedBy;
-import org.wiztools.restclient.HTTPVersion;
+import org.wiztools.restclient.bean.HTTPVersion;
 import org.wiztools.restclient.ui.ViewPanel;
 
 /**
