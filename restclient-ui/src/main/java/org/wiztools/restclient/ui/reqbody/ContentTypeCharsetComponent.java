@@ -9,10 +9,10 @@ import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.wiztools.restclient.util.HttpUtil;
-import org.wiztools.restclient.util.Util;
+import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.util.HttpUtil;
 
 /**
  *
@@ -21,7 +21,8 @@ import org.wiztools.restclient.ui.UIUtil;
 public class ContentTypeCharsetComponent extends JPanel {
     @Inject private BodyContentTypeDialog jd_body_content_type;
     
-    private static final String DEFAULT_CONTENT_CHARSET = "text/plain; charset=UTF-8";
+    private static final String DEFAULT_CONTENT_CHARSET = HttpUtil.getFormattedContentType(
+            BodyContentTypeDialog.DEFAULT_CONTENT_TYPE, BodyContentTypeDialog.DEFAULT_CHARSET);
     
     public static final int TEXT_FIELD_LENGTH = 26;
     
@@ -57,6 +58,10 @@ public class ContentTypeCharsetComponent extends JPanel {
     @Override
     public void requestFocus() {
         jb_body_content_type.requestFocus();
+    }
+    
+    public void setContentTypeCharset(ContentType contentType) {
+        setContentTypeCharset(contentType.getContentType(), contentType.getCharset());
     }
     
     public void setContentTypeCharset(String contentType, Charset charset) {
