@@ -15,6 +15,7 @@ public abstract class AbstractResBody extends JPanel implements ResBodyPanel {
     @Override
     public void setBody(byte[] body, ContentType type) {
         this.body = body;
+        this.type = type;
     }
 
     @Override
