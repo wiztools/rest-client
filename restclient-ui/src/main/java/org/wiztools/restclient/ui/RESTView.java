@@ -1,6 +1,7 @@
 package org.wiztools.restclient.ui;
 
 import com.google.inject.ImplementedBy;
+import java.awt.Container;
 import java.awt.Font;
 import org.wiztools.restclient.View;
 import org.wiztools.restclient.bean.Request;
@@ -23,6 +24,7 @@ public interface RESTView extends View {
     Response getLastResponse();
 
     Request getRequestFromUI();
+    Response getResponseFromUI();
 
     Font getTextAreaFont();
 
@@ -40,4 +42,14 @@ public interface RESTView extends View {
 
     void showMessage(final String title, final String message);
     
+    void setUIFromRequest(Request request);
+    void setUIFromResponse(Response response);
+    
+    void clearUIResponse();
+    
+    void clearUIRequest();
+    
+    void setUIToLastRequestResponse();
+    
+    Container getContainer();
 }

@@ -1,18 +1,15 @@
 package org.wiztools.restclient.ui;
 
 import java.awt.AWTEvent;
-import org.wiztools.restclient.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.inject.Inject;
+import javax.swing.*;
+import org.wiztools.restclient.MessageI18N;
+import org.wiztools.restclient.RCConstants;
 
 /**
  *
@@ -20,15 +17,15 @@ import javax.swing.JTextPane;
  */
 class AboutDialog extends EscapableDialog {
 
-    private AboutDialog me;
+    private AboutDialog me = this;
     
-    public AboutDialog(){
-        super(ServiceLocator.getInstance(RESTUserInterface.class).getFrame(), true);
-        me = this;
-        init();
+    @Inject
+    public AboutDialog(RESTUserInterface ui){
+        super(ui.getFrame(), true);
     }
     
-    private void init(){
+    @Inject
+    protected void init(){
         // Title
         setTitle("About");
         
@@ -63,6 +60,7 @@ class AboutDialog extends EscapableDialog {
         JButton jb_ok = new JButton("Ok");
         jb_ok.setMnemonic('o');
         jb_ok.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 hideMe();
             }

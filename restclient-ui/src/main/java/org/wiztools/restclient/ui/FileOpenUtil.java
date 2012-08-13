@@ -88,7 +88,7 @@ class FileOpenUtil {
             openArchive(view, f);
         }
         else {
-            JOptionPane.showMessageDialog(view,
+            JOptionPane.showMessageDialog(view.getContainer(),
                     "File in unrecognized format!",
                     "File in unrecognized format!",
                     JOptionPane.ERROR_MESSAGE);

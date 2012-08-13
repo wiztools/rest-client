@@ -376,7 +376,7 @@ class RESTMain implements RESTUserInterface {
     
     @PostConstruct
     public void show() {
-        frame.setContentPane(view);
+        frame.setContentPane(view.getContainer());
         createMenu();
         ImageIcon icon =
                 UIUtil.getIconFromClasspath("org/wiztools/restclient/WizLogo.png");
@@ -554,7 +554,7 @@ class RESTMain implements RESTUserInterface {
     private boolean doSaveEvenIfUIChanged(final String[] parameters){
         final String message = MessageI18N.getMessage(
                 "yes-no.cant.save.req-res", parameters);
-        int optionChoosen = JOptionPane.showConfirmDialog(view,
+        int optionChoosen = JOptionPane.showConfirmDialog(view.getContainer(),
                 message,
                 "UI Parameters Changed!",
                 JOptionPane.OK_CANCEL_OPTION,
@@ -570,7 +570,7 @@ class RESTMain implements RESTUserInterface {
             Request request = view.getLastRequest();
 
             if(request == null){
-                JOptionPane.showMessageDialog(view,
+                JOptionPane.showMessageDialog(view.getContainer(),
                         "No last request available.",
                         "No Request",
                         JOptionPane.ERROR_MESSAGE);
@@ -601,7 +601,7 @@ class RESTMain implements RESTUserInterface {
         else if(type == FileChooserType.SAVE_RESPONSE){
             Response response = view.getLastResponse();
             if(response == null){
-                JOptionPane.showMessageDialog(view,
+                JOptionPane.showMessageDialog(view.getContainer(),
                         "No last response available.",
                         "No Response",
                         JOptionPane.ERROR_MESSAGE);
@@ -630,14 +630,14 @@ class RESTMain implements RESTUserInterface {
         else if(type == FileChooserType.SAVE_RESPONSE_BODY){
             Response response = view.getLastResponse();
             if(response == null){
-                JOptionPane.showMessageDialog(view,
+                JOptionPane.showMessageDialog(view.getContainer(),
                         "No last response available.",
                         "No Response",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if(response.getResponseBody() == null) {
-                JOptionPane.showMessageDialog(view,
+                JOptionPane.showMessageDialog(view.getContainer(),
                         "Last response does not have body.",
                         "No Body in Response",
                         JOptionPane.ERROR_MESSAGE);
@@ -657,7 +657,7 @@ class RESTMain implements RESTUserInterface {
             Request request = view.getLastRequest();
             Response response = view.getLastResponse();
             if(request == null || response == null){
-                JOptionPane.showMessageDialog(view,
+                JOptionPane.showMessageDialog(view.getContainer(),
                         "No last request/response available.",
                         "No Request/Response",
                         JOptionPane.ERROR_MESSAGE);
