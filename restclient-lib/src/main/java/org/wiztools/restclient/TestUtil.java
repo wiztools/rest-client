@@ -40,9 +40,6 @@ public class TestUtil {
 
             TestSuite suite = new GroovyTestSuite();
 
-            final RoRequestBean roRequest = new RoRequestBean(request);
-            final RoResponseBean roResponse = new RoResponseBean(response);
-
             Method[] m_arr = testClass.getDeclaredMethods();
             for(int i=0; i<m_arr.length; i++){
                 /*
@@ -65,8 +62,8 @@ public class TestUtil {
                     continue;
                 }
                 RESTTestCase test = (RESTTestCase)GroovyTestSuite.createTest(testClass, methName);
-                test.setRoRequestBean(roRequest);
-                test.setRoResponseBean(roResponse);
+                test.setRequest(request);
+                test.setResponse(response);
                 suite.addTest(test);
             }
             return suite;
