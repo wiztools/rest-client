@@ -11,7 +11,7 @@ import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
 import org.wiztools.restclient.bean.RequestExecuter;
 import org.wiztools.restclient.XMLException;
-import org.wiztools.restclient.XMLUtil;
+import org.wiztools.restclient.util.XMLUtil;
 import org.wiztools.restclient.bean.TestResult;
 import org.wiztools.restclient.*;
 
