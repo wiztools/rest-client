@@ -1,5 +1,6 @@
 package org.wiztools.restclient;
 
+import org.wiztools.restclient.util.XMLUtil;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.ReqEntityStringBean;
 import org.wiztools.restclient.bean.HTTPMethod;

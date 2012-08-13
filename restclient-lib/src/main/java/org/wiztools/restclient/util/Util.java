@@ -23,7 +23,6 @@ import org.wiztools.restclient.bean.ReqResBean;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
 import org.wiztools.restclient.XMLException;
-import org.wiztools.restclient.XMLUtil;
 
 /**
  *

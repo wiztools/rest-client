@@ -1,4 +1,4 @@
-package org.wiztools.restclient;
+package org.wiztools.restclient.util;
 
 import org.wiztools.restclient.bean.ReqEntityFilePart;
 import org.wiztools.restclient.bean.HTTPAuthMethod;
@@ -36,6 +36,8 @@ import javax.xml.stream.events.XMLEvent;
 import nu.xom.*;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.RCConstants;
+import org.wiztools.restclient.XMLException;
 
 /**
  *
