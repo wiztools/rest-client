@@ -1,5 +1,6 @@
 package org.wiztools.restclient.ui;
 
+import org.wiztools.restclient.util.XMLUtil;
 import org.wiztools.restclient.bean.ReqResBean;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;

@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.XMLException;
-import org.wiztools.restclient.XMLUtil;
+import org.wiztools.restclient.util.XMLUtil;
 import org.wiztools.restclient.bean.ReqEntity;
 import org.wiztools.restclient.bean.ReqEntityFile;
 import org.wiztools.restclient.bean.ReqEntityFileBean;
