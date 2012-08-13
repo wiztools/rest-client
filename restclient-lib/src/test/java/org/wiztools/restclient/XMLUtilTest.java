@@ -1,5 +1,12 @@
 package org.wiztools.restclient;
 
+import org.wiztools.restclient.bean.Request;
+import org.wiztools.restclient.bean.ReqEntityStringBean;
+import org.wiztools.restclient.bean.HTTPMethod;
+import org.wiztools.restclient.bean.RequestBean;
+import org.wiztools.restclient.bean.Response;
+import org.wiztools.restclient.bean.HTTPAuthMethod;
+import org.wiztools.restclient.bean.ResponseBean;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
