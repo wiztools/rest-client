@@ -18,6 +18,7 @@ import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.bean.*;
 
 /**
  *
@@ -86,7 +87,7 @@ public class TestUtil {
         return 0;
     }
 
-    public static org.wiztools.restclient.TestResult execute(final TestSuite suite){
+    public static org.wiztools.restclient.bean.TestResult execute(final TestSuite suite){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         TestRunner runner = new TestRunner(new PrintStream(baos));
         TestResult result = runner.doRun(suite);

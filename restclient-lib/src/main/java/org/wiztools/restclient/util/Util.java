@@ -19,9 +19,9 @@ import org.wiztools.commons.Charsets;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.Base64Exception;
-import org.wiztools.restclient.ReqResBean;
-import org.wiztools.restclient.Request;
-import org.wiztools.restclient.Response;
+import org.wiztools.restclient.bean.ReqResBean;
+import org.wiztools.restclient.bean.Request;
+import org.wiztools.restclient.bean.Response;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.XMLUtil;
 

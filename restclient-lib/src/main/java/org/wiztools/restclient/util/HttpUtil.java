@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.ContentType;
-import org.wiztools.restclient.ContentTypeBean;
+import org.wiztools.restclient.bean.ContentType;
+import org.wiztools.restclient.bean.ContentTypeBean;
 
 /**
  *

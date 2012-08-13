@@ -1,4 +1,4 @@
-package org.wiztools.restclient;
+package org.wiztools.restclient.bean;
 
 import java.nio.charset.Charset;
 
@@ -6,9 +6,7 @@ import java.nio.charset.Charset;
  *
  * @author subwiz
  */
-public interface ReqEntityStringPart extends ReqEntityPart {
-    String getPart();
-    
+public interface ContentType {
     String getContentType();
     Charset getCharset();
 }

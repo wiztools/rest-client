@@ -1,5 +1,10 @@
 package org.wiztools.restclient;
 
+import org.wiztools.restclient.bean.ReqEntityByteArray;
+import org.wiztools.restclient.bean.ReqEntitySimple;
+import org.wiztools.restclient.bean.ReqEntityFile;
+import org.wiztools.restclient.bean.ReqEntityStream;
+import org.wiztools.restclient.bean.ReqEntityString;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

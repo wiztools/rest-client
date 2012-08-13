@@ -1,4 +1,4 @@
-package org.wiztools.restclient;
+package org.wiztools.restclient.bean;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -7,7 +7,7 @@ import java.util.logging.Logger;
  *
  * @author subwiz
  */
-class TestResultBean implements TestResult {
+public class TestResultBean implements TestResult {
 
     private static final Logger LOG = Logger.getLogger(TestResultBean.class.getName());
 
@@ -19,6 +19,7 @@ class TestResultBean implements TestResult {
 
     private String message;
     
+    @Override
     public String getMessage(){
         return message;
     }
@@ -32,6 +33,7 @@ class TestResultBean implements TestResult {
         return message;
     }
 
+    @Override
     public int getErrorCount() {
         return errorCount;
     }
@@ -40,6 +42,7 @@ class TestResultBean implements TestResult {
         this.errorCount = errorCount;
     }
 
+    @Override
     public List<TestExceptionResult> getErrors() {
         return errors;
     }
@@ -48,6 +51,7 @@ class TestResultBean implements TestResult {
         this.errors = errors;
     }
 
+    @Override
     public int getFailureCount() {
         return failureCount;
     }
@@ -56,6 +60,7 @@ class TestResultBean implements TestResult {
         this.failureCount = failureCount;
     }
 
+    @Override
     public List<TestExceptionResult> getFailures() {
         return failures;
     }
@@ -64,6 +69,7 @@ class TestResultBean implements TestResult {
         this.failures = failures;
     }
 
+    @Override
     public int getRunCount() {
         return runCount;
     }

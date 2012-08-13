@@ -1,4 +1,4 @@
-package org.wiztools.restclient;
+package org.wiztools.restclient.bean;
 
 import java.net.HttpCookie;
 import java.net.URL;

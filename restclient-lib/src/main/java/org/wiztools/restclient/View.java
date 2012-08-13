@@ -1,5 +1,8 @@
 package org.wiztools.restclient;
 
+import org.wiztools.restclient.bean.Response;
+import org.wiztools.restclient.bean.Request;
+
 /**
  * This is the callback interface for RequestExecuter. An implementation
  * of this interface needs to be passed to RequestExecuter (actually, a number

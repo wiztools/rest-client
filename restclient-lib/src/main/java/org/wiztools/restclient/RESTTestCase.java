@@ -1,5 +1,7 @@
 package org.wiztools.restclient;
 
+import org.wiztools.restclient.bean.Response;
+import org.wiztools.restclient.bean.Request;
 import groovy.util.GroovyTestCase;
 
 /**

@@ -1,6 +1,8 @@
-package org.wiztools.restclient;
+package org.wiztools.restclient.bean;
 
 import com.google.inject.ImplementedBy;
+import org.wiztools.restclient.HTTPClientRequestExecuter;
+import org.wiztools.restclient.View;
 
 /**
  * This is the interface used to execute the HTTP request. For getting the

@@ -1,10 +1,10 @@
-package org.wiztools.restclient;
+package org.wiztools.restclient.bean;
 
 /**
  *
  * @author subwiz
  */
-class TestExceptionResultBean implements TestExceptionResult {
+public class TestExceptionResultBean implements TestExceptionResult {
     private int lineNumber;
     private String exceptionMessage;
 

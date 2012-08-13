@@ -1,49 +1,24 @@
-package org.wiztools.restclient;
+package org.wiztools.restclient.bean;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import org.wiztools.restclient.util.HttpUtil;
 
 /**
  *
  * @author subwiz
  */
-public class ReqEntityFileBean implements ReqEntityFile {
+public class ReqEntityFileBean extends AbstractReqEntitySimpleBean implements ReqEntityFile {
     
-    private File body;
-    private Charset charset;
-    private String contentType;
+    private final File body;
 
-    public void setBody(File body) {
+    public ReqEntityFileBean(File body, String contentType, Charset charset) {
+        super(contentType, charset);
         this.body = body;
-    }
-
-    public void setCharset(Charset charset) {
-        this.charset = charset;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
     }
 
     @Override
     public File getBody() {
         return body;
-    }
-
-    @Override
-    public Charset getCharset() {
-        return charset;
-    }
-
-    @Override
-    public String getContentType() {
-        return contentType;
-    }
-
-    @Override
-    public String getContentTypeCharsetFormatted() {
-        return HttpUtil.getFormattedContentType(contentType, charset);
     }
     
     @Override
