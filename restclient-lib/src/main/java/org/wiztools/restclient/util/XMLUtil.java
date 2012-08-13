@@ -557,7 +557,7 @@ public final class XMLUtil {
             if (responseBody != null) {
                 //creating the body child element and append to response child element
                 respChildSubElement = new Element("body");
-                String base64encodedBody = Util.base64encode(XML_MIME);
+                final String base64encodedBody = Util.base64encode(responseBody);
                 respChildSubElement.appendChild(base64encodedBody);
                 respChildElement.appendChild(respChildSubElement);
             }
@@ -568,11 +568,11 @@ public final class XMLUtil {
                 respChildSubElement = new Element("test-result");
 
                 // Counts:
-                Element e_runCount = new Element("run-coun");
+                Element e_runCount = new Element("run-count");
                 e_runCount.appendChild(String.valueOf(testResult.getRunCount()));
-                Element e_failureCount = new Element("failure-coun");
+                Element e_failureCount = new Element("failure-count");
                 e_failureCount.appendChild(String.valueOf(testResult.getFailureCount()));
-                Element e_errorCount = new Element("error-coun");
+                Element e_errorCount = new Element("error-count");
                 e_errorCount.appendChild(String.valueOf(testResult.getErrorCount()));
                 respChildSubElement.appendChild(e_runCount);
                 respChildSubElement.appendChild(e_failureCount);
