@@ -73,6 +73,10 @@ public final class HttpUtil {
     public static String getFormattedContentType(final String contentType, final Charset charset){
         return getFormattedContentType(contentType, charset.name());
     }
+    
+    public static String getFormattedContentType(final ContentType contentType){
+        return getFormattedContentType(contentType.getContentType(), contentType.getCharset());
+    }
 
     public static String getCharsetFromContentType(final String contentType) {
         Pattern p = Pattern.compile("^.+charset=([^;]+).*$");
