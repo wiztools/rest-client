@@ -17,6 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.wiztools.commons.Charsets;
+import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.server.TraceServer;
 
 /**
@@ -101,11 +102,10 @@ public class HTTPClientRequestExecuterTest {
     public void testRun() throws Exception {
         System.out.println("run");
         
-        final String contentType = "test/text";
-        final Charset charset = Charsets.UTF_8;
+        final ContentType contentType = new ContentTypeBean("test/text", Charsets.UTF_8);
         RequestBean request = getRequestBean();
         request.setMethod(HTTPMethod.POST);
-        ReqEntityStringBean rBean = new ReqEntityStringBean("", contentType, charset);
+        ReqEntityStringBean rBean = new ReqEntityStringBean("", contentType);
         request.setBody(rBean);
         
         View view = new View() {

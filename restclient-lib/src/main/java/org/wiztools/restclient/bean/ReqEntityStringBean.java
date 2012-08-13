@@ -10,8 +10,8 @@ public final class ReqEntityStringBean extends AbstractReqEntitySimpleBean imple
     
     private String body;
     
-    public ReqEntityStringBean(String body, String contentType, Charset charset){
-        super(contentType, charset);
+    public ReqEntityStringBean(String body, ContentType contentType){
+        super(contentType);
         this.body = body;
     }
 
@@ -26,7 +26,7 @@ public final class ReqEntityStringBean extends AbstractReqEntitySimpleBean imple
     
     @Override
     public Object clone(){
-        ReqEntityStringBean cloned = new ReqEntityStringBean(body, contentType, charset);
+        ReqEntityStringBean cloned = new ReqEntityStringBean(body, contentType);
         return cloned;
     }
     
@@ -39,7 +39,6 @@ public final class ReqEntityStringBean extends AbstractReqEntitySimpleBean imple
             ReqEntityStringBean bean = (ReqEntityStringBean)o;
             boolean isEqual = true;
             isEqual = isEqual && (this.body == null? bean.body == null: this.body.equals(bean.body));
-            isEqual = isEqual && (this.charset == null? bean.charset == null: this.charset.equals(bean.charset));
             isEqual = isEqual && (this.contentType == null? bean.contentType == null: this.contentType.equals(bean.contentType));
             return isEqual;
         }
@@ -50,7 +49,6 @@ public final class ReqEntityStringBean extends AbstractReqEntitySimpleBean imple
     public int hashCode() {
         int hash = 3;
         hash = 29 * hash + (this.contentType != null ? this.contentType.hashCode() : 0);
-        hash = 29 * hash + (this.charset != null ? this.charset.hashCode() : 0);
         hash = 29 * hash + (this.body != null ? this.body.hashCode() : 0);
         return hash;
     }
@@ -60,7 +58,6 @@ public final class ReqEntityStringBean extends AbstractReqEntitySimpleBean imple
         StringBuilder sb = new StringBuilder();
         sb.append("@RequestBody[");
         sb.append(contentType).append(", ");
-        sb.append(charset).append(", ");
         sb.append(body);
         sb.append("]");
         return sb.toString();

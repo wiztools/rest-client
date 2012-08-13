@@ -10,27 +10,20 @@ import org.wiztools.restclient.util.HttpUtil;
  */
 public abstract class AbstractReqEntitySimpleBean implements ReqEntitySimple {
     
-    protected final Charset charset;
-    protected final String contentType;
+    protected final ContentType contentType;
     
-    public AbstractReqEntitySimpleBean(String contentType, Charset charset) {
+    public AbstractReqEntitySimpleBean(ContentType contentType) {
         this.contentType = contentType;
-        this.charset = charset;
     }
 
     @Override
-    public Charset getCharset() {
-        return charset;
-    }
-
-    @Override
-    public String getContentType() {
+    public ContentType getContentType() {
         return contentType;
     }
 
     @Override
     public String getContentTypeCharsetFormatted() {
-        return HttpUtil.getFormattedContentType(contentType, charset);
+        return HttpUtil.getFormattedContentType(contentType);
     }
     
     @Override

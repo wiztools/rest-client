@@ -11,8 +11,8 @@ public class ReqEntityByteArrayBean extends AbstractReqEntitySimpleBean implemen
     
     private byte[] body;
 
-    public ReqEntityByteArrayBean(byte[] body, String contentType, Charset charset) {
-        super(contentType, charset);
+    public ReqEntityByteArrayBean(byte[] body, ContentType contentType) {
+        super(contentType);
         this.body = body;
     }
 
@@ -24,9 +24,7 @@ public class ReqEntityByteArrayBean extends AbstractReqEntitySimpleBean implemen
     @Override
     public Object clone() {
         ReqEntityByteArrayBean out = new ReqEntityByteArrayBean(
-                Arrays.copyOf(body, body.length),
-                contentType,
-                charset);
+                Arrays.copyOf(body, body.length), contentType);
         return out;
     }
 }

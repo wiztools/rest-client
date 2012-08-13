@@ -251,13 +251,16 @@ public final class XMLUtil {
             ReqEntity rBean = bean.getBody();
             if (rBean != null) {
                 if(rBean instanceof ReqEntitySimple) {
-                    String contentType = ((ReqEntitySimple)rBean).getContentType();
-                    Charset charset = ((ReqEntitySimple)rBean).getCharset();
+                    ContentType contentType = ((ReqEntitySimple)rBean).getContentType();
+                    Charset charset = contentType.getCharset();
                     
                     Element e = new Element("body");
                     e.addAttribute(new Attribute("type", "simple"));
-                    e.addAttribute(new Attribute("content-type", contentType));
-                    e.addAttribute(new Attribute("charset", charset.name()));
+                    e.addAttribute(new Attribute("content-type", contentType.getContentType()));
+                    if(charset != null) {
+                        e.addAttribute(
+                                new Attribute("charset", contentType.getCharset().name()));
+                    }
                     
                     if(rBean instanceof ReqEntityString) {
                         ReqEntityString entityBean = (ReqEntityString) rBean;
@@ -493,8 +496,9 @@ public final class XMLUtil {
                 }
             }
             else if ("body".equals(nodeName)) {
-                requestBean.setBody(new ReqEntityStringBean(tNode.getValue(), tNode.getAttributeValue("content-type"),
-                        Charset.forName(tNode.getAttributeValue("charset"))));
+                ContentType contentType = new ContentTypeBean(tNode.getAttributeValue("content-type"),
+                        Charset.forName(tNode.getAttributeValue("charset")));
+                requestBean.setBody(new ReqEntityStringBean(tNode.getValue(), contentType));
             }
             else if ("test-script".equals(nodeName)) {
                 requestBean.setTestScript(tNode.getValue());

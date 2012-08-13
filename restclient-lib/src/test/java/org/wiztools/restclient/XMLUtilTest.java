@@ -19,6 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.wiztools.commons.Charsets;
+import org.wiztools.restclient.bean.*;
 
 /**
  *
@@ -50,7 +51,8 @@ public class XMLUtilTest {
         expResult.setUrl(new URL("http://localhost:10101/"));
         expResult.setMethod(HTTPMethod.POST);
         expResult.addHeader("key1", "value1");
-        expResult.setBody(new ReqEntityStringBean("Body Text", "text/plain", Charset.forName("UTF-8")));
+        ContentType contentType = new ContentTypeBean("text/plain", Charsets.UTF_8);
+        expResult.setBody(new ReqEntityStringBean("Body Text", contentType));
         expResult.addAuthMethod(HTTPAuthMethod.BASIC);
         expResult.setAuthPreemptive(true);
         expResult.setAuthRealm("realm");
