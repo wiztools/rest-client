@@ -24,9 +24,9 @@
         <url>http://code.google.com/p/rest-client/issues/list</url>
     </issueManagement>
     <scm>
-        <connection>scm:svn:http://rest-client.googlecode.com/svn/trunk/</connection>
-        <developerConnection>scm:svn:https://rest-client.googlecode.com/svn/trunk/</developerConnection>
-        <url>http://rest-client.googlecode.com/svn/trunk/</url>
+        <connection>scm:git:https://code.google.com/p/rest-client/</connection>
+        <developerConnection>scm:git:https://code.google.com/p/rest-client/</developerConnection>
+        <url>https://code.google.com/p/rest-client/</url>
     </scm>
     <developers>
         <developer>
@@ -55,10 +55,10 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <tagBase>https://rest-client.googlecode.com/svn/tags</tagBase>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
         </plugins>
