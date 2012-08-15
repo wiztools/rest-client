@@ -1,13 +1,15 @@
 package org.wiztools.restclient.ui;
 
 import com.jidesoft.swing.AutoCompletion;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.*;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,7 +24,6 @@ import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapArrayList;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.IGlobalOptions;
-import org.wiztools.restclient.RCConstants;
 import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
@@ -48,6 +49,9 @@ public class RESTViewImpl extends JPanel implements RESTView {
     private ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
     private ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
     
+    // Status bar:
+    @Inject private StatusBarPanel jp_status_bar;
+    
     // Request panels:
     @Inject private ReqMethodPanel jp_req_method;
     @Inject private ReqBodyPanel jp_req_body;
@@ -61,9 +65,6 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Inject private ResBodyPanel jp_res_body;
     @Inject private ResTestPanel jp_res_test;
     
-    private JProgressBar jpb_status = new JProgressBar();
-    
-    private JLabel jl_status = new JLabel(RCConstants.TITLE);
     private JLabel jl_url = new JLabel("URL: ");
     private boolean fromKeyboard = false;
     private JComboBox jcb_url = new JComboBox();
@@ -85,23 +86,6 @@ public class RESTViewImpl extends JPanel implements RESTView {
     // Cache the last request and response
     private Request lastRequest;
     private Response lastResponse;
-
-    @Inject
-    protected RESTViewImpl() {
-        
-        // Start status clear timer:
-        statusLastUpdated = Calendar.getInstance();
-        new Timer(5*1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Calendar c = (Calendar)statusLastUpdated.clone();
-                c.add(Calendar.SECOND, 20);
-                if(Calendar.getInstance().after(c)){
-                    setStatusMessage(RCConstants.TITLE);
-                }
-            }
-        }).start();
-    }
     
     private JTabbedPane initJTPRequest(){
         JTabbedPane jtp = new JTabbedPane();
@@ -248,24 +232,6 @@ public class RESTViewImpl extends JPanel implements RESTView {
         return jp;
     }
     
-    private JPanel initUIStatusBar(){
-        JPanel jp = new JPanel();
-        jp.setBorder(BorderFactory.createBevelBorder(1));
-        jp.setLayout(new GridLayout(1, 2));
-        jl_status.setFont(UIUtil.FONT_DIALOG_12_PLAIN);
-        jp.add(jl_status);
-        JPanel jp_south_jcb = new JPanel();
-        jp_south_jcb.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        Dimension d = jpb_status.getPreferredSize();
-        d.height = d.height - 2;
-        jpb_status.setPreferredSize(d);
-        jpb_status.setIndeterminate(true);
-        jpb_status.setVisible(false);
-        jp_south_jcb.add(jpb_status);
-        jp.add(jp_south_jcb);
-        return jp;
-    }
-    
     @PostConstruct
     private void init(){
         // Initialize the messageDialog
@@ -299,7 +265,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         this.add(jsp_main, BorderLayout.CENTER);
         
         // Now the South portion
-        this.add(initUIStatusBar(), BorderLayout.SOUTH);
+        this.add(jp_status_bar.getComponent(), BorderLayout.SOUTH);
     }
     
     @Override
@@ -504,13 +470,11 @@ public class RESTViewImpl extends JPanel implements RESTView {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                jpb_status.setVisible(true);
+                jp_status_bar.showProgressBar();
+                jp_status_bar.setStatus("Processing request...");
                 // jb_request.setEnabled(false);
                 jb_request.setIcon(icon_stop);
                 jb_request.setToolTipText("Stop!");
-
-                // Update status message
-                setStatusMessage("Processing request...");
             }
         });
     }
@@ -547,7 +511,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                jpb_status.setVisible(false);
+                jp_status_bar.hideProgressBar();
                 // jb_request.setEnabled(true);
                 jb_request.setIcon(icon_go);
                 jb_request.setToolTipText("Go!");
@@ -867,12 +831,9 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp_req_test.setTestScript(request.getTestScript()==null?"":request.getTestScript());
     }
     
-    private Calendar statusLastUpdated;
-    
     @Override
     public void setStatusMessage(final String msg){
-        jl_status.setText(" " + msg);
-        statusLastUpdated = Calendar.getInstance();
+        jp_status_bar.setStatus(msg);
     }
     
     @Override
