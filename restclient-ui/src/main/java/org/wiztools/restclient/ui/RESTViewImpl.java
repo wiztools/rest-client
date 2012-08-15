@@ -1,16 +1,14 @@
 package org.wiztools.restclient.ui;
 
-import com.jidesoft.swing.AutoCompletion;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Font;
-import java.awt.Toolkit;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,8 +44,8 @@ import org.wiztools.restclient.util.Util;
 public class RESTViewImpl extends JPanel implements RESTView {
     private static final Logger LOG = Logger.getLogger(RESTViewImpl.class.getName());
     
-    private ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
-    private ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
+    // URL go bar:
+    @Inject private UrlGoPanel jp_url_go;
     
     // Status bar:
     @Inject private StatusBarPanel jp_status_bar;
@@ -64,12 +62,6 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Inject private ResHeaderPanel jp_res_headers;
     @Inject private ResBodyPanel jp_res_body;
     @Inject private ResTestPanel jp_res_test;
-    
-    private JLabel jl_url = new JLabel("URL: ");
-    private boolean fromKeyboard = false;
-    private JComboBox jcb_url = new JComboBox();
-    
-    private JButton jb_request = null;
     
     private JTextField jtf_res_status = new JTextField();
 
@@ -120,7 +112,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
     
     void requestFocusAddressBar() {
-        jcb_url.requestFocus();
+        jp_url_go.getComponent().requestFocus();
     }
     
     private JTabbedPane initJTPResponse(){
@@ -145,60 +137,13 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp.setLayout(new BorderLayout(BORDER_WIDTH, BORDER_WIDTH));
         
         // North
-        JPanel jp_north = new JPanel();
-        jp_north.setLayout(new BorderLayout(BORDER_WIDTH, 0));
-        jl_url.setLabelFor(jcb_url);
-        jl_url.setDisplayedMnemonic('u');
-        jp_north.add(jl_url, BorderLayout.WEST);
-
-        { // Keystroke for focusing on the address bar:
-            final KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_L,
-                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-            final String actionName = "org.wiztools.restclient:ADDRESS_FOCUS";
-            jcb_url.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                    .put(ks, actionName);
-            jcb_url.getActionMap().put(actionName, new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    requestFocusAddressBar();
-                }
-            });
-        }
-        jcb_url.setToolTipText("URL");
-        jcb_url.setEditable(true);
-        jcb_url.addActionListener(new java.awt.event.ActionListener() {
+        jp_url_go.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jcb_urlActionPerformed(evt);
-            }
-        });
-        jcb_url.getEditor().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fromKeyboard = true;
-            }
-        });
-        jcb_url.getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                ((JTextField) jcb_url.getEditor().getEditorComponent()).selectAll();
-            }
-        });
-        AutoCompletion ac = new AutoCompletion(jcb_url);
-        ac.setStrict(false);
-        ac.setStrictCompletion(false);
-        jp_north.add(jcb_url, BorderLayout.CENTER);
-        jb_request = new JButton(icon_go);
-        jb_request.setToolTipText("Go!");
-        rest_ui.getFrame().getRootPane().setDefaultButton(jb_request);
-        jb_request.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
+            public void actionPerformed(ActionEvent ae) {
                 jb_requestActionPerformed();
             }
         });
-        jp_north.add(jb_request, BorderLayout.EAST);
-        jp.add(jp_north, BorderLayout.NORTH);
+        jp.add(jp_url_go.getComponent(), BorderLayout.NORTH);
         
         // Center
         jp.add(initJTPRequest(), BorderLayout.CENTER);
@@ -349,7 +294,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
             }
         }
         
-        String url = (String)jcb_url.getSelectedItem();
+        String url = jp_url_go.getUrlString();
         try{
             request.setUrl(new URL(url));
         }
@@ -421,7 +366,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
 
     private void jb_requestActionPerformed() {
-        if(jb_request.getIcon() == icon_go){
+        if(jp_url_go.isIdle()){
             final Request request = getRequestFromUI();
             List<String> errors = validateRequest(request);
             if(errors.isEmpty()){
@@ -450,9 +395,9 @@ public class RESTViewImpl extends JPanel implements RESTView {
                     JOptionPane.ERROR_MESSAGE);
             }
         }
-        else if(jb_request.getIcon() == icon_stop){
+        else if(jp_url_go.isRunning()){
             requestThread.interrupt();
-            jb_request.setIcon(icon_go);
+            jp_url_go.setAsIdle();
         }
     }                                          
 
@@ -465,9 +410,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
             public void run() {
                 jp_status_bar.showProgressBar();
                 jp_status_bar.setStatus("Processing request...");
-                // jb_request.setEnabled(false);
-                jb_request.setIcon(icon_stop);
-                jb_request.setToolTipText("Stop!");
+                jp_url_go.setAsRunning();
             }
         });
     }
@@ -505,9 +448,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
             @Override
             public void run() {
                 jp_status_bar.hideProgressBar();
-                // jb_request.setEnabled(true);
-                jb_request.setIcon(icon_go);
-                jb_request.setToolTipText("Go!");
+                jp_url_go.setAsIdle();
             }
         });
     }
@@ -543,46 +484,6 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp_res_test.clear();
     }
     
-    private void jcb_urlActionPerformed(final ActionEvent event){
-        if("comboBoxChanged".equals(event.getActionCommand())){
-            return;
-        }
-        final Object item = jcb_url.getSelectedItem();
-        final int count = jcb_url.getItemCount();
-        final LinkedList l = new LinkedList();
-        for(int i=0; i<count; i++){
-            l.add(jcb_url.getItemAt(i));
-        }
-        if(l.contains(item)){ // Item already present
-            // Remove and add to bring it to the top
-            // l.remove(item);
-            // l.addFirst(item);
-            // System.out.println("Removing and inserting at top");
-            jcb_url.removeItem(item);
-            jcb_url.insertItemAt(item, 0);
-        }
-        else{ // Add new item
-            if(((String)item).trim().length() != 0 ) {
-                // The total number of items should not exceed 20
-                if(count > 19){
-                    // Remove last item to give place
-                    // to new one
-                    //l.removeLast();
-                    jcb_url.removeItemAt(count - 1);
-                }
-                //l.addFirst(item);
-                jcb_url.insertItemAt(item, 0);
-            }
-        }
-        // make the selected item is the item we want
-        jcb_url.setSelectedItem(item);
-        // Use this to trigger request action on pressing Enter:
-        if (fromKeyboard) {
-            fromKeyboard = false;
-            jb_requestActionPerformed();
-        }
-    }
-    
     @Override
     public void enableBody() {
         jp_req_body.enableBody();
@@ -597,7 +498,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     // If not, appends http:// to the hostname
     // This is just a UI convenience method.
     private void correctRequestURL(){
-        String str = (String)jcb_url.getSelectedItem();
+        String str = jp_url_go.getUrlString();
         if(StringUtil.isEmpty(str)){
             return;
         }
@@ -607,7 +508,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
                     || t.startsWith("https://")
                     || t.matches("^[a-z]+://.*"))){
                 str = "http://" + str;
-                jcb_url.setSelectedItem(str);
+                jp_url_go.setUrlString(str);
             }
         }
     }
@@ -679,7 +580,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         lastRequest = null;
         
         // URL
-        jcb_url.setSelectedItem(null);
+        jp_url_go.clear();
         
         // Method
         jp_req_method.clear();
@@ -731,7 +632,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         clearUIRequest();
 
         // URL
-        jcb_url.setSelectedItem(request.getUrl().toString());
+        jp_url_go.setUrlString(request.getUrl().toString());
 
         // Method
         final HTTPMethod reqMethod = request.getMethod();
@@ -841,12 +742,12 @@ public class RESTViewImpl extends JPanel implements RESTView {
     
     @Override
     public String getUrl() {
-        return (String) jcb_url.getSelectedItem();
+        return jp_url_go.getUrlString();
     }
     
     @Override
     public void setUrl(String url) {
-        jcb_url.setSelectedItem(url);
+        jp_url_go.setUrlString(url);
     }
     
     @Override
@@ -868,6 +769,5 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Override
     public Container getContainer() {
         return this;
-    }
-    
+    }   
 }
