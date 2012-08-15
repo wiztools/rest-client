@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.option;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -20,7 +20,7 @@ import org.wiztools.restclient.ServiceLocator;
  *
  * @author Subhash
  */
-class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
+public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
     private static final Logger LOG = Logger.getLogger(OptionsConnectionPanel.class.getName());
     
     private static final String PROP_PREFIX = "conn.options.";

@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.option;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -13,7 +13,7 @@ import org.wiztools.restclient.ServiceLocator;
  *
  * @author subwiz
  */
-class OptionsEtcPanel extends JPanel implements IOptionsPanel{
+public class OptionsEtcPanel extends JPanel implements IOptionsPanel{
 
     private static final Logger LOG = Logger.getLogger(OptionsEtcPanel.class.getName());
     private static final String INDENT_KEY = "response.body.indent";

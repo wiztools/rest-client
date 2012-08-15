@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -17,12 +18,13 @@ import javax.swing.JTextArea;
 class MessageDialog extends EscapableDialog {
     
     private final MessageDialog messageDialog;
-    private java.awt.Frame parent;
+    private RESTUserInterface ui;
     
     /** Creates new form ErrorDialog */
-    public MessageDialog(java.awt.Frame parent) {
-        super(parent, true);
-        this.parent = parent;
+    @Inject
+    public MessageDialog(RESTUserInterface ui) {
+        super(ui.getFrame(), true);
+        this.ui = ui;
         this.setTitle("Error!");
         initComponents();
         this.messageDialog = this;
@@ -78,7 +80,7 @@ class MessageDialog extends EscapableDialog {
         messageDialog.setTitle(title);
         jta_error.setText(message);
         jta_error.setCaretPosition(0);
-        messageDialog.setLocationRelativeTo(parent);
+        messageDialog.setLocationRelativeTo(ui.getFrame());
         jb_ok.requestFocus();
         messageDialog.setVisible(true);
     }

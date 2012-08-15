@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.option;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
@@ -8,16 +8,22 @@ import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.swing.*;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
+import org.wiztools.restclient.ui.EscapableDialog;
+import org.wiztools.restclient.ui.RESTUserInterface;
+import org.wiztools.restclient.ui.RESTViewImpl;
+import org.wiztools.restclient.ui.UIUtil;
 import org.wiztools.restclient.util.Util;
 
 /**
  *
  * @author schandran
  */
-class OptionsDialog extends EscapableDialog {
+public class OptionsDialog extends EscapableDialog {
     
     private static final Logger LOG = Logger.getLogger(OptionsDialog.class.getName());
     
@@ -27,13 +33,15 @@ class OptionsDialog extends EscapableDialog {
     
     private static final ResourceBundle rb = ResourceBundle.getBundle("org.wiztools.restclient.uioptionsdialog");
     
-    public OptionsDialog(){
-        super(ServiceLocator.getInstance(RESTUserInterface.class).getFrame(), true);
+    @Inject
+    public OptionsDialog(RESTUserInterface ui){
+        super(ui.getFrame(), true);
         me = this;
-        init();
     }
     
-    private void init(){
+    @PostConstruct
+    protected void init(){
+        System.out.println("EEEEEEEEE");
         this.setTitle("Options");
         
         String t = rb.getString("panel");
@@ -41,7 +49,7 @@ class OptionsDialog extends EscapableDialog {
         for(String s: arr){
             String[] arrt = s.split(":");
             try {
-                LOG.finest("OptionsPanel adding: " + arrt[1]);
+                LOG.log(Level.FINEST, "OptionsPanel adding: {0}", arrt[1]);
                 panels.put(arrt[0], (IOptionsPanel) Class.forName(arrt[1]).newInstance());
             } catch (ClassNotFoundException ex) {
                 LOG.log(Level.SEVERE, null, ex);
@@ -82,6 +90,7 @@ class OptionsDialog extends EscapableDialog {
         me.getRootPane().setDefaultButton(jb_ok);
         jb_ok.setMnemonic('o');
         jb_ok.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 actionOk();
             }
@@ -89,6 +98,7 @@ class OptionsDialog extends EscapableDialog {
         JButton jb_cancel = new JButton("Cancel");
         jb_cancel.setMnemonic('c');
         jb_cancel.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 actionCancel();
             }

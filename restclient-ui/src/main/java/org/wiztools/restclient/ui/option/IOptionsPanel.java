@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.option;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import java.util.List;
  *
  * @author Subhash
  */
-interface IOptionsPanel {
+public interface IOptionsPanel {
     /**
      * Method for loading last saved option values from persistent storage.
      */

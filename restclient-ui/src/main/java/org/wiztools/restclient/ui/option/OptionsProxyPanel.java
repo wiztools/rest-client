@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.option;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -8,23 +8,18 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ProxyConfig;
-import org.wiztools.restclient.util.Util;
-import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.ServiceLocator;
+import org.wiztools.restclient.ui.RESTViewImpl;
 
 /**
  *
  * @author Subhash
  */
-class OptionsProxyPanel extends JPanel implements IOptionsPanel {
+public class OptionsProxyPanel extends JPanel implements IOptionsPanel {
     
     private static final Logger LOG = Logger.getLogger(OptionsProxyPanel.class.getName());
     
@@ -52,6 +47,7 @@ class OptionsProxyPanel extends JPanel implements IOptionsPanel {
         jp_north.setLayout(new FlowLayout(FlowLayout.LEFT));
         jcb_enable.setMnemonic('e');
         jcb_enable.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 if(jcb_enable.isSelected()){
                     toggleEnable(true);
@@ -63,6 +59,7 @@ class OptionsProxyPanel extends JPanel implements IOptionsPanel {
         });
         jp_north.add(jcb_enable);
         jcb_auth_enable.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 if(jcb_auth_enable.isSelected()){
                     toggleAuthEnable(true);
@@ -154,7 +151,7 @@ class OptionsProxyPanel extends JPanel implements IOptionsPanel {
                 }
             }
         }
-        if(errors.size() == 0){
+        if(errors.isEmpty()){
             return null;
         }
         return errors;

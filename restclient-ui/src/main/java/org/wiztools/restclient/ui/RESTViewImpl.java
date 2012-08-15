@@ -66,12 +66,13 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Inject private ResBodyPanel jp_res_body;
     @Inject private ResTestPanel jp_res_test;
 
+    @Inject private MessageDialog messageDialog;
+    @Inject private RESTUserInterface rest_ui;
+    
     private TwoColumnTablePanel jp_2col_req_headers;
     private TwoColumnTablePanel jp_2col_req_cookies;
-
-    private MessageDialog messageDialog;
+    
     private RESTView view = this;
-    @Inject private RESTUserInterface rest_ui;
 
     // RequestThread
     private Thread requestThread;
@@ -167,10 +168,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
     
     @PostConstruct
-    private void init(){
-        // Initialize the messageDialog
-        messageDialog = new MessageDialog(rest_ui.getFrame());
-        
+    protected void init() {
         // Set the font of ScriptEditors:
         String fontName = ServiceLocator.getInstance(IGlobalOptions.class)
                 .getProperty(FontableEditor.FONT_NAME_PROPERTY);

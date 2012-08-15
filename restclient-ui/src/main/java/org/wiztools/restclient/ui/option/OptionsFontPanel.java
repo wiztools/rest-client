@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.option;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,12 +22,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
+import org.wiztools.restclient.ui.RESTViewImpl;
 
 /**
  *
  * @author subwiz
  */
-class OptionsFontPanel extends JPanel implements IOptionsPanel {
+public class OptionsFontPanel extends JPanel implements IOptionsPanel {
     
     private static final Logger LOG = Logger.getLogger(OptionsFontPanel.class.getName());
     

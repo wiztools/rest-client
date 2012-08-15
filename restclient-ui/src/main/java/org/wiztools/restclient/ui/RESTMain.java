@@ -25,6 +25,7 @@ import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
 import org.wiztools.restclient.server.TraceServer;
+import org.wiztools.restclient.ui.option.OptionsDialog;
 import org.wiztools.restclient.util.Util;
 import org.wiztools.restclient.util.XMLUtil;
 
