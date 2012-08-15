@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.reqgo;
 
 import com.jidesoft.swing.AutoCompletion;
 import java.awt.BorderLayout;
@@ -11,12 +11,15 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
+import org.wiztools.restclient.ui.RESTUserInterface;
+import org.wiztools.restclient.ui.RESTView;
+import org.wiztools.restclient.ui.UIUtil;
 
 /**
  *
  * @author subwiz
  */
-public class UrlGoPanelImpl extends JPanel implements UrlGoPanel {
+public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     
     @Inject private RESTUserInterface ui;
     

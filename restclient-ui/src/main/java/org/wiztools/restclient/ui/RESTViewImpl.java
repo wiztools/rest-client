@@ -1,5 +1,7 @@
 package org.wiztools.restclient.ui;
 
+import org.wiztools.restclient.ui.reqgo.ReqUrlGoPanel;
+import org.wiztools.restclient.ui.resstatus.ResStatusPanel;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Font;
@@ -45,7 +47,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     private static final Logger LOG = Logger.getLogger(RESTViewImpl.class.getName());
     
     // URL go bar:
-    @Inject private UrlGoPanel jp_url_go;
+    @Inject private ReqUrlGoPanel jp_url_go;
     
     // Status bar:
     @Inject private StatusBarPanel jp_status_bar;
@@ -59,11 +61,10 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Inject private ReqTestPanel jp_req_test;
     
     // Response panels:
+    @Inject private ResStatusPanel jp_res_status;
     @Inject private ResHeaderPanel jp_res_headers;
     @Inject private ResBodyPanel jp_res_body;
     @Inject private ResTestPanel jp_res_test;
-    
-    private JTextField jtf_res_status = new JTextField();
 
     private TwoColumnTablePanel jp_2col_req_headers;
     private TwoColumnTablePanel jp_2col_req_cookies;
@@ -160,15 +161,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp.setLayout(new BorderLayout(BORDER_WIDTH, BORDER_WIDTH));
         
         // Header Tab: Status Line Header
-        JPanel jp_status = new JPanel();
-        jp_status.setLayout(new BorderLayout(BORDER_WIDTH, BORDER_WIDTH));
-        JLabel jl_res_statusLine = new JLabel("Status: ");
-        jp_status.add(jl_res_statusLine, BorderLayout.WEST);
-        jtf_res_status.setColumns(35);
-        jtf_res_status.setEditable(false);
-        jp_status.add(jtf_res_status, BorderLayout.CENTER);
-        
-        jp.add(jp_status, BorderLayout.NORTH);
+        jp.add(jp_res_status.getComponent(), BorderLayout.NORTH);
         
         // Center having tabs
         jp.add(initJTPResponse(), BorderLayout.CENTER);
@@ -227,7 +220,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     public Response getResponseFromUI(){
         ResponseBean response = new ResponseBean();
         response.setResponseBody(jp_res_body.getBody());
-        String statusLine = jtf_res_status.getText();
+        String statusLine = jp_res_status.getStatus();
         response.setStatusLine(statusLine);
         response.setStatusCode(HttpUtil.getStatusCodeFromStatusLine(statusLine));
         MultiValueMap<String, String> headers = jp_res_headers.getHeaders();
@@ -478,7 +471,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Override
     public void clearUIResponse(){
         lastResponse = null;
-        jtf_res_status.setText("");
+        jp_res_status.clear();
         jp_res_body.clear();
         jp_res_headers.clear();
         jp_res_test.clear();
@@ -614,7 +607,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         clearUIResponse();
 
         // Response status line
-        jtf_res_status.setText(response.getStatusLine());
+        jp_res_status.setStatus(response.getStatusLine());
 
         // Response header
         jp_res_headers.setHeaders(response.getHeaders());

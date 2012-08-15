@@ -1,14 +1,15 @@
-package org.wiztools.restclient.ui;
+package org.wiztools.restclient.ui.reqgo;
 
 import com.google.inject.ImplementedBy;
 import java.awt.event.ActionListener;
+import org.wiztools.restclient.ui.ViewPanel;
 
 /**
  *
  * @author subwiz
  */
-@ImplementedBy(UrlGoPanelImpl.class)
-public interface UrlGoPanel extends ViewPanel {
+@ImplementedBy(ReqUrlGoPanelImpl.class)
+public interface ReqUrlGoPanel extends ViewPanel {
     enum ACTION_TYPE{GO, CANCEL};
     
     void setAsRunning();
