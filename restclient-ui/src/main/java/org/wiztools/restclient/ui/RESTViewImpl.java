@@ -1,7 +1,5 @@
 package org.wiztools.restclient.ui;
 
-import org.wiztools.restclient.ui.reqgo.ReqUrlGoPanel;
-import org.wiztools.restclient.ui.resstatus.ResStatusPanel;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Font;
@@ -30,10 +28,12 @@ import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
 import org.wiztools.restclient.ui.reqauth.ReqSSLPanel;
 import org.wiztools.restclient.ui.reqbody.ReqBodyPanel;
 import org.wiztools.restclient.ui.reqetc.ReqEtcPanel;
+import org.wiztools.restclient.ui.reqgo.ReqUrlGoPanel;
 import org.wiztools.restclient.ui.reqmethod.ReqMethodPanel;
 import org.wiztools.restclient.ui.reqtest.ReqTestPanel;
 import org.wiztools.restclient.ui.resbody.ResBodyPanel;
 import org.wiztools.restclient.ui.resheader.ResHeaderPanel;
+import org.wiztools.restclient.ui.resstatus.ResStatusPanel;
 import org.wiztools.restclient.ui.restest.ResTestPanel;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.Util;
