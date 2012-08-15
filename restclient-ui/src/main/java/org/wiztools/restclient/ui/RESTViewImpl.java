@@ -112,10 +112,6 @@ public class RESTViewImpl extends JPanel implements RESTView {
         return jtp;
     }
     
-    void requestFocusAddressBar() {
-        jp_url_go.getComponent().requestFocus();
-    }
-    
     private JTabbedPane initJTPResponse(){
         JTabbedPane jtp = new JTabbedPane();
         
