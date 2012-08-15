@@ -238,8 +238,10 @@ public class RESTViewImpl extends JPanel implements RESTView {
         messageDialog = new MessageDialog(rest_ui.getFrame());
         
         // Set the font of ScriptEditors:
-        String fontName = ServiceLocator.getInstance(IGlobalOptions.class).getProperty("font.options.font");
-        String fontSizeStr = ServiceLocator.getInstance(IGlobalOptions.class).getProperty("font.options.fontSize");
+        String fontName = ServiceLocator.getInstance(IGlobalOptions.class)
+                .getProperty(FontableEditor.FONT_NAME_PROPERTY);
+        String fontSizeStr = ServiceLocator.getInstance(IGlobalOptions.class)
+                .getProperty(FontableEditor.FONT_SIZE_PROPERTY);
         int fontSize = 12; // Default font size is 12
         if(fontSizeStr != null){
             try{
@@ -296,15 +298,6 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Override
     public Request getRequestFromUI(){
         correctRequestURL();
-        /*List<String> errors = validateForRequest();
-        if(errors.size()!=0){
-            String errStr = Util.getHTMLListFromList(errors);
-            JOptionPane.showMessageDialog(rest_ui.getFrame(),
-                errStr,
-                "Validation error",
-                JOptionPane.ERROR_MESSAGE);
-            return null;
-        }*/
         
         RequestBean request = new RequestBean();
         boolean authEnabled = false;

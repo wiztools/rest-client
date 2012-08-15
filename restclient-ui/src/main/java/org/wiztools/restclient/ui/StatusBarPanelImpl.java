@@ -79,4 +79,9 @@ public class StatusBarPanelImpl extends JPanel implements StatusBarPanel {
     public Component getComponent() {
         return this;
     }
+
+    @Override
+    public void clear() {
+        setStatus("Cleared!");
+    }
 }
