@@ -67,7 +67,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         
         // North
         JPanel jp_north = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jp_north.add(jp_content_type_charset);
+        jp_north.add(jp_content_type_charset.getComponent());
         jb_body_file.setToolTipText("Load from file");
         jb_body_file.addActionListener(new ActionListener() {
             @Override
@@ -234,7 +234,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
 
     @Override
     public void clear() {
-        jp_content_type_charset.clearComponent();
+        jp_content_type_charset.clear();
     }
     
     @Override

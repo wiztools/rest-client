@@ -42,7 +42,7 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
         
         // North
         JPanel jp_north = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jp_north.add(jp_content_type_charset);
+        jp_north.add(jp_content_type_charset.getComponent());
         
         add(jp_north, BorderLayout.NORTH);
         
@@ -130,7 +130,7 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
     
     @Override
     public void clear() {
-        jp_content_type_charset.clearComponent();
+        jp_content_type_charset.clear();
         jtf_file.setText("");
     }
 

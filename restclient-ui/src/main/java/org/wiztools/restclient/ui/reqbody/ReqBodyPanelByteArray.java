@@ -48,7 +48,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
         setLayout(new BorderLayout());
         
         JPanel jp_north = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jp_north.add(jp_content_type_charset);
+        jp_north.add(jp_content_type_charset.getComponent());
         
         jb_body.setToolTipText("Select file having body content");
         jb_body.addActionListener(new ActionListener() {
@@ -182,7 +182,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
 
     @Override
     public void clear() {
-        jp_content_type_charset.clearComponent();
+        jp_content_type_charset.clear();
         jta.setText("");
     }
     
