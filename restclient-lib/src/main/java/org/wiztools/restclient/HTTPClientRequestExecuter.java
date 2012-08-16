@@ -1,22 +1,5 @@
 package org.wiztools.restclient;
 
-import org.wiztools.restclient.bean.ReqEntityFilePart;
-import org.wiztools.restclient.bean.HTTPAuthMethod;
-import org.wiztools.restclient.bean.ReqEntityMultipart;
-import org.wiztools.restclient.bean.RequestExecuter;
-import org.wiztools.restclient.bean.HTTPMethod;
-import org.wiztools.restclient.bean.ReqEntitySimple;
-import org.wiztools.restclient.bean.ReqEntityStringPart;
-import org.wiztools.restclient.bean.ReqEntityPart;
-import org.wiztools.restclient.bean.Request;
-import org.wiztools.restclient.bean.ResponseBean;
-import org.wiztools.restclient.bean.SSLHostnameVerifier;
-import org.wiztools.restclient.bean.TestResult;
-import org.wiztools.restclient.bean.ReqEntity;
-import org.wiztools.restclient.bean.HTTPVersion;
-import org.wiztools.restclient.bean.TestException;
-import org.wiztools.restclient.util.HttpUtil;
-import org.wiztools.restclient.util.Util;
 import java.io.*;
 import java.net.HttpCookie;
 import java.net.URL;
@@ -71,9 +54,12 @@ import org.apache.http.util.EntityUtils;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.http.EntityEnclosingDelete;
 import org.wiztools.restclient.http.NoValidationCookieSpecFactory;
 import org.wiztools.restclient.http.RESTClientCookieStore;
+import org.wiztools.restclient.util.HttpUtil;
+import org.wiztools.restclient.util.Util;
 
 /**
  *
