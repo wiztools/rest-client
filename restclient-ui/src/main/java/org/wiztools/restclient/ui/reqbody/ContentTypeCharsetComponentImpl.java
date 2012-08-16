@@ -39,8 +39,8 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
         
         jd.addContentTypeCharSetChangeListener(new ContentTypeCharsetChangeListener() {
             @Override
-            public void changed(String contentType, String charSet) {
-                final String formatted = HttpUtil.getFormattedContentType(contentType, charSet);
+            public void changed(String contentType, String charset) {
+                final String formatted = HttpUtil.getFormattedContentType(contentType, charset);
                 jtf_content_type_charset.setText(formatted);
             }
         });
