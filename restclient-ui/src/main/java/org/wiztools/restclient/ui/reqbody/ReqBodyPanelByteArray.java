@@ -32,7 +32,7 @@ import org.wiztools.restclient.util.XMLUtil;
  * @author subwiz
  */
 public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
-    @Inject private RESTUserInterface ui;
+    @Inject private RESTUserInterface rest_ui;
     @Inject private ContentTypeCharsetComponent jp_content_type_charset;
     
     private JButton jb_body = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
@@ -40,6 +40,8 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
     private JTextArea jta = new JTextArea();
     
     private byte[] body;
+    
+    private static final int FILE_SIZE_THRESHOLD_LIMIT_MB = 2;
     
     @PostConstruct
     protected void init() {
@@ -65,12 +67,12 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
     }
     
     private void fileOpen() {
-        File f = ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
+        File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
         if(f == null){ // Pressed cancel?
             return;
         }
         if(!f.canRead()){
-            JOptionPane.showMessageDialog(ui.getFrame(),
+            JOptionPane.showMessageDialog(rest_ui.getFrame(),
                     "File not readable: " + f.getAbsolutePath(),
                     "IO Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -80,7 +82,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
         if(!mime.equals("content/unknown")) {
             final String origContentType = jp_content_type_charset.getContentType().getContentType();
             if(!mime.equals(origContentType)) {
-                final int result = JOptionPane.showConfirmDialog(ui.getFrame(),
+                final int result = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
                         "The content-type selected (" + origContentType + ") does NOT match\n"
                         + "the computed file mime type (" + mime + ")\n"
                         + "Do you want to update the content-type to `" + mime + "'?",
@@ -95,7 +97,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
                         try{
                             String charset = XMLUtil.getDocumentCharset(f);
                             if(charset != null && !(charset.equals(jp_content_type_charset.getCharsetString()))) {
-                                final int charsetYesNo = JOptionPane.showConfirmDialog(ui.getFrame(),
+                                final int charsetYesNo = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
                                         "Change charset to `" + charset + "'?",
                                         "Change charset?",
                                         JOptionPane.YES_NO_OPTION);
@@ -116,9 +118,11 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
         }
         
         final long fileSizeMB = f.length() / (1024l*1024l);
-        if(fileSizeMB > 2) {
-            final int yesNoOption = JOptionPane.showConfirmDialog(ui.getFrame(),
-                    "File size is more than 2 MB.\nDo you want to continue loading (may take some time!)?",
+        if(fileSizeMB > FILE_SIZE_THRESHOLD_LIMIT_MB) {
+            final int yesNoOption = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
+                    "File size is more than " + FILE_SIZE_THRESHOLD_LIMIT_MB + " MB."
+                    + "\nBigger files are recommended to be configured using the File body."
+                    + "\nDo you want to continue loading?",
                     "File exceeds threshold size",
                     JOptionPane.YES_NO_OPTION);
             if(yesNoOption == JOptionPane.NO_OPTION) {
@@ -133,7 +137,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
             jta.setCaretPosition(0);
         }
         catch(IOException ex) {
-            ui.getView().doError(Util.getStackTrace(ex));
+            rest_ui.getView().doError(Util.getStackTrace(ex));
         }
     }
 
