@@ -1,10 +1,11 @@
 package org.wiztools.restclient.bean;
 
-import org.wiztools.restclient.util.HttpUtil;
 import java.util.Arrays;
 import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapArrayList;
+import org.wiztools.restclient.util.HttpUtil;
+import org.wiztools.restclient.util.Util;
 
 /**
  *
@@ -142,7 +143,13 @@ public final class ResponseBean implements Response{
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("@Response[");
-        sb.append(statusLine);
+        sb.append(statusLine)
+                .append(", ")
+                .append(headers)
+                .append(", ")
+                .append(Util.base64encode(responseBody))
+                .append(", ")
+                .append(testResult);
         sb.append("]");
         return sb.toString();
     }

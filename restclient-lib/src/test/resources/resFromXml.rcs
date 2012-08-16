@@ -1,13 +1,2 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<rest-client version="2.2">
-<response>
-<execution-time>287</execution-time>
-<status code="200">HTTP/1.1 200 OK</status>
-<headers>
-<header key="Content-Type" value="text/plain; charset=utf-8"/>
-<header key="Transfer-Encoding" value="chunked"/>
-<header key="Server" value="Jetty"/>
-</headers>
-<body>**RESTClient TraceServlet**</body>
-</response>
-</rest-client>
+<?xml version="1.0" encoding="UTF-8"?>
+<rest-client version="3.0"><response><execution-time>11</execution-time><status code="200">HTTP/1.1 200 OK</status><headers><header key="Content-Type" value="text/plain; charset=utf-8"/><header key="Transfer-Encoding" value="chunked"/><header key="Server" value="Jetty(6.1.25)"/></headers><body>KipSRVNUQ2xpZW50IFRyYWNlU2VydmxldCoqCgoqTWV0aG9kKgoJR0VUCgoqUGF0aCBJbmZvKgoJLwoKKkhlYWRlcnMqCglIb3N0OiBsb2NhbGhvc3Q6MTAxMDEKCUNvbm5lY3Rpb246IEtlZXAtQWxpdmUKCVVzZXItQWdlbnQ6IEFwYWNoZS1IdHRwQ2xpZW50LzQuMi4xIChqYXZhIDEuNSkKCipRdWVyeSBTdHJpbmcqCgludWxsCgoqUGFyYW1ldGVycyoKCipCb2R5IChGaXJzdCAxMDAgY2hhcmFjdGVycyBvbmx5KSoKCQoK</body></response></rest-client>
