@@ -6,7 +6,7 @@ package org.wiztools.restclient.bean;
  */
 public class AuthorizationHeaderAuthBean implements AuthorizationHeaderAuth {
 
-    private String authorizationHeaderValue;
+    protected String authorizationHeaderValue;
     
     public void setAuthorizationHeaderValue(String value) {
         authorizationHeaderValue = value;
