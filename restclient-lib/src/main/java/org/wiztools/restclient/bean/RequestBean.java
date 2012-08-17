@@ -18,15 +18,7 @@ public final class RequestBean implements Request{
     
     private URL url;
     private HTTPMethod method;
-    private boolean authPreemptive;
-    private final List<HTTPAuthMethod> authMethods = new ArrayList<HTTPAuthMethod>();
-    private String authHost;
-    private String authRealm;
-    private String authUsername;
-    private char[] authPassword;
-    private String authDomain;
-    private String authWorkstation;
-    private String authBearerToken;
+    private Auth auth;
     private final MultiValueMap<String, String> headers = new MultiValueMapArrayList<String, String>();
     private final List<HttpCookie> cookies = new ArrayList<HttpCookie>();
     private ReqEntity body;
@@ -40,6 +32,15 @@ public final class RequestBean implements Request{
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
     private boolean isFollowRedirect;
     private boolean isIgnoreResponseBody = false;
+    
+    public void setAuth(Auth auth) {
+        this.auth = auth;
+    }
+    
+    @Override
+    public Auth getAuth() {
+        return auth;
+    }
 
     @Override
     public HTTPVersion getHttpVersion() {
@@ -121,87 +122,6 @@ public final class RequestBean implements Request{
     public void setBody(final ReqEntity body){
         this.body = body;
     }
-    
-    @Override
-    public boolean isAuthPreemptive() {
-        return authPreemptive;
-    }
-
-    public void setAuthPreemptive(boolean authPreemptive) {
-        this.authPreemptive = authPreemptive;
-    }
-
-    @Override
-    public List<HTTPAuthMethod> getAuthMethods() {
-        return Collections.unmodifiableList(authMethods);
-    }
-
-    public void addAuthMethod(final HTTPAuthMethod authMethod) {
-        this.authMethods.add(authMethod);
-    }
-
-    @Override
-    public String getAuthHost() {
-        return authHost;
-    }
-
-    public void setAuthHost(String authHost) {
-        this.authHost = authHost;
-    }
-
-    @Override
-    public char[] getAuthPassword() {
-        return authPassword;
-    }
-
-    public void setAuthPassword(char[] authPassword) {
-        this.authPassword = authPassword;
-    }
-
-    @Override
-    public String getAuthBearerToken() {
-        return authBearerToken;
-    }
-
-    public void setAuthBearerToken(String authBearerToken) {
-        this.authBearerToken = authBearerToken;
-    }
-
-    @Override
-    public String getAuthRealm() {
-        return authRealm;
-    }
-
-    public void setAuthRealm(String authRealm) {
-        this.authRealm = authRealm;
-    }
-
-    @Override
-    public String getAuthUsername() {
-        return authUsername;
-    }
-
-    public void setAuthUsername(String authUsername) {
-        this.authUsername = authUsername;
-    }
-    
-    public void setAuthWorkstation(String authWorkstation) {
-        this.authWorkstation = authWorkstation;
-    }
-    
-    @Override
-    public String getAuthWorkstation() {
-        return authWorkstation;
-    }
-    
-    public void setAuthDomain(String authDomain) {
-        this.authDomain = authDomain;
-    }
-
-    @Override
-    public String getAuthDomain() {
-        return authDomain;
-    }
 
     @Override
     public MultiValueMap<String, String> getHeaders() {
@@ -260,14 +180,6 @@ public final class RequestBean implements Request{
     @Override
     public Object clone(){
         RequestBean cloned = new RequestBean();
-        cloned.setAuthHost(authHost);
-        if(authPassword != null)
-            cloned.setAuthPassword(Arrays.copyOf(authPassword, authPassword.length));
-        cloned.setAuthPreemptive(authPreemptive);
-        cloned.setAuthRealm(authRealm);
-        cloned.setAuthUsername(authUsername);
-        cloned.setAuthDomain(authDomain);
-        cloned.setAuthWorkstation(authWorkstation);
         cloned.setSslTrustStore(sslTrustStore);
         cloned.setSslTrustStorePassword(
                 Arrays.copyOf(sslTrustStorePassword, sslTrustStorePassword.length));
@@ -311,33 +223,6 @@ public final class RequestBean implements Request{
             return false;
         }
         if (this.method != other.method) {
-            return false;
-        }
-        if (this.authPreemptive != other.authPreemptive) {
-            return false;
-        }
-        if (this.authMethods != other.authMethods && (this.authMethods == null || !this.authMethods.equals(other.authMethods))) {
-            return false;
-        }
-        if ((this.authHost == null) ? (other.authHost != null) : !this.authHost.equals(other.authHost)) {
-            return false;
-        }
-        if ((this.authRealm == null) ? (other.authRealm != null) : !this.authRealm.equals(other.authRealm)) {
-            return false;
-        }
-        if ((this.authUsername == null) ? (other.authUsername != null) : !this.authUsername.equals(other.authUsername)) {
-            return false;
-        }
-        if (!Arrays.equals(this.authPassword, other.authPassword)) {
-            return false;
-        }
-        if ((this.authDomain == null) ? (other.authDomain != null) : !this.authDomain.equals(other.authDomain)) {
-            return false;
-        }
-        if ((this.authWorkstation == null) ? (other.authWorkstation != null) : !this.authWorkstation.equals(other.authWorkstation)) {
-            return false;
-        }
-        if ((this.authBearerToken == null) ? (other.authBearerToken != null) : !this.authBearerToken.equals(other.authBearerToken)) {
             return false;
         }
         if (this.headers != other.headers && (this.headers == null || !this.headers.equals(other.headers))) {
@@ -387,15 +272,6 @@ public final class RequestBean implements Request{
         int hash = 7;
         hash = 59 * hash + (this.url != null ? this.url.hashCode() : 0);
         hash = 59 * hash + (this.method != null ? this.method.hashCode() : 0);
-        hash = 59 * hash + (this.authPreemptive ? 1 : 0);
-        hash = 59 * hash + (this.authMethods != null ? this.authMethods.hashCode() : 0);
-        hash = 59 * hash + (this.authHost != null ? this.authHost.hashCode() : 0);
-        hash = 59 * hash + (this.authRealm != null ? this.authRealm.hashCode() : 0);
-        hash = 59 * hash + (this.authUsername != null ? this.authUsername.hashCode() : 0);
-        hash = 59 * hash + Arrays.hashCode(this.authPassword);
-        hash = 59 * hash + (this.authDomain != null ? this.authDomain.hashCode() : 0);
-        hash = 59 * hash + (this.authWorkstation != null ? this.authWorkstation.hashCode() : 0);
-        hash = 59 * hash + (this.authBearerToken != null ? this.authBearerToken.hashCode() : 0);
         hash = 59 * hash + (this.headers != null ? this.headers.hashCode() : 0);
         hash = 59 * hash + (this.cookies != null ? this.cookies.hashCode() : 0);
         hash = 59 * hash + (this.body != null ? this.body.hashCode() : 0);
@@ -421,14 +297,6 @@ public final class RequestBean implements Request{
         sb.append(headers.toString()).append(", ");
         sb.append(cookies.toString()).append(", ");
         sb.append(body).append(", ");
-        sb.append(authMethods).append(", ");
-        sb.append(authPreemptive).append(", ");
-        sb.append(authHost).append(", ");
-        sb.append(authRealm).append(", ");
-        sb.append(authDomain).append(", ");
-        sb.append(authWorkstation).append(", ");
-        sb.append(authUsername).append(", ");
-        sb.append(authPassword==null?"null": new String(authPassword).replaceAll(".", "X")).append(", ");
         sb.append(sslTrustStore).append(", ");
         sb.append(sslTrustStorePassword==null?"null": new String(sslTrustStorePassword).replaceAll(".", "X")).append(", ");
         sb.append(sslKeyStore).append(", ");

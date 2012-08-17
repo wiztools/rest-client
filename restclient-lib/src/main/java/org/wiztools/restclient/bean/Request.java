@@ -11,21 +11,7 @@ import org.wiztools.commons.MultiValueMap;
  */
 public interface Request extends Cloneable {
 
-    String getAuthHost();
-
-    List<HTTPAuthMethod> getAuthMethods();
-
-    char[] getAuthPassword();
-
-    String getAuthRealm();
-
-    String getAuthUsername();
-    
-    String getAuthBearerToken();
-    
-    String getAuthWorkstation();
-    
-    String getAuthDomain();
+    Auth getAuth();
 
     ReqEntity getBody();
 
@@ -52,8 +38,6 @@ public interface Request extends Cloneable {
     String getTestScript();
 
     URL getUrl();
-
-    boolean isAuthPreemptive();
 
     boolean isFollowRedirect();
     

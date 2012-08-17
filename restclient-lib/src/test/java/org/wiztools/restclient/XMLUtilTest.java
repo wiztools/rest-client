@@ -54,11 +54,11 @@ public class XMLUtilTest {
         expResult.addHeader("key1", "value1");
         ContentType contentType = new ContentTypeBean("text/plain", Charsets.UTF_8);
         expResult.setBody(new ReqEntityStringBean("Body Text", contentType));
-        expResult.addAuthMethod(HTTPAuthMethod.BASIC);
+        /*expResult.addAuthMethod(HTTPAuthMethod.BASIC);
         expResult.setAuthPreemptive(true);
         expResult.setAuthRealm("realm");
         expResult.setAuthUsername("username");
-        expResult.setAuthPassword("password".toCharArray());
+        expResult.setAuthPassword("password".toCharArray());*/
         return expResult;
     }
 

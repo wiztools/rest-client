@@ -58,11 +58,11 @@ public class HTTPClientRequestExecuterTest {
         System.out.println("testPreemptiveAuth");
         RequestBean req = getRequestBean();
         req.setMethod(HTTPMethod.GET);
-        req.setAuthPreemptive(true);
+        /*req.setAuthPreemptive(true);
         req.setAuthUsername("subhash");
         req.setAuthPassword("subhash".toCharArray());
         req.addAuthMethod(HTTPAuthMethod.BASIC);
-        req.addAuthMethod(HTTPAuthMethod.DIGEST);
+        req.addAuthMethod(HTTPAuthMethod.DIGEST);*/
         View view = new View() {
             public void doStart(Request request) {
                 System.out.println("Starting request...");

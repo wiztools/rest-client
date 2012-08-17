@@ -89,7 +89,7 @@ public final class XMLUtil {
                 reqChildElement.appendChild(e);
             }
 
-            { // creating the auth-methods child element
+            /*{ // creating the auth-methods child element
                 List<HTTPAuthMethod> authMethods = bean.getAuthMethods();
                 if (authMethods == null || authMethods.size() > 0) {
 
@@ -171,7 +171,7 @@ public final class XMLUtil {
                         }
                     }
                 }
-            }
+            }*/
             
             // Creating SSL elements
             String sslTruststore = bean.getSslTrustStore();
@@ -428,7 +428,7 @@ public final class XMLUtil {
             else if ("method".equals(nodeName)) {
                 requestBean.setMethod(HTTPMethod.get(tNode.getValue()));
             }
-            else if ("auth-methods".equals(nodeName)) {
+            /*else if ("auth-methods".equals(nodeName)) {
                 String[] authenticationMethods = tNode.getValue().split(",");
                 for (int j = 0; j < authenticationMethods.length; j++) {
                     requestBean.addAuthMethod(HTTPAuthMethod.get(authenticationMethods[j]));
@@ -458,7 +458,7 @@ public final class XMLUtil {
             }
             else if("auth-bearer-token".equals(nodeName)) {
                 requestBean.setAuthBearerToken(tNode.getValue());
-            }
+            }*/
             else if ("ssl-truststore".equals(nodeName)) {
                 String sslTrustStore = tNode.getValue();
                 requestBean.setSslTrustStore(sslTrustStore);
