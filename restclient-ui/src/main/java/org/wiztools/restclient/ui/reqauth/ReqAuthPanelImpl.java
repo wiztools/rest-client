@@ -32,47 +32,47 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
     @Inject RESTUserInterface rest_ui;
     
     // Authentication resources
-    private JComboBox jcb_auth_types = new JComboBox(AuthHelper.getAll());
-    private JCheckBox jcb_auth_preemptive = new JCheckBox();
+    private JComboBox jcb_types = new JComboBox(AuthHelper.getAll());
+    private JCheckBox jcb_preemptive = new JCheckBox();
     
     private static final int auth_text_size = 20;
-    private JTextField jtf_auth_host = new JTextField(auth_text_size);
-    private JTextField jtf_auth_realm = new JTextField(auth_text_size);
-    private JTextField jtf_auth_domain = new JTextField(auth_text_size);
-    private JTextField jtf_auth_workstation = new JTextField(auth_text_size);
-    private JTextField jtf_auth_username = new JTextField(auth_text_size);
-    private JPasswordField jpf_auth_password = new JPasswordField(auth_text_size);
-    private JTextField jtf_auth_ntlm_username = new JTextField(auth_text_size);
-    private JPasswordField jpf_auth_ntlm_password = new JPasswordField(auth_text_size);
-    private JTextField jtf_auth_bearer_token = new JTextField(auth_text_size);
+    private JTextField jtf_host = new JTextField(auth_text_size);
+    private JTextField jtf_realm = new JTextField(auth_text_size);
+    private JTextField jtf_domain = new JTextField(auth_text_size);
+    private JTextField jtf_workstation = new JTextField(auth_text_size);
+    private JTextField jtf_username = new JTextField(auth_text_size);
+    private JPasswordField jpf_password = new JPasswordField(auth_text_size);
+    private JTextField jtf_ntlm_username = new JTextField(auth_text_size);
+    private JPasswordField jpf_ntlm_password = new JPasswordField(auth_text_size);
+    private JTextField jtf_bearer_token = new JTextField(auth_text_size);
 
     @Override
     public Auth getAuth() {
-        final String method = (String) jcb_auth_types.getSelectedItem();
+        final String method = (String) jcb_types.getSelectedItem();
         if(AuthHelper.isBasic(method)) {
             BasicAuthBean out = new BasicAuthBean();
-            out.setHost(jtf_auth_host.getText());
-            out.setRealm(jtf_auth_realm.getText());
-            out.setUsername(jtf_auth_username.getText());
-            out.setPassword(jpf_auth_password.getPassword());
-            out.setPreemptive(jcb_auth_preemptive.isSelected());
+            out.setHost(jtf_host.getText());
+            out.setRealm(jtf_realm.getText());
+            out.setUsername(jtf_username.getText());
+            out.setPassword(jpf_password.getPassword());
+            out.setPreemptive(jcb_preemptive.isSelected());
             return out;
         }
         else if(AuthHelper.isDigest(method)) {
             DigestAuthBean out = new DigestAuthBean();
-            out.setHost(jtf_auth_host.getText());
-            out.setRealm(jtf_auth_realm.getText());
-            out.setUsername(jtf_auth_username.getText());
-            out.setPassword(jpf_auth_password.getPassword());
-            out.setPreemptive(jcb_auth_preemptive.isSelected());
+            out.setHost(jtf_host.getText());
+            out.setRealm(jtf_realm.getText());
+            out.setUsername(jtf_username.getText());
+            out.setPassword(jpf_password.getPassword());
+            out.setPreemptive(jcb_preemptive.isSelected());
             return out;
         }
         else if(AuthHelper.isNtlm(method)) {
             NtlmAuthBean out = new NtlmAuthBean();
-            out.setDomain(jtf_auth_domain.getText());
-            out.setWorkstation(jtf_auth_workstation.getText());
-            out.setUsername(jtf_auth_ntlm_username.getText());
-            out.setPassword(jpf_auth_ntlm_password.getPassword());
+            out.setDomain(jtf_domain.getText());
+            out.setWorkstation(jtf_workstation.getText());
+            out.setUsername(jtf_ntlm_username.getText());
+            out.setPassword(jpf_ntlm_password.getPassword());
             return out;
         }
         
@@ -83,51 +83,52 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
     public void setAuth(Auth auth) {
         if(auth instanceof BasicDigestAuth) {
             final String authType = auth instanceof BasicAuth? AuthHelper.BASIC: AuthHelper.DIGEST;
-            jcb_auth_types.setSelectedItem(authType);
+            jcb_types.setSelectedItem(authType);
             
             BasicDigestAuth a = (BasicDigestAuth) auth;
-            jtf_auth_host.setText(a.getHost());
-            jtf_auth_realm.setText(a.getRealm());
-            jtf_auth_username.setText(a.getUsername());
-            jpf_auth_password.setText(new String(a.getPassword()));
-            jcb_auth_preemptive.setSelected(a.isPreemptive());
+            jtf_host.setText(a.getHost());
+            jtf_realm.setText(a.getRealm());
+            jtf_username.setText(a.getUsername());
+            jpf_password.setText(new String(a.getPassword()));
+            jcb_preemptive.setSelected(a.isPreemptive());
         }
         else if(auth instanceof NtlmAuth) {
+            jcb_types.setSelectedItem(AuthHelper.NTLM);
+            
             NtlmAuth a = (NtlmAuth) auth;
-            
-            jcb_auth_types.setSelectedItem(AuthHelper.NTLM);
-            
-            jtf_auth_domain.setText(a.getDomain());
-            jtf_auth_workstation.setText(a.getWorkstation());
-            jtf_auth_ntlm_username.setText(a.getUsername());
-            jpf_auth_ntlm_password.setText(new String(a.getPassword()));
+            jtf_domain.setText(a.getDomain());
+            jtf_workstation.setText(a.getWorkstation());
+            jtf_ntlm_username.setText(a.getUsername());
+            jpf_ntlm_password.setText(new String(a.getPassword()));
         }
-        else if(auth instanceof AuthorizationHeaderAuth) {
-            AuthorizationHeaderAuth a = (AuthorizationHeaderAuth) auth;
+        else if(auth instanceof OAuth2BearerAuth) {
+            jcb_types.setSelectedItem(AuthHelper.OAUTH2_BEARER);
+            OAuth2BearerAuth a = (OAuth2BearerAuth) auth;
+            jtf_bearer_token.setText(a.getOAuth2BearerToken());
         }
     }
     
     @Override
     public void clear() {
-        jcb_auth_types.setSelectedItem(AuthHelper.NONE);
+        jcb_types.setSelectedItem(AuthHelper.NONE);
         
-        jcb_auth_preemptive.setSelected(false);
+        jcb_preemptive.setSelected(false);
         
-        jtf_auth_host.setText("");
-        jtf_auth_realm.setText("");
-        jtf_auth_domain.setText("");
-        jtf_auth_workstation.setText("");
-        jtf_auth_username.setText("");
-        jpf_auth_password.setText("");
-        jtf_auth_ntlm_username.setText("");
-        jpf_auth_ntlm_password.setText("");
-        jtf_auth_bearer_token.setText("");
+        jtf_host.setText("");
+        jtf_realm.setText("");
+        jtf_domain.setText("");
+        jtf_workstation.setText("");
+        jtf_username.setText("");
+        jpf_password.setText("");
+        jtf_ntlm_username.setText("");
+        jpf_ntlm_password.setText("");
+        jtf_bearer_token.setText("");
     }
 
     @Override
     public List<String> validateIfFilled() {
         
-        String method = (String) jcb_auth_types.getSelectedItem();
+        String method = (String) jcb_types.getSelectedItem();
         if(AuthHelper.isNone(method)) {
             return Collections.EMPTY_LIST;
         }
@@ -135,29 +136,29 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         List<String> errors = new ArrayList<String>();
         
         if(AuthHelper.isBasicOrDigest(method)) {
-            if(StringUtil.isEmpty(jtf_auth_username.getText())){
+            if(StringUtil.isEmpty(jtf_username.getText())){
                 errors.add("Username is empty.");
             }
-            if(StringUtil.isEmpty(new String(jpf_auth_password.getPassword()))){
+            if(StringUtil.isEmpty(new String(jpf_password.getPassword()))){
                 errors.add("Password is empty.");
             }
         }
         else if(AuthHelper.isNtlm(method)) {
-            if(StringUtil.isEmpty(jtf_auth_domain.getText())){
+            if(StringUtil.isEmpty(jtf_domain.getText())){
                 errors.add("Domain is empty.");
             }
-            if(StringUtil.isEmpty(jtf_auth_workstation.getText())){
+            if(StringUtil.isEmpty(jtf_workstation.getText())){
                 errors.add("Workstation is empty.");
             }
-            if(StringUtil.isEmpty(jtf_auth_ntlm_username.getText())){
+            if(StringUtil.isEmpty(jtf_ntlm_username.getText())){
                 errors.add("Username is empty.");
             }
-            if(StringUtil.isEmpty(new String(jpf_auth_ntlm_password.getPassword()))){
+            if(StringUtil.isEmpty(new String(jpf_ntlm_password.getPassword()))){
                 errors.add("Password is empty.");
             }
         }
         else { // OAuth
-            if(StringUtil.isEmpty(jtf_auth_bearer_token.getText())) {
+            if(StringUtil.isEmpty(jtf_bearer_token.getText())) {
                 errors.add("OAuth2 Bearer Token is empty.");
             }
         }
@@ -168,7 +169,7 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
     @PostConstruct
     protected void init() {
         setLayout(new BorderLayout());
-        add(jcb_auth_types, BorderLayout.NORTH);
+        add(jcb_types, BorderLayout.NORTH);
 
         // BASIC / DIGEST form:
         JPanel jp_form_label = new JPanel(new GridLayout(5, 1, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
@@ -179,27 +180,27 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         JLabel jl_premptive = new JLabel("Preemptive?");
         String toolTipText = "Send authentication credentials before challenge";
         jl_premptive.setToolTipText(toolTipText);
-        jcb_auth_preemptive.setToolTipText(toolTipText);
-        jl_premptive.setLabelFor(jcb_auth_preemptive);
+        jcb_preemptive.setToolTipText(toolTipText);
+        jl_premptive.setLabelFor(jcb_preemptive);
         jl_premptive.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
-                if(jcb_auth_preemptive.isSelected()) {
-                    jcb_auth_preemptive.setSelected(false);
+                if(jcb_preemptive.isSelected()) {
+                    jcb_preemptive.setSelected(false);
                 }
                 else {
-                    jcb_auth_preemptive.setSelected(true);
+                    jcb_preemptive.setSelected(true);
                 }
             }
         });
         jp_form_label.add(jl_premptive);
 
         JPanel jp_form_input = new JPanel(new GridLayout(5, 1, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
-        jp_form_input.add(jtf_auth_host);
-        jp_form_input.add(jtf_auth_realm);
-        jp_form_input.add(jtf_auth_username);
-        jp_form_input.add(jpf_auth_password);
-        jp_form_input.add(jcb_auth_preemptive);
+        jp_form_input.add(jtf_host);
+        jp_form_input.add(jtf_realm);
+        jp_form_input.add(jtf_username);
+        jp_form_input.add(jpf_password);
+        jp_form_input.add(jcb_preemptive);
 
         JPanel jp_form = new JPanel(new BorderLayout());
         jp_form.add(jp_form_label, BorderLayout.WEST);
@@ -213,7 +214,7 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         JPanel jp_oauth2_bearer = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel jl_oauth2_bearer = new JLabel("Bearer Token: ");
         jp_oauth2_bearer.add(jl_oauth2_bearer);
-        jp_oauth2_bearer.add(jtf_auth_bearer_token);
+        jp_oauth2_bearer.add(jtf_bearer_token);
         final JPanel jp_jsp_oauth2_bearer = UIUtil.getFlowLayoutPanelLeftAligned(jp_oauth2_bearer);
 
         // NTLM Panel:
@@ -224,10 +225,10 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         jp_ntlm_label.add(new JLabel("<html>Password: <font color=red>*</font></html>"));
 
         JPanel jp_ntlm_form = new JPanel(new GridLayout(4, 1, RESTView.BORDER_WIDTH, RESTView.BORDER_WIDTH));
-        jp_ntlm_form.add(jtf_auth_domain);
-        jp_ntlm_form.add(jtf_auth_workstation);
-        jp_ntlm_form.add(jtf_auth_ntlm_username);
-        jp_ntlm_form.add(jpf_auth_ntlm_password);
+        jp_ntlm_form.add(jtf_domain);
+        jp_ntlm_form.add(jtf_workstation);
+        jp_ntlm_form.add(jtf_ntlm_username);
+        jp_ntlm_form.add(jpf_ntlm_password);
 
         JButton jb_workstation_name = new JButton(UIUtil.getIconFromClasspath("org/wiztools/restclient/computer.png"));
         jb_workstation_name.addActionListener(new ActionListener() {
@@ -235,9 +236,9 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
             public void actionPerformed(ActionEvent ae) {
                 try {
                     final String localHost = InetAddress.getLocalHost().getHostName();
-                    jtf_auth_workstation.setText(localHost);
-                    jtf_auth_workstation.selectAll();
-                    jtf_auth_workstation.requestFocus();
+                    jtf_workstation.setText(localHost);
+                    jtf_workstation.selectAll();
+                    jtf_workstation.requestFocus();
                 }
                 catch(UnknownHostException ex) {
                     throw new RuntimeException(ex);
@@ -258,24 +259,24 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         // The Scrollpane:
         final JScrollPane jsp = new JScrollPane();
         jsp.setViewportView(jp_none);
-        jcb_auth_types.addActionListener(new ActionListener() {
+        jcb_types.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                final String selected = (String) jcb_auth_types.getSelectedItem();
+                final String selected = (String) jcb_types.getSelectedItem();
                 if(AuthHelper.isNone(selected)) {
                     jsp.setViewportView(jp_none);
                 }
                 else if(AuthHelper.isBasicOrDigest(selected)) {
                     jsp.setViewportView(jp_jsp_form);
-                    jtf_auth_host.requestFocus();
+                    jtf_host.requestFocus();
                 }
                 else if(AuthHelper.isNtlm(selected)) {
                     jsp.setViewportView(jp_jsp_ntlm);
-                    jtf_auth_domain.requestFocus();
+                    jtf_domain.requestFocus();
                 }
                 else if(AuthHelper.isBearer(selected)) {
                     jsp.setViewportView(jp_jsp_oauth2_bearer);
-                    jtf_auth_bearer_token.requestFocus();
+                    jtf_bearer_token.requestFocus();
                 }
             }
         });
