@@ -88,90 +88,14 @@ public final class XMLUtil {
                 e.appendChild(bean.getMethod().name());
                 reqChildElement.appendChild(e);
             }
-
-            /*{ // creating the auth-methods child element
-                List<HTTPAuthMethod> authMethods = bean.getAuthMethods();
-                if (authMethods == null || authMethods.size() > 0) {
-
-                    { // auth-methods
-                        Element e = new Element("auth-methods");
-                        String methods = "";
-                        for (HTTPAuthMethod authMethod : authMethods) {
-                            methods = methods + authMethod + ",";
-                        }
-                        String authenticationMethod = methods.substring(0, methods.length() == 0 ? 0 : methods.length() - 1);
-                        e.appendChild(authenticationMethod);
-                        reqChildElement.appendChild(e);
-                    }
-
-                    // creating the auth-preemptive child element
-                    if(authMethods.contains(HTTPAuthMethod.BASIC)
-                            || authMethods.contains(HTTPAuthMethod.DIGEST)) {
-                        if(bean.isAuthPreemptive()) {
-                            Element e = new Element("auth-preemptive");
-                            reqChildElement.appendChild(e);
-                        }
-                    }
-
-                    // creating the auth-host child element
-                    String authHost = bean.getAuthHost();
-                    if (StringUtil.isNotEmpty(authHost)) {
-                        Element e = new Element("auth-host");
-                        e.appendChild(authHost);
-                        reqChildElement.appendChild(e);
-                    }
-                    // creating the auth-realm child element
-                    String authRealm = bean.getAuthRealm();
-                    if (StringUtil.isNotEmpty(authRealm)) {
-                        Element e = new Element("auth-realm");
-                        e.appendChild(authRealm);
-                        reqChildElement.appendChild(e);
-                    }
-                    // creating the auth-username child element
-                    String authUsername = bean.getAuthUsername();
-                    if (StringUtil.isNotEmpty(authUsername)) {
-                        Element e = new Element("auth-username");
-                        e.appendChild(authUsername);
-                        reqChildElement.appendChild(e);
-                    }
-                    // creating the auth-password child element
-                    String authPassword = null;
-                    if (bean.getAuthPassword() != null) {
-                        authPassword = new String(bean.getAuthPassword());
-                        if (StringUtil.isNotEmpty(authPassword)) {
-                            String encPassword = Util.base64encode(authPassword);
-
-                            Element e = new Element("auth-password");
-                            e.appendChild(encPassword);
-                            reqChildElement.appendChild(e);
-                        }
-                    }
-                    // auth-domain
-                    String authDomain = bean.getAuthDomain();
-                    if(StringUtil.isNotEmpty(authDomain)) {
-                        Element e = new Element("auth-domain");
-                        e.appendChild(authDomain);
-                        reqChildElement.appendChild(e);
-                    }
-                    // auth-workstation
-                    String authWorkstation = bean.getAuthWorkstation();
-                    if(StringUtil.isNotEmpty(authWorkstation)) {
-                        Element e = new Element("auth-workstation");
-                        e.appendChild(authWorkstation);
-                        reqChildElement.appendChild(e);
-                    }
-
-                    // creating auth-token child element
-                    if(authMethods.contains(HTTPAuthMethod.OAUTH_20_BEARER)) {
-                        String authToken = bean.getAuthBearerToken();
-                        if(StringUtil.isNotEmpty(authToken)) {
-                            Element e = new Element("auth-bearer-token");
-                            e.appendChild(authToken);
-                            reqChildElement.appendChild(e);
-                        }
-                    }
+            
+            { // auth
+                Auth auth = bean.getAuth();
+                if(auth != null) {
+                    Element eAuth = XmlAuthUtil.getAuthElement(auth);
+                    reqChildElement.appendChild(eAuth);
                 }
-            }*/
+            }
             
             // Creating SSL elements
             String sslTruststore = bean.getSslTrustStore();
