@@ -10,10 +10,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
-import org.wiztools.restclient.bean.HTTPAuthMethod;
+import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.ui.AuthHelper;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;
@@ -41,105 +45,66 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
     private JTextField jtf_auth_ntlm_username = new JTextField(auth_text_size);
     private JPasswordField jpf_auth_ntlm_password = new JPasswordField(auth_text_size);
     private JTextField jtf_auth_bearer_token = new JTextField(auth_text_size);
-    
+
     @Override
-    public boolean isPreemptive() {
-        return jcb_auth_preemptive.isSelected();
+    public Auth getAuth() {
+        final String method = (String) jcb_auth_types.getSelectedItem();
+        if(AuthHelper.isBasic(method)) {
+            BasicAuthBean out = new BasicAuthBean();
+            out.setHost(jtf_auth_host.getText());
+            out.setRealm(jtf_auth_realm.getText());
+            out.setUsername(jtf_auth_username.getText());
+            out.setPassword(jpf_auth_password.getPassword());
+            out.setPreemptive(jcb_auth_preemptive.isSelected());
+            return out;
+        }
+        else if(AuthHelper.isDigest(method)) {
+            DigestAuthBean out = new DigestAuthBean();
+            out.setHost(jtf_auth_host.getText());
+            out.setRealm(jtf_auth_realm.getText());
+            out.setUsername(jtf_auth_username.getText());
+            out.setPassword(jpf_auth_password.getPassword());
+            out.setPreemptive(jcb_auth_preemptive.isSelected());
+            return out;
+        }
+        else if(AuthHelper.isNtlm(method)) {
+            NtlmAuthBean out = new NtlmAuthBean();
+            out.setDomain(jtf_auth_domain.getText());
+            out.setWorkstation(jtf_auth_workstation.getText());
+            out.setUsername(jtf_auth_ntlm_username.getText());
+            out.setPassword(jpf_auth_ntlm_password.getPassword());
+            return out;
+        }
+        
+        return null;
     }
-    
+
     @Override
-    public void setPreemptive(boolean b) {
-        jcb_auth_preemptive.setSelected(b);
-    }
-    
-    @Override
-    public String getHost() {
-        return jtf_auth_host.getText();
-    }
-    
-    @Override
-    public void setHost(String authHost) {
-        jtf_auth_host.setText(authHost);
-    }
-    
-    @Override
-    public String getRealm() {
-        return jtf_auth_realm.getText();
-    }
-    
-    @Override
-    public void setRealm(String authRealm) {
-        jtf_auth_realm.setText(authRealm);
-    }
-    
-    @Override
-    public String getDomain() {
-        return jtf_auth_domain.getText();
-    }
-    
-    @Override
-    public void setDomain(String authDomain) {
-        jtf_auth_domain.setText(authDomain);
-    }
-    
-    @Override
-    public String getWorkstation() {
-        return jtf_auth_workstation.getText();
-    }
-    
-    @Override
-    public void setWorkstation(String authWorkstation) {
-        jtf_auth_workstation.setText(authWorkstation);
-    }
-    
-    @Override
-    public String getUsername() {
-        return jtf_auth_username.getText();
-    }
-    
-    @Override
-    public void setUsername(String authUsername) {
-        jtf_auth_username.setText(authUsername);
-    }
-    
-    @Override
-    public char[] getPassword() {
-        return jpf_auth_password.getPassword();
-    }
-    
-    @Override
-    public void setPassword(String authPassword) {
-        jpf_auth_password.setText(authPassword);
-    }
-    
-    @Override
-    public String getNtlmUsername() {
-        return jtf_auth_ntlm_username.getText();
-    }
-    
-    @Override
-    public void setNtlmUsername(String ntlmUsername) {
-        jtf_auth_ntlm_username.setText(ntlmUsername);
-    }
-    
-    @Override
-    public char[] getNtlmPassword() {
-        return jpf_auth_ntlm_password.getPassword();
-    }
-    
-    @Override
-    public void setNtlmPassword(String ntlmPassword) {
-        jpf_auth_ntlm_password.setText(ntlmPassword);
-    }
-    
-    @Override
-    public String getBearerToken() {
-        return jtf_auth_bearer_token.getText();
-    }
-    
-    @Override
-    public void setBearerToken(String bearerToken) {
-        jtf_auth_bearer_token.setText(bearerToken);
+    public void setAuth(Auth auth) {
+        if(auth instanceof BasicDigestAuth) {
+            final String authType = auth instanceof BasicAuth? AuthHelper.BASIC: AuthHelper.DIGEST;
+            jcb_auth_types.setSelectedItem(authType);
+            
+            BasicDigestAuth a = (BasicDigestAuth) auth;
+            jtf_auth_host.setText(a.getHost());
+            jtf_auth_realm.setText(a.getRealm());
+            jtf_auth_username.setText(a.getUsername());
+            jpf_auth_password.setText(new String(a.getPassword()));
+            jcb_auth_preemptive.setSelected(a.isPreemptive());
+        }
+        else if(auth instanceof NtlmAuth) {
+            NtlmAuth a = (NtlmAuth) auth;
+            
+            jcb_auth_types.setSelectedItem(AuthHelper.NTLM);
+            
+            jtf_auth_domain.setText(a.getDomain());
+            jtf_auth_workstation.setText(a.getWorkstation());
+            jtf_auth_ntlm_username.setText(a.getUsername());
+            jpf_auth_ntlm_password.setText(new String(a.getPassword()));
+        }
+        else if(auth instanceof AuthorizationHeaderAuth) {
+            AuthorizationHeaderAuth a = (AuthorizationHeaderAuth) auth;
+        }
     }
     
     @Override
@@ -158,33 +123,46 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         jpf_auth_ntlm_password.setText("");
         jtf_auth_bearer_token.setText("");
     }
-    
+
     @Override
-    public void setAuthMethod(HTTPAuthMethod authMethod) {
-        switch(authMethod){
-            case BASIC:
-                jcb_auth_types.setSelectedItem(AuthHelper.BASIC);
-                break;
-            case DIGEST:
-                jcb_auth_types.setSelectedItem(AuthHelper.DIGEST);
-                break;
-            case NTLM:
-                jcb_auth_types.setSelectedItem(AuthHelper.NTLM);
-                break;
-            case OAUTH_20_BEARER:
-                jcb_auth_types.setSelectedItem(AuthHelper.OAUTH2_BEARER);
-                break;
+    public List<String> validateIfFilled() {
+        
+        String method = (String) jcb_auth_types.getSelectedItem();
+        if(AuthHelper.isNone(method)) {
+            return Collections.EMPTY_LIST;
         }
-    }
-    
-    @Override
-    public boolean isAuthSelected() {
-        return !((String) jcb_auth_types.getSelectedItem()).equals(AuthHelper.NONE);
-    }
-    
-    @Override
-    public String getAuthMethod() {
-        return (String) jcb_auth_types.getSelectedItem();
+        
+        List<String> errors = new ArrayList<String>();
+        
+        if(AuthHelper.isBasicOrDigest(method)) {
+            if(StringUtil.isEmpty(jtf_auth_username.getText())){
+                errors.add("Username is empty.");
+            }
+            if(StringUtil.isEmpty(new String(jpf_auth_password.getPassword()))){
+                errors.add("Password is empty.");
+            }
+        }
+        else if(AuthHelper.isNtlm(method)) {
+            if(StringUtil.isEmpty(jtf_auth_domain.getText())){
+                errors.add("Domain is empty.");
+            }
+            if(StringUtil.isEmpty(jtf_auth_workstation.getText())){
+                errors.add("Workstation is empty.");
+            }
+            if(StringUtil.isEmpty(jtf_auth_ntlm_username.getText())){
+                errors.add("Username is empty.");
+            }
+            if(StringUtil.isEmpty(new String(jpf_auth_ntlm_password.getPassword()))){
+                errors.add("Password is empty.");
+            }
+        }
+        else { // OAuth
+            if(StringUtil.isEmpty(jtf_auth_bearer_token.getText())) {
+                errors.add("OAuth2 Bearer Token is empty.");
+            }
+        }
+        
+        return errors;
     }
     
     @PostConstruct

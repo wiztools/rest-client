@@ -1,7 +1,8 @@
 package org.wiztools.restclient.ui.reqauth;
 
 import com.google.inject.ImplementedBy;
-import org.wiztools.restclient.bean.HTTPAuthMethod;
+import java.util.List;
+import org.wiztools.restclient.bean.Auth;
 import org.wiztools.restclient.ui.ViewPanel;
 
 /**
@@ -10,51 +11,8 @@ import org.wiztools.restclient.ui.ViewPanel;
  */
 @ImplementedBy(ReqAuthPanelImpl.class)
 public interface ReqAuthPanel extends ViewPanel {
-
-    String getAuthMethod();
-
-    String getBearerToken();
-
-    String getDomain();
-
-    String getHost();
-
-    char[] getNtlmPassword();
-
-    String getNtlmUsername();
-
-    char[] getPassword();
-
-    String getRealm();
-
-    String getUsername();
-
-    String getWorkstation();
-
-    boolean isAuthSelected();
-
-    boolean isPreemptive();
-
-    void setAuthMethod(HTTPAuthMethod authMethod);
-
-    void setBearerToken(String bearerToken);
-
-    void setDomain(String authDomain);
-
-    void setHost(String authHost);
-
-    void setNtlmPassword(String ntlmPassword);
-
-    void setNtlmUsername(String ntlmUsername);
-
-    void setPassword(String authPassword);
-
-    void setPreemptive(boolean b);
-
-    void setRealm(String authRealm);
-
-    void setUsername(String authUsername);
-
-    void setWorkstation(String authWorkstation);
     
+    void setAuth(Auth auth);
+    Auth getAuth();
+    List<String> validateIfFilled();
 }

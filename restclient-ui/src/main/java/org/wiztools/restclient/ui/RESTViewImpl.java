@@ -234,52 +234,9 @@ public class RESTViewImpl extends JPanel implements RESTView {
         RequestBean request = new RequestBean();
         boolean authEnabled = false;
         
-        if(jp_req_auth.isAuthSelected()) {
-            authEnabled = true;
-        }
-        
-        final String authSelected = jp_req_auth.getAuthMethod();
-        if(authEnabled) {
-            if(AuthHelper.isBasic(authSelected)){
-                request.addAuthMethod(HTTPAuthMethod.BASIC);
-            }
-            else if(AuthHelper.isDigest(authSelected)) {
-                request.addAuthMethod(HTTPAuthMethod.DIGEST);
-            }
-            else if(AuthHelper.isNtlm(authSelected)) {
-                request.addAuthMethod(HTTPAuthMethod.NTLM);
-                
-                String domain = jp_req_auth.getDomain();
-                String workstation = jp_req_auth.getWorkstation();
-                String uid = jp_req_auth.getUsername();
-                char[] pwd = jp_req_auth.getPassword();
-
-                request.setAuthDomain(domain);
-                request.setAuthWorkstation(workstation);
-                request.setAuthUsername(uid);
-                request.setAuthPassword(pwd);
-            }
-            else if(AuthHelper.isBearer(authSelected)) {
-                request.addAuthMethod(HTTPAuthMethod.OAUTH_20_BEARER);
-                
-                request.setAuthBearerToken(jp_req_auth.getBearerToken());
-            }
-            
-            if(AuthHelper.isBasicOrDigest(authSelected)){ // BASIC or DIGEST:
-                String uid = jp_req_auth.getUsername();
-                char[] pwd = jp_req_auth.getPassword();
-
-                String realm = jp_req_auth.getRealm();
-                String host = jp_req_auth.getHost();
-                boolean preemptive = jp_req_auth.isPreemptive();
-
-                request.setAuthPreemptive(preemptive);
-                request.setAuthUsername(uid);
-                request.setAuthPassword(pwd);
-                request.setAuthRealm(realm);
-                request.setAuthHost(host);
-            }
-        }
+        // Auth
+        Auth auth = jp_req_auth.getAuth();
+        request.setAuth(auth);
         
         String url = jp_url_go.getUrlString();
         try{
@@ -508,38 +465,10 @@ public class RESTViewImpl extends JPanel implements RESTView {
             errors.add("URL is invalid.");
         }
         
-        // Auth check
-        final List<HTTPAuthMethod> authMethods = request.getAuthMethods();
-        if(!authMethods.isEmpty()){
-            // BASIC & DIGEST:
-            if(AuthHelper.isBasicOrDigest(authMethods)) {
-                if(StringUtil.isEmpty(request.getAuthUsername())){
-                    errors.add("Username is empty.");
-                }
-                if(StringUtil.isEmpty(new String(request.getAuthPassword()))){
-                    errors.add("Password is empty.");
-                }
-            }
-            // NTLM:
-            if(AuthHelper.isNtlm(authMethods)) {
-                if(StringUtil.isEmpty(request.getAuthDomain())){
-                    errors.add("Domain is empty.");
-                }
-                if(StringUtil.isEmpty(request.getAuthWorkstation())){
-                    errors.add("Workstation is empty.");
-                }
-                if(StringUtil.isEmpty(request.getAuthUsername())){
-                    errors.add("Username is empty.");
-                }
-                if(StringUtil.isEmpty(new String(request.getAuthPassword()))){
-                    errors.add("Password is empty.");
-                }
-            }
-            // OAuth2 Bearer
-            if(AuthHelper.isBearer(authMethods)) {
-                if(StringUtil.isEmpty(request.getAuthBearerToken())) {
-                    errors.add("OAuth2 Bearer Token is empty.");
-                }
+        { // Auth check
+            List<String> authErrors = jp_req_auth.validateIfFilled();
+            if(!authErrors.isEmpty()) {
+                errors.addAll(authErrors);
             }
         }
         
@@ -647,28 +576,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         }
 
         // Authentication
-        List<HTTPAuthMethod> authMethods = request.getAuthMethods();
-        for(HTTPAuthMethod authMethod: authMethods){
-            jp_req_auth.setAuthMethod(authMethod);
-        }
-        if(AuthHelper.isBasicOrDigest(authMethods)) {
-            jp_req_auth.setPreemptive(request.isAuthPreemptive());
-            jp_req_auth.setHost(StringUtil.getNullStrIfNull(request.getAuthHost()));
-            jp_req_auth.setRealm(StringUtil.getNullStrIfNull(request.getAuthRealm()));
-            jp_req_auth.setUsername(StringUtil.getNullStrIfNull(request.getAuthUsername()));
-            if(request.getAuthPassword() != null){
-                jp_req_auth.setPassword(new String(request.getAuthPassword()));
-            }
-        }
-        if(AuthHelper.isNtlm(authMethods)) {
-            jp_req_auth.setDomain(request.getAuthDomain());
-            jp_req_auth.setWorkstation(request.getAuthWorkstation());
-            jp_req_auth.setNtlmUsername(request.getAuthUsername());
-            jp_req_auth.setNtlmPassword(new String(request.getAuthPassword()));
-        }
-        if(AuthHelper.isBearer(authMethods)) {
-            jp_req_auth.setBearerToken(request.getAuthBearerToken());
-        }
+        jp_req_auth.setAuth(request.getAuth());
 
         // SSL
         String sslTruststore = request.getSslTrustStore();
