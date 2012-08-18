@@ -4,7 +4,7 @@ package org.wiztools.restclient;
  *
  * @author schandran
  */
-public class XMLException extends Exception{
+public class XMLException extends RuntimeException{
     public XMLException(String msg){
         super(msg);
     }

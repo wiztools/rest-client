@@ -1,6 +1,8 @@
 package org.wiztools.restclient.util;
 
 import nu.xom.Element;
+import nu.xom.Elements;
+import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.*;
 
 /**
@@ -91,5 +93,117 @@ class XmlAuthUtil {
         Element ePassword = new Element("password");
         ePassword.appendChild(Util.base64encode(new String(auth.getPassword())));
         eParent.appendChild(ePassword);
+    }
+    
+    static Auth getAuth(Element eAuth) {
+        Elements eChildren = eAuth.getChildElements();
+        for(int i=0; i<eChildren.size(); i++) {
+            Element e = eChildren.get(i);
+            final String name = e.getLocalName();
+            if(name.equals("basic")) {
+                return getBasicAuth(e);
+            }
+            else if(name.equals("digest")) {
+                return getDigestAuth(eAuth);
+            }
+            else if(name.equals("ntlm")) {
+                return getNtlmAuth(eAuth);
+            }
+            else if(name.equals("oauth2-bearer")) {
+                return getOAuth2BearerAuth(eAuth);
+            }
+            else {
+                throw new XMLException("Invalid auth element encountered: " + name);
+            }
+        }
+        return null;
+    }
+    
+    static BasicAuth getBasicAuth(Element eBasicAuth) {
+        BasicAuthBean out = new BasicAuthBean();
+        
+        populateBasicDigestAuth(out, eBasicAuth);
+        
+        return out;
+    }
+    
+    static DigestAuth getDigestAuth(Element eDigestAuth) {
+        DigestAuthBean out = new DigestAuthBean();
+        
+        populateBasicDigestAuth(out, eDigestAuth);
+        
+        return out;
+    }
+    
+    static void populateBasicDigestAuth(BasicDigestAuthBaseBean bean, Element eAuth) {
+        Elements eChildren = eAuth.getChildElements();
+        for(int i=0; i<eChildren.size(); i++) {
+            Element e = eChildren.get(i);
+            final String name = e.getLocalName();
+            if(name.equals("host")) {
+                bean.setHost(e.getValue());
+            }
+            else if(name.equals("realm")) {
+                bean.setRealm(e.getValue());
+            }
+            else if(name.equals("username")) {
+                bean.setUsername(e.getValue());
+            }
+            else if(name.equals("password")) {
+                bean.setPassword(getPassword(e));
+            }
+            else {
+                throw new XMLException("Unknown element in basic/digest auth: " + name);
+            }
+        }
+    }
+    
+    static NtlmAuth getNtlmAuth(Element eNtlmAuth) {
+        NtlmAuthBean out = new NtlmAuthBean();
+        
+        Elements eChildren = eNtlmAuth.getChildElements();
+        for(int i=0; i<eChildren.size(); i++) {
+            Element e = eChildren.get(i);
+            final String name = e.getLocalName();
+            if(name.equals("domain")) {
+                out.setDomain(e.getValue());
+            }
+            else if(name.equals("workstation")) {
+                out.setWorkstation(e.getValue());
+            }
+            else if(name.equals("username")) {
+                out.setUsername(e.getValue());
+            }
+            else if(name.equals("password")) {
+                out.setPassword(getPassword(e));
+            }
+            else {
+                throw new XMLException("Unknown element in ntlm auth: " + name);
+            }
+        }
+        
+        return out;
+    }
+    
+    static OAuth2BearerAuth getOAuth2BearerAuth(Element eAuth) {
+        OAuth2BearerAuthBean out = new OAuth2BearerAuthBean();
+        
+        Elements eChildren = eAuth.getChildElements();
+        for(int i=0; i<eChildren.size(); i++) {
+            Element e = eChildren.get(i);
+            final String name = e.getLocalName();
+            if(name.equals("token")) {
+                out.setOAuth2BearerToken(e.getValue());
+            }
+            else {
+                throw new XMLException("Unknown element in oauth2-bearer auth: " + name);
+            }
+        }
+        
+        return out;
+    }
+    
+    static char[] getPassword(Element ePassword) {
+        return Util.base64decode(ePassword.getValue()).toCharArray();
     }
 }
