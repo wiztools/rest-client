@@ -171,9 +171,15 @@ public final class XMLUtil {
                 reqChildElement.appendChild(e);
             }
 
-            // creating the body child element
-            ReqEntity rBean = bean.getBody();
-            if (rBean != null) {
+            { // creating the body child element
+                ReqEntity entityBean = bean.getBody();
+                if(entityBean != null) {
+                    Element e = XmlBodyUtil.getReqEntity(entityBean);
+                    reqChildElement.appendChild(e);
+                }
+            }
+            
+            /*if (rBean != null) {
                 if(rBean instanceof ReqEntitySimple) {
                     ContentType contentType = ((ReqEntitySimple)rBean).getContentType();
                     Charset charset = contentType.getCharset();
@@ -243,13 +249,13 @@ public final class XMLUtil {
                     
                     reqChildElement.appendChild(e);
                 }
-                /*String body = rBean.getBody(); TODO
+                String body = rBean.getBody(); TODO
                 Element e = new Element("body");
                 e.addAttribute(new Attribute("content-type", contentType));
                 e.addAttribute(new Attribute("charset", charSet));
                 e.appendChild(body);
-                reqChildElement.appendChild(e);*/
-            }
+                reqChildElement.appendChild(e);
+            }*/
             // creating the test-script child element
             String testScript = bean.getTestScript();
             if (testScript != null) {
