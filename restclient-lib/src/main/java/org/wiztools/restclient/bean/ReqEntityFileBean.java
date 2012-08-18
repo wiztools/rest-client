@@ -1,7 +1,6 @@
 package org.wiztools.restclient.bean;
 
 import java.io.File;
-import java.nio.charset.Charset;
 
 /**
  *

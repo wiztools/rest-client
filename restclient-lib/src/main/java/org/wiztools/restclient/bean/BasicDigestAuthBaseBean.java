@@ -36,4 +36,37 @@ public class BasicDigestAuthBaseBean extends UsernamePasswordAuthBaseBean implem
     public boolean isPreemptive() {
         return preemptive;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        if(!super.equals(obj)) {
+            return false;
+        }
+        final BasicDigestAuthBaseBean other = (BasicDigestAuthBaseBean) obj;
+        if ((this.host == null) ? (other.host != null) : !this.host.equals(other.host)) {
+            return false;
+        }
+        if ((this.realm == null) ? (other.realm != null) : !this.realm.equals(other.realm)) {
+            return false;
+        }
+        if (this.preemptive != other.preemptive) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = 13 * hash + (this.host != null ? this.host.hashCode() : 0);
+        hash = 13 * hash + (this.realm != null ? this.realm.hashCode() : 0);
+        hash = 13 * hash + (this.preemptive ? 1 : 0);
+        return hash;
+    }
 }

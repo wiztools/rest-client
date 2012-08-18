@@ -1,7 +1,5 @@
 package org.wiztools.restclient.bean;
 
-import java.nio.charset.Charset;
-
 /**
  *
  * @author schandran

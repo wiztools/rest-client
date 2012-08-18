@@ -169,6 +169,9 @@ public final class RequestBean implements Request {
         if (this.method != other.method) {
             return false;
         }
+        if (this.auth != other.auth && (this.auth == null || !this.auth.equals(other.auth))) {
+            return false;
+        }
         if (this.headers != other.headers && (this.headers == null || !this.headers.equals(other.headers))) {
             return false;
         }
@@ -181,7 +184,7 @@ public final class RequestBean implements Request {
         if ((this.testScript == null) ? (other.testScript != null) : !this.testScript.equals(other.testScript)) {
             return false;
         }
-        if ((this.sslReq == null) ? (other.sslReq != null) : !this.sslReq.equals(other.sslReq)) {
+        if (this.sslReq != other.sslReq && (this.sslReq == null || !this.sslReq.equals(other.sslReq))) {
             return false;
         }
         if (this.httpVersion != other.httpVersion) {
@@ -199,16 +202,17 @@ public final class RequestBean implements Request {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + (this.url != null ? this.url.hashCode() : 0);
-        hash = 59 * hash + (this.method != null ? this.method.hashCode() : 0);
-        hash = 59 * hash + (this.headers != null ? this.headers.hashCode() : 0);
-        hash = 59 * hash + (this.cookies != null ? this.cookies.hashCode() : 0);
-        hash = 59 * hash + (this.body != null ? this.body.hashCode() : 0);
-        hash = 59 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
-        hash = 59 * hash + (this.sslReq != null ? this.sslReq.hashCode() : 0);
-        hash = 59 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
-        hash = 59 * hash + (this.isFollowRedirect ? 1 : 0);
-        hash = 59 * hash + (this.isIgnoreResponseBody ? 1 : 0);
+        hash = 23 * hash + (this.url != null ? this.url.hashCode() : 0);
+        hash = 23 * hash + (this.method != null ? this.method.hashCode() : 0);
+        hash = 23 * hash + (this.auth != null ? this.auth.hashCode() : 0);
+        hash = 23 * hash + (this.headers != null ? this.headers.hashCode() : 0);
+        hash = 23 * hash + (this.cookies != null ? this.cookies.hashCode() : 0);
+        hash = 23 * hash + (this.body != null ? this.body.hashCode() : 0);
+        hash = 23 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
+        hash = 23 * hash + (this.sslReq != null ? this.sslReq.hashCode() : 0);
+        hash = 23 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
+        hash = 23 * hash + (this.isFollowRedirect ? 1 : 0);
+        hash = 23 * hash + (this.isIgnoreResponseBody ? 1 : 0);
         return hash;
     }
 
