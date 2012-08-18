@@ -11,6 +11,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
 import org.wiztools.restclient.bean.SSLHostnameVerifier;
+import org.wiztools.restclient.bean.SSLReq;
+import org.wiztools.restclient.bean.SSLReqBean;
 import org.wiztools.restclient.ui.*;
 
 /**
@@ -36,69 +38,33 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
     private JTextField jtf_ssl_keystore_file = new JTextField(auth_text_size);
     private JButton jb_ssl_keystore_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JPasswordField jpf_ssl_keystore_pwd = new JPasswordField(auth_text_size);
-    
+
     @Override
-    public SSLHostnameVerifier getHostnameVerifier() {
-        return (SSLHostnameVerifier) jcb_ssl_hostname_verifier.getSelectedItem();
+    public SSLReq getSslReq() {
+        SSLReqBean out = new SSLReqBean();
+        
+        out.setHostNameVerifier((SSLHostnameVerifier) jcb_ssl_hostname_verifier.getSelectedItem());
+        out.setTrustSelfSignedCert(jcb_ssl_trust_self_signed_cert.isSelected());
+        
+        out.setKeyStore(jtf_ssl_keystore_file.getText());
+        out.setKeyStorePassword(jpf_ssl_keystore_pwd.getPassword());
+        
+        out.setTrustStore(jtf_ssl_truststore_file.getText());
+        out.setTrustStorePassword(jpf_ssl_truststore_pwd.getPassword());
+        
+        return out;
     }
-    
+
     @Override
-    public void setHostnameVerifier(SSLHostnameVerifier v) {
-        jcb_ssl_hostname_verifier.setSelectedItem(v);
-    }
-    
-    @Override
-    public boolean isTrustSelfSignedCert() {
-        return jcb_ssl_trust_self_signed_cert.isSelected();
-    }
-    
-    @Override
-    public void setTrustSelfSignedCert(boolean b) {
-        jcb_ssl_trust_self_signed_cert.setSelected(b);
-    }
-    
-    // Trust store
-    
-    @Override
-    public String getTrustStoreFile() {
-        return jtf_ssl_truststore_file.getText();
-    }
-    
-    @Override
-    public void setTrustStoreFile(String file) {
-        jtf_ssl_truststore_file.setText(file);
-    }
-    
-    @Override
-    public char[] getTrustStorePassword() {
-        return jpf_ssl_truststore_pwd.getPassword();
-    }
-    
-    @Override
-    public void setTrustStorePassword(String password) {
-        jpf_ssl_truststore_pwd.setText(password);
-    }
-    
-    // Key store
-    
-    @Override
-    public String getKeyStoreFile() {
-        return jtf_ssl_keystore_file.getText();
-    }
-    
-    @Override
-    public void setKeyStoreFile(String file) {
-        jtf_ssl_keystore_file.setText(file);
-    }
-    
-    @Override
-    public char[] getKeyStorePassword() {
-        return jpf_ssl_keystore_pwd.getPassword();
-    }
-    
-    @Override
-    public void setKeyStorePassword(String password) {
-        jpf_ssl_keystore_pwd.setText(password);
+    public void setSslReq(SSLReq sslReq) {
+        jcb_ssl_hostname_verifier.setSelectedItem(sslReq.getHostNameVerifier());
+        jcb_ssl_trust_self_signed_cert.setSelected(sslReq.isTrustSelfSignedCert());
+        
+        jtf_ssl_keystore_file.setText(sslReq.getKeyStore());
+        jpf_ssl_keystore_pwd.setText(new String(sslReq.getKeyStorePassword()));
+        
+        jtf_ssl_truststore_file.setText(sslReq.getTrustStore());
+        jpf_ssl_truststore_pwd.setText(new String(sslReq.getTrustStorePassword()));
     }
     
     @Override

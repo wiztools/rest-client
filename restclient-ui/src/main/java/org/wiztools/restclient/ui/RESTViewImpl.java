@@ -285,12 +285,8 @@ public class RESTViewImpl extends JPanel implements RESTView {
         }
         
         // SSL specific
-        request.setSslTrustStore(jp_req_ssl.getTrustStoreFile());
-        request.setSslTrustStorePassword(jp_req_ssl.getTrustStorePassword());
-        request.setSslKeyStore(jp_req_ssl.getKeyStoreFile());
-        request.setSslKeyStorePassword(jp_req_ssl.getKeyStorePassword());
-        request.setSslHostNameVerifier((SSLHostnameVerifier)jp_req_ssl.getHostnameVerifier());
-        request.setSslTrustSelfSignedCert(jp_req_ssl.isTrustSelfSignedCert());
+        SSLReq sslReq = jp_req_ssl.getSslReq();
+        request.setSslReq(sslReq);
         
         // HTTP version
         request.setHttpVersion(jp_req_etc.getHttpVersion());
@@ -579,28 +575,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp_req_auth.setAuth(request.getAuth());
 
         // SSL
-        String sslTruststore = request.getSslTrustStore();
-        char[] sslTruststorePassword = request.getSslTrustStorePassword();
-        if(sslTruststore != null){
-            jp_req_ssl.setTrustStoreFile(sslTruststore);
-        }
-        if(sslTruststorePassword != null){
-            jp_req_ssl.setTrustStorePassword(new String(sslTruststorePassword));
-        }
-        SSLHostnameVerifier sslHostnameVerifier = request.getSslHostNameVerifier();
-        if(sslHostnameVerifier != null){
-            jp_req_ssl.setHostnameVerifier(sslHostnameVerifier);
-        }
-        jp_req_ssl.setTrustSelfSignedCert(request.isSslTrustSelfSignedCert());
-
-        String sslKeystore = request.getSslKeyStore();
-        char[] sslKeystorePassword = request.getSslKeyStorePassword();
-        if(sslKeystore != null){
-        	jp_req_ssl.setKeyStoreFile(sslKeystore);
-        }
-        if(sslKeystorePassword != null){
-        	jp_req_ssl.setKeyStorePassword(new String(sslKeystorePassword));
-        }
+        jp_req_ssl.setSslReq(request.getSslReq());
 
         // HTTP Version
         if(request.getHttpVersion() == HTTPVersion.HTTP_1_1){

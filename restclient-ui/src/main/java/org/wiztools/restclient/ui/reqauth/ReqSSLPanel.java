@@ -1,7 +1,7 @@
 package org.wiztools.restclient.ui.reqauth;
 
 import com.google.inject.ImplementedBy;
-import org.wiztools.restclient.bean.SSLHostnameVerifier;
+import org.wiztools.restclient.bean.SSLReq;
 import org.wiztools.restclient.ui.ViewPanel;
 
 /**
@@ -11,30 +11,7 @@ import org.wiztools.restclient.ui.ViewPanel;
 @ImplementedBy(ReqSSLPanelImpl.class)
 public interface ReqSSLPanel extends ViewPanel {
 
-    void clear();
-
-    SSLHostnameVerifier getHostnameVerifier();
-
-    String getKeyStoreFile();
-
-    char[] getKeyStorePassword();
-
-    String getTrustStoreFile();
-
-    char[] getTrustStorePassword();
-
-    boolean isTrustSelfSignedCert();
-
-    void setHostnameVerifier(SSLHostnameVerifier v);
-
-    void setKeyStoreFile(String file);
-
-    void setKeyStorePassword(String password);
-
-    void setTrustSelfSignedCert(boolean b);
-
-    void setTrustStoreFile(String file);
-
-    void setTrustStorePassword(String password);
+    SSLReq getSslReq();
+    void setSslReq(SSLReq sslReq);
     
 }
