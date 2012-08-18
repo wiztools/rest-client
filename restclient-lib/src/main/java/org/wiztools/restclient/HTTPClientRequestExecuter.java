@@ -314,7 +314,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             // SSL
 
             // Set the hostname verifier:
-            SSLHostnameVerifier verifier = request.getSslHostNameVerifier();
+            final SSLReq sslReq = request.getSslReq();
+            SSLHostnameVerifier verifier = sslReq.getHostNameVerifier();
             final X509HostnameVerifier hcVerifier;
             switch(verifier){
                 case STRICT:
@@ -333,23 +334,23 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
 
             // Register the SSL Scheme:
             if(urlProtocol.equalsIgnoreCase("https")){
-                final String trustStorePath = request.getSslTrustStore();
-                final String keyStorePath = request.getSslKeyStore();
+                final String trustStorePath = sslReq.getTrustStore();
+                final String keyStorePath = sslReq.getKeyStore();
 
                 final KeyStore trustStore  = StringUtil.isEmpty(trustStorePath)?
                         null:
-                        getKeyStore(trustStorePath, request.getSslTrustStorePassword());
+                        getKeyStore(trustStorePath, sslReq.getTrustStorePassword());
                 final KeyStore keyStore = StringUtil.isEmpty(keyStorePath)?
                         null:
-                	getKeyStore(keyStorePath, request.getSslKeyStorePassword());
+                	getKeyStore(keyStorePath, sslReq.getKeyStorePassword());
                 
-                final TrustStrategy trustStrategy = request.isSslTrustSelfSignedCert()
+                final TrustStrategy trustStrategy = sslReq.isTrustSelfSignedCert()
                         ? new TrustSelfSignedStrategy(): null;
                 
                 SSLSocketFactory socketFactory = new SSLSocketFactory(
                         "TLS", // Algorithm
                         keyStore,  // Keystore
-                        new String(request.getSslKeyStorePassword()),  // Keystore password
+                        new String(sslReq.getKeyStorePassword()),  // Keystore password
                         trustStore,
                         null,  // Secure Random
                         trustStrategy, // Trust strategy

@@ -22,18 +22,8 @@ public interface Request extends Cloneable {
     HTTPVersion getHttpVersion();
 
     HTTPMethod getMethod();
-
-    SSLHostnameVerifier getSslHostNameVerifier();
-
-    String getSslTrustStore();
-
-    char[] getSslTrustStorePassword();
     
-    String getSslKeyStore();
-    
-    char[] getSslKeyStorePassword();
-    
-    boolean isSslTrustSelfSignedCert();
+    SSLReq getSslReq();
 
     String getTestScript();
 

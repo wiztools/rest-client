@@ -3,7 +3,6 @@ package org.wiztools.restclient.bean;
 import java.net.HttpCookie;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.wiztools.commons.CollectionsUtil;
@@ -14,7 +13,7 @@ import org.wiztools.commons.MultiValueMapArrayList;
  *
  * @author subwiz
  */
-public final class RequestBean implements Request{
+public final class RequestBean implements Request {
     
     private URL url;
     private HTTPMethod method;
@@ -23,12 +22,7 @@ public final class RequestBean implements Request{
     private final List<HttpCookie> cookies = new ArrayList<HttpCookie>();
     private ReqEntity body;
     private String testScript;
-    private String sslTrustStore;
-    private char[] sslTrustStorePassword;
-    private String sslKeyStore;
-    private char[] sslKeyStorePassword;
-    private SSLHostnameVerifier sslHostNameVerifier = SSLHostnameVerifier.STRICT; // Default to strict!
-    private boolean sslTrustSelfSignedCert = false;
+    private SSLReq sslReq;
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
     private boolean isFollowRedirect;
     private boolean isIgnoreResponseBody = false;
@@ -43,66 +37,21 @@ public final class RequestBean implements Request{
     }
 
     @Override
+    public SSLReq getSslReq() {
+        return sslReq;
+    }
+
+    public void setSslReq(SSLReq sslReq) {
+        this.sslReq = sslReq;
+    }
+
+    @Override
     public HTTPVersion getHttpVersion() {
         return httpVersion;
     }
 
     public void setHttpVersion(HTTPVersion httpVersion) {
         this.httpVersion = httpVersion;
-    }
-
-    @Override
-    public String getSslTrustStore() {
-        return sslTrustStore;
-    }
-
-    public void setSslTrustStore(String sslKeyStore) {
-        this.sslTrustStore = sslKeyStore;
-    }
-
-    @Override
-    public char[] getSslTrustStorePassword() {
-        return sslTrustStorePassword;
-    }
-
-    public void setSslTrustStorePassword(char[] sslKeyStorePassword) {
-        this.sslTrustStorePassword = sslKeyStorePassword;
-    }
-    
-    @Override
-    public String getSslKeyStore() {
-        return sslKeyStore;
-    }
-
-    public void setSslKeyStore(String sslKeyStore) {
-        this.sslKeyStore = sslKeyStore;
-    }
-
-    @Override
-    public char[] getSslKeyStorePassword() {
-        return sslKeyStorePassword;
-    }
-
-    public void setSslKeyStorePassword(char[] sslKeyStorePassword) {
-        this.sslKeyStorePassword = sslKeyStorePassword;
-    }
-
-    @Override
-    public SSLHostnameVerifier getSslHostNameVerifier() {
-        return sslHostNameVerifier;
-    }
-
-    public void setSslHostNameVerifier(SSLHostnameVerifier sslHostNameVerifier) {
-        this.sslHostNameVerifier = sslHostNameVerifier;
-    }
-    
-    public void setSslTrustSelfSignedCert(boolean sslTrustSelfSignedCert) {
-        this.sslTrustSelfSignedCert = sslTrustSelfSignedCert;
-    }
-    
-    @Override
-    public boolean isSslTrustSelfSignedCert() {
-        return this.sslTrustSelfSignedCert;
     }
     
     @Override
@@ -180,12 +129,7 @@ public final class RequestBean implements Request{
     @Override
     public Object clone(){
         RequestBean cloned = new RequestBean();
-        cloned.setSslTrustStore(sslTrustStore);
-        cloned.setSslTrustStorePassword(
-                Arrays.copyOf(sslTrustStorePassword, sslTrustStorePassword.length));
-        cloned.setSslKeyStore(sslKeyStore);
-        cloned.setSslKeyStorePassword(
-                Arrays.copyOf(sslKeyStorePassword, sslKeyStorePassword.length));
+        cloned.setSslReq(sslReq);
         cloned.setHttpVersion(httpVersion);
         if(body != null){
             cloned.setBody((ReqEntityStringBean)body.clone());
@@ -237,22 +181,7 @@ public final class RequestBean implements Request{
         if ((this.testScript == null) ? (other.testScript != null) : !this.testScript.equals(other.testScript)) {
             return false;
         }
-        if ((this.sslTrustStore == null) ? (other.sslTrustStore != null) : !this.sslTrustStore.equals(other.sslTrustStore)) {
-            return false;
-        }
-        if (!Arrays.equals(this.sslTrustStorePassword, other.sslTrustStorePassword)) {
-            return false;
-        }
-        if ((this.sslKeyStore == null) ? (other.sslKeyStore != null) : !this.sslKeyStore.equals(other.sslKeyStore)) {
-            return false;
-        }
-        if (!Arrays.equals(this.sslKeyStorePassword, other.sslKeyStorePassword)) {
-            return false;
-        }
-        if (this.sslHostNameVerifier != other.sslHostNameVerifier) {
-            return false;
-        }
-        if (this.sslTrustSelfSignedCert != other.sslTrustSelfSignedCert) {
+        if ((this.sslReq == null) ? (other.sslReq != null) : !this.sslReq.equals(other.sslReq)) {
             return false;
         }
         if (this.httpVersion != other.httpVersion) {
@@ -276,12 +205,7 @@ public final class RequestBean implements Request{
         hash = 59 * hash + (this.cookies != null ? this.cookies.hashCode() : 0);
         hash = 59 * hash + (this.body != null ? this.body.hashCode() : 0);
         hash = 59 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
-        hash = 59 * hash + (this.sslTrustStore != null ? this.sslTrustStore.hashCode() : 0);
-        hash = 59 * hash + Arrays.hashCode(this.sslTrustStorePassword);
-        hash = 59 * hash + (this.sslKeyStore != null ? this.sslKeyStore.hashCode() : 0);
-        hash = 59 * hash + Arrays.hashCode(this.sslKeyStorePassword);
-        hash = 59 * hash + (this.sslHostNameVerifier != null ? this.sslHostNameVerifier.hashCode() : 0);
-        hash = 59 * hash + (this.sslTrustSelfSignedCert ? 1 : 0);
+        hash = 59 * hash + (this.sslReq != null ? this.sslReq.hashCode() : 0);
         hash = 59 * hash + (this.httpVersion != null ? this.httpVersion.hashCode() : 0);
         hash = 59 * hash + (this.isFollowRedirect ? 1 : 0);
         hash = 59 * hash + (this.isIgnoreResponseBody ? 1 : 0);
@@ -297,12 +221,7 @@ public final class RequestBean implements Request{
         sb.append(headers.toString()).append(", ");
         sb.append(cookies.toString()).append(", ");
         sb.append(body).append(", ");
-        sb.append(sslTrustStore).append(", ");
-        sb.append(sslTrustStorePassword==null?"null": new String(sslTrustStorePassword).replaceAll(".", "X")).append(", ");
-        sb.append(sslKeyStore).append(", ");
-        sb.append(sslKeyStorePassword==null?"null": new String(sslKeyStorePassword).replaceAll(".", "X")).append(", ");
-        sb.append(sslHostNameVerifier).append(", ");
-        sb.append(sslTrustSelfSignedCert).append(", ");
+        sb.append(sslReq).append(", ");
         sb.append(httpVersion).append(", ");
         sb.append(isFollowRedirect).append(", ");
         sb.append(isIgnoreResponseBody).append(", ");

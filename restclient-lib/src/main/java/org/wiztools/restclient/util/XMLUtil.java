@@ -14,7 +14,6 @@ import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.XMLEvent;
 import nu.xom.*;
 import org.wiztools.commons.MultiValueMap;
-import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.RCConstants;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.*;
@@ -98,50 +97,8 @@ public final class XMLUtil {
             }
             
             // Creating SSL elements
-            String sslTruststore = bean.getSslTrustStore();
-            if (StringUtil.isNotEmpty(sslTruststore)) {
-                { // 1. Create trust-store entry
-                    Element e = new Element("ssl-truststore");
-                    e.appendChild(sslTruststore);
-                    reqChildElement.appendChild(e);
-                }
-                { // 2. Create password entry
-                    String sslPassword = new String(bean.getSslTrustStorePassword());
-                    String encPassword = Util.base64encode(sslPassword);
-                    Element e = new Element("ssl-truststore-password");
-                    e.appendChild(encPassword);
-                    reqChildElement.appendChild(e);
-                }
-            }
-            
-            String sslKeystore = bean.getSslKeyStore();
-            if(StringUtil.isNotEmpty(sslKeystore)) {
-            	{ // 1. Create keystore entry
-            		Element e = new Element("ssl-keystore");
-            		e.appendChild(sslKeystore);
-            		reqChildElement.appendChild(e);
-            	}
-            	
-            	{ // 2. Create password entry
-            		String sslPassword = new String(bean.getSslKeyStorePassword());
-            		String encPassword = Util.base64encode(sslPassword);
-            		Element e = new Element("ssl-keystore-password");
-            		e.appendChild(encPassword);
-            		reqChildElement.appendChild(e);
-            	}
-            }
-            { // Create Hostname Verifier entry
-                String sslHostnameVerifier = bean.getSslHostNameVerifier().name();
-                Element e = new Element("ssl-hostname-verifier");
-                e.appendChild(sslHostnameVerifier);
-                reqChildElement.appendChild(e);
-            }   
-            { // Create Trust Self-signed cert entry:
-                if(bean.isSslTrustSelfSignedCert()) {
-                    Element e = new Element("ssl-trust-self-signed-cert");
-                    reqChildElement.appendChild(e);
-                }
-            }
+            Element eSsl = XmlSslUtil.getSslReq(bean.getSslReq());
+            reqChildElement.appendChild(eSsl);
 
             // creating the headers child element
             MultiValueMap<String, String> headers = bean.getHeaders();
@@ -361,29 +318,8 @@ public final class XMLUtil {
             else if("auth".equals(nodeName)) {
                 requestBean.setAuth(XmlAuthUtil.getAuth(tNode));
             }
-            else if ("ssl-truststore".equals(nodeName)) {
-                String sslTrustStore = tNode.getValue();
-                requestBean.setSslTrustStore(sslTrustStore);
-            }
-            else if ("ssl-truststore-password".equals(nodeName)) {
-                String sslTrustStorePassword = Util.base64decode(tNode.getValue());
-                requestBean.setSslTrustStorePassword(sslTrustStorePassword.toCharArray());
-            }
-            else if("ssl-hostname-verifier".equals(nodeName)){
-                String sslHostnameVerifierStr = tNode.getValue();
-                SSLHostnameVerifier sslHostnameVerifier = SSLHostnameVerifier.valueOf(sslHostnameVerifierStr);
-                requestBean.setSslHostNameVerifier(sslHostnameVerifier);
-            }
-            else if("ssl-trust-self-signed-cert".equals(nodeName)) {
-                requestBean.setSslTrustSelfSignedCert(true);
-            }
-            else if ("ssl-keystore".equals(nodeName)) {
-                String sslKeyStore = tNode.getValue();
-                requestBean.setSslKeyStore(sslKeyStore);
-            }
-            else if ("ssl-keystore-password".equals(nodeName)) {
-                String sslKeyStorePassword = Util.base64decode(tNode.getValue());
-                requestBean.setSslKeyStorePassword(sslKeyStorePassword.toCharArray());
+            else if("ssl".equals(nodeName)) {
+                requestBean.setSslReq(XmlSslUtil.getSslReq(tNode));
             }
             else if ("headers".equals(nodeName)) {
                 Map<String, String> m = getHeadersFromHeaderNode(tNode);
