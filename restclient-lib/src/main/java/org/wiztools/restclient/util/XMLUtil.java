@@ -352,37 +352,9 @@ public final class XMLUtil {
             else if ("method".equals(nodeName)) {
                 requestBean.setMethod(HTTPMethod.get(tNode.getValue()));
             }
-            /*else if ("auth-methods".equals(nodeName)) {
-                String[] authenticationMethods = tNode.getValue().split(",");
-                for (int j = 0; j < authenticationMethods.length; j++) {
-                    requestBean.addAuthMethod(HTTPAuthMethod.get(authenticationMethods[j]));
-                }
+            else if("auth".equals(nodeName)) {
+                requestBean.setAuth(XmlAuthUtil.getAuth(tNode));
             }
-            else if ("auth-preemptive".equals(nodeName)) {
-                requestBean.setAuthPreemptive(true);
-            }
-            else if ("auth-host".equals(nodeName)) {
-                requestBean.setAuthHost(tNode.getValue());
-            }
-            else if ("auth-realm".equals(nodeName)) {
-                requestBean.setAuthRealm(tNode.getValue());
-            }
-            else if("auth-domain".equals(nodeName)) {
-                requestBean.setAuthDomain(tNode.getValue());
-            }
-            else if("auth-workstation".equals(nodeName)) {
-                requestBean.setAuthWorkstation(tNode.getValue());
-            }
-            else if ("auth-username".equals(nodeName)) {
-                requestBean.setAuthUsername(tNode.getValue());
-            }
-            else if ("auth-password".equals(nodeName)) {
-                String password = Util.base64decode(tNode.getValue());
-                requestBean.setAuthPassword(password.toCharArray());
-            }
-            else if("auth-bearer-token".equals(nodeName)) {
-                requestBean.setAuthBearerToken(tNode.getValue());
-            }*/
             else if ("ssl-truststore".equals(nodeName)) {
                 String sslTrustStore = tNode.getValue();
                 requestBean.setSslTrustStore(sslTrustStore);
