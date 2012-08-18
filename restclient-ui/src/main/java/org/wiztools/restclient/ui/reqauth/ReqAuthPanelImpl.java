@@ -51,20 +51,12 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         final String method = (String) jcb_types.getSelectedItem();
         if(AuthHelper.isBasic(method)) {
             BasicAuthBean out = new BasicAuthBean();
-            out.setHost(jtf_host.getText());
-            out.setRealm(jtf_realm.getText());
-            out.setUsername(jtf_username.getText());
-            out.setPassword(jpf_password.getPassword());
-            out.setPreemptive(jcb_preemptive.isSelected());
+            populateBasicDigestAuth(out);
             return out;
         }
         else if(AuthHelper.isDigest(method)) {
             DigestAuthBean out = new DigestAuthBean();
-            out.setHost(jtf_host.getText());
-            out.setRealm(jtf_realm.getText());
-            out.setUsername(jtf_username.getText());
-            out.setPassword(jpf_password.getPassword());
-            out.setPreemptive(jcb_preemptive.isSelected());
+            populateBasicDigestAuth(out);
             return out;
         }
         else if(AuthHelper.isNtlm(method)) {
@@ -75,8 +67,21 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
             out.setPassword(jpf_ntlm_password.getPassword());
             return out;
         }
+        else if(AuthHelper.isBearer(method)) {
+            OAuth2BearerAuthBean out = new OAuth2BearerAuthBean();
+            out.setOAuth2BearerToken(jtf_bearer_token.getText());
+            return out;
+        }
         
         return null;
+    }
+    
+    private void populateBasicDigestAuth(BasicDigestAuthBaseBean bean) {
+        bean.setHost(jtf_host.getText());
+        bean.setRealm(jtf_realm.getText());
+        bean.setUsername(jtf_username.getText());
+        bean.setPassword(jpf_password.getPassword());
+        bean.setPreemptive(jcb_preemptive.isSelected());
     }
 
     @Override
