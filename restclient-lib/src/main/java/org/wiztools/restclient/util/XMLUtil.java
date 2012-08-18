@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLEventReader;
@@ -28,7 +27,7 @@ public final class XMLUtil {
     }
     private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
     private static final String[] VERSIONS = new String[]{
-        "2.6", RCConstants.VERSION
+        RCConstants.VERSION
     };
 
     public static final String XML_MIME = "application/xml";
@@ -136,83 +135,6 @@ public final class XMLUtil {
                 }
             }
             
-            /*if (rBean != null) {
-                if(rBean instanceof ReqEntitySimple) {
-                    ContentType contentType = ((ReqEntitySimple)rBean).getContentType();
-                    Charset charset = contentType.getCharset();
-                    
-                    Element e = new Element("body");
-                    e.addAttribute(new Attribute("type", "simple"));
-                    e.addAttribute(new Attribute("content-type", contentType.getContentType()));
-                    if(charset != null) {
-                        e.addAttribute(
-                                new Attribute("charset", contentType.getCharset().name()));
-                    }
-                    
-                    if(rBean instanceof ReqEntityString) {
-                        ReqEntityString entityBean = (ReqEntityString) rBean;
-                        String bodyStr = entityBean.getBody();
-                        Element eContent = new Element("content");
-                        eContent.addAttribute(new Attribute("encoding", "none"));
-                        eContent.appendChild(bodyStr);
-                        e.appendChild(eContent);
-                    }
-                    else if(rBean instanceof ReqEntityFile) {
-                        ReqEntityFile entityBean = (ReqEntityFile) rBean;
-                        String bodyFile = entityBean.getBody().getAbsolutePath();
-                        Element eFileLink = new Element("file-link");
-                        eFileLink.addAttribute(new Attribute("path", bodyFile));
-                        e.appendChild(eFileLink);
-                    }
-                    
-                    reqChildElement.appendChild(e);
-                }
-                else if(rBean instanceof ReqEntityMultipart) {
-                    Element e = new Element("body");
-                    e.addAttribute(new Attribute("type", "multipart"));
-                    ReqEntityMultipart entityBody = (ReqEntityMultipart) rBean;
-                    for(ReqEntityPart part: entityBody.getBody()) {
-                        Element ePart = new Element("part");
-                        ePart.addAttribute(new Attribute("name", part.getName()));
-                        if(part instanceof ReqEntityStringPart) {
-                            ReqEntityStringPart strPart = (ReqEntityStringPart) part;
-                            String charset = strPart.getCharset().name();
-                            String contentType = strPart.getContentType();
-                            
-                            ePart.addAttribute(new Attribute("content-type", contentType));
-                            ePart.addAttribute(new Attribute("charset", charset));
-                            
-                            String partBody = strPart.getPart();
-                            
-                            Element eContent = new Element("content");
-                            eContent.addAttribute(new Attribute("encoding", "none"));
-                            eContent.appendChild(partBody);
-                            
-                            ePart.appendChild(eContent);
-                        }
-                        else if(part instanceof ReqEntityFilePart) {
-                            ReqEntityFilePart filePart = (ReqEntityFilePart) part;
-                            String fileName = filePart.getFileName();
-                            String filePath = filePart.getPart().getAbsolutePath();
-                            
-                            Element eFileLink = new Element("file-link");
-                            eFileLink.addAttribute(new Attribute("file-name", fileName));
-                            eFileLink.addAttribute(new Attribute("path", filePath));
-                            
-                            ePart.appendChild(eFileLink);
-                        }
-                        e.appendChild(ePart);
-                    }
-                    
-                    reqChildElement.appendChild(e);
-                }
-                String body = rBean.getBody(); TODO
-                Element e = new Element("body");
-                e.addAttribute(new Attribute("content-type", contentType));
-                e.addAttribute(new Attribute("charset", charSet));
-                e.appendChild(body);
-                reqChildElement.appendChild(e);
-            }*/
             // creating the test-script child element
             String testScript = bean.getTestScript();
             if (testScript != null) {
@@ -334,9 +256,8 @@ public final class XMLUtil {
                 }
             }
             else if ("body".equals(nodeName)) {
-                ContentType contentType = new ContentTypeBean(tNode.getAttributeValue("content-type"),
-                        Charset.forName(tNode.getAttributeValue("charset")));
-                requestBean.setBody(new ReqEntityStringBean(tNode.getValue(), contentType));
+                ReqEntity body = XmlBodyUtil.getReqEntity(tNode);
+                requestBean.setBody(body);
             }
             else if ("test-script".equals(nodeName)) {
                 requestBean.setTestScript(tNode.getValue());
