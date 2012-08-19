@@ -40,8 +40,7 @@ public class OptionsDialog extends EscapableDialog {
     }
     
     @PostConstruct
-    protected void init(){
-        System.out.println("EEEEEEEEE");
+    protected void init() {
         this.setTitle("Options");
         
         String t = rb.getString("panel");
