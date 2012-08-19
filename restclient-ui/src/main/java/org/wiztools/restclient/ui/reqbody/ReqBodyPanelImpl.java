@@ -40,7 +40,7 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     private static final String MULTIPART_BODY = "Multipart body";
     
     
-    private static final String[] comboValues = new String[]{NONE_BODY, STRING_BODY, FILE_BODY, BYTE_ARRAY_BODY, MULTIPART_BODY};
+    private static final String[] comboValues = new String[]{NONE_BODY, STRING_BODY, FILE_BODY, BYTE_ARRAY_BODY};
     private JComboBox jcb_body_type = new JComboBox(comboValues);
     
     private JPanel getPanelFromSelection() {
