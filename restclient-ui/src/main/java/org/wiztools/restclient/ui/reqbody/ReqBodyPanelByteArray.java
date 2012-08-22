@@ -161,6 +161,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
             jp_content_type_charset.setContentTypeCharset(e.getContentType());
             
             // Set body:
+            body = e.getBody();
             jta.setText(HexDump.getHexDataDumpAsString(e.getBody()));
         }
     }
@@ -180,6 +181,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
     @Override
     public void clear() {
         jp_content_type_charset.clear();
+        body = null;
         jta.setText("");
     }
     
