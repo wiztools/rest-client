@@ -110,5 +110,17 @@ public class SSLReqBean implements SSLReq {
         hash = 53 * hash + (this.trustSelfSignedCert ? 1 : 0);
         return hash;
     }
-    
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{")
+                .append("trustSelfSignedCert: ").append(trustSelfSignedCert).append("; ")
+                .append("hostNameVerifier: ").append(hostNameVerifier).append("; ")
+                .append("trustStore: ").append(trustStore).append("; ")
+                .append("trustStorePassword: ").append(trustStorePassword.length).append("; ")
+                .append("keyStore: ").append(keyStore).append("; ")
+                .append("keyStorePassword: ").append(keyStorePassword.length).append("}");
+        return sb.toString();
+    }
 }
