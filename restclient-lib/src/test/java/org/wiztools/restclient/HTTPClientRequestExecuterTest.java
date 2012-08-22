@@ -58,16 +58,18 @@ public class HTTPClientRequestExecuterTest {
         System.out.println("testPreemptiveAuth");
         RequestBean req = getRequestBean();
         req.setMethod(HTTPMethod.GET);
-        /*req.setAuthPreemptive(true);
-        req.setAuthUsername("subhash");
-        req.setAuthPassword("subhash".toCharArray());
-        req.addAuthMethod(HTTPAuthMethod.BASIC);
-        req.addAuthMethod(HTTPAuthMethod.DIGEST);*/
+        BasicAuthBean auth = new BasicAuthBean();
+        auth.setPreemptive(true);
+        auth.setUsername("subhash");
+        auth.setPassword("subhash".toCharArray());
+        req.setAuth(auth);
         View view = new View() {
+            @Override
             public void doStart(Request request) {
                 System.out.println("Starting request...");
             }
 
+            @Override
             public void doResponse(Response response) {
                 System.out.println("in doResponse()...");
                 byte[] bodyByte = response.getResponseBody();
@@ -77,14 +79,17 @@ public class HTTPClientRequestExecuterTest {
                 }
             }
 
+            @Override
             public void doEnd() {
                 
             }
 
+            @Override
             public void doError(String error) {
                 System.out.println(error);
             }
 
+            @Override
             public void doCancelled() {
                 
             }
