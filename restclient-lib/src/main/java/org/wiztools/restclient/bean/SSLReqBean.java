@@ -1,5 +1,7 @@
 package org.wiztools.restclient.bean;
 
+import java.util.Arrays;
+
 /**
  *
  * @author subwiz
@@ -65,6 +67,48 @@ public class SSLReqBean implements SSLReq {
     @Override
     public boolean isTrustSelfSignedCert() {
         return trustSelfSignedCert;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SSLReqBean other = (SSLReqBean) obj;
+        if ((this.trustStore == null) ? (other.trustStore != null) : !this.trustStore.equals(other.trustStore)) {
+            return false;
+        }
+        if (!Arrays.equals(this.trustStorePassword, other.trustStorePassword)) {
+            return false;
+        }
+        if ((this.keyStore == null) ? (other.keyStore != null) : !this.keyStore.equals(other.keyStore)) {
+            return false;
+        }
+        if (!Arrays.equals(this.keyStorePassword, other.keyStorePassword)) {
+            return false;
+        }
+        if (this.hostNameVerifier != other.hostNameVerifier) {
+            return false;
+        }
+        if (this.trustSelfSignedCert != other.trustSelfSignedCert) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + (this.trustStore != null ? this.trustStore.hashCode() : 0);
+        hash = 53 * hash + Arrays.hashCode(this.trustStorePassword);
+        hash = 53 * hash + (this.keyStore != null ? this.keyStore.hashCode() : 0);
+        hash = 53 * hash + Arrays.hashCode(this.keyStorePassword);
+        hash = 53 * hash + (this.hostNameVerifier != null ? this.hostNameVerifier.hashCode() : 0);
+        hash = 53 * hash + (this.trustSelfSignedCert ? 1 : 0);
+        return hash;
     }
     
 }
