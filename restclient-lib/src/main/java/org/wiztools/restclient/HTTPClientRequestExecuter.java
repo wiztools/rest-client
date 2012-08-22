@@ -315,25 +315,25 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
 
             // Set the hostname verifier:
             final SSLReq sslReq = request.getSslReq();
-            SSLHostnameVerifier verifier = sslReq.getHostNameVerifier();
-            final X509HostnameVerifier hcVerifier;
-            switch(verifier){
-                case STRICT:
-                    hcVerifier = SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
-                    break;
-                case BROWSER_COMPATIBLE:
-                    hcVerifier = SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
-                    break;
-                case ALLOW_ALL:
-                    hcVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-                    break;
-                default:
-                    hcVerifier = SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
-                    break;
-            }
+            if(sslReq != null) {
+                SSLHostnameVerifier verifier = sslReq.getHostNameVerifier();
+                final X509HostnameVerifier hcVerifier;
+                switch(verifier){
+                    case STRICT:
+                        hcVerifier = SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
+                        break;
+                    case BROWSER_COMPATIBLE:
+                        hcVerifier = SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
+                        break;
+                    case ALLOW_ALL:
+                        hcVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+                        break;
+                    default:
+                        hcVerifier = SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
+                        break;
+                }
 
-            // Register the SSL Scheme:
-            if(urlProtocol.equalsIgnoreCase("https")){
+                // Register the SSL Scheme:
                 final String trustStorePath = sslReq.getTrustStore();
                 final String keyStorePath = sslReq.getKeyStore();
 
@@ -342,11 +342,11 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                         getKeyStore(trustStorePath, sslReq.getTrustStorePassword());
                 final KeyStore keyStore = StringUtil.isEmpty(keyStorePath)?
                         null:
-                	getKeyStore(keyStorePath, sslReq.getKeyStorePassword());
-                
+                    getKeyStore(keyStorePath, sslReq.getKeyStorePassword());
+
                 final TrustStrategy trustStrategy = sslReq.isTrustSelfSignedCert()
                         ? new TrustSelfSignedStrategy(): null;
-                
+
                 SSLSocketFactory socketFactory = new SSLSocketFactory(
                         "TLS", // Algorithm
                         keyStore,  // Keystore
