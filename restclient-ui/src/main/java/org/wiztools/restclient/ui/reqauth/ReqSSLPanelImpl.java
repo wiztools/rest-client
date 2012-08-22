@@ -10,6 +10,7 @@ import java.io.File;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.SSLHostnameVerifier;
 import org.wiztools.restclient.bean.SSLReq;
 import org.wiztools.restclient.bean.SSLReqBean;
@@ -46,11 +47,15 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
         out.setHostNameVerifier((SSLHostnameVerifier) jcb_ssl_hostname_verifier.getSelectedItem());
         out.setTrustSelfSignedCert(jcb_ssl_trust_self_signed_cert.isSelected());
         
-        out.setKeyStore(jtf_ssl_keystore_file.getText());
-        out.setKeyStorePassword(jpf_ssl_keystore_pwd.getPassword());
+        if(StringUtil.isNotEmpty(jtf_ssl_keystore_file.getText()))
+            out.setKeyStore(jtf_ssl_keystore_file.getText());
+        if(jpf_ssl_keystore_pwd.getPassword().length > 0)
+            out.setKeyStorePassword(jpf_ssl_keystore_pwd.getPassword());
         
-        out.setTrustStore(jtf_ssl_truststore_file.getText());
-        out.setTrustStorePassword(jpf_ssl_truststore_pwd.getPassword());
+        if(StringUtil.isNotEmpty(jtf_ssl_truststore_file.getText()))
+            out.setTrustStore(jtf_ssl_truststore_file.getText());
+        if(jpf_ssl_truststore_pwd.getPassword().length > 0)
+            out.setTrustStorePassword(jpf_ssl_truststore_pwd.getPassword());
         
         return out;
     }

@@ -21,5 +21,7 @@ public interface ReqUrlGoPanel extends ViewPanel {
     String getUrlString();
     void setUrlString(String url);
     
+    boolean isSslUrl();
+    
     void addActionListener(ActionListener listener);
 }

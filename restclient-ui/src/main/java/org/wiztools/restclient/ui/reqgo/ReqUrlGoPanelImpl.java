@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -171,6 +173,20 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     @Override
     public void setUrlString(String url) {
         jcb_url.setSelectedItem(url);
+    }
+
+    @Override
+    public boolean isSslUrl() {
+        try {
+            URL url = new URL((String) jcb_url.getSelectedItem());
+            if(url.getProtocol().equalsIgnoreCase("https")) {
+                return true;
+            }
+        }
+        catch(MalformedURLException ex) {
+            // return default value!
+        }
+        return false;
     }
 
     @Override
