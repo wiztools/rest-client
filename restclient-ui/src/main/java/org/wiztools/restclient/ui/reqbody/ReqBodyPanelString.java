@@ -240,7 +240,9 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     @Override
     public void setEntity(ReqEntity entity) {
         if(entity instanceof ReqEntityString) {
-            // 
+            ReqEntityString bean = (ReqEntityString) entity;
+            jp_content_type_charset.setContentTypeCharset(bean.getContentType());
+            se_req_body.setText(bean.getBody());
         }
     }
 
