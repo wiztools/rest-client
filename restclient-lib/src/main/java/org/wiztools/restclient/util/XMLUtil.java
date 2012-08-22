@@ -96,8 +96,10 @@ public final class XMLUtil {
             }
             
             // Creating SSL elements
-            Element eSsl = XmlSslUtil.getSslReq(bean.getSslReq());
-            reqChildElement.appendChild(eSsl);
+            if(bean.getSslReq() != null) {
+                Element eSsl = XmlSslUtil.getSslReq(bean.getSslReq());
+                reqChildElement.appendChild(eSsl);
+            }
 
             // creating the headers child element
             MultiValueMap<String, String> headers = bean.getHeaders();
