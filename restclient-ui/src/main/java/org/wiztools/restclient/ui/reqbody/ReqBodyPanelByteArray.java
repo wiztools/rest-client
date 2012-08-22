@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.*;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.ReqEntity;
@@ -63,7 +60,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
         
         jta.setEditable(false);
         
-        add(jta, BorderLayout.CENTER);
+        add(new JScrollPane(jta), BorderLayout.CENTER);
     }
     
     private void fileOpen() {
