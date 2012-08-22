@@ -21,7 +21,7 @@ import org.wiztools.restclient.ui.UIUtil;
  */
 public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     
-    @Inject private RESTUserInterface ui;
+    @Inject private RESTUserInterface rest_ui;
     
     private ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
     private ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
@@ -59,7 +59,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
         JLabel jl_url = new JLabel("URL: ");
         jl_url.setLabelFor(jcb_url);
         jl_url.setDisplayedMnemonic('u');
-        ui.getFrame().getRootPane().setDefaultButton(jb_request);
+        rest_ui.getFrame().getRootPane().setDefaultButton(jb_request);
         
         setLayout(new BorderLayout(RESTView.BORDER_WIDTH, 0));
         
@@ -93,7 +93,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
         
         // East:
         jb_request.setToolTipText(TEXT_GO);
-        ui.getFrame().getRootPane().setDefaultButton(jb_request);
+        rest_ui.getFrame().getRootPane().setDefaultButton(jb_request);
         jb_request.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
