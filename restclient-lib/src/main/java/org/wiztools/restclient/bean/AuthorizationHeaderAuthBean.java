@@ -38,5 +38,10 @@ public class AuthorizationHeaderAuthBean implements AuthorizationHeaderAuth {
         hash = 97 * hash + (this.authorizationHeaderValue != null ? this.authorizationHeaderValue.hashCode() : 0);
         return hash;
     }
-    
+
+    @Override
+    public String toString() {
+        return "@AuthorizationHeaderAuth[authorizationHeaderValue="
+                + authorizationHeaderValue + "]";
+    }
 }
