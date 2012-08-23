@@ -45,7 +45,8 @@ class XmlBodyUtil {
     private static ContentType getContentType(Element e) {
         String contentType = e.getAttributeValue("content-type");
         String charsetStr = e.getAttributeValue("charset");
-        return new ContentTypeBean(contentType, Charset.forName(charsetStr));
+        return new ContentTypeBean(contentType,
+                (charsetStr!=null? Charset.forName(charsetStr): null));
     }
     
     static Element getReqEntity(ReqEntity bean) {
