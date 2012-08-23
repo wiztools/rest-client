@@ -77,10 +77,15 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
     }
     
     private void populateBasicDigestAuth(BasicDigestAuthBaseBean bean) {
-        bean.setHost(jtf_host.getText());
-        bean.setRealm(jtf_realm.getText());
-        bean.setUsername(jtf_username.getText());
-        bean.setPassword(jpf_password.getPassword());
+        if(StringUtil.isNotEmpty(jtf_host.getText()))
+            bean.setHost(jtf_host.getText());
+        if(StringUtil.isNotEmpty(jtf_realm.getText()))
+            bean.setRealm(jtf_realm.getText());
+        if(StringUtil.isNotEmpty(jtf_username.getText()))
+            bean.setUsername(jtf_username.getText());
+        if(jpf_password.getPassword().length > 0)
+            bean.setPassword(jpf_password.getPassword());
+        
         bean.setPreemptive(jcb_preemptive.isSelected());
     }
 
@@ -94,7 +99,8 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
             jtf_host.setText(a.getHost());
             jtf_realm.setText(a.getRealm());
             jtf_username.setText(a.getUsername());
-            jpf_password.setText(new String(a.getPassword()));
+            if(a.getPassword() != null && a.getPassword().length > 0)
+                jpf_password.setText(new String(a.getPassword()));
             jcb_preemptive.setSelected(a.isPreemptive());
         }
         else if(auth instanceof NtlmAuth) {
@@ -104,7 +110,8 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
             jtf_domain.setText(a.getDomain());
             jtf_workstation.setText(a.getWorkstation());
             jtf_ntlm_username.setText(a.getUsername());
-            jpf_ntlm_password.setText(new String(a.getPassword()));
+            if(a.getPassword() != null && a.getPassword().length > 0)
+                jpf_ntlm_password.setText(new String(a.getPassword()));
         }
         else if(auth instanceof OAuth2BearerAuth) {
             jcb_types.setSelectedItem(AuthHelper.OAUTH2_BEARER);
