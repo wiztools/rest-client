@@ -475,9 +475,6 @@ public class RESTViewImpl extends JPanel implements RESTView {
             ReqEntity entity = jp_req_body.getEntity();
             if(entity instanceof ReqEntitySimple) {
                 if(entity != null) {
-                    if(((ReqEntitySimple)entity).getContentType().getCharset() == null) {
-                        errors.add("Charset not set for body.");
-                    }
                     if(((ReqEntitySimple)entity).getContentType().getContentType() == null) {
                         errors.add("Content type not set for body.");
                     }
