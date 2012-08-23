@@ -52,12 +52,15 @@ public class XMLUtilTest {
         expResult.addHeader("key1", "value1");
         ContentType contentType = new ContentTypeBean("text/plain", Charsets.UTF_8);
         expResult.setBody(new ReqEntityStringBean("Body Text", contentType));
+        
         BasicAuthBean auth = new BasicAuthBean();
         auth.setPreemptive(true);
         auth.setRealm("realm");
         auth.setUsername("username");
         auth.setPassword("password".toCharArray());
         expResult.setAuth(auth);
+        
+        expResult.setFollowRedirect(true);
         return expResult;
     }
 
@@ -139,7 +142,7 @@ public class XMLUtilTest {
     /**
      * Test of getRequestFromXMLFile method, of class XMLUtil.
      */
-    // @Test
+    @Test
     public void testGetRequestFromXMLFile() throws Exception {
         System.out.println("getRequestFromXMLFile");
         File f = new File("src/test/resources/reqFromXml.rcq");
