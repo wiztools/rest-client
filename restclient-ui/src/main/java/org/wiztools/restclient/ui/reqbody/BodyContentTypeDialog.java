@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.swing.*;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.wiztools.commons.Charsets;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.ui.EscapableDialog;
 import org.wiztools.restclient.ui.RESTUserInterface;
 
@@ -200,6 +201,9 @@ public class BodyContentTypeDialog extends EscapableDialog {
     }
     
     Charset getCharset() {
+        if(StringUtil.isEmpty(charset)) {
+            return null;
+        }
         return Charset.forName(charset);
     }
     
