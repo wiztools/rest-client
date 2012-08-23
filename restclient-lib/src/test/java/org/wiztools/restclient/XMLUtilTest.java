@@ -6,12 +6,10 @@ import org.wiztools.restclient.bean.ReqEntityStringBean;
 import org.wiztools.restclient.bean.HTTPMethod;
 import org.wiztools.restclient.bean.RequestBean;
 import org.wiztools.restclient.bean.Response;
-import org.wiztools.restclient.bean.HTTPAuthMethod;
 import org.wiztools.restclient.bean.ResponseBean;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -54,11 +52,12 @@ public class XMLUtilTest {
         expResult.addHeader("key1", "value1");
         ContentType contentType = new ContentTypeBean("text/plain", Charsets.UTF_8);
         expResult.setBody(new ReqEntityStringBean("Body Text", contentType));
-        /*expResult.addAuthMethod(HTTPAuthMethod.BASIC);
-        expResult.setAuthPreemptive(true);
-        expResult.setAuthRealm("realm");
-        expResult.setAuthUsername("username");
-        expResult.setAuthPassword("password".toCharArray());*/
+        BasicAuthBean auth = new BasicAuthBean();
+        auth.setPreemptive(true);
+        auth.setRealm("realm");
+        auth.setUsername("username");
+        auth.setPassword("password".toCharArray());
+        expResult.setAuth(auth);
         return expResult;
     }
 
@@ -86,27 +85,27 @@ public class XMLUtilTest {
             String expResult = "UTF-8";
             String result = XMLUtil.getDocumentCharset(f);
             System.out.println("encoding attribute: " + result ) ;
-            // assertEquals(expResult, result);
+            assertEquals(expResult, result);
         }
 
         // When document does not have encoding attribute:
         {
             File f = new File("src/test/resources/org/wiztools/restclient/xml/charset2.xml");
-            String expResult = Charset.defaultCharset().displayName();
+            String expResult = Charsets.UTF_8.name();
             System.out.println("expResult: " + expResult);
             String result = XMLUtil.getDocumentCharset(f);
             System.out.println("encoding attribute: " + result ) ;
-            // assertEquals(expResult, result);
+            assertEquals(expResult, result);
         }
 
         // When document does not have XML declaration:
         {
             File f = new File("src/test/resources/org/wiztools/restclient/xml/charset3.xml");
-            String expResult = Charset.defaultCharset().displayName();
+            String expResult = Charsets.UTF_8.name();
             System.out.println("expResult: " + expResult);
             String result = XMLUtil.getDocumentCharset(f);
             System.out.println("encoding attribute: " + result ) ;
-            // assertEquals(expResult, result);
+            assertEquals(expResult, result);
         }
 
     }
@@ -114,7 +113,7 @@ public class XMLUtilTest {
     /**
      * Test of writeRequestXML method, of class XMLUtil.
      */
-    // @Test
+    @Test
     public void testWriteRequestXML() throws Exception {
         System.out.println("writeRequestXML");
         RequestBean bean = getDefaultRequestBean();
