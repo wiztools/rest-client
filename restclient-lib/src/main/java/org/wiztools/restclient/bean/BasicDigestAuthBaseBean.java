@@ -69,4 +69,16 @@ public class BasicDigestAuthBaseBean extends UsernamePasswordAuthBaseBean implem
         hash = 13 * hash + (this.preemptive ? 1 : 0);
         return hash;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("@BasicDigestAuth[");
+        sb.append("username=").append(username).append(", ");
+        sb.append("password-length=").append(password.length).append(", ");
+        sb.append("host=").append(host).append(", ");
+        sb.append("preemptive=").append(preemptive);
+        sb.append("]");
+        return sb.toString();
+    }
 }
