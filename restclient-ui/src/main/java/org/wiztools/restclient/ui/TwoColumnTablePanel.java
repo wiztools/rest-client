@@ -21,6 +21,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import org.wiztools.commons.CollectionsUtil;
+import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.MultiValueMapLinkedHashSet;
 import org.wiztools.commons.StringUtil;
 
 /**
@@ -73,8 +76,24 @@ public final class TwoColumnTablePanel extends JPanel {
         jd_multi = new KeyValMultiEntryDialog(rest_ui, callback);
     }
     
-    public TwoColumnTableModel getTableModel(){
-        return model;
+    public MultiValueMap<String, String> getData() {
+        Object[][] d = model.getData();
+        if(d.length == 0) {
+            return CollectionsUtil.EMPTY_MULTI_VALUE_MAP;
+        }
+        
+        MultiValueMap<String, String> out = new MultiValueMapLinkedHashSet<String, String>();
+        for(int i=0; i<d.length; i++){
+            String key = (String) d[i][0];
+            String value = (String) d[i][1];
+            out.put(key, value);
+        }
+        
+        return out;
+    }
+    
+    public void setData(MultiValueMap<String, String> data) {
+        model.setData(data);
     }
 
     public TwoColumnTablePanel(final String[] title, final RESTUserInterface ui) {
