@@ -51,13 +51,17 @@ class XmlAuthUtil {
     static Element getNtlmAuthElement(NtlmAuth auth) {
         Element e = new Element("ntlm");
         
-        Element eDomain = new Element("domain");
-        eDomain.appendChild(auth.getDomain());
-        e.appendChild(eDomain);
+        if(StringUtil.isNotEmpty(auth.getDomain())) {
+            Element eDomain = new Element("domain");
+            eDomain.appendChild(auth.getDomain());
+            e.appendChild(eDomain);
+        }
         
-        Element eWorkstation = new Element("workstation");
-        eWorkstation.appendChild(auth.getWorkstation());
-        e.appendChild(eWorkstation);
+        if(StringUtil.isNotEmpty(auth.getWorkstation())) {
+            Element eWorkstation = new Element("workstation");
+            eWorkstation.appendChild(auth.getWorkstation());
+            e.appendChild(eWorkstation);
+        }
         
         populateUsernamePasswordElement(e, auth);
         
@@ -67,9 +71,11 @@ class XmlAuthUtil {
     static Element getOAuth2BearerElement(OAuth2BearerAuth auth) {
         Element e = new Element("oauth2-bearer");
         
-        Element eToken = new Element("token");
-        eToken.appendChild(auth.getOAuth2BearerToken());
-        e.appendChild(eToken);
+        if(StringUtil.isNotEmpty(auth.getOAuth2BearerToken())) {
+            Element eToken = new Element("token");
+            eToken.appendChild(auth.getOAuth2BearerToken());
+            e.appendChild(eToken);
+        }
         
         return e;
     }
