@@ -225,6 +225,7 @@ public final class RequestBean implements Request {
         sb.append(headers.toString()).append(", ");
         sb.append(cookies.toString()).append(", ");
         sb.append(body).append(", ");
+        sb.append(auth).append(", ");
         sb.append(sslReq).append(", ");
         sb.append(httpVersion).append(", ");
         sb.append(isFollowRedirect).append(", ");
