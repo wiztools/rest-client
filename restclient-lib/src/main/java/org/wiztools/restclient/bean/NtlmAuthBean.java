@@ -55,4 +55,16 @@ public class NtlmAuthBean extends UsernamePasswordAuthBaseBean implements NtlmAu
         hash = 83 * hash + (this.workstation != null ? this.workstation.hashCode() : 0);
         return hash;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("@NtlmAuth[");
+        sb.append("username=").append(username).append(", ");
+        sb.append("password-length=").append(password.length).append(", ");
+        sb.append("domain=").append(domain).append(", ");
+        sb.append("workstation=").append(workstation);
+        sb.append("]");
+        return sb.toString();
+    }
 }
