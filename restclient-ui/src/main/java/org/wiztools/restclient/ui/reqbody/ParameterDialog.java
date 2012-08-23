@@ -15,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.wiztools.commons.MultiValueMap;
-import org.wiztools.commons.MultiValueMapLinkedHashSet;
 import org.wiztools.restclient.ui.*;
 import org.wiztools.restclient.util.Util;
 
@@ -96,21 +95,16 @@ public class ParameterDialog extends EscapableDialog {
         hideMe();
     }
     
-    private void actionGenerate(ActionEvent e){
-        TwoColumnTableModel model = jp_2col_center.getTableModel();
-        Object[][] data = model.getData();
-        if(data == null || data.length < 1){
+    private void actionGenerate(ActionEvent e) {
+        MultiValueMap<String, String> data = jp_2col_center.getData();
+        if(jp_2col_center.getData().isEmpty()) {
             JOptionPane.showMessageDialog(me,
                     "Please add data!",
                     "Error: No data present!",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        MultiValueMap<String, String> m = new MultiValueMapLinkedHashSet<String, String>();
-        for(int i=0; i<data.length; i++){
-            m.put((String)data[i][0], (String)data[i][1]);
-        }
-        String generatedParam = Util.parameterEncode(m);
+        String generatedParam = Util.parameterEncode(data);
         for(ParameterGenerationListener listener: listeners) {
             listener.onParameterGeneration(generatedParam);
         }

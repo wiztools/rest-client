@@ -9,6 +9,7 @@ import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -251,22 +252,20 @@ public class RESTViewImpl extends JPanel implements RESTView {
         request.setMethod(method);
         
         { // Get request headers
-            Object[][] header_data = jp_2col_req_headers.getTableModel().getData();
-            if(header_data.length > 0){
-                for(int i=0; i<header_data.length; i++){
-                    String key = (String)header_data[i][0];
-                    String value = (String)header_data[i][1];
+            MultiValueMap<String, String> headers = jp_2col_req_headers.getData();
+            for(final String key: headers.keySet()) {
+                Collection<String> values = headers.get(key);
+                for(final String value: values) {
                     request.addHeader(key, value);
                 }
             }
         }
         
         { // Cookies
-            Object[][] cookie_data = jp_2col_req_cookies.getTableModel().getData();
-            if(cookie_data.length > 0) {
-                for(int i=0; i<cookie_data.length; i++){
-                    String key = (String)cookie_data[i][0];
-                    String value = (String)cookie_data[i][1];
+            MultiValueMap<String, String> cookies = jp_2col_req_cookies.getData();
+            for(final String key: cookies.keySet()) {
+                Collection<String> values = cookies.get(key);
+                for(final String value: values) {
                     try {
                         HttpCookie cookie = new HttpCookie(key, value);
                         request.addCookie(cookie);
@@ -497,10 +496,10 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp_req_method.clear();
         
         // Headers
-        jp_2col_req_headers.getTableModel().setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
+        jp_2col_req_headers.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
         
         // Cookies
-        jp_2col_req_cookies.getTableModel().setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
+        jp_2col_req_cookies.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
         
         // Body
         jp_req_body.clear();
@@ -551,7 +550,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
 
         // Headers
         MultiValueMap<String, String> headers = request.getHeaders();
-        jp_2col_req_headers.getTableModel().setData(headers);
+        jp_2col_req_headers.setData(headers);
         
         // Cookies
         List<HttpCookie> cookies = request.getCookies();
@@ -559,7 +558,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         for(HttpCookie cookie: cookies) {
             cookiesMap.put(cookie.getName(), cookie.getValue());
         }
-        jp_2col_req_cookies.getTableModel().setData(cookiesMap);
+        jp_2col_req_cookies.setData(cookiesMap);
 
         // Body
         ReqEntity body = request.getBody();
