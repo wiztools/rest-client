@@ -1,21 +1,9 @@
 package org.wiztools.restclient;
 
-import org.wiztools.restclient.bean.Request;
-import org.wiztools.restclient.bean.RequestExecuter;
-import org.wiztools.restclient.bean.ReqEntityStringBean;
-import org.wiztools.restclient.bean.HTTPMethod;
-import org.wiztools.restclient.bean.RequestBean;
-import org.wiztools.restclient.bean.Response;
-import org.wiztools.restclient.bean.HTTPAuthMethod;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
+import org.junit.*;
 import org.wiztools.commons.Charsets;
 import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.server.TraceServer;
