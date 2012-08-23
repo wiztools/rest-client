@@ -2,6 +2,7 @@ package org.wiztools.restclient.util;
 
 import nu.xom.Element;
 import nu.xom.Elements;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.*;
 
@@ -74,25 +75,38 @@ class XmlAuthUtil {
     }
     
     static void populateBasicDigestElement(Element eParent, BasicDigestAuth auth) {
-        Element eHost = new Element("host");
-        eHost.appendChild(auth.getHost());
-        eParent.appendChild(eHost);
+        if(StringUtil.isNotEmpty(auth.getHost())) {
+            Element eHost = new Element("host");
+            eHost.appendChild(auth.getHost());
+            eParent.appendChild(eHost);
+        }
         
-        Element eRealm = new Element("realm");
-        eRealm.appendChild(auth.getRealm());
-        eParent.appendChild(eRealm);
+        if(StringUtil.isNotEmpty(auth.getRealm())) {
+            Element eRealm = new Element("realm");
+            eRealm.appendChild(auth.getRealm());
+            eParent.appendChild(eRealm);
+        }
+        
+        if(auth.isPreemptive()) {
+            Element ePreemptive = new Element("preemptive");
+            eParent.appendChild(ePreemptive);
+        }
         
         populateUsernamePasswordElement(eParent, auth);
     }
     
     static void populateUsernamePasswordElement(Element eParent, UsernamePasswordAuth auth) {
-        Element eUsername = new Element("username");
-        eUsername.appendChild(auth.getUsername());
-        eParent.appendChild(eUsername);
+        if(StringUtil.isNotEmpty(auth.getUsername())) {
+            Element eUsername = new Element("username");
+            eUsername.appendChild(auth.getUsername());
+            eParent.appendChild(eUsername);
+        }
         
-        Element ePassword = new Element("password");
-        ePassword.appendChild(Util.base64encode(new String(auth.getPassword())));
-        eParent.appendChild(ePassword);
+        if(auth.getPassword() != null && auth.getPassword().length > 0) {
+            Element ePassword = new Element("password");
+            ePassword.appendChild(Util.base64encode(new String(auth.getPassword())));
+            eParent.appendChild(ePassword);
+        }
     }
     
     static Auth getAuth(Element eAuth) {
@@ -151,6 +165,9 @@ class XmlAuthUtil {
             }
             else if(name.equals("password")) {
                 bean.setPassword(getPassword(e));
+            }
+            else if(name.equals("preemptive")) {
+                bean.setPreemptive(true);
             }
             else {
                 throw new XMLException("Unknown element in basic/digest auth: " + name);
