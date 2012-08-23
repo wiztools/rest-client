@@ -77,6 +77,7 @@ public class BasicDigestAuthBaseBean extends UsernamePasswordAuthBaseBean implem
         sb.append("username=").append(username).append(", ");
         sb.append("password-length=").append(password.length).append(", ");
         sb.append("host=").append(host).append(", ");
+        sb.append("realm=").append(realm).append(", ");
         sb.append("preemptive=").append(preemptive);
         sb.append("]");
         return sb.toString();
