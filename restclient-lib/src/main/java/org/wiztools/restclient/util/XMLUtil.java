@@ -440,7 +440,6 @@ public final class XMLUtil {
                 final String base64body = tNode.getValue();
                 responseBean.setResponseBody(Util.base64decodeByteArray(base64body));
             } else if ("test-result".equals(nodeName)) {
-                //responseBean.setTestResult(node.getTextContent()); TODO
                 TestResultBean testResultBean = new TestResultBean();
 
                 for (int j = 0; j < tNode.getChildCount(); j++) {
