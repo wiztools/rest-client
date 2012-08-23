@@ -19,14 +19,17 @@ public class TwoColumnTableModel extends AbstractTableModel {
         this.colNames = colNames;
     }
     
+    @Override
     public int getRowCount() {
         return data.length;
     }
 
+    @Override
     public int getColumnCount() {
         return 2;
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
         return data[row][col];
     }
@@ -53,9 +56,7 @@ public class TwoColumnTableModel extends AbstractTableModel {
         t[0][0] = key;
         t[0][1] = value;
         for(int i=1; i<len+1; i++){
-            for(int j=0; j<2; j++){
-                t[i][j] = data[i-1][j];
-            }
+            System.arraycopy(data[i-1], 0, t[i], 0, 2);
         }
         data = null;
         data = t;
