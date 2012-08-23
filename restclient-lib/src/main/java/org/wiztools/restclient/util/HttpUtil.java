@@ -71,7 +71,7 @@ public final class HttpUtil {
     }
     
     public static String getFormattedContentType(final String contentType, final Charset charset){
-        return getFormattedContentType(contentType, charset.name());
+        return getFormattedContentType(contentType, (charset!=null? charset.name(): null));
     }
     
     public static String getFormattedContentType(final ContentType contentType){
