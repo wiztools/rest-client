@@ -39,7 +39,7 @@
                         </manifest>
                         <manifestEntries>
                             <mode>development</mode>
-                            <url>${pom.url}</url>
+                            <url>${project.url}</url>
                             <SplashScreen-Image>org/wiztools/restclient/Splash.png</SplashScreen-Image>
                         </manifestEntries>
                     </archive>
