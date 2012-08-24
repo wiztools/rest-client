@@ -350,7 +350,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 SSLSocketFactory socketFactory = new SSLSocketFactory(
                         "TLS", // Algorithm
                         keyStore,  // Keystore
-                        new String(sslReq.getKeyStorePassword()),  // Keystore password
+                        sslReq.getKeyStorePassword()!=null? new String(sslReq.getKeyStorePassword()): null,  // Keystore password
                         trustStore,
                         null,  // Secure Random
                         trustStrategy, // Trust strategy
