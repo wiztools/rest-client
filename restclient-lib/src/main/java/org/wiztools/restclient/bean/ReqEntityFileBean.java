@@ -50,4 +50,14 @@ public class ReqEntityFileBean extends AbstractReqEntitySimpleBean implements Re
         hash = 79 * hash + (this.contentType != null ? this.contentType.hashCode() : 0);
         return hash;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("@ReqFileBody[");
+        sb.append(contentType).append(", ");
+        sb.append(body);
+        sb.append("]");
+        return sb.toString();
+    }
 }
