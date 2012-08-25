@@ -6,6 +6,7 @@ import java.net.URL;
 import org.junit.*;
 import static org.junit.Assert.*;
 import org.wiztools.commons.Charsets;
+import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.util.XMLUtil;
 
@@ -68,7 +69,15 @@ public class BodyPersistenceTest {
     }
     
     @Test
-    public void testByteArrayBody() {
+    public void testByteArrayBody() throws Exception {
+        RequestBean expResult = getRequestBeanWithoutBody();
+        ContentType ct = new ContentTypeBean("image/jpeg", null);
+        byte[] arr = FileUtil.getContentAsBytes(new File("src/test/resources/subhash_by_aarthi.jpeg"));
+        ReqEntityByteArrayBean body = new ReqEntityByteArrayBean(arr, ct);
+        expResult.setBody(body);
         
+        Request actual = XMLUtil.getRequestFromXMLFile(new File("src/test/resources/reqBodyByteArray.rcq"));
+        
+        assertEquals(expResult, actual);
     }
 }
