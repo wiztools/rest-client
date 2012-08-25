@@ -39,6 +39,9 @@ public class ReqEntityByteArrayBean extends AbstractReqEntitySimpleBean implemen
         if (!Arrays.equals(this.body, other.body)) {
             return false;
         }
+        if ((this.contentType == null) ? (other.contentType != null) : !this.contentType.equals(other.contentType)) {
+            return false;
+        }
         return true;
     }
 
@@ -46,6 +49,17 @@ public class ReqEntityByteArrayBean extends AbstractReqEntitySimpleBean implemen
     public int hashCode() {
         int hash = 3;
         hash = 37 * hash + Arrays.hashCode(this.body);
+        hash = 37 * hash + (this.contentType != null ? this.contentType.hashCode() : 0);
         return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ReqBodyByteArray[");
+        sb.append(contentType).append(", ");
+        sb.append("byte-arr-length=").append(body.length);
+        sb.append("]");
+        return sb.toString();
     }
 }
