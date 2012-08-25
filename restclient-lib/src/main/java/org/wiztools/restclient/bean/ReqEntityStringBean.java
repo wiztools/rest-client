@@ -54,7 +54,7 @@ public final class ReqEntityStringBean extends AbstractReqEntitySimpleBean imple
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("@RequestBody[");
+        sb.append("@ReqBodyString[");
         sb.append(contentType).append(", ");
         sb.append(body);
         sb.append("]");

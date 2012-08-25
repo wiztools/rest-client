@@ -56,7 +56,7 @@ public class ReqEntityByteArrayBean extends AbstractReqEntitySimpleBean implemen
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("ReqBodyByteArray[");
+        sb.append("@ReqBodyByteArray[");
         sb.append(contentType).append(", ");
         sb.append("byte-arr-length=").append(body.length);
         sb.append("]");
