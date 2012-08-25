@@ -54,7 +54,7 @@ public class ReqEntityFileBean extends AbstractReqEntitySimpleBean implements Re
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("@ReqFileBody[");
+        sb.append("@ReqBodyFile[");
         sb.append(contentType).append(", ");
         sb.append(body);
         sb.append("]");
