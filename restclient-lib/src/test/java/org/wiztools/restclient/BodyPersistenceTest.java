@@ -1,6 +1,7 @@
 package org.wiztools.restclient;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -33,13 +34,18 @@ public class BodyPersistenceTest {
     public void tearDown() {
     }
     
-    @Test
-    public void testStringBody() throws Exception {
+    private RequestBean getRequestBeanWithoutBody() throws MalformedURLException {
         RequestBean expResult = new RequestBean();
         expResult.setMethod(HTTPMethod.POST);
         expResult.setUrl(new URL("http://localhost:10101/"));
         expResult.setHttpVersion(HTTPVersion.HTTP_1_1);
         expResult.setFollowRedirect(true);
+        return expResult;
+    }
+    
+    @Test
+    public void testStringBody() throws Exception {
+        RequestBean expResult = getRequestBeanWithoutBody();
         ContentType ct = new ContentTypeBean("text/plain", Charsets.UTF_8);
         ReqEntityStringBean body = new ReqEntityStringBean("Subhash loves Aarthi", ct);
         expResult.setBody(body);
@@ -50,8 +56,15 @@ public class BodyPersistenceTest {
     }
     
     @Test
-    public void testFileBody() {
+    public void testFileBody() throws Exception {
+        RequestBean expResult = getRequestBeanWithoutBody();
+        ContentType ct = new ContentTypeBean("text/plain", Charsets.UTF_8);
+        ReqEntityFileBean body = new ReqEntityFileBean(new File("/etc/hosts"), ct);
+        expResult.setBody(body);
         
+        Request actual = XMLUtil.getRequestFromXMLFile(new File("src/test/resources/reqBodyFile.rcq"));
+        
+        assertEquals(expResult, actual);
     }
     
     @Test

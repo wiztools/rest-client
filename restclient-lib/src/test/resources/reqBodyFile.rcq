@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rest-client version="3.0"><request><http-version>1.1</http-version><http-follow-redirects/><URL>http://localhost:10101/</URL><method>POST</method><body><file content-type="text/plain" charset="UTF-8">/etc/hosts</file></body></request></rest-client>
