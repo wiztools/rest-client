@@ -380,7 +380,7 @@ class RESTMain implements RESTUserInterface {
         frame.setContentPane(view.getContainer());
         createMenu();
         ImageIcon icon =
-                UIUtil.getIconFromClasspath("org/wiztools/restclient/WizLogo.png");
+                UIUtil.getIconFromClasspath("org/wiztools/restclient/logo_30.png");
         frame.setIconImage(icon.getImage());
         frame.addWindowListener(new WindowAdapter() {
             @Override
