@@ -114,13 +114,16 @@ public class SSLReqBean implements SSLReq {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{")
-                .append("trustSelfSignedCert: ").append(trustSelfSignedCert).append("; ")
-                .append("hostNameVerifier: ").append(hostNameVerifier).append("; ")
-                .append("trustStore: ").append(trustStore).append("; ")
-                .append("trustStorePassword: ").append(trustStorePassword.length).append("; ")
-                .append("keyStore: ").append(keyStore).append("; ")
-                .append("keyStorePassword: ").append(keyStorePassword.length).append("}");
+        sb.append("@SSL[");
+        sb.append("trustSelfSignedCert=").append(trustSelfSignedCert).append(", ");
+        sb.append("hostNameVerifier=").append(hostNameVerifier).append(", ");
+        sb.append("trustStore=").append(trustStore).append(", ");
+        sb.append("trustStorePassword=").append(
+                (trustStorePassword!=null? trustStorePassword.length: 0)).append(", ");
+        sb.append("keyStore=").append(keyStore).append(", ");
+        sb.append("keyStorePassword=").append(
+                (keyStorePassword!=null? keyStorePassword.length: 0));
+        sb.append("]");
         return sb.toString();
     }
 }
