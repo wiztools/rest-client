@@ -62,7 +62,7 @@
                     <mainClass>org.wiztools.restclient.ui.Main</mainClass>
                     <bundleName>WizTools.org RESTClient</bundleName>
                     <vmOptions>-Dcom.apple.macos.useScreenMenuBar=true</vmOptions>
-                    <iconFile>${basedir}/src/main/app-resources/rest-client.icns</iconFile>
+                    <iconFile>${basedir}/src/main/app-resources/rest-client_30.icns</iconFile>
                 </configuration>
                 <executions>
                     <execution>
