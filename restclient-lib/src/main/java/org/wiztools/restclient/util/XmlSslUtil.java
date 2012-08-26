@@ -3,6 +3,7 @@ package org.wiztools.restclient.util;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.SSLHostnameVerifier;
 import org.wiztools.restclient.bean.SSLReq;
 import org.wiztools.restclient.bean.SSLReqBean;
@@ -28,14 +29,16 @@ class XmlSslUtil {
             eSsl.appendChild(e);
         }
         
-        { // Key store
+        // Key store
+        if(StringUtil.isNotEmpty(req.getKeyStore())) {
             Element e = new Element("keystore");
             e.addAttribute(new Attribute("file", req.getKeyStore()));
             e.addAttribute(new Attribute("password", Util.base64encode(new String(req.getKeyStorePassword()))));
             eSsl.appendChild(e);
         }
         
-        { // Trust store
+        // Trust store
+        if(StringUtil.isNotEmpty(req.getTrustStore())) {
             Element e = new Element("truststore");
             e.addAttribute(new Attribute("file", req.getTrustStore()));
             e.addAttribute(new Attribute("password", Util.base64encode(new String(req.getTrustStorePassword()))));
