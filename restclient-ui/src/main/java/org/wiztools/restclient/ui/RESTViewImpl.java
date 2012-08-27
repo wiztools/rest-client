@@ -530,7 +530,9 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp_res_headers.setHeaders(response.getHeaders());
 
         // Response body
-        jp_res_body.setBody(response.getResponseBody(), response.getContentType());
+        if(response.getResponseBody() != null) {
+            jp_res_body.setBody(response.getResponseBody(), response.getContentType());
+        }
 
         // Response test result
         jp_res_test.setTestResult(response.getTestResult());
