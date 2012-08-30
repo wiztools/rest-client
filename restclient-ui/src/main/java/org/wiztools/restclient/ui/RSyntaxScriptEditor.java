@@ -17,6 +17,7 @@ public class RSyntaxScriptEditor implements ScriptEditor {
         setSyntax(syntax);
     }
     
+    @Override
     public final void setSyntax(TextEditorSyntax syntax) {
         if(syntax == TextEditorSyntax.GROOVY){
             textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_GROOVY);
@@ -26,6 +27,9 @@ public class RSyntaxScriptEditor implements ScriptEditor {
         }
         else if(syntax == TextEditorSyntax.JSON){
             textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
+        }
+        else {
+            textArea.setSyntaxEditingStyle(null);
         }
     }
 

@@ -9,7 +9,11 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.XMLException;
@@ -42,7 +46,7 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
     }
     
     private void actionTextEditorSyntaxChange(final ScriptEditor editor, final TextEditorSyntax syntax){
-        ((JSyntaxPaneScriptEditor)editor).setSyntax(syntax);
+        editor.setSyntax(syntax);
     }
     
     @PostConstruct
@@ -133,7 +137,7 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
         popupMenu.add(jm_syntax);
         
         // Attach popup menu
-        if (se_response.getEditorComponent() instanceof JEditorPane) {
+        if (se_response.getEditorComponent() instanceof RSyntaxTextArea) {
             se_response.getEditorComponent().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {

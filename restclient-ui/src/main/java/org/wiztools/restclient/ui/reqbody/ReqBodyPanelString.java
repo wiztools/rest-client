@@ -150,7 +150,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     }
     
     private void actionTextEditorSyntaxChange(final ScriptEditor editor, final TextEditorSyntax syntax){
-        ((JSyntaxPaneScriptEditor)editor).setSyntax(syntax);
+        editor.setSyntax(syntax);
     }
     
     private void loadFile() {

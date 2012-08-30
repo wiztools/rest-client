@@ -1,12 +1,14 @@
 package org.wiztools.restclient.ui;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 
 /**
  *
  */
 public interface ScriptEditor {
+    
+    public void setSyntax(TextEditorSyntax syntax);
 
     /**
      * view component for test script editor

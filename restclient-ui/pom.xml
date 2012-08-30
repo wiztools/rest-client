@@ -107,11 +107,6 @@
             <version>2.0.2</version>
         </dependency>
         <dependency>
-            <groupId>jsyntaxpane</groupId>
-            <artifactId>jsyntaxpane</artifactId>
-            <version>0.9.5</version>
-        </dependency>
-        <dependency>
             <groupId>org.simplericity.macify</groupId>
             <artifactId>macify</artifactId>
             <version>1.6</version>

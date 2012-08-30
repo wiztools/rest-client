@@ -1,6 +1,8 @@
 package org.wiztools.restclient.ui;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -15,10 +17,12 @@ class TextAreaScriptEditor implements ScriptEditor {
      *
      * @return JComponent object
      */
+    @Override
     public JComponent getEditorView() {
         return jsp;
     }
 
+    @Override
     public JTextComponent getEditorComponent() {
         return textArea;
     }
@@ -28,6 +32,7 @@ class TextAreaScriptEditor implements ScriptEditor {
      *
      * @return script
      */
+    @Override
     public String getText() {
         return textArea.getText();
     }
@@ -37,6 +42,7 @@ class TextAreaScriptEditor implements ScriptEditor {
      *
      * @param text script code
      */
+    @Override
     public void setText(String text) {
         textArea.setText(text);
     }
@@ -46,6 +52,7 @@ class TextAreaScriptEditor implements ScriptEditor {
      *
      * @param offset offset
      */
+    @Override
     public void setCaretPosition(int offset) {
         textArea.setCaretPosition(offset);
     }
@@ -55,7 +62,13 @@ class TextAreaScriptEditor implements ScriptEditor {
      *
      * @param editable editable mark
      */
+    @Override
     public void setEditable(boolean editable) {
         textArea.setEditable(editable);
+    }
+
+    @Override
+    public void setSyntax(TextEditorSyntax syntax) {
+        // do nothing!
     }
 }
