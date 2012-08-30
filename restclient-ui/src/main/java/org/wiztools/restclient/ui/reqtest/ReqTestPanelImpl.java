@@ -1,10 +1,5 @@
 package org.wiztools.restclient.ui.reqtest;
 
-import org.wiztools.restclient.bean.RequestBean;
-import org.wiztools.restclient.bean.TestResult;
-import org.wiztools.restclient.bean.Request;
-import org.wiztools.restclient.bean.TestException;
-import org.wiztools.restclient.bean.Response;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -13,15 +8,13 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
+import javax.swing.*;
 import junit.framework.TestSuite;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.*;
+import org.wiztools.restclient.TestUtil;
+import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.ui.*;
 import org.wiztools.restclient.util.Util;
 
@@ -154,7 +147,8 @@ public class ReqTestPanelImpl extends JPanel implements ReqTestPanel {
         jp_test_north.add(jb_req_test_quick);
         add(jp_test_north, BorderLayout.NORTH);
         
-        add(se_test_script.getEditorView(), BorderLayout.CENTER);
+        JScrollPane jsp = new JScrollPane(se_test_script.getEditorView());
+        add(jsp, BorderLayout.CENTER);
     }
     
     @Override

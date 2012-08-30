@@ -7,11 +7,11 @@ package org.wiztools.restclient.ui;
 public final class ScriptEditorFactory {
 
     public static ScriptEditor getGroovyScriptEditor(){
-        return new JSyntaxPaneScriptEditor(TextEditorSyntax.GROOVY);
+        return new RSyntaxScriptEditor(TextEditorSyntax.GROOVY);
     }
     
     public static ScriptEditor getXMLScriptEditor(){
-        return new JSyntaxPaneScriptEditor(TextEditorSyntax.XML);
+        return new RSyntaxScriptEditor(TextEditorSyntax.XML);
     }
     
     public static ScriptEditor getTextAreaScriptEditor(){
