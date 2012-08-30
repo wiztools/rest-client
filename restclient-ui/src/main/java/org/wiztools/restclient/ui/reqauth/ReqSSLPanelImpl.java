@@ -66,10 +66,14 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
         jcb_ssl_trust_self_signed_cert.setSelected(sslReq.isTrustSelfSignedCert());
         
         jtf_ssl_keystore_file.setText(sslReq.getKeyStore());
-        jpf_ssl_keystore_pwd.setText(new String(sslReq.getKeyStorePassword()));
+        if(sslReq.getKeyStorePassword() != null) {
+            jpf_ssl_keystore_pwd.setText(new String(sslReq.getKeyStorePassword()));
+        }
         
         jtf_ssl_truststore_file.setText(sslReq.getTrustStore());
-        jpf_ssl_truststore_pwd.setText(new String(sslReq.getTrustStorePassword()));
+        if(sslReq.getTrustStorePassword() != null) {
+            jpf_ssl_truststore_pwd.setText(new String(sslReq.getTrustStorePassword()));
+        }
     }
     
     @Override
