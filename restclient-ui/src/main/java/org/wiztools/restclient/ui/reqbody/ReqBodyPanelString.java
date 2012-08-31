@@ -101,7 +101,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         jmi_syntax_none.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.DEFAULT);
+                actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.NONE);
             }
         });
         jm_syntax.add(jmi_syntax_none);

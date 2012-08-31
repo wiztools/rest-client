@@ -129,7 +129,7 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
         jmi_syntax_none.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(se_response, TextEditorSyntax.DEFAULT);
+                actionTextEditorSyntaxChange(se_response, TextEditorSyntax.NONE);
             }
         });
         jm_syntax.add(jmi_syntax_none);
