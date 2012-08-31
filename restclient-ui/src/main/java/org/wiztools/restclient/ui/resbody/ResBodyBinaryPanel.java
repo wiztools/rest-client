@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import javax.annotation.PostConstruct;
 import javax.swing.JTextArea;
 import org.wiztools.restclient.bean.ContentType;
+import org.wiztools.restclient.ui.UIUtil;
 import org.wiztools.restclient.util.HexDump;
 
 /**
@@ -17,6 +18,7 @@ public class ResBodyBinaryPanel extends AbstractResBody {
     @PostConstruct
     protected void init() {
         jta.setEditable(false);
+        jta.setFont(UIUtil.FONT_MONO_12_PLAIN);
         setLayout(new GridLayout());
         add(jta);
     }
