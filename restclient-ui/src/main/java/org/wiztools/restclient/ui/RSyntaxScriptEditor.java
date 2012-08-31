@@ -20,6 +20,7 @@ public class RSyntaxScriptEditor implements ScriptEditor {
     }
 
     public RSyntaxScriptEditor(TextEditorSyntax syntax) {
+        this();
         setSyntax(syntax);
     }
     
