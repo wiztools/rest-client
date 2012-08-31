@@ -7,12 +7,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.swing.BorderFactory;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
@@ -29,6 +29,9 @@ import org.wiztools.restclient.util.XMLUtil;
  */
 public class ResBodyTextPanel extends AbstractResBody implements FontableEditor {
     @Inject RESTView view;
+    
+    private final ExecutorService xmlIndentThreadPool = Executors.newSingleThreadExecutor();
+    private Future xmlIndentFuture;
     
     // Response
     private final ScriptEditor se_response = ScriptEditorFactory.getXMLScriptEditor();
@@ -51,21 +54,45 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
         jmi_indentXml.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                String resText = se_response.getText();
+                final String resText = se_response.getText();
                 if("".equals(resText.trim())){
                     view.setStatusMessage("No response body!");
                     return;
                 }
-                try {
-                    final String indentedXML = XMLUtil.indentXML(resText);
-                    se_response.setText(indentedXML);
-                    se_response.setCaretPosition(0);
-                    view.setStatusMessage("Indent XML: Success");
-                } catch (XMLException ex) {
-                    view.setStatusMessage("Indent XML: XML Parser Configuration Error.");
-                } catch (IOException ex) {
-                    view.setStatusMessage("Indent XML: IOError while processing XML.");
+                if(xmlIndentFuture != null && !xmlIndentFuture.isDone()) {
+                    view.setStatusMessage("Last XML indentation task running!");
+                    return;
                 }
+                xmlIndentFuture = xmlIndentThreadPool.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        String status;
+                        try {
+                            final String indentedXML = XMLUtil.indentXML(resText);
+                            se_response.setText(indentedXML);
+                            se_response.setCaretPosition(0);
+                            
+                            status = "Indent XML: Success";
+                            view.setStatusMessage("Indent XML: Success");
+                        }
+                        catch (XMLException ex) {
+                            status = "Indent XML: XML Parser Configuration Error.";
+                            view.setStatusMessage("Indent XML: XML Parser Configuration Error.");
+                        }
+                        catch (IOException ex) {
+                            status = "Indent XML: IOError while processing XML.";
+                            view.setStatusMessage("Indent XML: IOError while processing XML.");
+                        }
+                        
+                        final String statusMsg = status;
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.setStatusMessage(statusMsg);
+                            }
+                        });
+                    }
+                });
             }
         });
         jm_indent.add(jmi_indentXml);
