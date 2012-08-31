@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
@@ -54,15 +55,48 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
         jmi_indentXml.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+                // Is there anything to indent?
                 final String resText = se_response.getText();
                 if("".equals(resText.trim())){
                     view.setStatusMessage("No response body!");
                     return;
                 }
+                
+                // Already running?
                 if(xmlIndentFuture != null && !xmlIndentFuture.isDone()) {
                     view.setStatusMessage("Last XML indentation task running!");
                     return;
                 }
+                
+                // Start indentation job:
+                view.setStatusMessage("Starting XML indentation job...");
+                new Thread() {
+                    @Override
+                    public void run() {
+                        while(true) {
+                            // Sleep:
+                            try {
+                                TimeUnit.SECONDS.sleep(30);
+                            }
+                            catch(InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+                            
+                            // Feedback to user:
+                            if(xmlIndentFuture != null && !xmlIndentFuture.isDone()) {
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        view.setStatusMessage("Still running XML indentation job...");
+                                    }
+                                });
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                    }
+                }.start();
                 xmlIndentFuture = xmlIndentThreadPool.submit(new Runnable() {
                     @Override
                     public void run() {
@@ -195,6 +229,11 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
     public void setBody(byte[] body, ContentType type) {
         // Call super method
         super.setBody(body, type);
+        
+        // Future still running? Cancel the last indentation job!
+        if(xmlIndentFuture != null && !xmlIndentFuture.isDone()) {
+            xmlIndentFuture.cancel(true);
+        }
         
         // JSON or XML?
         boolean isXml = false;
