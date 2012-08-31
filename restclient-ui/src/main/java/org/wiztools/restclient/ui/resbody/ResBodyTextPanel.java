@@ -31,19 +31,7 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
     @Inject RESTView view;
     
     // Response
-    private ScriptEditor se_response;
-    {
-        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
-        final boolean enableSyntaxColoring = Boolean.valueOf(
-                options.getProperty("response.body.syntax.color")==null?
-                    "true": options.getProperty("response.body.syntax.color"));
-        if(enableSyntaxColoring) {
-            se_response = ScriptEditorFactory.getXMLScriptEditor();
-        }
-        else {
-            se_response = ScriptEditorFactory.getTextAreaScriptEditor();
-        }
-    }
+    private final ScriptEditor se_response = ScriptEditorFactory.getXMLScriptEditor();
     
     private void actionTextEditorSyntaxChange(final ScriptEditor editor, final TextEditorSyntax syntax){
         editor.setSyntax(syntax);
@@ -181,19 +169,34 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
         // Call super method
         super.setBody(body, type);
         
-        // Find if you need to indent
+        // JSON or XML?
+        boolean isXml = false;
+        boolean isJson = false;
+        if(HttpUtil.isXmlContentType(type.getContentType())){
+            isXml = true;
+        }
+        else if(HttpUtil.isJsonContentType(type.getContentType())){
+            isJson = true;
+        }
+        
+        // Get the options:
         IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
-        String indentStr = options.getProperty("response.body.indent");
-        boolean indent = indentStr==null? false: (indentStr.equals("true")? true: false);
-        if(indent) {
-            boolean isXml = false;
-            boolean isJson = false;
-            if(HttpUtil.isXmlContentType(type.getContentType())){
-                isXml = true;
+        
+        // Set syntax color:
+        if(options.isPropertyTrue("response.body.syntax.color")) {
+            if(isXml) {
+                se_response.setSyntax(TextEditorSyntax.XML);
             }
-            else if(HttpUtil.isJsonContentType(type.getContentType())){
-                isJson = true;
+            if(isJson) {
+                se_response.setSyntax(TextEditorSyntax.JSON);
             }
+        }
+        else { // No syntax!
+            se_response.setSyntax(TextEditorSyntax.NONE);
+        }
+        
+        // Find if you need to indent
+        if(options.isPropertyTrue("response.body.indent")) {
             final String responseBody = new String(getBody(), type.getCharset());
             if(isXml){
                 try{
