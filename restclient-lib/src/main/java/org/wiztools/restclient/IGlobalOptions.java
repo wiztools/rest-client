@@ -12,6 +12,8 @@ public interface IGlobalOptions {
     void acquire();
 
     String getProperty(String key);
+    
+    boolean isPropertyTrue(String key);
 
     void release();
 

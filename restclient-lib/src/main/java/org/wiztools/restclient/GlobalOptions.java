@@ -84,6 +84,15 @@ final public class GlobalOptions implements IGlobalOptions {
     public String getProperty(String key){
         return prop.getProperty(key);
     }
+
+    @Override
+    public boolean isPropertyTrue(String key) {
+        String value = prop.getProperty(key);
+        if(value != null) {
+            return Boolean.parseBoolean(value);
+        }
+        return false;
+    }
     
     @Override
     public void writeProperties(){
