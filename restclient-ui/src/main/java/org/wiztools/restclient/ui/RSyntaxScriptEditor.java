@@ -1,6 +1,7 @@
 package org.wiztools.restclient.ui;
 
 import javax.swing.JComponent;
+import javax.swing.JPopupMenu;
 import javax.swing.text.JTextComponent;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -12,6 +13,11 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 public class RSyntaxScriptEditor implements ScriptEditor {
     
     private final RSyntaxTextArea textArea = new RSyntaxTextArea();
+
+    public RSyntaxScriptEditor() {
+        // remove the default popup:
+        textArea.setPopupMenu(null);
+    }
 
     public RSyntaxScriptEditor(TextEditorSyntax syntax) {
         setSyntax(syntax);
@@ -29,7 +35,7 @@ public class RSyntaxScriptEditor implements ScriptEditor {
             textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
         }
         else {
-            textArea.setSyntaxEditingStyle(null);
+            textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
         }
     }
 
@@ -62,5 +68,14 @@ public class RSyntaxScriptEditor implements ScriptEditor {
     public void setEditable(boolean editable) {
         textArea.setEditable(editable);
     }
-    
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        textArea.setEnabled(enabled);
+    }
+
+    @Override
+    public void setPopupMenu(final JPopupMenu menu) {
+        textArea.setPopupMenu(menu);
+    }
 }

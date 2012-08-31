@@ -1,6 +1,7 @@
 package org.wiztools.restclient.ui;
 
 import javax.swing.JComponent;
+import javax.swing.JPopupMenu;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -50,4 +51,8 @@ public interface ScriptEditor {
      * @param editable editable mark
      */
     public void setEditable(boolean editable);
+    
+    public void setEnabled(boolean enabled);
+    
+    public void setPopupMenu(JPopupMenu menu);
 }

@@ -16,8 +16,6 @@ import javax.swing.*;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.IGlobalOptions;
-import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.bean.ReqEntity;
 import org.wiztools.restclient.bean.ReqEntityString;
 import org.wiztools.restclient.bean.ReqEntityStringBean;
@@ -35,19 +33,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     @Inject private ContentTypeCharsetComponent jp_content_type_charset;
     @Inject private ParameterDialog jd_req_paramDialog;
     
-    private ScriptEditor se_req_body;
-    {
-        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
-        final boolean enableSyntaxColoring = Boolean.valueOf(
-                options.getProperty("request.body.syntax.color")==null?
-                    "true": options.getProperty("request.body.syntax.color"));
-        if(enableSyntaxColoring) {
-            se_req_body = ScriptEditorFactory.getXMLScriptEditor();
-        }
-        else {
-            se_req_body = ScriptEditorFactory.getTextAreaScriptEditor();
-        }
-    }
+    private final ScriptEditor se_req_body = ScriptEditorFactory.getXMLScriptEditor();
     
     private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JButton jb_body_params = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
@@ -101,7 +87,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         jmi_syntax_none.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.NONE);
+                se_req_body.setSyntax(TextEditorSyntax.NONE);
             }
         });
         jm_syntax.add(jmi_syntax_none);
@@ -109,7 +95,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         jmi_syntax_xml.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.XML);
+                se_req_body.setSyntax(TextEditorSyntax.XML);
             }
         });
         jm_syntax.add(jmi_syntax_xml);
@@ -117,40 +103,40 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         jmi_syntax_json.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                actionTextEditorSyntaxChange(se_req_body, TextEditorSyntax.JSON);
+                se_req_body.setSyntax(TextEditorSyntax.JSON);
             }
         });
         jm_syntax.add(jmi_syntax_json);
         
         jpm_req_body.add(jm_syntax);
         
-        if (se_req_body.getEditorComponent() instanceof JEditorPane) {
-            se_req_body.getEditorComponent().addMouseListener(new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    showPopup(e);
+        se_req_body.setPopupMenu(jpm_req_body);
+        
+        /*
+         * Following code is written becuase of what seems to be a bug in
+         * RSyntaxTextArea module: what happens is every time the popup
+         * is displayed, the control is disabled by default. The following
+         * code enables it.
+         */
+        se_req_body.getEditorComponent().addMouseListener(new MouseAdapter() {
+            private void eEnable() {
+                if(se_req_body.getEditorComponent().isEnabled()) {
+                    Component[] components = jpm_req_body.getComponents();
+                    for(Component c: components) {
+                        if(!c.isEnabled()) {
+                            c.setEnabled(true);
+                        }
+                    }
                 }
+            }
 
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    showPopup(e);
-                }
-                private void showPopup(final MouseEvent e) {
-                    if(!se_req_body.getEditorComponent().isEnabled()){
-                        // do not show popup menu when component is disabled:
-                        return;
-                    }
-                    if (e.isPopupTrigger()) {
-                        jpm_req_body.show(e.getComponent(), e.getX(), e.getY());
-                    }
-                }
-            });
-        }
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                eEnable();
+            }
+        });
+        
         add(se_req_body.getEditorView(), BorderLayout.CENTER);
-    }
-    
-    private void actionTextEditorSyntaxChange(final ScriptEditor editor, final TextEditorSyntax syntax){
-        editor.setSyntax(syntax);
     }
     
     private void loadFile() {
@@ -223,6 +209,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         jp_content_type_charset.enableComponent();
         jb_body_file.setEnabled(true);
         jb_body_params.setEnabled(true);
+        se_req_body.setEnabled(true);
     }
 
     @Override
@@ -230,6 +217,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         jp_content_type_charset.disableComponent();
         jb_body_file.setEnabled(false);
         jb_body_params.setEnabled(false);
+        se_req_body.setEnabled(false);
     }
 
     @Override

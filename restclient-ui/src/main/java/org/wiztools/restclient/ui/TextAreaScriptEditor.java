@@ -1,6 +1,7 @@
 package org.wiztools.restclient.ui;
 
 import javax.swing.JComponent;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.JTextComponent;
@@ -68,7 +69,17 @@ class TextAreaScriptEditor implements ScriptEditor {
     }
 
     @Override
+    public void setEnabled(boolean enabled) {
+        textArea.setEnabled(enabled);
+    }
+
+    @Override
     public void setSyntax(TextEditorSyntax syntax) {
+        // do nothing!
+    }
+
+    @Override
+    public void setPopupMenu(JPopupMenu menu) {
         // do nothing!
     }
 }
