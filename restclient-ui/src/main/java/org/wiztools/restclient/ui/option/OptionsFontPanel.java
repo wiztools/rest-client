@@ -49,6 +49,7 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
         JLabel jl = new JLabel("Font for Request Body & Response Body");
         jp_north.add(jl);
         jb_default.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 jl_font.setSelectedValue(Font.DIALOG, true);
                 jl_fontSize.setSelectedValue("12", true);
@@ -150,6 +151,7 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
     
     class Preview implements ListSelectionListener{
 
+        @Override
         public void valueChanged(ListSelectionEvent evt) {
             if(jl_font.getSelectedValue()==null || jl_fontSize.getSelectedValue()==null){
                 return;
