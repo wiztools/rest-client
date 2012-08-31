@@ -22,6 +22,7 @@ public final class UIUtil {
     
     public static final Font FONT_DIALOG_12_PLAIN = new Font(Font.DIALOG, Font.PLAIN, 12);
     public static final Font FONT_DIALOG_12_BOLD = new Font(Font.DIALOG, Font.BOLD, 12);
+    public static final Font FONT_MONO_12_PLAIN = new Font(Font.MONOSPACED, Font.PLAIN, 12);
     
     private static final RCFileView fileView = new RCFileView();
     public static final JFileChooser getNewJFileChooser(){
