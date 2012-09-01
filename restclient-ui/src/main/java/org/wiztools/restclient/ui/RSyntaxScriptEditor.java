@@ -17,6 +17,9 @@ public class RSyntaxScriptEditor implements ScriptEditor {
     public RSyntaxScriptEditor() {
         // remove the default popup:
         textArea.setPopupMenu(null);
+        
+        // Anti-aliased:
+        textArea.setAntiAliasingEnabled(true);
     }
 
     public RSyntaxScriptEditor(TextEditorSyntax syntax) {
