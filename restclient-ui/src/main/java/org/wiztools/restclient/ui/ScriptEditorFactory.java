@@ -15,6 +15,6 @@ public final class ScriptEditorFactory {
     }
     
     public static ScriptEditor getTextAreaScriptEditor(){
-        return new TextAreaScriptEditor();
+        return new RSyntaxScriptEditor(TextEditorSyntax.NONE);
     }
 }
