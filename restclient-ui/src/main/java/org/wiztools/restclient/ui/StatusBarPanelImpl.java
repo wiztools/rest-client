@@ -62,6 +62,7 @@ public class StatusBarPanelImpl extends JPanel implements StatusBarPanel {
     @Override
     public void setStatus(String status) {
         jl_status.setText(" " + status);
+        jl_status.setToolTipText(status);
         statusLastUpdated = Calendar.getInstance();
     }
 
