@@ -4,14 +4,14 @@
     <parent>
         <groupId>org.wiztools.restclient</groupId>
         <artifactId>restclient</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>3.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wiztools.restclient</groupId>
     <artifactId>restclient-cli</artifactId>
     <packaging>jar</packaging>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0</version>
     <name>${project.artifactId}</name>
     <build>
         <plugins>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.wiztools.restclient</groupId>
             <artifactId>restclient-lib</artifactId>
-            <version>3.0-SNAPSHOT</version>
+            <version>3.0</version>
         </dependency>
     </dependencies>
 </project>
