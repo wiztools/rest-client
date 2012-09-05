@@ -1,6 +1,8 @@
 package org.wiztools.restclient.util;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import nu.xom.Attribute;
 import nu.xom.Element;
@@ -34,6 +36,16 @@ class XmlBodyUtil {
                 ContentType ct = getContentType(e);
                 byte[] body = Util.base64decodeByteArray(e.getValue());
                 return new ReqEntityByteArrayBean(body, ct);
+            }
+            else if("url-stream".equals(name)) {
+                try {
+                    ContentType ct = getContentType(e);
+                    URL url = new URL(e.getValue());
+                    return new ReqEntityUrlStreamBean(ct, url);
+                }
+                catch(MalformedURLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
             else {
                 throw new XMLException("Unsupported element encountered inside <body>: " + name);
@@ -78,6 +90,15 @@ class XmlBodyUtil {
             eByte.appendChild(Util.base64encode(entity.getBody()));
             
             eBody.appendChild(eByte);
+        }
+        else if(bean instanceof ReqEntityUrlStream) {
+            ReqEntityUrlStream entity = (ReqEntityUrlStream) bean;
+            
+            Element eUrlStream = new Element("url-stream");
+            addContentTypeCharsetAttribute(entity.getContentType(), eUrlStream);
+            eUrlStream.appendChild(entity.getUrl().toString());
+            
+            eBody.appendChild(eUrlStream);
         }
         
         return eBody;
