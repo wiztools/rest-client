@@ -26,10 +26,11 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     @Inject RESTUserInterface rest_ui;
     
     @Inject private ReqBodyPanelNone jp_body_none;
-    @Inject private ReqBodyPanelString jp_req_body_string;
-    @Inject private ReqBodyPanelFile jp_req_body_file;
-    @Inject private ReqBodyPanelByteArray jp_req_body_byte_array;
-    @Inject private ReqBodyPanelMultipart jp_req_body_multipart;
+    @Inject private ReqBodyPanelString jp_body_string;
+    @Inject private ReqBodyPanelFile jp_body_file;
+    @Inject private ReqBodyPanelByteArray jp_body_byte_array;
+    @Inject private ReqBodyPanelUrlStream jp_body_url_stream;
+    @Inject private ReqBodyPanelMultipart jp_body_multipart;
     
     private final List<ReqBodyPanel> allPanels = new ArrayList<ReqBodyPanel>();
     
@@ -37,10 +38,12 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     private static final String STRING_BODY = "String body";
     private static final String FILE_BODY = "File body";
     private static final String BYTE_ARRAY_BODY = "Byte-array body";
+    private static final String URL_STREAM = "URL Stream";
     private static final String MULTIPART_BODY = "Multipart body";
     
-    
-    private static final String[] comboValues = new String[]{NONE_BODY, STRING_BODY, FILE_BODY, BYTE_ARRAY_BODY};
+    private static final String[] comboValues = new String[]{
+        NONE_BODY, STRING_BODY, FILE_BODY, BYTE_ARRAY_BODY, URL_STREAM
+    };
     private JComboBox jcb_body_type = new JComboBox(comboValues);
     
     private JPanel getPanelFromSelection() {
@@ -48,16 +51,19 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
             return jp_body_none;
         }
         else if(jcb_body_type.getSelectedItem().equals(STRING_BODY)) {
-            return jp_req_body_string;
+            return jp_body_string;
         }
         else if(jcb_body_type.getSelectedItem().equals(FILE_BODY)) {
-            return jp_req_body_file;
+            return jp_body_file;
         }
         else if(jcb_body_type.getSelectedItem().equals(BYTE_ARRAY_BODY)) {
-            return jp_req_body_byte_array;
+            return jp_body_byte_array;
+        }
+        else if(jcb_body_type.getSelectedItem().equals(URL_STREAM)) {
+            return jp_body_url_stream;
         }
         else if(jcb_body_type.getSelectedItem().equals(MULTIPART_BODY)) {
-            return jp_req_body_multipart;
+            return jp_body_multipart;
         }
         else {
             throw new RuntimeException("Will NEVER reach here!");
@@ -68,19 +74,23 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     public void setEntity(ReqEntity entity) {
         if(entity instanceof ReqEntityString) {
             jcb_body_type.setSelectedItem(STRING_BODY);
-            jp_req_body_string.setEntity(entity);
+            jp_body_string.setEntity(entity);
         }
         else if(entity instanceof ReqEntityFile) {
             jcb_body_type.setSelectedItem(FILE_BODY);
-            jp_req_body_file.setEntity(entity);
+            jp_body_file.setEntity(entity);
         }
         else if(entity instanceof ReqEntityByteArray) {
             jcb_body_type.setSelectedItem(BYTE_ARRAY_BODY);
-            jp_req_body_byte_array.setEntity(entity);
+            jp_body_byte_array.setEntity(entity);
+        }
+        else if(entity instanceof ReqEntityUrlStream) {
+            jcb_body_type.setSelectedItem(URL_STREAM);
+            jp_body_url_stream.setEntity(entity);
         }
         else if(entity instanceof ReqEntityMultipart) {
             jcb_body_type.setSelectedItem(MULTIPART_BODY);
-            jp_req_body_multipart.setEntity(entity);
+            jp_body_multipart.setEntity(entity);
         }
         else {
             jcb_body_type.setSelectedItem(NONE_BODY);
@@ -116,10 +126,11 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     @PostConstruct
     protected void init() {
         // Populate allPanels:
-        allPanels.add(jp_req_body_string);
-        allPanels.add(jp_req_body_file);
-        allPanels.add(jp_req_body_byte_array);
-        allPanels.add(jp_req_body_multipart);
+        allPanels.add(jp_body_string);
+        allPanels.add(jp_body_file);
+        allPanels.add(jp_body_byte_array);
+        allPanels.add(jp_body_url_stream);
+        allPanels.add(jp_body_multipart);
         
         // Create UI:
         final JScrollPane jsp = new JScrollPane();
@@ -142,12 +153,12 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
 
     @Override
     public void setEditorFont(Font font) {
-        jp_req_body_string.setEditorFont(font);
+        jp_body_string.setEditorFont(font);
     }
 
     @Override
     public Font getEditorFont() {
-        return jp_req_body_string.getEditorFont();
+        return jp_body_string.getEditorFont();
     }
 
     @Override
