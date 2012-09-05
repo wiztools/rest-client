@@ -77,7 +77,7 @@ class HTTPClientUtil {
         return sb.toString();
     }
     
-    static AbstractHttpEntity getEntity(ReqEntitySimple bean) throws UnsupportedEncodingException {
+    static AbstractHttpEntity getEntity(ReqEntitySimple bean) throws UnsupportedEncodingException, IOException {
         AbstractHttpEntity entity = null;
         if(bean instanceof ReqEntityString) {
             entity = new StringEntity(((ReqEntityString)bean).getBody());
