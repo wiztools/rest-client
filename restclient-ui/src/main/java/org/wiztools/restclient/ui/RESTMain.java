@@ -578,25 +578,30 @@ class RESTMain implements RESTUserInterface {
                 return;
             }
 
-            Request uiRequest = view.getRequestFromUI();
-            if(!request.equals(uiRequest)){
-                if(!doSaveEvenIfUIChanged(DO_SAVE_UI_REQUEST)){
-                    return;
+            try {
+                Request uiRequest = view.getRequestFromUI();
+                if(!request.equals(uiRequest)){
+                    if(!doSaveEvenIfUIChanged(DO_SAVE_UI_REQUEST)){
+                        return;
+                    }
+                }
+
+                File f = getSaveFile(FileChooserType.SAVE_REQUEST);
+                if(f != null){
+                    try{
+                        XMLUtil.writeRequestXML(request, f);
+                        recentFilesHelper.openedFile(f);
+                    }
+                    catch(IOException ex){
+                        view.showError(Util.getStackTrace(ex));
+                    }
+                    catch(XMLException ex){
+                        view.showError(Util.getStackTrace(ex));
+                    }
                 }
             }
-
-            File f = getSaveFile(FileChooserType.SAVE_REQUEST);
-            if(f != null){
-                try{
-                    XMLUtil.writeRequestXML(request, f);
-                    recentFilesHelper.openedFile(f);
-                }
-                catch(IOException ex){
-                    view.showError(Util.getStackTrace(ex));
-                }
-                catch(XMLException ex){
-                    view.showError(Util.getStackTrace(ex));
-                }
+            catch(IllegalStateException ex) {
+                view.showError(Util.getStackTrace(ex));
             }
         }
         else if(type == FileChooserType.SAVE_RESPONSE){
@@ -664,30 +669,35 @@ class RESTMain implements RESTUserInterface {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            Request uiRequest = view.getRequestFromUI();
-            Response uiResponse = view.getResponseFromUI();
-            if((!request.equals(uiRequest)) || (!response.equals(uiResponse))){
-                if(!doSaveEvenIfUIChanged(DO_SAVE_UI_ARCHIVE)){
-                    return;
+            try {
+                Request uiRequest = view.getRequestFromUI();
+                Response uiResponse = view.getResponseFromUI();
+                if((!request.equals(uiRequest)) || (!response.equals(uiResponse))){
+                    if(!doSaveEvenIfUIChanged(DO_SAVE_UI_ARCHIVE)){
+                        return;
+                    }
+                }
+                File f = getSaveFile(FileChooserType.SAVE_ARCHIVE);
+                if(f != null){
+                    Exception e = null;
+                    try{
+                        Util.createReqResArchive(request, response, f);
+                        recentFilesHelper.openedFile(f);
+                    }
+                    catch(IOException ex){
+                        e = ex;
+                    }
+                    catch(XMLException ex){
+                        e = ex;
+                    }
+
+                    if(e != null){
+                        view.showError(Util.getStackTrace(e));
+                    }
                 }
             }
-            File f = getSaveFile(FileChooserType.SAVE_ARCHIVE);
-            if(f != null){
-                Exception e = null;
-                try{
-                    Util.createReqResArchive(request, response, f);
-                    recentFilesHelper.openedFile(f);
-                }
-                catch(IOException ex){
-                    e = ex;
-                }
-                catch(XMLException ex){
-                    e = ex;
-                }
-
-                if(e != null){
-                    view.showError(Util.getStackTrace(e));
-                }
+            catch(IllegalStateException ex) {
+                view.showError(Util.getStackTrace(ex));
             }
         }
     }

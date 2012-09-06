@@ -67,7 +67,7 @@ public class ReqBodyPanelUrlStream extends JPanel implements ReqBodyPanel {
                     jp_content_type_charset.getContentType(), url);
         }
         catch(MalformedURLException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalStateException("Body Stream URL is malformed!", ex);
         }
     }
 

@@ -229,11 +229,10 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
     
     @Override
-    public Request getRequestFromUI(){
+    public Request getRequestFromUI() throws IllegalStateException {
         correctRequestURL();
         
         RequestBean request = new RequestBean();
-        boolean authEnabled = false;
         
         // Auth
         Auth auth = jp_req_auth.getAuth();
@@ -244,7 +243,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
             request.setUrl(new URL(url));
         }
         catch(MalformedURLException ex){
-            // URL is left null!
+            throw new IllegalStateException("URL is malformed", ex);
         }
         
         // Method
@@ -271,7 +270,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
                         request.addCookie(cookie);
                     }
                     catch(IllegalArgumentException ex) {
-                        doError(Util.getStackTrace(ex));
+                        throw new IllegalStateException(ex);
                     }
                 }
             }
@@ -308,32 +307,37 @@ public class RESTViewImpl extends JPanel implements RESTView {
 
     private void jb_requestActionPerformed() {
         if(jp_url_go.isIdle()){
-            final Request request = getRequestFromUI();
-            List<String> errors = validateRequest(request);
-            if(errors.isEmpty()){
-                clearUIResponse();
-                final RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
-                // Execute the request:
-                requestThread = new Thread(){
-                    @Override
-                    public void run(){
-                        executer.execute(request, view);
-                    }
+            try {
+                final Request request = getRequestFromUI();
+                List<String> errors = validateRequest(request);
+                if(errors.isEmpty()){
+                    clearUIResponse();
+                    final RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
+                    // Execute the request:
+                    requestThread = new Thread(){
+                        @Override
+                        public void run(){
+                            executer.execute(request, view);
+                        }
 
-                    @Override
-                    public void interrupt(){
-                        executer.abortExecution();
-                        super.interrupt();
-                    }
-                };
-                requestThread.start();
+                        @Override
+                        public void interrupt(){
+                            executer.abortExecution();
+                            super.interrupt();
+                        }
+                    };
+                    requestThread.start();
+                }
+                else{
+                    String errStr = Util.getHTMLListFromList(errors);
+                    JOptionPane.showMessageDialog(rest_ui.getFrame(),
+                        errStr,
+                        "Validation error",
+                        JOptionPane.ERROR_MESSAGE);
+                }
             }
-            else{
-                String errStr = Util.getHTMLListFromList(errors);
-                JOptionPane.showMessageDialog(rest_ui.getFrame(),
-                    errStr,
-                    "Validation error",
-                    JOptionPane.ERROR_MESSAGE);
+            catch(IllegalStateException ex) {
+                doError(Util.getStackTrace(ex));
             }
         }
         else if(jp_url_go.isRunning()){
