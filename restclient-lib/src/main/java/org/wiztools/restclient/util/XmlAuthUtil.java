@@ -80,6 +80,24 @@ class XmlAuthUtil {
         return e;
     }
     
+    static OAuth2BearerAuth getOAuth2BearerAuth(Element eAuth) {
+        OAuth2BearerAuthBean out = new OAuth2BearerAuthBean();
+        
+        Elements eChildren = eAuth.getChildElements();
+        for(int i=0; i<eChildren.size(); i++) {
+            Element e = eChildren.get(i);
+            final String name = e.getLocalName();
+            if(name.equals("token")) {
+                out.setOAuth2BearerToken(e.getValue());
+            }
+            else {
+                throw new XMLException("Unknown element in oauth2-bearer auth: " + name);
+            }
+        }
+        
+        return out;
+    }
+    
     static void populateBasicDigestElement(Element eParent, BasicDigestAuth auth) {
         if(StringUtil.isNotEmpty(auth.getHost())) {
             Element eHost = new Element("host");
@@ -124,13 +142,13 @@ class XmlAuthUtil {
                 return getBasicAuth(e);
             }
             else if(name.equals("digest")) {
-                return getDigestAuth(eAuth);
+                return getDigestAuth(e);
             }
             else if(name.equals("ntlm")) {
-                return getNtlmAuth(eAuth);
+                return getNtlmAuth(e);
             }
             else if(name.equals("oauth2-bearer")) {
-                return getOAuth2BearerAuth(eAuth);
+                return getOAuth2BearerAuth(e);
             }
             else {
                 throw new XMLException("Invalid auth element encountered: " + name);
@@ -202,24 +220,6 @@ class XmlAuthUtil {
             }
             else {
                 throw new XMLException("Unknown element in ntlm auth: " + name);
-            }
-        }
-        
-        return out;
-    }
-    
-    static OAuth2BearerAuth getOAuth2BearerAuth(Element eAuth) {
-        OAuth2BearerAuthBean out = new OAuth2BearerAuthBean();
-        
-        Elements eChildren = eAuth.getChildElements();
-        for(int i=0; i<eChildren.size(); i++) {
-            Element e = eChildren.get(i);
-            final String name = e.getLocalName();
-            if(name.equals("token")) {
-                out.setOAuth2BearerToken(e.getValue());
-            }
-            else {
-                throw new XMLException("Unknown element in oauth2-bearer auth: " + name);
             }
         }
         
