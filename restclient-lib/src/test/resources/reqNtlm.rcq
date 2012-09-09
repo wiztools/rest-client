@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rest-client version="3.0"><request><http-version>1.1</http-version><http-follow-redirects/><URL>http://localhost:10101/</URL><method>GET</method><auth><ntlm><domain>testdomain</domain><workstation>testworkstation</workstation><username>subwiz</username><password>cGFzc3dvcmQ=</password></ntlm></auth></request></rest-client>
