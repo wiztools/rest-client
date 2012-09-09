@@ -38,11 +38,11 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     private static final String STRING_BODY = "String body";
     private static final String FILE_BODY = "File body";
     private static final String BYTE_ARRAY_BODY = "Byte-array body";
-    private static final String URL_STREAM = "URL Stream";
+    private static final String URL_STREAM_BODY = "URL Stream body";
     private static final String MULTIPART_BODY = "Multipart body";
     
     private static final String[] comboValues = new String[]{
-        NONE_BODY, STRING_BODY, FILE_BODY, BYTE_ARRAY_BODY, URL_STREAM
+        NONE_BODY, STRING_BODY, FILE_BODY, BYTE_ARRAY_BODY, URL_STREAM_BODY
     };
     private JComboBox jcb_body_type = new JComboBox(comboValues);
     
@@ -59,7 +59,7 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
         else if(jcb_body_type.getSelectedItem().equals(BYTE_ARRAY_BODY)) {
             return jp_body_byte_array;
         }
-        else if(jcb_body_type.getSelectedItem().equals(URL_STREAM)) {
+        else if(jcb_body_type.getSelectedItem().equals(URL_STREAM_BODY)) {
             return jp_body_url_stream;
         }
         else if(jcb_body_type.getSelectedItem().equals(MULTIPART_BODY)) {
@@ -85,7 +85,7 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
             jp_body_byte_array.setEntity(entity);
         }
         else if(entity instanceof ReqEntityUrlStream) {
-            jcb_body_type.setSelectedItem(URL_STREAM);
+            jcb_body_type.setSelectedItem(URL_STREAM_BODY);
             jp_body_url_stream.setEntity(entity);
         }
         else if(entity instanceof ReqEntityMultipart) {
