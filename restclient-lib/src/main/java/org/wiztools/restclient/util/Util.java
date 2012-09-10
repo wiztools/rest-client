@@ -9,20 +9,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.codec.binary.Base64;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.MultiValueMap;
-import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.Base64Exception;
+import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.ReqResBean;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
-import org.wiztools.restclient.XMLException;
 
 /**
  *
