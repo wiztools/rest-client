@@ -26,4 +26,6 @@ public abstract class AddMultipartBaseDialog extends EscapableDialog {
     public void addMultipartPartListener(AddMultipartPartListener listener) {
         listeners.add(listener);
     }
+    
+    public abstract void clear();
 }
