@@ -69,7 +69,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
             }
             else if(part instanceof ReqEntityFilePart) {
                 ReqEntityFilePart p = (ReqEntityFilePart) part;
-                String fileName = p.getFileName();
+                String fileName = p.getName();
                 File file = p.getPart();
             }
         }
