@@ -13,13 +13,17 @@ import org.wiztools.restclient.ui.RESTUserInterface;
 public abstract class AddMultipartBaseDialog extends EscapableDialog {
     
     protected final List<AddMultipartPartListener> listeners = new ArrayList<AddMultipartPartListener>();
+    protected RESTUserInterface rest_ui;
 
     public AddMultipartBaseDialog(RESTUserInterface rest_ui) {
         super(rest_ui.getFrame(), true);
+        
+        this.rest_ui = rest_ui;
     }
 
     @Override
     public void doEscape(AWTEvent event) {
+        clear();
         setVisible(false);
     }
     

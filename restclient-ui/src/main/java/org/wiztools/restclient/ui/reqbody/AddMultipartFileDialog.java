@@ -14,6 +14,8 @@ import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.bean.ReqEntityFilePart;
 import org.wiztools.restclient.bean.ReqEntityFilePartBean;
+import org.wiztools.restclient.ui.FileChooserType;
+import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.UIUtil;
 
@@ -28,6 +30,9 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
     
     private JTextField jtf_fileName = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
     private JTextField jtf_file = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
+    
+    private JButton jb_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+    
     private JButton jb_ok = new JButton("Ok");
     private JButton jb_cancel = new JButton("Cancel");
 
@@ -54,6 +59,13 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
             }
         });
         
+        jb_file.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectFile();
+            }
+        });
+        
         // Default button:
         getRootPane().setDefaultButton(jb_ok);
         
@@ -73,7 +85,10 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
             JPanel jp_center = new JPanel(new GridLayout(3, 2));
             jp_center.add(jp_contentType.getComponent());
             jp_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jtf_fileName));
-            jp_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jtf_file));
+            JPanel jp_file = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            jp_file.add(jtf_file);
+            jp_file.add(jb_file);
+            jp_center.add(jp_file);
             jp.add(jp_center, BorderLayout.CENTER);
             
             c.add(jp, BorderLayout.CENTER);
@@ -88,6 +103,28 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
         }
         
         pack();
+    }
+    
+    private void selectFile() {
+        File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
+        if(f == null){ // Pressed cancel?
+            return;
+        }
+        if(!f.canRead()){
+            JOptionPane.showMessageDialog(rest_ui.getFrame(),
+                    "File not readable: " + f.getAbsolutePath(),
+                    "IO Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Set name:
+        if(StringUtil.isEmpty(jtf_fileName.getText())) {
+            jtf_fileName.setText(f.getName());
+        }
+        
+        // Set file:
+        jtf_file.setText(f.getAbsolutePath());
     }
     
     private void ok() {
@@ -120,6 +157,7 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
     }
     
     private void cancel() {
+        clear();
         setVisible(false);
     }
     
