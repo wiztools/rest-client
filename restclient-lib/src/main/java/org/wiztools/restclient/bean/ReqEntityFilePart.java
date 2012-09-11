@@ -6,6 +6,6 @@ import java.io.File;
  *
  * @author subwiz
  */
-public interface ReqEntityFilePart {
+public interface ReqEntityFilePart extends ReqEntityPart {
     File getPart();
 }
