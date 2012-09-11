@@ -5,7 +5,7 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
@@ -18,8 +18,6 @@ import org.wiztools.restclient.bean.*;
  */
 public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
-    private static final String PART_FILE = "File";
-    
     private JButton jb_string = new JButton("String");
     private JButton jb_file = new JButton("File");
     
@@ -29,10 +27,11 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     private class MultipartTableModel extends AbstractTableModel {
         
         private final String[] columnNames = new String[]{"Type", "Name", "Part"};
+        private final LinkedList<ReqEntityPart> list = new LinkedList<ReqEntityPart>();
 
         @Override
         public int getRowCount() {
-            return 0;
+            return list.size();
         }
 
         @Override
@@ -52,26 +51,47 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            return null;
+            ReqEntityPart part = list.get(rowIndex);
+            if(columnIndex == 0) {
+                return part.getContentType();
+            }
+            else if(columnIndex == 1) {
+                return part.getName();
+            }
+            else {
+                if(part instanceof ReqEntityStringPart) {
+                    return ((ReqEntityStringPart)part).getPart();
+                }
+                else if(part instanceof ReqEntityFilePart) {
+                    return ((ReqEntityFilePart)part).getPart();
+                }
+            }
+            throw new IllegalArgumentException("Should never come here!");
         }
 
         /*@Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            ReqEntityPart part = (ReqEntityPart) aValue;
         }*/
         
-        public void addPart(ReqEntityPart part) {
-            if(part instanceof ReqEntityStringPart) {
-                ReqEntityStringPart p = (ReqEntityStringPart) part;
-                ContentType ct = p.getContentType();
-                String name = p.getName();
-                String body = p.getPart();
-            }
-            else if(part instanceof ReqEntityFilePart) {
-                ReqEntityFilePart p = (ReqEntityFilePart) part;
-                String fileName = p.getName();
-                File file = p.getPart();
-            }
+        public void addPartFirst(ReqEntityPart part) {
+            list.addFirst(part);
+            fireTableDataChanged();
+        }
+        
+        public void addPartLast(ReqEntityPart part) {
+            list.addLast(part);
+            fireTableDataChanged();
+        }
+        
+        public void removeRow(int row) {
+            list.remove(row);
+            fireTableDataChanged();
+        }
+        
+        public void clear() {
+            list.clear();
+            fireTableDataChanged();
         }
     }
     
@@ -124,7 +144,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     @Override
     public void clear() {
-        // 
+        model.clear();
     }
 
     @Override
@@ -133,14 +153,15 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
             ReqEntityMultipart e = (ReqEntityMultipart) entity;
             List<ReqEntityPart> parts = e.getBody();
             for(ReqEntityPart part: parts) {
-                model.addPart(part);
+                model.addPartLast(part);
             }
         }
     }
     
     @Override
     public ReqEntity getEntity() {
-        return null;
+        ReqEntity entity = new ReqEntityMultipartBean(model.list);
+        return entity;
     }
     
     @Override
