@@ -2,10 +2,13 @@ package org.wiztools.restclient.ui.reqbody;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.wiztools.restclient.bean.ReqEntity;
@@ -30,12 +33,22 @@ public class ReqBodyPanelUrlStream extends JPanel implements ReqBodyPanel {
     
     @PostConstruct
     protected void init() {
-        setLayout(new BorderLayout());
+        setLayout(new FlowLayout(FlowLayout.LEFT));
         
         jtf_url.setToolTipText("Contents of this URL will be set as request body");
         
-        add(UIUtil.getFlowLayoutPanelLeftAligned(jp_content_type_charset.getComponent()), BorderLayout.NORTH);
-        add(UIUtil.getFlowLayoutPanelLeftAligned(jtf_url), BorderLayout.CENTER);
+        JPanel jp = new JPanel(new BorderLayout());
+        JPanel jp_west = new JPanel(new GridLayout(2, 1));
+        jp_west.add(new JLabel(" Content type: "));
+        jp_west.add(new JLabel(" URL: "));
+        jp.add(jp_west, BorderLayout.WEST);
+        
+        JPanel jp_center = new JPanel(new GridLayout(2, 1));
+        jp_center.add(jp_content_type_charset.getComponent());
+        jp_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jtf_url));
+        jp.add(jp_center, BorderLayout.CENTER);
+        
+        add(jp);
     }
 
     @Override
