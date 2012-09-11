@@ -288,11 +288,21 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                             MultipartEntity me = new MultipartEntity();
                             for(ReqEntityPart part: multipart.getBody()) {
                                 if(part instanceof ReqEntityStringPart) {
-                                    String body = ((ReqEntityStringPart)part).getPart();
-                                    me.addPart(part.getName(), new StringBody(body));
+                                    ReqEntityStringPart p = (ReqEntityStringPart)part;
+                                    String body = p.getPart();
+                                    ContentType ct = p.getContentType();
+                                    StringBody sb = null;
+                                    if(ct != null) {
+                                        sb = new StringBody(body, ct.getContentType(), ct.getCharset());
+                                    }
+                                    else {
+                                        sb = new StringBody(body);
+                                    }
+                                    me.addPart(part.getName(), sb);
                                 }
                                 else if(part instanceof ReqEntityFilePart) {
-                                    File body = ((ReqEntityFilePart)part).getPart();
+                                    ReqEntityFilePart p = (ReqEntityFilePart)part;
+                                    File body = p.getPart();
                                     me.addPart(part.getName(), new FileBody(body));
                                 }
                             }

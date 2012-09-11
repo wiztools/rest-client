@@ -6,29 +6,23 @@ import java.io.File;
  *
  * @author subwiz
  */
-public class ReqEntityFilePartBean implements ReqEntityFilePart {
+public class ReqEntityFilePartBean extends ReqEntityBasePart implements ReqEntityFilePart {
     
-    private final String fileName;
     private final File file;
 
-    public ReqEntityFilePartBean(String fileName, File file) {
-        this.fileName = fileName;
+    public ReqEntityFilePartBean(String fileName, ContentType type, File file) {
+        super(fileName, type);
         this.file = file;
     }
     
     public ReqEntityFilePartBean(File file) {
-        this.fileName = file.getName();
+        super(file.getName(), null);
         this.file = file;
     }
 
     @Override
     public File getPart() {
         return file;
-    }
-
-    @Override
-    public String getFileName() {
-        return fileName;
     }
 
     @Override
@@ -40,7 +34,7 @@ public class ReqEntityFilePartBean implements ReqEntityFilePart {
             return false;
         }
         final ReqEntityFilePartBean other = (ReqEntityFilePartBean) obj;
-        if ((this.fileName == null) ? (other.fileName != null) : !this.fileName.equals(other.fileName)) {
+        if (!super.equals(obj)) {
             return false;
         }
         if (this.file != other.file && (this.file == null || !this.file.equals(other.file))) {
@@ -52,7 +46,7 @@ public class ReqEntityFilePartBean implements ReqEntityFilePart {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 19 * hash + (this.fileName != null ? this.fileName.hashCode() : 0);
+        hash = 19 * hash + (super.hashCode());
         hash = 19 * hash + (this.file != null ? this.file.hashCode() : 0);
         return hash;
     }
@@ -61,7 +55,8 @@ public class ReqEntityFilePartBean implements ReqEntityFilePart {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("@ReqEntityFilePart[")
-                .append("fileName=").append(fileName).append(", ")
+                .append("fileName=").append(name).append(", ")
+                .append("contentType=").append(contentType)
                 .append("file=").append(file)
                 .append("]");
         return super.toString();

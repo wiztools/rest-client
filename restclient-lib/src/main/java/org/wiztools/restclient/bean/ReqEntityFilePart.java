@@ -8,5 +8,4 @@ import java.io.File;
  */
 public interface ReqEntityFilePart {
     File getPart();
-    String getFileName();
 }

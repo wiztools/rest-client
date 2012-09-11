@@ -6,6 +6,4 @@ package org.wiztools.restclient.bean;
  */
 public interface ReqEntityStringPart extends ReqEntityPart {
     String getPart();
-    
-    ContentType getContentType();
 }
