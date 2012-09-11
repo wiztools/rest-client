@@ -142,10 +142,10 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
         final String fileName = jtf_fileName.getText();
         final ContentType ct = jp_contentType.getContentType();
         final File file = new File(jtf_file.getText());
+        final ReqEntityFilePart part = new ReqEntityFilePartBean(fileName, ct, file);
         
         // Trigger all listeners:
         for(AddMultipartPartListener l: listeners) {
-            ReqEntityFilePart part = new ReqEntityFilePartBean(fileName, ct, file);
             l.addPart(part);
         }
         
