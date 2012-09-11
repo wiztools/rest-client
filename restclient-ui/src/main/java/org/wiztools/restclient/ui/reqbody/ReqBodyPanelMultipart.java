@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import org.wiztools.restclient.bean.*;
@@ -17,6 +18,12 @@ import org.wiztools.restclient.bean.*;
  * @author subwiz
  */
 public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
+    
+    @Inject
+    private AddMultipartFileDialog jd_addFileDialog;
+    
+    @Inject
+    private AddMultipartStringDialog jd_addStringDialog;
     
     private JButton jb_string = new JButton("String");
     private JButton jb_file = new JButton("File");
@@ -97,6 +104,17 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     @PostConstruct
     protected void init() {
+        // Listeners:
+        final AddMultipartPartListener listener = new AddMultipartPartListener() {
+            @Override
+            public void addPart(ReqEntityPart part) {
+                model.addPartFirst(part);
+            }
+        };
+        jd_addStringDialog.addMultipartPartListener(listener);
+        jd_addFileDialog.addMultipartPartListener(listener);
+        
+        // Layouts:
         setLayout(new BorderLayout());
         
         { // North:
@@ -106,7 +124,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
                 jb_string.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        // TODO
+                        jd_addStringDialog.setVisible(true);
                     }
                 });
                 jp.add(jb_string);
@@ -115,7 +133,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
                 jb_file.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        // TODO
+                        jd_addFileDialog.setVisible(true);
                     }
                 });
                 jp.add(jb_file);
