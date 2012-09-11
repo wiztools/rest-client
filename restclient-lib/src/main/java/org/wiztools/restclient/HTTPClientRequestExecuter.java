@@ -303,7 +303,15 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                 else if(part instanceof ReqEntityFilePart) {
                                     ReqEntityFilePart p = (ReqEntityFilePart)part;
                                     File body = p.getPart();
-                                    me.addPart(part.getName(), new FileBody(body));
+                                    ContentType ct = p.getContentType();
+                                    FileBody fb = null;
+                                    if(ct != null) {
+                                        fb = new FileBody(body, ct.getContentType(), ct.getCharset().name());
+                                    }
+                                    else {
+                                        fb = new FileBody(body);
+                                    }
+                                    me.addPart(part.getName(), fb);
                                 }
                             }
                             eeMethod.setEntity(me);
