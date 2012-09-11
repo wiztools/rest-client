@@ -148,16 +148,16 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     @Override
     public void enableBody() {
-        jb_string.setEnabled(false);
-        jb_file.setEnabled(false);
-        jt.setEnabled(false);
+        jb_string.setEnabled(true);
+        jb_file.setEnabled(true);
+        jt.setEnabled(true);
     }
     
     @Override
     public void disableBody() {
-        jb_string.setEnabled(true);
-        jb_file.setEnabled(true);
-        jt.setEnabled(true);
+        jb_string.setEnabled(false);
+        jb_file.setEnabled(false);
+        jt.setEnabled(false);
     }
     
     @Override
