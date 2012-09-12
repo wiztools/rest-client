@@ -92,6 +92,10 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
             fireTableDataChanged();
         }
         
+        public ReqEntityPart getEntityInRow(int row) {
+            return list.get(row);
+        }
+        
         public void removeRow(int row) {
             list.remove(row);
             fireTableDataChanged();
@@ -138,6 +142,14 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
             }
         });
         menu.add(jmi_rm);
+        JMenuItem jmi_view = new JMenuItem("Quick view");
+        jmi_view.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                quickView();
+            }
+        });
+        menu.add(jmi_view);
         jt.setComponentPopupMenu(menu);
         
         // Layouts:
@@ -170,6 +182,14 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
         // Center:
         JScrollPane jsp = new JScrollPane(jt);
         add(jsp, BorderLayout.CENTER);
+    }
+    
+    private void quickView() {
+        final int row = jt.getSelectedRow();
+        if(row != -1) {
+            ReqEntityPart entity = model.getEntityInRow(row);
+            view.doError(entity.toString());
+        }
     }
     
     @Override
