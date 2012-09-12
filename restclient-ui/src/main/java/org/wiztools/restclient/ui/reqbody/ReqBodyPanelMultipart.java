@@ -188,7 +188,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
         final int row = jt.getSelectedRow();
         if(row != -1) {
             ReqEntityPart entity = model.getEntityInRow(row);
-            view.doError(entity.toString());
+            view.showMessage("Quick View", entity.toString());
         }
     }
     
