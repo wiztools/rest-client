@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -12,12 +14,16 @@ import javax.inject.Inject;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import org.wiztools.restclient.bean.*;
+import org.wiztools.restclient.ui.RESTView;
 
 /**
  *
  * @author subwiz
  */
 public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
+    
+    @Inject
+    private RESTView view;
     
     @Inject
     private AddMultipartFileDialog jd_addFileDialog;
@@ -75,11 +81,6 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
             }
             throw new IllegalArgumentException("Should never come here!");
         }
-
-        /*@Override
-        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            ReqEntityPart part = (ReqEntityPart) aValue;
-        }*/
         
         public void addPartFirst(ReqEntityPart part) {
             list.addFirst(part);
@@ -113,6 +114,31 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
         };
         jd_addStringDialog.addMultipartPartListener(listener);
         jd_addFileDialog.addMultipartPartListener(listener);
+        
+        // Table popup:
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem jmi_rm = new JMenuItem("Delete selected");
+        jmi_rm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final int[] rows = jt.getSelectedRows();
+                Arrays.sort(rows);
+                if(rows != null && rows.length > 0) {
+                    int i = 0;
+                    for(int row: rows) {
+                        row = row - i; // the number of rows previously deleted should be accounted for!
+                        model.removeRow(row);
+                        i++;
+                    }
+                    view.setStatusMessage(MessageFormat.format("Deleted {0} row(s)", i));
+                }
+                else {
+                    view.setStatusMessage("No row(s) selected!");
+                }
+            }
+        });
+        menu.add(jmi_rm);
+        jt.setComponentPopupMenu(menu);
         
         // Layouts:
         setLayout(new BorderLayout());
