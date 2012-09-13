@@ -135,6 +135,37 @@ class XmlBodyUtil {
             
             eBody.appendChild(eUrlStream);
         }
+        else if(bean instanceof ReqEntityMultipart) {
+            ReqEntityMultipart entity = (ReqEntityMultipart) bean;
+            
+            Element eMultipart = new Element("multipart");
+            
+            List<ReqEntityPart> parts = entity.getBody();
+            for(ReqEntityPart part: parts) {
+                if(part instanceof ReqEntityStringPart) {
+                    ReqEntityStringPart p = (ReqEntityStringPart) part;
+                    
+                    Element ePart = new Element("string");
+                    addContentTypeCharsetAttribute(p.getContentType(), ePart);
+                    ePart.addAttribute(new Attribute("name", p.getName()));
+                    ePart.appendChild(p.getPart());
+                    
+                    eMultipart.appendChild(ePart);
+                }
+                else if(part instanceof ReqEntityFilePart) {
+                    ReqEntityFilePart p = (ReqEntityFilePart) part;
+                    
+                    Element ePart = new Element("file");
+                    addContentTypeCharsetAttribute(p.getContentType(), ePart);
+                    ePart.addAttribute(new Attribute("name", p.getName()));
+                    ePart.appendChild(p.getPart().getAbsolutePath());
+                    
+                    eMultipart.appendChild(ePart);
+                }
+            }
+            
+            eBody.appendChild(eMultipart);
+        }
         
         return eBody;
     }
