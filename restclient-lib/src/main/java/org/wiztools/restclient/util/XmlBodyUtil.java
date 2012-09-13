@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
@@ -47,11 +49,44 @@ class XmlBodyUtil {
                     throw new RuntimeException(ex);
                 }
             }
+            else if("multipart".equals(name)) {
+                List<ReqEntityPart> parts = getMultipartParts(e);
+                return new ReqEntityMultipartBean(parts);
+            }
             else {
                 throw new XMLException("Unsupported element encountered inside <body>: " + name);
             }
         }
         return null;
+    }
+    
+    private static List<ReqEntityPart> getMultipartParts(Element e) {
+        List<ReqEntityPart> parts = new ArrayList<ReqEntityPart>();
+        Elements children = e.getChildElements();
+        for(int i=0; i<children.size(); i++) {
+            ReqEntityPart part = getMultipartPart(children.get(i));
+            parts.add(part);
+        }
+        return parts;
+    }
+    
+    private static ReqEntityPart getMultipartPart(Element e) {
+        final String name = e.getLocalName();
+        
+        final String partName = e.getAttributeValue("name");
+        final ContentType ct = getContentType(e);
+        
+        if("string".equals(name)) {
+            String partBody = e.getValue();
+            return new ReqEntityStringPartBean(partName, ct, partBody);
+        }
+        else if("file".equals(name)) {
+            File file = new File(e.getValue());
+            return new ReqEntityFilePartBean(partName, ct, file);
+        }
+        else {
+            throw new XMLException("Unsupported element encountered inside <multipart>: " + name);
+        }
     }
     
     private static ContentType getContentType(Element e) {
