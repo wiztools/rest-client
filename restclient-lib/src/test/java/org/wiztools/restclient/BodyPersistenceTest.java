@@ -3,6 +3,8 @@ package org.wiztools.restclient;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.*;
 import static org.junit.Assert.*;
 import org.wiztools.commons.Charsets;
@@ -46,6 +48,7 @@ public class BodyPersistenceTest {
     
     @Test
     public void testStringBody() throws Exception {
+        System.out.println("testStringBody");
         RequestBean expResult = getRequestBeanWithoutBody();
         ContentType ct = new ContentTypeBean("text/plain", Charsets.UTF_8);
         ReqEntityStringBean body = new ReqEntityStringBean("Subhash loves Aarthi", ct);
@@ -58,6 +61,7 @@ public class BodyPersistenceTest {
     
     @Test
     public void testFileBody() throws Exception {
+        System.out.println("testFileBody");
         RequestBean expResult = getRequestBeanWithoutBody();
         ContentType ct = new ContentTypeBean("text/plain", Charsets.UTF_8);
         ReqEntityFileBean body = new ReqEntityFileBean(new File("/etc/hosts"), ct);
@@ -70,6 +74,7 @@ public class BodyPersistenceTest {
     
     @Test
     public void testByteArrayBody() throws Exception {
+        System.out.println("testByteArrayBody");
         RequestBean expResult = getRequestBeanWithoutBody();
         ContentType ct = new ContentTypeBean("image/jpeg", null);
         byte[] arr = FileUtil.getContentAsBytes(new File("src/test/resources/subhash_by_aarthi.jpeg"));
@@ -79,5 +84,20 @@ public class BodyPersistenceTest {
         Request actual = XMLUtil.getRequestFromXMLFile(new File("src/test/resources/reqBodyByteArray.rcq"));
         
         assertEquals(expResult, actual);
+    }
+    
+    @Test
+    public void testMultipartBody() throws Exception {
+        System.out.println("testMultipartBody");
+        List<ReqEntityPart> parts = new ArrayList<ReqEntityPart>();
+        ContentType ct = new ContentTypeBean("text/plain", Charsets.UTF_8);
+        ReqEntityFilePartBean partFile = new ReqEntityFilePartBean("hosts.txt", ct, new File("/etc/hosts"));
+        ReqEntityStringPartBean partString = new ReqEntityStringPartBean("aarthi.txt", ct, "Hello Babes!");
+        parts.add(partFile);
+        parts.add(partString);
+        ReqEntityMultipartBean expResult = new ReqEntityMultipartBean(parts);
+        
+        Request actual = XMLUtil.getRequestFromXMLFile(new File("src/test/resources/reqBodyMultipart.rcq"));
+        assertEquals(expResult, actual.getBody());
     }
 }
