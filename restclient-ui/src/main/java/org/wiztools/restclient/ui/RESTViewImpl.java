@@ -579,7 +579,9 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp_req_auth.setAuth(request.getAuth());
 
         // SSL
-        jp_req_ssl.setSslReq(request.getSslReq());
+        if(request.getSslReq() != null) {
+            jp_req_ssl.setSslReq(request.getSslReq());
+        }
 
         // HTTP Version
         if(request.getHttpVersion() == HTTPVersion.HTTP_1_1){
