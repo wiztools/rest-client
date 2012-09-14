@@ -7,7 +7,6 @@ import java.nio.charset.Charset;
 import javax.swing.JOptionPane;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.XMLException;
-import org.wiztools.restclient.ui.reqbody.ContentTypeCharsetComponent;
 import org.wiztools.restclient.util.XMLUtil;
 
 /**
@@ -21,6 +20,7 @@ final class ContentTypeSelectorOnFile {
     static void select(ContentTypeCharsetComponent jp_content_type_charset,
             File file, Component parent) {
         final String mime = FileUtil.getMimeType(file);
+        System.out.println("mime: " + mime);
         if(!mime.equals("content/unknown")) {
             final String origContentType = jp_content_type_charset.getContentType().getContentType();
             if(!mime.equals(origContentType)) {
