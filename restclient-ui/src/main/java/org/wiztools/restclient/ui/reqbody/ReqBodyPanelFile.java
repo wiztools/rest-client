@@ -23,10 +23,11 @@ import org.wiztools.restclient.ui.*;
  */
 public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
     
-    @Inject RESTView view;
-    @Inject RESTUserInterface rest_ui;
+    @Inject
+    private RESTUserInterface rest_ui;
     
-    @Inject ContentTypeCharsetComponent jp_content_type_charset;
+    @Inject
+    private ContentTypeCharsetComponent jp_content_type_charset;
     
     private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     private JTextField jtf_file = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
