@@ -183,4 +183,10 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
         jtf_fileName.setText("");
         jtf_file.setText("");
     }
+
+    @Override
+    public void setVisible(boolean boo) {
+        jp_contentType.requestFocus();
+        super.setVisible(boo);
+    }
 }

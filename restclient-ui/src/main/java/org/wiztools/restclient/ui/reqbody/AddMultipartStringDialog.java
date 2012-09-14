@@ -156,4 +156,10 @@ public class AddMultipartStringDialog extends AddMultipartBaseDialog {
         jtf_name.setText("");
         jta_part.setText("");
     }
+
+    @Override
+    public void setVisible(boolean boo) {
+        jp_contentType.requestFocus();
+        super.setVisible(boo);
+    }
 }
