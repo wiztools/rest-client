@@ -6,21 +6,16 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.wiztools.commons.FileUtil;
-import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.ReqEntity;
 import org.wiztools.restclient.bean.ReqEntityFile;
 import org.wiztools.restclient.bean.ReqEntityFileBean;
 import org.wiztools.restclient.ui.*;
-import org.wiztools.restclient.util.XMLUtil;
 
 /**
  *
@@ -73,44 +68,7 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        final String mime = FileUtil.getMimeType(f);
-        if(!mime.equals("content/unknown")) {
-            final String origContentType = jp_content_type_charset.getContentType().getContentType();
-            if(!mime.equals(origContentType)) {
-                final int result = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
-                        "The content-type selected (" + origContentType + ") does NOT match\n"
-                        + "the computed file mime type (" + mime + ")\n"
-                        + "Do you want to update the content-type to `" + mime + "'?",
-                        "Mime-type mismatch correction",
-                        JOptionPane.YES_NO_OPTION);
-                if(result == JOptionPane.YES_OPTION) {
-                    // Set content type
-                    jp_content_type_charset.setContentType(mime);
-                    
-                    // Check if XML content type:
-                    if(XMLUtil.XML_MIME.equals(mime)){
-                        try{
-                            String charset = XMLUtil.getDocumentCharset(f);
-                            if(charset != null && !(charset.equals(jp_content_type_charset.getCharsetString()))) {
-                                final int charsetYesNo = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
-                                        "Change charset to `" + charset + "'?",
-                                        "Change charset?",
-                                        JOptionPane.YES_NO_OPTION);
-                                if(charsetYesNo == JOptionPane.YES_OPTION) {
-                                    jp_content_type_charset.setCharset(Charset.forName(charset));
-                                }
-                            }
-                        }
-                        catch(IOException ex){
-                            // Do nothing!
-                        }
-                        catch(XMLException ex){
-                            // Do nothing!
-                        }
-                    }
-                }
-            }
-        }
+        ContentTypeSelectorOnFile.select(jp_content_type_charset, f, rest_ui.getFrame());
         jtf_file.setText(f.getAbsolutePath());
     }
     

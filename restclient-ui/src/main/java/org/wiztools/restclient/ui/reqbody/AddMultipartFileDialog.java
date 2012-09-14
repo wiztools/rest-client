@@ -14,10 +14,7 @@ import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.bean.ReqEntityFilePart;
 import org.wiztools.restclient.bean.ReqEntityFilePartBean;
-import org.wiztools.restclient.ui.FileChooserType;
-import org.wiztools.restclient.ui.RCFileView;
-import org.wiztools.restclient.ui.RESTUserInterface;
-import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.ui.*;
 
 /**
  *
@@ -125,6 +122,9 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
+        // Content type charset correction:
+        ContentTypeSelectorOnFile.select(jp_contentType, f, this);
         
         // Set name:
         if(StringUtil.isEmpty(jtf_fileName.getText())) {
