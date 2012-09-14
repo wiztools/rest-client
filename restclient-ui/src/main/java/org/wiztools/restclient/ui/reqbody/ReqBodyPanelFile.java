@@ -15,7 +15,10 @@ import javax.swing.JTextField;
 import org.wiztools.restclient.bean.ReqEntity;
 import org.wiztools.restclient.bean.ReqEntityFile;
 import org.wiztools.restclient.bean.ReqEntityFileBean;
-import org.wiztools.restclient.ui.*;
+import org.wiztools.restclient.ui.FileChooserType;
+import org.wiztools.restclient.ui.RCFileView;
+import org.wiztools.restclient.ui.RESTUserInterface;
+import org.wiztools.restclient.ui.UIUtil;
 
 /**
  *
