@@ -28,7 +28,8 @@ public class AddMultipartStringDialog extends AddMultipartBaseDialog {
     
     private JTextField jtf_name = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
     private RSyntaxTextArea jta_part = new RSyntaxTextArea(25, 60);
-    private JButton jb_ok = new JButton("Ok");
+    private JButton jb_add = new JButton("Add");
+    private JButton jb_addAndClose = new JButton("Add & close");
     private JButton jb_cancel = new JButton("Cancel");
 
     @Inject
@@ -44,10 +45,16 @@ public class AddMultipartStringDialog extends AddMultipartBaseDialog {
         jta_part.setAntiAliasingEnabled(true);
         
         // Button listeners:
-        jb_ok.addActionListener(new ActionListener() {
+        jb_add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ok();
+                add();
+            }
+        });
+        jb_addAndClose.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addAndClose();
             }
         });
         jb_cancel.addActionListener(new ActionListener() {
@@ -58,7 +65,7 @@ public class AddMultipartStringDialog extends AddMultipartBaseDialog {
         });
         
         // Default button:
-        getRootPane().setDefaultButton(jb_ok);
+        getRootPane().setDefaultButton(jb_add);
         
         // Layout:
         Container c = getContentPane();
@@ -91,14 +98,15 @@ public class AddMultipartStringDialog extends AddMultipartBaseDialog {
             JPanel jp = new JPanel();
             jp.setLayout(new FlowLayout(FlowLayout.RIGHT));
             jp.add(jb_cancel);
-            jp.add(jb_ok);
+            jp.add(jb_add);
+            jp.add(jb_addAndClose);
             c.add(jp, BorderLayout.SOUTH);
         }
         
         pack();
     }
     
-    private void ok() {
+    private boolean add() {
         // Validation:
         if(StringUtil.isEmpty(jtf_name.getText())) {
             JOptionPane.showMessageDialog(this,
@@ -106,7 +114,7 @@ public class AddMultipartStringDialog extends AddMultipartBaseDialog {
                     "Validation: name empty!",
                     JOptionPane.ERROR_MESSAGE);
             jtf_name.requestFocus();
-            return;
+            return false;
         }
         
         // Fetch all values:
@@ -123,9 +131,18 @@ public class AddMultipartStringDialog extends AddMultipartBaseDialog {
 
         // Clear:
         clear();
-
-        // Set visible:
-        setVisible(false);
+        
+        // Focus:
+        jtf_name.requestFocus();
+        
+        return true;
+    }
+    
+    private void addAndClose() {
+        if(add()) {
+            // Set visible:
+            setVisible(false);
+        }
     }
     
     private void cancel() {

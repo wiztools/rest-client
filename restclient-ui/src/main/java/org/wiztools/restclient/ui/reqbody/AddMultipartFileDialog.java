@@ -33,7 +33,8 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
     
     private JButton jb_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     
-    private JButton jb_ok = new JButton("Ok");
+    private JButton jb_add = new JButton("Add");
+    private JButton jb_addAndClose = new JButton("Add & close");
     private JButton jb_cancel = new JButton("Cancel");
 
     @Inject
@@ -46,10 +47,16 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
     @PostConstruct
     protected void init() {
         // Button listeners:
-        jb_ok.addActionListener(new ActionListener() {
+        jb_add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ok();
+                add();
+            }
+        });
+        jb_addAndClose.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addAndClose();
             }
         });
         jb_cancel.addActionListener(new ActionListener() {
@@ -67,7 +74,7 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
         });
         
         // Default button:
-        getRootPane().setDefaultButton(jb_ok);
+        getRootPane().setDefaultButton(jb_add);
         
         // Layout:
         Container c = getContentPane();
@@ -98,7 +105,8 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
             JPanel jp = new JPanel();
             jp.setLayout(new FlowLayout(FlowLayout.RIGHT));
             jp.add(jb_cancel);
-            jp.add(jb_ok);
+            jp.add(jb_add);
+            jp.add(jb_addAndClose);
             c.add(jp, BorderLayout.SOUTH);
         }
         
@@ -127,7 +135,7 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
         jtf_file.setText(f.getAbsolutePath());
     }
     
-    private void ok() {
+    private boolean add() {
         // Validation:
         if(StringUtil.isEmpty(jtf_fileName.getText())) {
             JOptionPane.showMessageDialog(this,
@@ -135,7 +143,7 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
                     "Validation: name empty!",
                     JOptionPane.ERROR_MESSAGE);
             jtf_fileName.requestFocus();
-            return;
+            return false;
         }
         
         // Read values:
@@ -152,8 +160,16 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
         // Clear:
         clear();
         
-        // Visibility:
-        setVisible(false);
+        // Focus:
+        jb_file.requestFocus();
+        
+        return true;
+    }
+    
+    private void addAndClose() {
+        if(add()) {
+            setVisible(false);
+        }
     }
     
     private void cancel() {
