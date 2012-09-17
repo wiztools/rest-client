@@ -39,7 +39,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     private class MultipartTableModel extends AbstractTableModel {
         
-        private final String[] columnNames = new String[]{"Type", "Name", "Part"};
+        private final String[] columnNames = new String[]{"Type", "Content-type", "Name", "Part"};
         private final LinkedList<ReqEntityPart> list = new LinkedList<ReqEntityPart>();
 
         @Override
@@ -49,7 +49,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
 
         @Override
         public int getColumnCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -66,9 +66,17 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
         public Object getValueAt(int rowIndex, int columnIndex) {
             ReqEntityPart part = list.get(rowIndex);
             if(columnIndex == 0) {
-                return part.getContentType();
+                if(part instanceof ReqEntityStringPart) {
+                    return "String";
+                }
+                else if(part instanceof ReqEntityFilePart) {
+                    return "File";
+                }
             }
             else if(columnIndex == 1) {
+                return part.getContentType();
+            }
+            else if(columnIndex == 2) {
                 return part.getName();
             }
             else {
