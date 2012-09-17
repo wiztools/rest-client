@@ -57,8 +57,8 @@ public class ReqEntityFilePartBean extends ReqEntityBasePart implements ReqEntit
         sb.append("@ReqEntityFilePart[")
                 .append("fileName=").append(name).append(", ")
                 .append("contentType=").append(contentType)
-                .append("file=").append(file)
+                .append("file=").append(file.getAbsolutePath())
                 .append("]");
-        return super.toString();
+        return sb.toString();
     }
 }
