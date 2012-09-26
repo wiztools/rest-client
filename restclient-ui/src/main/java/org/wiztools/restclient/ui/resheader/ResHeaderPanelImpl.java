@@ -42,7 +42,7 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
             private JPopupMenu popup = new JPopupMenu();
             private JMenuItem jmi_copy = new JMenuItem("Copy Selected Header(s)");
             private JMenuItem jmi_copy_all = new JMenuItem("Copy All Headers");
-            private JMenuItem jmi_copy_cookies = new JMenuItem("Copy Cookies");
+            private JMenuItem jmi_copy_cookies = new JMenuItem("Copy All Cookies");
             {
                 jmi_copy.addActionListener(new ActionListener() {
                     @Override
@@ -90,6 +90,7 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
                     public void actionPerformed(ActionEvent e) {
                         final int totalRows = jt_res_headers.getRowCount();
                         StringBuilder sb = new StringBuilder();
+                        int cookieCount = 0;
                         for(int i=0; i<totalRows; i++) {
                             final String key = (String) jt_res_headers.getValueAt(i, 0);
                             final String value = (String) jt_res_headers.getValueAt(i, 1);
@@ -104,12 +105,15 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
                                             .append(": ")
                                             .append(cookie.getValue())
                                             .append("\r\n");
+                                    
+                                    // Increment count:
+                                    cookieCount++;
                                 }
                             }
                         }
                         if(sb.length() > 0) {
                             UIUtil.clipboardCopy(sb.toString());
-                            view.setStatusMessage("Cookie(s) copied to clipboard");
+                            view.setStatusMessage(cookieCount + " cookie(s) copied to clipboard");
                         }
                         else {
                             view.setStatusMessage("No cookie header(s) found");
