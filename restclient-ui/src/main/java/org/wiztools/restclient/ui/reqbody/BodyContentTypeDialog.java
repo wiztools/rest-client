@@ -20,6 +20,8 @@ import javax.swing.*;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.bean.ContentType;
+import org.wiztools.restclient.bean.ContentTypeBean;
 import org.wiztools.restclient.ui.EscapableDialog;
 import org.wiztools.restclient.ui.RESTUserInterface;
 
@@ -35,8 +37,9 @@ public class BodyContentTypeDialog extends EscapableDialog {
     private static final String[] charSetArr;
     public static final String DEFAULT_CHARSET = "UTF-8";
     
-    public static final String PARAM_CONTENT_TYPE = "application/x-www-form-urlencoded";
+    public static final String PARAM_CONTENT_TYPE_STR = "application/x-www-form-urlencoded";
     public static final Charset PARAM_CHARSET = Charsets.UTF_8;
+    public static final ContentType PARAM_CONTENT_TYPE = new ContentTypeBean(PARAM_CONTENT_TYPE_STR, PARAM_CHARSET);
 
     // Content-type
     static{
@@ -85,8 +88,6 @@ public class BodyContentTypeDialog extends EscapableDialog {
     private JComboBox jcb_content_type = new JComboBox(contentTypeArr);
     private JComboBox jcb_charset = new JComboBox(charSetArr);
     
-    private final BodyContentTypeDialog me;
-    
     private String contentType = DEFAULT_CONTENT_TYPE;
     private String charset = DEFAULT_CHARSET;
     
@@ -94,7 +95,7 @@ public class BodyContentTypeDialog extends EscapableDialog {
     public BodyContentTypeDialog(RESTUserInterface rest_ui){
         // true means Modal:
         super(rest_ui.getFrame(), true);
-        me = this;
+
         setTitle("Body Content-type");
         jcb_content_type.setSelectedItem(DEFAULT_CONTENT_TYPE);
         jcb_charset.setSelectedItem(DEFAULT_CHARSET);
@@ -178,10 +179,10 @@ public class BodyContentTypeDialog extends EscapableDialog {
             }
         }
         else{
-            jcb_content_type.setSelectedItem(me.contentType);
-            jcb_charset.setSelectedItem(me.charset);
+            jcb_content_type.setSelectedItem(contentType);
+            jcb_charset.setSelectedItem(charset);
         }
-        me.setVisible(false);
+        setVisible(false);
     }
     
     String getContentType(){

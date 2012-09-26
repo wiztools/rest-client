@@ -185,8 +185,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     }
     
     private void checkAndSetParameterContentType(){
-        if(!jp_content_type_charset.getContentType().equals(BodyContentTypeDialog.PARAM_CONTENT_TYPE)
-                || !jp_content_type_charset.getCharset().equals(BodyContentTypeDialog.PARAM_CHARSET)){
+        if(!BodyContentTypeDialog.PARAM_CONTENT_TYPE.equals(jp_content_type_charset.getContentType())){
             int status = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
                     "<html>For parameter the Content-type and Charset needs <br>" +
                     "to be `" + BodyContentTypeDialog.PARAM_CONTENT_TYPE +
@@ -198,8 +197,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
                     JOptionPane.YES_NO_OPTION);
             if(status == JOptionPane.YES_OPTION){
                 jp_content_type_charset.setContentTypeCharset(                        
-                            BodyContentTypeDialog.PARAM_CONTENT_TYPE,
-                            BodyContentTypeDialog.PARAM_CHARSET);
+                            BodyContentTypeDialog.PARAM_CONTENT_TYPE);
             }
         }
     }
