@@ -16,6 +16,7 @@ import javax.swing.*;
 import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapArrayList;
+import org.wiztools.restclient.ui.RESTView;
 import org.wiztools.restclient.ui.UIUtil;
 
 /**
@@ -23,6 +24,9 @@ import org.wiztools.restclient.ui.UIUtil;
  * @author subwiz
  */
 public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
+    
+    @Inject
+    private RESTView view;
     
     private JTable jt_res_headers = new JTable();
     private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();
@@ -44,6 +48,10 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         final int[] rows = jt_res_headers.getSelectedRows();
+                        if(rows.length == 0) {
+                            view.setStatusMessage("No header(s) selected");
+                            return;
+                        }
                         Arrays.sort(rows);
                         StringBuilder sb = new StringBuilder();
                         for(final int row: rows) {
@@ -52,6 +60,7 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
                             sb.append(key).append(": ").append(value).append("\r\n");
                         }
                         UIUtil.clipboardCopy(sb.toString());
+                        view.setStatusMessage("Copied selected headers to clipboard");
                     }
                 });
                 popup.add(jmi_copy);
@@ -70,6 +79,7 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
                             sb.append(key).append(": ").append(value).append("\r\n");
                         }
                         UIUtil.clipboardCopy(sb.toString());
+                        view.setStatusMessage("Copied ALL headers to clipboard");
                     }
                 });
                 popup.add(jmi_copy_all);
@@ -99,6 +109,10 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
                         }
                         if(sb.length() > 0) {
                             UIUtil.clipboardCopy(sb.toString());
+                            view.setStatusMessage("Cookie copied to clipboard");
+                        }
+                        else {
+                            view.setStatusMessage("No cookie header found");
                         }
                     }
                 });
