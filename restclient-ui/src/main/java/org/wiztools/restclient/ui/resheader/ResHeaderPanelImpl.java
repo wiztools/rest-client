@@ -109,10 +109,10 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
                         }
                         if(sb.length() > 0) {
                             UIUtil.clipboardCopy(sb.toString());
-                            view.setStatusMessage("Cookie copied to clipboard");
+                            view.setStatusMessage("Cookie(s) copied to clipboard");
                         }
                         else {
-                            view.setStatusMessage("No cookie header found");
+                            view.setStatusMessage("No cookie header(s) found");
                         }
                     }
                 });
