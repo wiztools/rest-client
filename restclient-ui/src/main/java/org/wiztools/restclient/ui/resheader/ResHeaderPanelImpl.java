@@ -7,7 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.HttpCookie;
 import java.util.Arrays;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
@@ -36,6 +38,7 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
             private JPopupMenu popup = new JPopupMenu();
             private JMenuItem jmi_copy = new JMenuItem("Copy Selected Header(s)");
             private JMenuItem jmi_copy_all = new JMenuItem("Copy All Headers");
+            private JMenuItem jmi_copy_cookies = new JMenuItem("Copy Cookies");
             {
                 jmi_copy.addActionListener(new ActionListener() {
                     @Override
@@ -52,7 +55,8 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
                     }
                 });
                 popup.add(jmi_copy);
-
+            }
+            {
                 jmi_copy_all.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -69,6 +73,36 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
                     }
                 });
                 popup.add(jmi_copy_all);
+            }
+            {
+                jmi_copy_cookies.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        final int totalRows = jt_res_headers.getRowCount();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<totalRows; i++) {
+                            final String key = (String) jt_res_headers.getValueAt(i, 0);
+                            final String value = (String) jt_res_headers.getValueAt(i, 1);
+                            
+                            final String headerLine = key + ": " + value;
+                            
+                            // Verify if Cookie header:
+                            if(headerLine.toLowerCase().startsWith("set-cookie")) {
+                                List<HttpCookie> cookies = HttpCookie.parse(headerLine);
+                                for(HttpCookie cookie: cookies) {
+                                    sb.append(cookie.getName())
+                                            .append(": ")
+                                            .append(cookie.getValue())
+                                            .append("\r\n");
+                                }
+                            }
+                        }
+                        if(sb.length() > 0) {
+                            UIUtil.clipboardCopy(sb.toString());
+                        }
+                    }
+                });
+                popup.add(jmi_copy_cookies);
             }
 
             @Override
