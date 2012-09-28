@@ -42,7 +42,7 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
             private JPopupMenu popup = new JPopupMenu();
             private JMenuItem jmi_copy = new JMenuItem("Copy Selected Header(s)");
             private JMenuItem jmi_copy_all = new JMenuItem("Copy All Headers");
-            private JMenuItem jmi_copy_cookies = new JMenuItem("Copy All Cookies");
+            private JMenuItem jmi_copy_cookies = new JMenuItem("Copy All Cookie Name-Value(s)");
             {
                 jmi_copy.addActionListener(new ActionListener() {
                     @Override
