@@ -149,12 +149,11 @@ public final class TwoColumnTablePanel extends JPanel {
                 showPopup(e);
             }
             private void showPopup(MouseEvent e) {
-                if(jt.getSelectedRowCount() == 0){
-                    // No table row selected
-                    jmi_rm_selected.setVisible(false);
+                if(jt.getSelectedRowCount() == 0) { // No table row selected
+                    jmi_rm_selected.setEnabled(false);
                 }
                 else {
-                    jmi_rm_selected.setVisible(true);
+                    jmi_rm_selected.setEnabled(true);
                 }
                 if (e.isPopupTrigger()) {
                     popupMenu.show(e.getComponent(), e.getX(), e.getY());
