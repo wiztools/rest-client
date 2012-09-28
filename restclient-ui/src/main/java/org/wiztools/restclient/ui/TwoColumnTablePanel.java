@@ -29,6 +29,8 @@ public final class TwoColumnTablePanel extends JPanel {
     private TwoColumnTableModel model;
     private Dimension tableDimension;
     private KeyValMultiEntryDialog jd_multi;
+    
+    private JMenuItem jmi_rm_selected = new JMenuItem("Remove Selected");
 
     private void initMultiEntryDialog(){
         // Initialize the Multi-entry dialog:
@@ -107,21 +109,33 @@ public final class TwoColumnTablePanel extends JPanel {
         
         // Create Popupmenu
         final JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem jmi_delete = new JMenuItem("Delete");
-        jmi_delete.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                int selectionCount = jt.getSelectedRowCount();
-                if(selectionCount > 0){
-                    int[] rows = jt.getSelectedRows();
-                    Arrays.sort(rows);
-                    for(int i=rows.length-1; i>=0; i--){
-                        model.deleteRow(rows[i]);
+        {
+            jmi_rm_selected.addActionListener(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e){
+                    int selectionCount = jt.getSelectedRowCount();
+                    if(selectionCount > 0){
+                        int[] rows = jt.getSelectedRows();
+                        Arrays.sort(rows);
+                        for(int i=rows.length-1; i>=0; i--){
+                            model.deleteRow(rows[i]);
+                        }
                     }
                 }
-            }
-        });
-        popupMenu.add(jmi_delete);
+            });
+            popupMenu.add(jmi_rm_selected);
+        }
+        
+        {
+            JMenuItem jmi_rm_all = new JMenuItem("Remove All");
+            jmi_rm_all.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    model.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
+                }
+            });
+            popupMenu.add(jmi_rm_all);
+        }
         
         // Attach popup menu
         jt.addMouseListener(new MouseAdapter() {
@@ -137,7 +151,10 @@ public final class TwoColumnTablePanel extends JPanel {
             private void showPopup(MouseEvent e) {
                 if(jt.getSelectedRowCount() == 0){
                     // No table row selected
-                    return;
+                    jmi_rm_selected.setVisible(false);
+                }
+                else {
+                    jmi_rm_selected.setVisible(true);
                 }
                 if (e.isPopupTrigger()) {
                     popupMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -161,6 +178,7 @@ public final class TwoColumnTablePanel extends JPanel {
         JButton jb_add = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "add.png"));
         jb_add.setToolTipText("Add");
         jb_add.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 String key = jtf_key.getText();
                 String value = jtf_value.getText();
@@ -196,6 +214,7 @@ public final class TwoColumnTablePanel extends JPanel {
         JButton jb_multi_insert = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
         jb_multi_insert.setToolTipText("Multi-insert");
         jb_multi_insert.addActionListener(new ActionListener(){
+            @Override
             public void actionPerformed(ActionEvent e){
                 if(jd_multi == null){
                     initMultiEntryDialog();
