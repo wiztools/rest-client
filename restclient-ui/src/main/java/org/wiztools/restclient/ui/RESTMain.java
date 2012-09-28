@@ -43,6 +43,8 @@ class RESTMain implements RESTUserInterface {
     @Inject private OptionsDialog optionsDialog;
     @Inject private PasswordGenDialog passwordGenDialog;
     
+    private URLEncodeDecodeDialog urlEncodeDecodeDialog;
+    
     // Requests and responses are generally saved in different dirs
     private JFileChooser jfc_request = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_response = UIUtil.getNewJFileChooser();
@@ -263,15 +265,31 @@ class RESTMain implements RESTUserInterface {
         JMenu jm_tools = new JMenu("Tools");
         jm_tools.setMnemonic('o');
         
-        JMenuItem jmi_pwd_gen = new JMenuItem("Password Encoder/Decoder");
-        jmi_pwd_gen.setMnemonic('p');
-        jmi_pwd_gen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                passwordGenDialog.setVisible(true);
-            }
-        });
-        jm_tools.add(jmi_pwd_gen);
+        { // URL Encode Decoder:
+            JMenuItem jmi_url_encode = new JMenuItem("URL Encoder/Decoder");
+            jmi_url_encode.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(urlEncodeDecodeDialog == null) {
+                        urlEncodeDecodeDialog = new URLEncodeDecodeDialog(frame);
+                    }
+                    urlEncodeDecodeDialog.setVisible(true);
+                }
+            });
+            jm_tools.add(jmi_url_encode);
+        }
+        
+        { // Password Encoder Decoder:
+            JMenuItem jmi_pwd_gen = new JMenuItem("Password Encoder/Decoder");
+            jmi_pwd_gen.setMnemonic('p');
+            jmi_pwd_gen.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    passwordGenDialog.setVisible(true);
+                }
+            });
+            jm_tools.add(jmi_pwd_gen);
+        }
         
         jm_tools.addSeparator();
         
