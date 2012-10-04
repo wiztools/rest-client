@@ -1,12 +1,13 @@
 package org.wiztools.restclient.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author subwiz
  */
-public interface TestResult {
+public interface TestResult extends Serializable {
 
     int getErrorCount();
 

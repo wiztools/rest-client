@@ -1,5 +1,6 @@
 package org.wiztools.restclient.bean;
 
+import java.io.Serializable;
 import java.net.HttpCookie;
 import java.net.URL;
 import java.util.List;
@@ -9,7 +10,7 @@ import org.wiztools.commons.MultiValueMap;
  *
  * @author subwiz
  */
-public interface Request extends Cloneable {
+public interface Request extends Cloneable, Serializable {
 
     Auth getAuth();
 
