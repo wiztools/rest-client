@@ -70,18 +70,6 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
         // Center:
         jcb_url.setToolTipText("URL");
         jcb_url.setEditable(true);
-        jcb_url.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jcb_urlActionPerformed(evt);
-            }
-        });
-        jcb_url.getEditor().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fromKeyboard = true;
-            }
-        });
         jcb_url.getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
