@@ -12,6 +12,8 @@ public interface HistoryManager {
     
     int DEFAULT_HISTORY_SIZE = 30;
     
+    void setHistorySize(int size);
+    
     void add(Request request);
 
     Request back();

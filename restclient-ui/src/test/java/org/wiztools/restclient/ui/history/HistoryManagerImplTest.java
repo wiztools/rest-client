@@ -65,4 +65,17 @@ public class HistoryManagerImplTest {
         
         System.out.println(instance);
     }
+    
+    @Test
+    public void testSetHistorySize() throws Exception {
+        System.out.println("setHistorySize");
+        HistoryManagerImpl instance = new HistoryManagerImpl();
+        for(int i=0; i<10; i++) {
+            RequestBean request = new RequestBean();
+            request.setUrl(new URL("http://localhost/" + i));
+            instance.add(request);
+        }
+        instance.setHistorySize(5);
+        assertEquals(5, instance.size());
+    }
 }

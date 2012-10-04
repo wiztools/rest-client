@@ -10,10 +10,37 @@ import org.wiztools.restclient.bean.Request;
  */
 @Singleton
 public class HistoryManagerImpl implements HistoryManager {
-    private int maxCount = DEFAULT_HISTORY_SIZE;
+    private int maxSize = DEFAULT_HISTORY_SIZE;
     private int cursor;
     
     private LinkedList<Request> data = new LinkedList<Request>();
+
+    @Override
+    public void setHistorySize(int size) {
+        if(size < 1) {
+            throw new IllegalArgumentException("History max size value invalid: " + size);
+        }
+        if(maxSize == size) {
+            return;
+        }
+        if(maxSize > size) { // new size is smaller than existing
+            // reset cursor to 0:
+            cursor = 0;
+            
+            // Need to trim data?
+            if(data.size() > size) {
+                final int diff = data.size() - size;
+                for(int i=0; i<diff; i++) {
+                    data.removeLast();
+                }
+            }
+        }
+        
+        // Nothing to do if the size is greater than existing!
+        
+        // Finally, set the size:
+        maxSize = size;
+    }
     
     @Override
     public void add(Request request) {
@@ -27,7 +54,7 @@ public class HistoryManagerImpl implements HistoryManager {
         data.addFirst(request);
         
         // Verify if threshold reached:
-        if(data.size() > maxCount) {
+        if(data.size() > maxSize) {
             data.removeLast();
         }
         
@@ -102,6 +129,6 @@ public class HistoryManagerImpl implements HistoryManager {
 
     @Override
     public String toString() {
-        return "HistoryManagerImpl{" + "maxCount=" + maxCount + ", cursor=" + cursor + ", data=" + data + '}';
+        return "HistoryManagerImpl{" + "maxCount=" + maxSize + ", cursor=" + cursor + ", data=" + data + '}';
     }
 }
