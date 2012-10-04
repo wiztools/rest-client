@@ -37,8 +37,6 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     
     private final List<ActionListener> listeners = new ArrayList<ActionListener>();
     
-    private boolean fromKeyboard = false;
-    
     @PostConstruct
     protected void init() {
         { // Keystroke for focusing on the address bar:
@@ -107,10 +105,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
         }
     }
     
-    private void jcb_urlActionPerformed(final ActionEvent event){
-        if("comboBoxChanged".equals(event.getActionCommand())){
-            return;
-        }
+    private void jb_requestActionPerformed() {
         final Object item = jcb_url.getSelectedItem();
         final int count = jcb_url.getItemCount();
         final LinkedList l = new LinkedList();
@@ -140,14 +135,6 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
         }
         // make the selected item is the item we want
         jcb_url.setSelectedItem(item);
-        // Use this to trigger request action on pressing Enter:
-        if (fromKeyboard) {
-            fromKeyboard = false;
-            jb_requestActionPerformed();
-        }
-    }
-    
-    private void jb_requestActionPerformed() {
         for(ActionListener listener: listeners) {
             listener.actionPerformed(null);
         }
