@@ -14,6 +14,11 @@ public class HistoryManagerImpl implements HistoryManager {
     private int cursor;
     
     private LinkedList<Request> data = new LinkedList<Request>();
+    
+    @Override
+    public int getHistorySize() {
+        return maxSize;
+    }
 
     @Override
     public void setHistorySize(int size) {
@@ -24,8 +29,10 @@ public class HistoryManagerImpl implements HistoryManager {
             return;
         }
         if(maxSize > size) { // new size is smaller than existing
-            // reset cursor to 0:
-            cursor = 0;
+            // reset cursor:
+            if(cursor >= size) {
+                cursor = size - 1;
+            }
             
             // Need to trim data?
             if(data.size() > size) {

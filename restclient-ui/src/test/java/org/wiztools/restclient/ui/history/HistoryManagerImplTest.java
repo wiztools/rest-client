@@ -78,4 +78,18 @@ public class HistoryManagerImplTest {
         instance.setHistorySize(5);
         assertEquals(5, instance.size());
     }
+    
+    @Test
+    public void testMaxElements() throws Exception {
+        System.out.println("maxElements");
+        HistoryManagerImpl instance = new HistoryManagerImpl();
+        instance.setHistorySize(9);
+        for(int i=0; i<10; i++) {
+            RequestBean request = new RequestBean();
+            request.setUrl(new URL("http://localhost/" + i));
+            instance.add(request);
+        }
+        System.out.println("Elements in History: " + instance);
+        assertEquals(9, instance.size());
+    }
 }
