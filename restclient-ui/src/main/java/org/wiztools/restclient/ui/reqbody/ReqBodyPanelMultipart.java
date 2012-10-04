@@ -232,7 +232,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     @Override
     public ReqEntity getEntity() {
-        ReqEntity entity = new ReqEntityMultipartBean(model.list);
+        ReqEntity entity = new ReqEntityMultipartBean((LinkedList<ReqEntityPart>)model.list.clone());
         return entity;
     }
     
