@@ -25,6 +25,7 @@ import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
 import org.wiztools.restclient.server.TraceServer;
+import org.wiztools.restclient.ui.history.HistoryManager;
 import org.wiztools.restclient.ui.option.OptionsDialog;
 import org.wiztools.restclient.util.Util;
 import org.wiztools.restclient.util.XMLUtil;
@@ -42,6 +43,8 @@ class RESTMain implements RESTUserInterface {
     @Inject private AboutDialog aboutDialog;
     @Inject private OptionsDialog optionsDialog;
     @Inject private PasswordGenDialog passwordGenDialog;
+    
+    @Inject private HistoryManager historyManager;
     
     private URLEncodeDecodeDialog urlEncodeDecodeDialog;
     
@@ -77,8 +80,6 @@ class RESTMain implements RESTUserInterface {
     }
     
     private void createMenu(){
-        JMenuBar jmb = new JMenuBar();
-        
         // File menu
         JMenu jm_file = new JMenu("File");
         jm_file.setMnemonic(KeyEvent.VK_F);
@@ -261,6 +262,78 @@ class RESTMain implements RESTUserInterface {
         });
         jm_edit.add(jmi_reset_to_last);
         
+        // History Menu
+        JMenu jm_history = new JMenu("History");
+        
+        final JMenuItem jmi_back = new JMenuItem("Back");
+        jmi_back.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_LEFT, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        jmi_back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!historyManager.isOldest()) {
+                    Request request = historyManager.back();
+                    if(request != null) {
+                        view.setUIFromRequest(request);
+                    }
+                }
+                else {
+                    view.setStatusMessage("Already in oldest");
+                }
+            }
+        });
+        jm_history.add(jmi_back);
+        
+        final JMenuItem jmi_forward = new JMenuItem("Forward");
+        jmi_forward.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_RIGHT, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        jmi_forward.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!historyManager.isMostRecent()) {
+                    Request request = historyManager.forward();
+                    if(request != null) {
+                        view.setUIFromRequest(request);
+                    }
+                }
+                else {
+                    view.setStatusMessage("Already in latest");
+                }
+            }
+        });
+        jm_history.add(jmi_forward);
+        
+        jm_history.addSeparator();
+        
+        JMenuItem jmi_clear_history = new JMenuItem("Clear History");
+        jmi_clear_history.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                historyManager.clear();
+                view.setStatusMessage("History cleared");
+            }
+        });
+        jm_history.add(jmi_clear_history);
+        
+        jm_history.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(historyManager.isOldest()) {
+                    jmi_back.setEnabled(false);
+                }
+                else {
+                    jmi_back.setEnabled(true);
+                }
+                
+                if(historyManager.isMostRecent()) {
+                    jmi_forward.setEnabled(false);
+                }
+                else {
+                    jmi_forward.setEnabled(true);
+                }
+            }
+        });
+        
         // Tools menu
         JMenu jm_tools = new JMenu("Tools");
         jm_tools.setMnemonic('o');
@@ -359,9 +432,12 @@ class RESTMain implements RESTUserInterface {
             jm_tools.add(jmi_options);
         }
         
-        // Add menus to menu-bar
+        // Menu-bar
+        JMenuBar jmb = new JMenuBar();
+        
         jmb.add(jm_file);
         jmb.add(jm_edit);
+        jmb.add(jm_history);
         jmb.add(jm_tools);
         
         // Help menu

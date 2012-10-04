@@ -17,7 +17,6 @@ public class HistoryManagerImpl implements HistoryManager {
     
     @Override
     public void add(Request request) {
-        System.out.println("Add called for url: " + request.getUrl());
         if(cursor != 0) { // discard everything newer than cursor position
             for(int i=0; i<cursor; i++) {
                 data.removeFirst();
@@ -57,8 +56,6 @@ public class HistoryManagerImpl implements HistoryManager {
     
     @Override
     public Request back() {
-        System.out.println("Cursor: " + cursor);
-        System.out.println("Size: " + data.size());
         if(isOldest()) {
             return null;
         }
@@ -67,8 +64,6 @@ public class HistoryManagerImpl implements HistoryManager {
     
     @Override
     public Request forward() {
-        System.out.println("Cursor: " + cursor);
-        System.out.println("Size: " + data.size());
         if(isMostRecent()) {
             return null;
         }

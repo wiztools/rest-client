@@ -25,6 +25,7 @@ import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.bean.*;
+import org.wiztools.restclient.ui.history.HistoryManager;
 import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
 import org.wiztools.restclient.ui.reqauth.ReqSSLPanel;
 import org.wiztools.restclient.ui.reqbody.ReqBodyPanel;
@@ -70,6 +71,8 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Inject private MessageDialog messageDialog;
     @Inject private RESTUserInterface rest_ui;
     
+    @Inject private HistoryManager historyManager;
+    
     private TwoColumnTablePanel jp_2col_req_headers;
     private TwoColumnTablePanel jp_2col_req_cookies;
     
@@ -79,7 +82,6 @@ public class RESTViewImpl extends JPanel implements RESTView {
     private Thread requestThread;
     
     // Cache the last request and response
-    private Request lastRequest;
     private Response lastResponse;
     
     private JTabbedPane initJTPRequest(){
@@ -205,8 +207,8 @@ public class RESTViewImpl extends JPanel implements RESTView {
     
     @Override
     public void setUIToLastRequestResponse(){
-        if(lastRequest != null && lastResponse != null){
-            setUIFromRequest(lastRequest);
+        if(historyManager.lastRequest() != null && lastResponse != null){
+            setUIFromRequest(historyManager.lastRequest());
             setUIFromResponse(lastResponse);
         }
     }
@@ -347,9 +349,11 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }                                          
 
     @Override
-    public void doStart(Request request){
-        lastRequest = request;
+    public void doStart(Request request) {
+        // Add to history manager:
+        historyManager.add(request);
         
+        // UI control:
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -489,10 +493,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
     
     @Override
-    public void clearUIRequest(){
-        // Clear last cached request
-        lastRequest = null;
-        
+    public void clearUIRequest() {
         // URL
         jp_url_go.clear();
         
@@ -610,7 +611,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     
     @Override
     public Request getLastRequest() {
-        return lastRequest;
+        return historyManager.lastRequest();
     }
 
     @Override
