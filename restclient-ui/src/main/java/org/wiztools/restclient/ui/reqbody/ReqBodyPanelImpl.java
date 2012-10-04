@@ -106,13 +106,19 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     @Override
     public void enableBody() {
         jcb_body_type.setEnabled(true);
-        ((ReqBodyPanel) getPanelFromSelection()).enableBody();
+        // ((ReqBodyPanel) getPanelFromSelection()).enableBody();
+        for(ReqBodyPanel panel: allPanels) {
+            panel.enableBody();
+        }
     }
     
     @Override
     public void disableBody() {
         jcb_body_type.setEnabled(false);
-        ((ReqBodyPanel) getPanelFromSelection()).disableBody();
+        // ((ReqBodyPanel) getPanelFromSelection()).disableBody();
+        for(ReqBodyPanel panel: allPanels) {
+            panel.disableBody();
+        }
     }
     
     @Override
