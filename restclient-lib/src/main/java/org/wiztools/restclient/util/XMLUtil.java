@@ -555,6 +555,11 @@ public final class XMLUtil {
             throws IOException, XMLException {
         List<Request> out = new ArrayList<Request>();
         Document doc = getDocumentFromFile(f);
+        Element eRoot = doc.getRootElement();
+        if(!"request-collection".equals(eRoot.getLocalName())) {
+            throw new XMLException("Expecting root element <request-collection>, but found: "
+                    + eRoot.getLocalName());
+        }
         Elements eRequests = doc.getRootElement().getChildElements();
         for(int i=0; i<eRequests.size(); i++) {
             Element eRequest = eRequests.get(i);
