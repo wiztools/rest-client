@@ -1,8 +1,16 @@
 package org.wiztools.restclient.ui.history;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.wiztools.restclient.bean.Request;
+import org.wiztools.restclient.ui.lifecycle.LifecycleManager;
+import org.wiztools.restclient.ui.lifecycle.Shutdown;
+import org.wiztools.restclient.util.XMLUtil;
 
 /**
  *
@@ -14,6 +22,34 @@ public class HistoryManagerImpl implements HistoryManager {
     private int cursor;
     
     private LinkedList<Request> data = new LinkedList<Request>();
+    
+    @Inject private LifecycleManager lifecycle;
+
+    @PostConstruct
+    protected void init() {
+        // Initialize History:
+        if(DEFAULT_FILE.exists()) {
+            try {
+                load(DEFAULT_FILE);
+            }
+            catch(IOException ex) {
+                ex.printStackTrace(System.err);
+            }
+        }
+        
+        // Add shutdown listener:
+        lifecycle.registerShutdownListener(new Shutdown() {
+            @Override
+            public void onShutdown() {
+                try {
+                    save(HistoryManager.DEFAULT_FILE);
+                }
+                catch(IOException ex) {
+                    ex.printStackTrace(System.err);
+                }
+            }
+        });
+    }
     
     @Override
     public int getHistorySize() {
@@ -132,6 +168,20 @@ public class HistoryManagerImpl implements HistoryManager {
     
     public int cursor() {
         return cursor;
+    }
+    
+    private void save(File file) throws IOException {
+        XMLUtil.writeRequestCollectionXML(data, file);
+    }
+    
+    private void load(File file) throws IOException {
+        if(data.isEmpty()) {
+            List<Request> requests = XMLUtil.getRequestCollectionFromXMLFile(file);
+            data.addAll(requests);
+        }
+        else {
+            throw new IllegalStateException("History is already initialized. Cannot initialize now.");
+        }
     }
 
     @Override
