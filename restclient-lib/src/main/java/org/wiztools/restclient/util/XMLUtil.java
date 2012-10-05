@@ -37,122 +37,123 @@ public final class XMLUtil {
         Arrays.sort(VERSIONS);
     }
 
-    private static void checkIfVersionValid(final String restVersion)
+    protected static void checkIfVersionValid(final String restVersion)
             throws XMLException {
         if (restVersion == null) {
-            throw new XMLException("Attribute `version' not available for root element <rest-client>");
+            throw new XMLException("Attribute `version' not available for root element");
         }
         int res = Arrays.binarySearch(VERSIONS, restVersion);
         if (res == -1) {
             throw new XMLException("Version not supported");
         }
     }
+    
+    private static Element getRootElement() {
+        Element eRoot = new Element("rest-client");
+        // set version attributes to rest-client root tag
+        eRoot.addAttribute(new Attribute("version", RCConstants.VERSION));
+        return eRoot;
+    }
+    
+    protected static Element getRequestElement(final Request bean) {
+        Element reqElement = new Element("request");
 
-    private static Document request2XML(final Request bean)
-            throws XMLException {
-        try {
+        { // HTTP Version
+            Element e = new Element("http-version");
+            e.appendChild(bean.getHttpVersion().versionNumber());
+            reqElement.appendChild(e);
+        }
 
-            Element reqRootElement = new Element("rest-client");
-            // set version attributes to rest-client root tag
-            Attribute versionAttributes = new Attribute("version", RCConstants.VERSION);
-            reqRootElement.addAttribute(versionAttributes);
+        if(bean.isFollowRedirect()) { // HTTP Follow Redirect
+            Element e = new Element("http-follow-redirects");
+            reqElement.appendChild(e);
+        }
 
-            Element reqChildElement = new Element("request");
+        if(bean.isIgnoreResponseBody()) { // Response body ignored
+            Element e = new Element("ignore-response-body");
+            reqElement.appendChild(e);
+        }
 
-            { // HTTP Version
-                Element e = new Element("http-version");
-                e.appendChild(bean.getHttpVersion().versionNumber());
-                reqChildElement.appendChild(e);
-            }
+        { // creating the URL child element
+            Element e = new Element("URL");
+            e.appendChild(bean.getUrl().toString());
+            reqElement.appendChild(e);
+        }
 
-            if(bean.isFollowRedirect()) { // HTTP Follow Redirect
-                Element e = new Element("http-follow-redirects");
-                reqChildElement.appendChild(e);
-            }
-            
-            if(bean.isIgnoreResponseBody()) { // Response body ignored
-                Element e = new Element("ignore-response-body");
-                reqChildElement.appendChild(e);
-            }
+        { // creating the method child element
+            Element e = new Element("method");
+            e.appendChild(bean.getMethod().name());
+            reqElement.appendChild(e);
+        }
 
-            { // creating the URL child element
-                Element e = new Element("URL");
-                e.appendChild(bean.getUrl().toString());
-                reqChildElement.appendChild(e);
+        { // auth
+            Auth auth = bean.getAuth();
+            if(auth != null) {
+                Element eAuth = XmlAuthUtil.getAuthElement(auth);
+                reqElement.appendChild(eAuth);
             }
+        }
 
-            { // creating the method child element
-                Element e = new Element("method");
-                e.appendChild(bean.getMethod().name());
-                reqChildElement.appendChild(e);
-            }
-            
-            { // auth
-                Auth auth = bean.getAuth();
-                if(auth != null) {
-                    Element eAuth = XmlAuthUtil.getAuthElement(auth);
-                    reqChildElement.appendChild(eAuth);
-                }
-            }
-            
-            // Creating SSL elements
-            if(bean.getSslReq() != null) {
-                Element eSsl = XmlSslUtil.getSslReq(bean.getSslReq());
-                reqChildElement.appendChild(eSsl);
-            }
+        // Creating SSL elements
+        if(bean.getSslReq() != null) {
+            Element eSsl = XmlSslUtil.getSslReq(bean.getSslReq());
+            reqElement.appendChild(eSsl);
+        }
 
-            // creating the headers child element
-            MultiValueMap<String, String> headers = bean.getHeaders();
-            if (!headers.isEmpty()) {
-                Element e = new Element("headers");
-                for (String key : headers.keySet()) {
-                    for(String value: headers.get(key)) {
-                        Element ee = new Element("header");
-                        ee.addAttribute(new Attribute("key", key));
-                        ee.addAttribute(new Attribute("value", value));
-                        e.appendChild(ee);
-                    }
-                }
-                reqChildElement.appendChild(e);
-            }
-            
-            // Cookies
-            List<HttpCookie> cookies = bean.getCookies();
-            if(!cookies.isEmpty()) {
-                Element e = new Element("cookies");
-                for(HttpCookie cookie: cookies) {
-                    Element ee = new Element("cookie");
-                    ee.addAttribute(new Attribute("name", cookie.getName()));
-                    ee.addAttribute(new Attribute("value", cookie.getValue()));
+        // creating the headers child element
+        MultiValueMap<String, String> headers = bean.getHeaders();
+        if (!headers.isEmpty()) {
+            Element e = new Element("headers");
+            for (String key : headers.keySet()) {
+                for(String value: headers.get(key)) {
+                    Element ee = new Element("header");
+                    ee.addAttribute(new Attribute("key", key));
+                    ee.addAttribute(new Attribute("value", value));
                     e.appendChild(ee);
                 }
-                reqChildElement.appendChild(e);
             }
-
-            { // creating the body child element
-                ReqEntity entityBean = bean.getBody();
-                if(entityBean != null) {
-                    Element e = XmlBodyUtil.getReqEntity(entityBean);
-                    reqChildElement.appendChild(e);
-                }
-            }
-            
-            // creating the test-script child element
-            String testScript = bean.getTestScript();
-            if (testScript != null) {
-
-                Element e = new Element("test-script");
-                e.appendChild(testScript);
-                reqChildElement.appendChild(e);
-            }
-            reqRootElement.appendChild(reqChildElement);
-
-            Document xomDocument = new Document(reqRootElement);
-
-            return xomDocument;
-        } catch (Exception ex) {
-            throw new XMLException(ex.getMessage(), ex);
+            reqElement.appendChild(e);
         }
+
+        // Cookies
+        List<HttpCookie> cookies = bean.getCookies();
+        if(!cookies.isEmpty()) {
+            Element e = new Element("cookies");
+            for(HttpCookie cookie: cookies) {
+                Element ee = new Element("cookie");
+                ee.addAttribute(new Attribute("name", cookie.getName()));
+                ee.addAttribute(new Attribute("value", cookie.getValue()));
+                e.appendChild(ee);
+            }
+            reqElement.appendChild(e);
+        }
+
+        { // creating the body child element
+            ReqEntity entityBean = bean.getBody();
+            if(entityBean != null) {
+                Element e = XmlBodyUtil.getReqEntity(entityBean);
+                reqElement.appendChild(e);
+            }
+        }
+
+        // creating the test-script child element
+        String testScript = bean.getTestScript();
+        if (testScript != null) {
+
+            Element e = new Element("test-script");
+            e.appendChild(testScript);
+            reqElement.appendChild(e);
+        }
+        return reqElement;
+    }
+
+    protected static Document request2XML(final Request bean)
+            throws XMLException {
+        Element reqRootElement = getRootElement();
+        reqRootElement.appendChild(getRequestElement(bean));
+
+        Document xomDocument = new Document(reqRootElement);
+        return xomDocument;
     }
 
     private static Map<String, String> getHeadersFromHeaderNode(final Element node)
@@ -189,37 +190,13 @@ public final class XMLUtil {
         
         return out;
     }
-
-    private static Request xml2Request(final Document doc)
+    
+    protected static Request getRequestBean(Element requestNode)
             throws MalformedURLException, XMLException {
         RequestBean requestBean = new RequestBean();
-
-        // get the rootNode
-        Element rootNode = doc.getRootElement();
-
-        if (!"rest-client".equals(rootNode.getQualifiedName())) {
-            throw new XMLException("Root node is not <rest-client>");
-        }
-
-        // checking correct rest version
-        final String rcVersion = rootNode.getAttributeValue("version");
-        checkIfVersionValid(rcVersion);
-
-        // assign rootnode to current node and also finding 'request' node
-        Element tNode = null;
-        Element requestNode = null;
-
-        // if more than two request element is present then throw the exception 
-        if (rootNode.getChildElements().size() != 1) {
-            throw new XMLException("There can be only one child node for root node: <request>");
-        }
-        // minimum one request element is present in xml 
-        if (rootNode.getFirstChildElement("request") == null) {
-            throw new XMLException("The child node of <rest-client> should be <request>");
-        }
-        requestNode = rootNode.getFirstChildElement("request");
+        
         for (int i = 0; i < requestNode.getChildElements().size(); i++) {
-            tNode = requestNode.getChildElements().get(i);
+            Element tNode = requestNode.getChildElements().get(i);
             String nodeName = tNode.getQualifiedName();
             if ("http-version".equals(nodeName)) {
                 String t = tNode.getValue();
@@ -271,131 +248,150 @@ public final class XMLUtil {
         return requestBean;
     }
 
-    private static Document response2XML(final Response bean)
-            throws XMLException {
+    protected static Request xml2Request(final Document doc)
+            throws MalformedURLException, XMLException {
+        // get the rootNode
+        Element rootNode = doc.getRootElement();
 
-        try {
-
-            Element respRootElement = new Element("rest-client");
-            Element respChildElement = new Element("response");
-            Element respChildSubElement = null;
-            Element respChildSubSubElement = null;
-
-            // set version attributes to rest-client root tag
-            Attribute versionAttributes = new Attribute("version", RCConstants.VERSION);
-            respRootElement.addAttribute(versionAttributes);
-
-            // adding first sub child element - execution-time and append to response child element
-            respChildSubElement = new Element("execution-time");
-            respChildSubElement.appendChild(String.valueOf(bean.getExecutionTime()));
-            respChildElement.appendChild(respChildSubElement);
-
-            // adding second sub child element - status and code attributes and append to response child element
-            respChildSubElement = new Element("status");
-            Attribute codeAttributes = new Attribute("code", String.valueOf(bean.getStatusCode()));
-            respChildSubElement.addAttribute(codeAttributes);
-            respChildSubElement.appendChild(bean.getStatusLine());
-            respChildElement.appendChild(respChildSubElement);
-
-            // adding third sub child element - headers
-            MultiValueMap<String, String> headers = bean.getHeaders();
-            if (!headers.isEmpty()) {
-                Attribute keyAttribute = null;
-                Attribute valueAttribute = null;
-                // creating sub child-child element 
-                respChildSubElement = new Element("headers");
-                for (String key : headers.keySet()) {
-                    for(String value: headers.get(key)) {
-                        respChildSubSubElement = new Element("header");
-                        keyAttribute = new Attribute("key", key);
-                        valueAttribute = new Attribute("value", value);
-                        respChildSubSubElement.addAttribute(keyAttribute);
-                        respChildSubSubElement.addAttribute(valueAttribute);
-                        respChildSubElement.appendChild(respChildSubSubElement);
-                    }
-                }
-                // add response child element - headers
-                respChildElement.appendChild(respChildSubElement);
-            }
-
-            byte[] responseBody = bean.getResponseBody();
-            if (responseBody != null) {
-                //creating the body child element and append to response child element
-                respChildSubElement = new Element("body");
-                final String base64encodedBody = Util.base64encode(responseBody);
-                respChildSubElement.appendChild(base64encodedBody);
-                respChildElement.appendChild(respChildSubElement);
-            }
-            // test result 
-            TestResult testResult = bean.getTestResult();
-            if (testResult != null) {
-                //creating the test-result child element
-                respChildSubElement = new Element("test-result");
-
-                // Counts:
-                Element e_runCount = new Element("run-count");
-                e_runCount.appendChild(String.valueOf(testResult.getRunCount()));
-                Element e_failureCount = new Element("failure-count");
-                e_failureCount.appendChild(String.valueOf(testResult.getFailureCount()));
-                Element e_errorCount = new Element("error-count");
-                e_errorCount.appendChild(String.valueOf(testResult.getErrorCount()));
-                respChildSubElement.appendChild(e_runCount);
-                respChildSubElement.appendChild(e_failureCount);
-                respChildSubElement.appendChild(e_errorCount);
-
-                // Failures
-                if (testResult.getFailureCount() > 0) {
-                    Element e_failures = new Element("failures");
-                    List<TestExceptionResult> l = testResult.getFailures();
-                    for (TestExceptionResult b : l) {
-                        Element e_message = new Element("message");
-                        e_message.appendChild(b.getExceptionMessage());
-                        Element e_line = new Element("line-number");
-                        e_line.appendChild(String.valueOf(b.getLineNumber()));
-                        Element e_failure = new Element("failure");
-                        e_failure.appendChild(e_message);
-                        e_failure.appendChild(e_line);
-                        e_failures.appendChild(e_failure);
-                    }
-                    respChildSubElement.appendChild(e_failures);
-                }
-
-                //Errors
-                if (testResult.getErrorCount() > 0) {
-                    Element e_errors = new Element("errors");
-                    List<TestExceptionResult> l = testResult.getErrors();
-                    for (TestExceptionResult b : l) {
-                        Element e_message = new Element("message");
-                        e_message.appendChild(b.getExceptionMessage());
-                        Element e_line = new Element("line-number");
-                        e_line.appendChild(String.valueOf(b.getLineNumber()));
-                        Element e_error = new Element("error");
-                        e_error.appendChild(e_message);
-                        e_error.appendChild(e_line);
-                        e_errors.appendChild(e_error);
-                    }
-                    respChildSubElement.appendChild(e_errors);
-                }
-                // Trace
-                Element e_trace = new Element("trace");
-                e_trace.appendChild(testResult.toString());
-                respChildSubElement.appendChild(e_trace);
-
-                respChildElement.appendChild(respChildSubElement);
-            }
-
-            respRootElement.appendChild(respChildElement);
-
-            Document xomDocument = new Document(respRootElement);
-
-            return xomDocument;
-
-        } catch (Exception ex) {
-            throw new XMLException(ex.getMessage(), ex);
+        if (!"rest-client".equals(rootNode.getQualifiedName())) {
+            throw new XMLException("Root node is not <rest-client>");
         }
+
+        // checking correct rest version
+        final String rcVersion = rootNode.getAttributeValue("version");
+        checkIfVersionValid(rcVersion);
+
+        
+
+        // if more than two request element is present then throw the exception 
+        if (rootNode.getChildElements().size() != 1) {
+            throw new XMLException("There can be only one child node for root node: <request>");
+        }
+        // minimum one request element is present in xml 
+        if (rootNode.getFirstChildElement("request") == null) {
+            throw new XMLException("The child node of <rest-client> should be <request>");
+        }
+        Element requestNode = rootNode.getFirstChildElement("request");
+        
+        return getRequestBean(requestNode);
+    }
+    
+    protected static Element getResponseElement(final Response bean) {
+        Element respElement = new Element("response");
+        Element respChildSubElement = null;
+        Element respChildSubSubElement = null;
+
+        // adding first sub child element - execution-time and append to response child element
+        respChildSubElement = new Element("execution-time");
+        respChildSubElement.appendChild(String.valueOf(bean.getExecutionTime()));
+        respElement.appendChild(respChildSubElement);
+
+        // adding second sub child element - status and code attributes and append to response child element
+        respChildSubElement = new Element("status");
+        Attribute codeAttributes = new Attribute("code", String.valueOf(bean.getStatusCode()));
+        respChildSubElement.addAttribute(codeAttributes);
+        respChildSubElement.appendChild(bean.getStatusLine());
+        respElement.appendChild(respChildSubElement);
+
+        // adding third sub child element - headers
+        MultiValueMap<String, String> headers = bean.getHeaders();
+        if (!headers.isEmpty()) {
+            Attribute keyAttribute = null;
+            Attribute valueAttribute = null;
+            // creating sub child-child element 
+            respChildSubElement = new Element("headers");
+            for (String key : headers.keySet()) {
+                for(String value: headers.get(key)) {
+                    respChildSubSubElement = new Element("header");
+                    keyAttribute = new Attribute("key", key);
+                    valueAttribute = new Attribute("value", value);
+                    respChildSubSubElement.addAttribute(keyAttribute);
+                    respChildSubSubElement.addAttribute(valueAttribute);
+                    respChildSubElement.appendChild(respChildSubSubElement);
+                }
+            }
+            // add response child element - headers
+            respElement.appendChild(respChildSubElement);
+        }
+
+        byte[] responseBody = bean.getResponseBody();
+        if (responseBody != null) {
+            //creating the body child element and append to response child element
+            respChildSubElement = new Element("body");
+            final String base64encodedBody = Util.base64encode(responseBody);
+            respChildSubElement.appendChild(base64encodedBody);
+            respElement.appendChild(respChildSubElement);
+        }
+        // test result 
+        TestResult testResult = bean.getTestResult();
+        if (testResult != null) {
+            //creating the test-result child element
+            respChildSubElement = new Element("test-result");
+
+            // Counts:
+            Element e_runCount = new Element("run-count");
+            e_runCount.appendChild(String.valueOf(testResult.getRunCount()));
+            Element e_failureCount = new Element("failure-count");
+            e_failureCount.appendChild(String.valueOf(testResult.getFailureCount()));
+            Element e_errorCount = new Element("error-count");
+            e_errorCount.appendChild(String.valueOf(testResult.getErrorCount()));
+            respChildSubElement.appendChild(e_runCount);
+            respChildSubElement.appendChild(e_failureCount);
+            respChildSubElement.appendChild(e_errorCount);
+
+            // Failures
+            if (testResult.getFailureCount() > 0) {
+                Element e_failures = new Element("failures");
+                List<TestExceptionResult> l = testResult.getFailures();
+                for (TestExceptionResult b : l) {
+                    Element e_message = new Element("message");
+                    e_message.appendChild(b.getExceptionMessage());
+                    Element e_line = new Element("line-number");
+                    e_line.appendChild(String.valueOf(b.getLineNumber()));
+                    Element e_failure = new Element("failure");
+                    e_failure.appendChild(e_message);
+                    e_failure.appendChild(e_line);
+                    e_failures.appendChild(e_failure);
+                }
+                respChildSubElement.appendChild(e_failures);
+            }
+
+            //Errors
+            if (testResult.getErrorCount() > 0) {
+                Element e_errors = new Element("errors");
+                List<TestExceptionResult> l = testResult.getErrors();
+                for (TestExceptionResult b : l) {
+                    Element e_message = new Element("message");
+                    e_message.appendChild(b.getExceptionMessage());
+                    Element e_line = new Element("line-number");
+                    e_line.appendChild(String.valueOf(b.getLineNumber()));
+                    Element e_error = new Element("error");
+                    e_error.appendChild(e_message);
+                    e_error.appendChild(e_line);
+                    e_errors.appendChild(e_error);
+                }
+                respChildSubElement.appendChild(e_errors);
+            }
+            // Trace
+            Element e_trace = new Element("trace");
+            e_trace.appendChild(testResult.toString());
+            respChildSubElement.appendChild(e_trace);
+
+            respElement.appendChild(respChildSubElement);
+        }
+        return respElement;
     }
 
-    private static Response xml2Response(final Document doc)
+    protected static Document response2XML(final Response bean)
+            throws XMLException {
+        Element respRootElement = getRootElement();
+        respRootElement.appendChild(getResponseElement(bean));
+
+        Document xomDocument = new Document(respRootElement);
+        return xomDocument;
+    }
+
+    protected static Response xml2Response(final Document doc)
             throws XMLException {
         ResponseBean responseBean = new ResponseBean();
 
@@ -464,7 +460,7 @@ public final class XMLUtil {
         return responseBean;
     }
 
-    private static void writeXML(final Document doc, final File f)
+    protected static void writeXML(final Document doc, final File f)
             throws IOException, XMLException {
 
         try {
@@ -479,7 +475,7 @@ public final class XMLUtil {
         }
     }
 
-    private static Document getDocumentFromFile(final File f)
+    protected static Document getDocumentFromFile(final File f)
             throws IOException, XMLException {
         try {
             Builder parser = new Builder();
@@ -526,18 +522,6 @@ public final class XMLUtil {
         Document doc = request2XML(bean);
         writeXML(doc, f);
     }
-    
-    public static void writeRequestCollectionXML(final List<Request> requests, final File f)
-            throws IOException, XMLException {
-        Element eRoot = new Element("request-collection");
-        for(Request req: requests) {
-            Document d = request2XML(req);
-            Element e = d.getRootElement();
-            eRoot.appendChild(e);
-        }
-        Document doc = new Document(eRoot);
-        writeXML(doc, f);
-    }
 
     public static void writeResponseXML(final Response bean, final File f)
             throws IOException, XMLException {
@@ -549,24 +533,6 @@ public final class XMLUtil {
             throws IOException, XMLException {
         Document doc = getDocumentFromFile(f);
         return xml2Request(doc);
-    }
-    
-    public static List<Request> getRequestCollectionFromXMLFile(final File f)
-            throws IOException, XMLException {
-        List<Request> out = new ArrayList<Request>();
-        Document doc = getDocumentFromFile(f);
-        Element eRoot = doc.getRootElement();
-        if(!"request-collection".equals(eRoot.getLocalName())) {
-            throw new XMLException("Expecting root element <request-collection>, but found: "
-                    + eRoot.getLocalName());
-        }
-        Elements eRequests = doc.getRootElement().getChildElements();
-        for(int i=0; i<eRequests.size(); i++) {
-            Element eRequest = eRequests.get(i);
-            Request req = xml2Request(new Document(eRequest));
-            out.add(req);
-        }
-        return out;
     }
 
     public static Response getResponseFromXMLFile(final File f)
