@@ -27,7 +27,7 @@ public final class XMLUtil {
     }
     private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
     private static final String[] VERSIONS = new String[]{
-        "3.0", RCConstants.VERSION
+        "3.0", "3.1", RCConstants.VERSION
     };
 
     public static final String XML_MIME = "application/xml";
@@ -526,6 +526,18 @@ public final class XMLUtil {
         Document doc = request2XML(bean);
         writeXML(doc, f);
     }
+    
+    public static void writeRequestCollectionXML(final List<Request> requests, final File f)
+            throws IOException, XMLException {
+        Element eRoot = new Element("request-collection");
+        for(Request req: requests) {
+            Document d = request2XML(req);
+            Element e = d.getRootElement();
+            eRoot.appendChild(e);
+        }
+        Document doc = new Document(eRoot);
+        writeXML(doc, f);
+    }
 
     public static void writeResponseXML(final Response bean, final File f)
             throws IOException, XMLException {
@@ -537,6 +549,19 @@ public final class XMLUtil {
             throws IOException, XMLException {
         Document doc = getDocumentFromFile(f);
         return xml2Request(doc);
+    }
+    
+    public static List<Request> getRequestCollectionFromXMLFile(final File f)
+            throws IOException, XMLException {
+        List<Request> out = new ArrayList<Request>();
+        Document doc = getDocumentFromFile(f);
+        Elements eRequests = doc.getRootElement().getChildElements();
+        for(int i=0; i<eRequests.size(); i++) {
+            Element eRequest = eRequests.get(i);
+            Request req = xml2Request(new Document(eRequest));
+            out.add(req);
+        }
+        return out;
     }
 
     public static Response getResponseFromXMLFile(final File f)
