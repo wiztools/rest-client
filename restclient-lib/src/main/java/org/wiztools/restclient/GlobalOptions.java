@@ -18,15 +18,10 @@ final public class GlobalOptions implements IGlobalOptions {
     private final static Logger LOG = Logger.getLogger(GlobalOptions.class.getName());
     
     public static final Integer DEFAULT_TIMEOUT_MILLIS = new Integer(60000);
-    private static final File CONF_DIR = new File(
-            System.getProperty("user.home") +
-            System.getProperty("file.separator") +
-            ".rest-client");
     private static final File CONF_PROPERTY = new File(CONF_DIR, "rest-client.properties");
     
     private final Properties prop = new Properties();
     
-    private static GlobalOptions me;
     Lock lock = new ReentrantLock();
     
     private int requestTimeoutInMillis;
@@ -39,9 +34,7 @@ final public class GlobalOptions implements IGlobalOptions {
         this.requestTimeoutInMillis = requestTimeoutInMillis;
     }
     
-    public GlobalOptions(){
-        me = this;
-        
+    public GlobalOptions() {
         // Load default properties:
         prop.setProperty("request-timeout-in-millis", "60000");
 
@@ -62,7 +55,7 @@ final public class GlobalOptions implements IGlobalOptions {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                me.writeProperties();
+                writeProperties();
             }
         }));
     }

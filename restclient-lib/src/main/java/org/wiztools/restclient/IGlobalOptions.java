@@ -1,6 +1,8 @@
 package org.wiztools.restclient;
 
 import com.google.inject.ImplementedBy;
+import java.io.File;
+import org.wiztools.commons.SystemConstants;
 
 /**
  *
@@ -8,6 +10,11 @@ import com.google.inject.ImplementedBy;
  */
 @ImplementedBy(GlobalOptions.class)
 public interface IGlobalOptions {
+    
+    File CONF_DIR = new File(
+            SystemConstants.userHome +
+            SystemConstants.fileSeparator +
+            ".rest-client");
 
     void acquire();
 
