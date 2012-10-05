@@ -10,7 +10,7 @@ import javax.inject.Singleton;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.ui.lifecycle.LifecycleManager;
 import org.wiztools.restclient.ui.lifecycle.Shutdown;
-import org.wiztools.restclient.util.XMLUtil;
+import org.wiztools.restclient.util.XMLCollectionUtil;
 
 /**
  *
@@ -171,12 +171,12 @@ public class HistoryManagerImpl implements HistoryManager {
     }
     
     private void save(File file) throws IOException {
-        XMLUtil.writeRequestCollectionXML(data, file);
+        XMLCollectionUtil.writeRequestCollectionXML(data, file);
     }
     
     private void load(File file) throws IOException {
         if(data.isEmpty()) {
-            List<Request> requests = XMLUtil.getRequestCollectionFromXMLFile(file);
+            List<Request> requests = XMLCollectionUtil.getRequestCollectionFromXMLFile(file);
             data.addAll(requests);
         }
         else {

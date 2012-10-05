@@ -67,16 +67,6 @@ class RESTMain implements RESTUserInterface {
         // Application logic:
         frame = new JFrame(RCConstants.TITLE + RCConstants.VERSION);
         init();
-        
-        // Shutdown Hook:
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-
-            @Override
-            public void run() {
-                // historyManager.
-            }
-            
-        });
     }
     
     @Override
