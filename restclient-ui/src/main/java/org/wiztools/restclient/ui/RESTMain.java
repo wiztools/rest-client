@@ -32,7 +32,7 @@ import org.wiztools.restclient.util.XMLUtil;
 
 /**
  *
- * @author schandran
+ * @author subwiz
  */
 @Singleton
 class RESTMain implements RESTUserInterface {
@@ -67,6 +67,16 @@ class RESTMain implements RESTUserInterface {
         // Application logic:
         frame = new JFrame(RCConstants.TITLE + RCConstants.VERSION);
         init();
+        
+        // Shutdown Hook:
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+
+            @Override
+            public void run() {
+                // historyManager.
+            }
+            
+        });
     }
     
     @Override
@@ -796,7 +806,7 @@ class RESTMain implements RESTUserInterface {
         }
     }
     
-    private void shutdownCall(){
+    private void shutdownCall() {
         recentFilesHelper.store();
         System.out.println("Exiting...");
         System.exit(0);
