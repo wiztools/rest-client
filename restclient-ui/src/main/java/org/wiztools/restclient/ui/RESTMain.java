@@ -271,6 +271,24 @@ class RESTMain implements RESTUserInterface {
         jmi_back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Verify if most recent history needs to be shown:
+                if(historyManager.isMostRecent()) {
+                    try {
+                        Request reqFromUi = view.getRequestFromUI();
+                        if(!reqFromUi.equals(historyManager.current())) {
+                            view.setUIFromRequest(historyManager.current());
+                            return;
+                        }
+                    }
+                    catch(IllegalStateException ex) {
+                        if(historyManager.current() != null) {
+                            view.setUIFromRequest(historyManager.current());
+                            return;
+                        }
+                    }
+                }
+                
+                // Normal logic, cursor-1 history:
                 if(!historyManager.isOldest()) {
                     Request request = historyManager.back();
                     if(request != null) {
