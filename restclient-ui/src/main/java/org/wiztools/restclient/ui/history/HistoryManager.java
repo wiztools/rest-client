@@ -27,6 +27,8 @@ public interface HistoryManager {
     
     boolean isMostRecent();
     boolean isOldest();
+    
+    boolean isEmpty();
 
     void clear();
 }

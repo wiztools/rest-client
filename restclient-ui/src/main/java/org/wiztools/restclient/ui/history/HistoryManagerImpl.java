@@ -162,6 +162,11 @@ public class HistoryManagerImpl implements HistoryManager {
         cursor = 0;
     }
     
+    @Override
+    public boolean isEmpty() {
+        return data.isEmpty();
+    }
+    
     public int size() {
         return data.size();
     }
