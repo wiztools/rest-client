@@ -344,10 +344,13 @@ class RESTMain implements RESTUserInterface {
                     JOptionPane.showMessageDialog(frame, "History is empty!");
                     return;
                 }
-                final File f = getSaveFile(FileChooserType.SAVE_HISTORY);
+                final File f = FileType.getWithExtension(
+                        getSaveFile(FileChooserType.SAVE_HISTORY),
+                        FileType.HISTORY);
                 if(f != null) {
                     try {
                         historyManager.save(f);
+                        view.setStatusMessage("Saved history file: " + f.getName());
                     }
                     catch(IOException ex) {
                         view.showError(Util.getStackTrace(ex));
