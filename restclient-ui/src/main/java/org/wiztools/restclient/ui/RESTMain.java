@@ -368,14 +368,14 @@ class RESTMain implements RESTUserInterface {
                     final int confirm = JOptionPane.showConfirmDialog(null,
                             "Overwrite existing history?",
                             "Existing history will be overwritten. Proceed?", JOptionPane.YES_NO_OPTION);
-                    if(confirm == JOptionPane.NO_OPTION) {
-                        historyManager.clear();
+                    if(confirm == JOptionPane.NO_OPTION || confirm == JOptionPane.CLOSED_OPTION) {
                         return;
                     }
                 }
                 final File f = getOpenFile(FileChooserType.OPEN_HISTORY);
                 if(f != null) {
                     try {
+                        historyManager.clear();
                         historyManager.load(f);
                     }
                     catch(IOException ex) {
