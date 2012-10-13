@@ -175,11 +175,13 @@ public class HistoryManagerImpl implements HistoryManager {
         return cursor;
     }
     
-    private void save(File file) throws IOException {
+    @Override
+    public void save(File file) throws IOException {
         XMLCollectionUtil.writeRequestCollectionXML(data, file);
     }
     
-    private void load(File file) throws IOException {
+    @Override
+    public void load(File file) throws IOException {
         if(data.isEmpty()) {
             List<Request> requests = XMLCollectionUtil.getRequestCollectionFromXMLFile(file);
             data.addAll(requests);

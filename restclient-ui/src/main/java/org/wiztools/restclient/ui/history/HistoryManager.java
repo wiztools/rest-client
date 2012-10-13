@@ -2,6 +2,7 @@ package org.wiztools.restclient.ui.history;
 
 import com.google.inject.ImplementedBy;
 import java.io.File;
+import java.io.IOException;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.bean.Request;
 
@@ -31,4 +32,7 @@ public interface HistoryManager {
     boolean isEmpty();
 
     void clear();
+    
+    void save(File file) throws IOException;
+    void load(File file) throws IOException;
 }
