@@ -333,9 +333,31 @@ class RESTMain implements RESTUserInterface {
         });
         jm_history.add(jmi_clear_history);
         
-        jm_history.addActionListener(new ActionListener() {
+        jm_history.addSeparator();
+        
+        JMenuItem jmi_save_history = new JMenuItem("Save History");
+        jmi_save_history.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // 
+            }
+        });
+        jm_history.add(jmi_save_history);
+        
+        JMenuItem jmi_load_history = new JMenuItem("Load History");
+        jmi_load_history.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 
+            }
+        });
+        jm_history.add(jmi_load_history);
+        
+        // Enable disable history controls based on cursor positions:
+        jm_history.addMenuListener(new MenuListener() {
+
+            @Override
+            public void menuSelected(MenuEvent e) {
                 if(historyManager.isOldest()) {
                     jmi_back.setEnabled(false);
                 }
@@ -349,6 +371,16 @@ class RESTMain implements RESTUserInterface {
                 else {
                     jmi_forward.setEnabled(true);
                 }
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+                //
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+                // 
             }
         });
         
