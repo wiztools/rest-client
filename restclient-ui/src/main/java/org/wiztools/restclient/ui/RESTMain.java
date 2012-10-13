@@ -53,6 +53,7 @@ class RESTMain implements RESTUserInterface {
     private JFileChooser jfc_response = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_generic = UIUtil.getNewJFileChooser();
     private JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
+    private JFileChooser jfc_history = UIUtil.getNewJFileChooser();
     
     @Inject private RecentFilesHelper recentFilesHelper;
     
@@ -339,7 +340,19 @@ class RESTMain implements RESTUserInterface {
         jmi_save_history.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 
+                if(historyManager.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "History is empty!");
+                    return;
+                }
+                final File f = getSaveFile(FileChooserType.SAVE_HISTORY);
+                if(f != null) {
+                    try {
+                        historyManager.save(f);
+                    }
+                    catch(IOException ex) {
+                        view.showError(Util.getStackTrace(ex));
+                    }
+                }
             }
         });
         jm_history.add(jmi_save_history);
@@ -348,7 +361,24 @@ class RESTMain implements RESTUserInterface {
         jmi_load_history.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 
+                if(!historyManager.isEmpty()) {
+                    final int confirm = JOptionPane.showConfirmDialog(null,
+                            "Overwrite existing history?",
+                            "Existing history will be overwritten. Proceed?", JOptionPane.YES_NO_OPTION);
+                    if(confirm == JOptionPane.NO_OPTION) {
+                        historyManager.clear();
+                        return;
+                    }
+                }
+                final File f = getOpenFile(FileChooserType.OPEN_HISTORY);
+                if(f != null) {
+                    try {
+                        historyManager.load(f);
+                    }
+                    catch(IOException ex) {
+                        view.showError(Util.getStackTrace(ex));
+                    }
+                }
             }
         });
         jm_history.add(jmi_load_history);
@@ -567,6 +597,10 @@ class RESTMain implements RESTUserInterface {
             jfc = jfc_generic;
             title = "Open Request Body";
         }
+        else if(type == FileChooserType.OPEN_HISTORY) {
+            jfc = jfc_history;
+            title = "Open History";
+        }
         else if(type == FileChooserType.OPEN_TEST_SCRIPT){
             jfc = jfc_generic;
             title = "Open Test Script";
@@ -629,6 +663,10 @@ class RESTMain implements RESTUserInterface {
         else if(type == FileChooserType.SAVE_ARCHIVE){
             jfc = jfc_archive;
             title = "Save Req-Res Archive";
+        }
+        else if(type == FileChooserType.SAVE_HISTORY) {
+            jfc = jfc_history;
+            title = "Save History";
         }
         jfc.setDialogTitle(title);
         int status = jfc.showSaveDialog(frame);
