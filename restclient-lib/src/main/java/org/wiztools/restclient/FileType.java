@@ -10,6 +10,7 @@ public class FileType {
     public static final String REQUEST_EXT = ".rcq";
     public static final String RESPONSE_EXT = ".rcs";
     public static final String ARCHIVE_EXT = ".rcr";
+    public static final String HISTORY_EXT = ".rch";
     
     public static boolean isRequest(final File f){
         String path = f.getAbsolutePath();
@@ -38,6 +39,15 @@ public class FileType {
         return false;
     }
     
+    public static boolean isHistory(final File f) {
+        String path = f.getAbsolutePath();
+        path = path.toLowerCase();
+        if(path.endsWith(HISTORY_EXT)){
+            return true;
+        }
+        return false;
+    }
+    
     public static String getType(final File f){
         String path = f.getAbsolutePath();
         path = path.toLowerCase();
@@ -50,6 +60,9 @@ public class FileType {
         }
         else if(path.endsWith(ARCHIVE_EXT)){
             type = ARCHIVE_EXT;
+        }
+        else if(path.endsWith(HISTORY_EXT)) {
+            type = HISTORY_EXT;
         }
         return type;
     }
