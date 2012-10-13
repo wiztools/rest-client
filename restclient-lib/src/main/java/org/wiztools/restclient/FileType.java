@@ -6,11 +6,27 @@ import java.io.File;
  *
  * @author Subhash
  */
-public class FileType {
+public enum FileType {
+    REQUEST, RESPONSE, ARCHIVE, HISTORY;
+    
     public static final String REQUEST_EXT = ".rcq";
     public static final String RESPONSE_EXT = ".rcs";
     public static final String ARCHIVE_EXT = ".rcr";
     public static final String HISTORY_EXT = ".rch";
+    
+    public String getExtension() {
+        switch(this) {
+            case REQUEST:
+                return REQUEST_EXT;
+            case RESPONSE:
+                return RESPONSE_EXT;
+            case ARCHIVE:
+                return ARCHIVE_EXT;
+            case HISTORY:
+                return HISTORY_EXT;
+        }
+        return null;
+    }
     
     public static boolean isRequest(final File f){
         String path = f.getAbsolutePath();
@@ -65,5 +81,16 @@ public class FileType {
             type = HISTORY_EXT;
         }
         return type;
+    }
+    
+    public static File getWithExtension(File f, FileType type) {
+        if(f == null) {
+            return null;
+        }
+        if(f.getAbsolutePath().toLowerCase().endsWith(type.getExtension())) {
+            return f;
+        }
+        // Add extension:
+        return new File(f.getParent(), f.getName() + type.getExtension());
     }
 }
