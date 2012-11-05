@@ -541,6 +541,9 @@ public final class XMLUtil {
         return xml2Response(doc);
     }
 
+    // Deprecation reason:
+    // http://code.google.com/p/rest-client/issues/detail?id=158
+    @Deprecated
     public static String indentXML(final String in)
             throws XMLException, IOException {
         try {
