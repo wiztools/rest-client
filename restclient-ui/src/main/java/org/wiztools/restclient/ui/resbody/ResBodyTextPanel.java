@@ -22,7 +22,7 @@ import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.ui.*;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.JSONUtil;
-import org.wiztools.restclient.util.XMLUtil;
+import org.wiztools.restclient.util.XMLIndentUtil;
 
 /**
  *
@@ -102,7 +102,7 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
                     public void run() {
                         String status;
                         try {
-                            final String indentedXML = XMLUtil.indentXML(resText);
+                            final String indentedXML = XMLIndentUtil.getIndented(resText);
                             se_response.setText(indentedXML);
                             se_response.setCaretPosition(0);
                             
@@ -262,11 +262,11 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
         }
         
         // Find if you need to indent
+        final String responseBody = new String(getBody(), type.getCharset());
         if(options.isPropertyTrue("response.body.indent")) {
-            final String responseBody = new String(getBody(), type.getCharset());
             if(isXml){
                 try{
-                    String indentedResponseBody = XMLUtil.indentXML(responseBody);
+                    String indentedResponseBody = XMLIndentUtil.getIndented(responseBody);
                     se_response.setText(indentedResponseBody);
                 }
                 catch(IOException ex){
@@ -297,7 +297,7 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
             }
         }
         else { // No indentation
-            se_response.setText(new String(getBody(), type.getCharset()));
+            se_response.setText(responseBody);
         }
         se_response.setCaretPosition(0);
     }
