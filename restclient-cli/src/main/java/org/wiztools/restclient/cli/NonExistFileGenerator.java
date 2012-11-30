@@ -24,8 +24,8 @@ class NonExistFileGenerator {
             System.err.println("File exists: " + outFile.getAbsolutePath());
             for(int i = 0; i< Integer.MAX_VALUE; i++){
                 final File newOutFile = new File(outDir, fileName + "_" + i + extension);
-                if(!outFile.exists()){
-                    System.err.println("Using alternative: " + outFile.getAbsolutePath());
+                if(!newOutFile.exists()){
+                    System.err.println("Using alternative: " + newOutFile.getAbsolutePath());
                     return newOutFile;
                 }
             }
