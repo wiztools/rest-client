@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.bean.ContentTypeBean;
 import org.wiztools.restclient.ui.RCFileView;
@@ -69,7 +70,12 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
     
     @Override
     public ContentType getContentType() {
-        return new ContentTypeBean(jd.getContentType(), jd.getCharset());
+        if(StringUtil.isNotEmpty(jd.getContentType())) {
+            return new ContentTypeBean(jd.getContentType(), jd.getCharset());
+        }
+        else {
+            return null;
+        }
     }
     
     @Override
