@@ -62,7 +62,9 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
     
     @Override
     public void setContentTypeCharset(ContentType contentType) {
-        setContentTypeCharset(contentType.getContentType(), contentType.getCharset());
+        if(contentType != null) {
+            setContentTypeCharset(contentType.getContentType(), contentType.getCharset());
+        }
     }
     
     @Override
@@ -73,7 +75,9 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
     @Override
     public void setContentTypeCharset(String contentType, Charset charset) {
         jd.setContentType(contentType);
-        jd.setCharset(charset);
+        if(charset != null) {
+            jd.setCharset(charset);
+        }
         jtf_content_type_charset.setText(
                 HttpUtil.getFormattedContentType(contentType, charset));
     }
