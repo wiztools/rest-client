@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -15,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.wiztools.commons.Charsets;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.XMLException;
@@ -238,11 +240,13 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
         // JSON or XML?
         boolean isXml = false;
         boolean isJson = false;
-        if(HttpUtil.isXmlContentType(type.getContentType())){
-            isXml = true;
-        }
-        else if(HttpUtil.isJsonContentType(type.getContentType())){
-            isJson = true;
+        if(type != null) {
+            if(HttpUtil.isXmlContentType(type.getContentType())){
+                isXml = true;
+            }
+            else if(HttpUtil.isJsonContentType(type.getContentType())){
+                isJson = true;
+            }
         }
         
         // Get the options:
@@ -262,7 +266,7 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
         }
         
         // Find if you need to indent
-        final String responseBody = new String(getBody(), type.getCharset());
+        final String responseBody = new String(getBody(), HttpUtil.getCharsetDefault(type));
         if(options.isPropertyTrue("response.body.indent")) {
             if(isXml){
                 try{
