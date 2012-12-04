@@ -9,6 +9,7 @@ import java.util.List;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.*;
 
@@ -92,8 +93,13 @@ class XmlBodyUtil {
     private static ContentType getContentType(Element e) {
         String contentType = e.getAttributeValue("content-type");
         String charsetStr = e.getAttributeValue("charset");
-        return new ContentTypeBean(contentType,
+        if(StringUtil.isNotEmpty(contentType)) {
+            return new ContentTypeBean(contentType,
                 (charsetStr!=null? Charset.forName(charsetStr): null));
+        }
+        else {
+            return null;
+        }
     }
     
     static Element getReqEntity(ReqEntity bean) {
@@ -171,9 +177,11 @@ class XmlBodyUtil {
     }
     
     private static void addContentTypeCharsetAttribute(ContentType c, Element e) {
-        e.addAttribute(new Attribute("content-type", c.getContentType()));
-        if(c.getCharset() != null) {
-            e.addAttribute(new Attribute("charset", c.getCharset().name()));
+        if(c != null) {
+            e.addAttribute(new Attribute("content-type", c.getContentType()));
+            if(c.getCharset() != null) {
+                e.addAttribute(new Attribute("charset", c.getCharset().name()));
+            }
         }
     }
 }

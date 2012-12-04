@@ -1,6 +1,7 @@
 package org.wiztools.restclient.bean;
 
 import java.nio.charset.Charset;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.util.HttpUtil;
 
 /**
@@ -13,6 +14,9 @@ public class ContentTypeBean implements ContentType {
     private Charset charset;
 
     public ContentTypeBean(String contentType, Charset charset) {
+        if(StringUtil.isEmpty(contentType)) {
+            throw new IllegalArgumentException("content-type MUST NOT be empty!");
+        }
         this.contentType = contentType;
         this.charset = charset;
     }
