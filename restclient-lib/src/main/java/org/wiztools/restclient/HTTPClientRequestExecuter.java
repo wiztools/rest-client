@@ -293,7 +293,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                     ContentType ct = p.getContentType();
                                     StringBody sb = null;
                                     if(ct != null) {
-                                        sb = new StringBody(body, ct.getContentType(), ct.getCharset());
+                                        sb = new StringBody(body, ct.getContentType(), HttpUtil.getCharsetDefault(ct));
                                     }
                                     else {
                                         sb = new StringBody(body);
@@ -306,7 +306,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                     ContentType ct = p.getContentType();
                                     FileBody fb = null;
                                     if(ct != null) {
-                                        fb = new FileBody(body, ct.getContentType(), ct.getCharset().name());
+                                        fb = new FileBody(body, ct.getContentType(), HttpUtil.getCharsetDefault(ct).name());
                                     }
                                     else {
                                         fb = new FileBody(body);
