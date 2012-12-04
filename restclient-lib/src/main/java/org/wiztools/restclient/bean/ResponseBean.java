@@ -53,8 +53,9 @@ public final class ResponseBean implements Response{
 
     @Override
     public ContentType getContentType() {
-        if(headers != null)
+        if(headers != null) {
             return HttpUtil.getContentType(headers);
+        }
         return null;
     }
 
