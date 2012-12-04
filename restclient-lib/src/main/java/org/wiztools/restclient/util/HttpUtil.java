@@ -15,8 +15,8 @@ import org.wiztools.restclient.bean.ContentTypeBean;
  */
 public final class HttpUtil {
     
-    private static final ContentType DEFAULT_CONTENT_TYPE = new ContentTypeBean("text/plain", Charsets.UTF_8);
-    private static final Charset DEFAULT_CHARSET = Charsets.UTF_8;
+    public static final ContentType DEFAULT_CONTENT_TYPE = new ContentTypeBean("text/plain", Charsets.UTF_8);
+    public static final Charset DEFAULT_CHARSET = Charsets.UTF_8;
     
     public static ContentType getContentType(String header) {
         if(header.contains("charset")) {
@@ -29,9 +29,9 @@ public final class HttpUtil {
             }
         }
         else { // no charset header
-            return new ContentTypeBean(header, DEFAULT_CHARSET);
+            return new ContentTypeBean(header, null);
         }
-        return DEFAULT_CONTENT_TYPE;
+        return null;
     }
     
     public static ContentType getContentType(MultiValueMap<String, String> headers) {
@@ -40,7 +40,7 @@ public final class HttpUtil {
                 return getContentType(headers.get(key).iterator().next());
             }
         }
-        return DEFAULT_CONTENT_TYPE;
+        return null;
     }
     
     /**
@@ -150,5 +150,11 @@ public final class HttpUtil {
             return true;
         }
         return false;
+    }
+    
+    public static Charset getCharsetDefault(final ContentType type) {
+        return type != null?
+                (type.getCharset() != null? type.getCharset(): DEFAULT_CHARSET)
+                : DEFAULT_CHARSET;
     }
 }
