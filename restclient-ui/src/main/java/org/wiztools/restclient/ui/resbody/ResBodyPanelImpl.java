@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JScrollPane;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.ui.FontableEditor;
 import org.wiztools.restclient.util.HttpUtil;
@@ -36,18 +37,27 @@ public class ResBodyPanelImpl extends AbstractResBody implements FontableEditor 
         super.setBody(body, type);
         
         // Display the new body:
-        if(HttpUtil.isTextContentType(type.getContentType())) {
-            jp_text.setBody(body, type);
-            jsp.setViewportView(jp_text);
-        }
-        else if(HttpUtil.isWebImageContentType(type.getContentType())) {
-            jp_image.setBody(body, type);
-            jsp.setViewportView(jp_image);
+        if(type != null && StringUtil.isNotEmpty(type.getContentType())) {
+            if(HttpUtil.isTextContentType(type.getContentType())) {
+                jp_text.setBody(body, type);
+                jsp.setViewportView(jp_text);
+            }
+            else if(HttpUtil.isWebImageContentType(type.getContentType())) {
+                jp_image.setBody(body, type);
+                jsp.setViewportView(jp_image);
+            }
+            else {
+                setBinaryBody();
+            }
         }
         else {
-            jp_binary.setBody(body, type);
-            jsp.setViewportView(jp_binary);
+            setBinaryBody();
         }
+    }
+    
+    private void setBinaryBody() {
+        jp_binary.setBody(body, type);
+        jsp.setViewportView(jp_binary);
     }
     
     @Override
