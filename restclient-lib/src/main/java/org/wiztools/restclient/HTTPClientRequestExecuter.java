@@ -280,10 +280,6 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                     try {
                         if(bean instanceof ReqEntitySimple) {
                             AbstractHttpEntity e = HTTPClientUtil.getEntity((ReqEntitySimple)bean);
-                            final ContentType ct = ((ReqEntitySimple)bean).getContentType();
-                            if(ct != null) {
-                                e.setContentType(HttpUtil.getFormattedContentType(ct));
-                            }
                             eeMethod.setEntity(e);
                         }
                         else if(bean instanceof ReqEntityMultipart) {

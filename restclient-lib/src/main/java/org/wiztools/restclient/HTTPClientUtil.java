@@ -77,20 +77,26 @@ class HTTPClientUtil {
         return sb.toString();
     }
     
-    static AbstractHttpEntity getEntity(ReqEntitySimple bean) throws UnsupportedEncodingException, IOException {
+    static AbstractHttpEntity getEntity(ReqEntitySimple bean)
+            throws UnsupportedEncodingException, IOException {
         AbstractHttpEntity entity = null;
-        if(bean instanceof ReqEntityString) {
-            entity = new StringEntity(((ReqEntityString)bean).getBody());
+        ContentType contentType = null;
+        if (bean.getContentType() != null) {
+            org.wiztools.restclient.bean.ContentType ct = bean.getContentType();
+            contentType = ContentType.create(ct.getContentType(), ct.getCharset());
         }
-        else if(bean instanceof ReqEntityByteArray) {
-            entity = new ByteArrayEntity(((ReqEntityByteArray)bean).getBody());
+        if (bean instanceof ReqEntityString) {
+            entity = new StringEntity(((ReqEntityString) bean).getBody(), contentType);
         }
-        else if(bean instanceof ReqEntityStream) {
-            entity = new InputStreamEntity(((ReqEntityStream)bean).getBody(),
-                    ((ReqEntityStream)bean).getLength());
+        else if (bean instanceof ReqEntityByteArray) {
+            entity = new ByteArrayEntity(((ReqEntityByteArray) bean).getBody(), contentType);
         }
-        else if(bean instanceof ReqEntityFile) {
-            entity = new FileEntity(((ReqEntityFile)bean).getBody());
+        else if (bean instanceof ReqEntityStream) {
+            entity = new InputStreamEntity(((ReqEntityStream) bean).getBody(),
+                    ((ReqEntityStream) bean).getLength(), contentType);
+        }
+        else if (bean instanceof ReqEntityFile) {
+            entity = new FileEntity(((ReqEntityFile) bean).getBody(), contentType);
         }
         return entity;
     }
