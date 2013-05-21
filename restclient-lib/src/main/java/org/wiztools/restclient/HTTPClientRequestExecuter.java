@@ -447,14 +447,10 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                         }
                     }
                     catch(IOException ex) {
-                        final String msg = "Response body conversion to string using "
-                                + charset.displayName()
-                                + " encoding failed. Response body not set!";
-
                         for(View view: views) {
-                            view.doError(msg);
+                            view.doError("Byte array conversion from response body stream failed.");
                         }
-                        LOG.log(Level.WARNING, msg);
+                        LOG.log(Level.WARNING, ex.getMessage(), ex);
                     }
                 }
             }
