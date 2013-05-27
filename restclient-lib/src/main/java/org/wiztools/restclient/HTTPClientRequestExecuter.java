@@ -59,6 +59,7 @@ import org.wiztools.restclient.http.EntityEnclosingDelete;
 import org.wiztools.restclient.http.NoValidationCookieSpecFactory;
 import org.wiztools.restclient.http.RESTClientCookieStore;
 import org.wiztools.restclient.util.HttpUtil;
+import org.wiztools.restclient.util.IDNUtil;
 import org.wiztools.restclient.util.Util;
 
 /**
@@ -96,7 +97,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             view.doStart(request);
         }
 
-        final URL url = request.getUrl();
+        final URL url = IDNUtil.getIDNizedURL(request.getUrl());
         final String urlHost = url.getHost();
         final int urlPort = url.getPort()==-1?url.getDefaultPort():url.getPort();
         final String urlProtocol = url.getProtocol();

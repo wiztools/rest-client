@@ -9,10 +9,15 @@ import java.net.URL;
  * @author subwiz
  */
 public final class IDNUtil {
-    public static URL getIDNizedURL(URL inUrl) throws MalformedURLException {
-        return new URL(inUrl.getProtocol(),
+    public static URL getIDNizedURL(URL inUrl) throws IllegalArgumentException {
+        try {
+            return new URL(inUrl.getProtocol(),
                 IDN.toASCII(inUrl.getHost()),
                 inUrl.getPort(),
                 inUrl.getFile());
+        }
+        catch(MalformedURLException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 }
