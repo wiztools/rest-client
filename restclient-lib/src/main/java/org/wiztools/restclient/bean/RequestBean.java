@@ -1,6 +1,7 @@
 package org.wiztools.restclient.bean;
 
 import java.net.HttpCookie;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.List;
 import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapArrayList;
+import org.wiztools.restclient.util.IDNUtil;
 
 /**
  *
@@ -105,7 +107,12 @@ public final class RequestBean implements Request {
     }
 
     public void setUrl(URL url) {
-        this.url = url;
+        try {
+            this.url = IDNUtil.getIDNizedURL(url);
+        }
+        catch(MalformedURLException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
