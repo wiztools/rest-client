@@ -44,7 +44,6 @@ public class RunTestDialog extends EscapableDialog {
         super(ui.getFrame(), true);
         this.setTitle("Run Test");
         me = this;
-        this.pack();
     }
     
     @PostConstruct
@@ -119,6 +118,9 @@ public class RunTestDialog extends EscapableDialog {
         });
         jp_south.add(jb_cancel);
         c.add(jp_south, BorderLayout.SOUTH);
+        
+        // pack the dialog:
+        this.pack();
     }
     
     private void jb_nextAction(){
