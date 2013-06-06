@@ -1,11 +1,16 @@
 package org.wiztools.restclient.ui;
 
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -37,6 +42,8 @@ import org.wiztools.restclient.util.XMLUtil;
 @Singleton
 class RESTMain implements RESTUserInterface {
     
+    private static final Logger LOG = Logger.getLogger(RESTMain.class.getName());
+    
     private final Application application = new DefaultApplication();
     
     @Inject private RESTViewImpl view;
@@ -56,6 +63,10 @@ class RESTMain implements RESTUserInterface {
     private JFileChooser jfc_history = UIUtil.getNewJFileChooser();
     
     @Inject private RecentFilesHelper recentFilesHelper;
+    
+    private static final String URL_BOOK = "http://www.amazon.com/dp/B00CM4ZECG?tag=wiztooorg-20";
+    private static final String URL_FB = "http://www.facebook.com/wiztools.org";
+    private static final String URL_ISSUE = "http://code.google.com/p/rest-client/issues/list";
     
     private final JFrame frame;
     
@@ -524,10 +535,48 @@ class RESTMain implements RESTUserInterface {
         jmb.add(jm_tools);
         
         // Help menu
-        if(!application.isMac()) { // show for only non-Mac platform!
-            JMenu jm_help = new JMenu("Help");
-            jm_help.setMnemonic(KeyEvent.VK_H);
-
+        JMenu jm_help = new JMenu("Help");
+        jm_help.setMnemonic(KeyEvent.VK_H);
+        
+        { // RESTClient Book
+            JMenuItem jmi_url = new JMenuItem("RESTClient Book (Kindle)");
+            jmi_url.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    openUrl(URL_BOOK);
+                }
+            });
+            jm_help.add(jmi_url);
+        }
+        
+        { // FB
+            JMenuItem jmi_url = new JMenuItem("Follow in Facebook");
+            jmi_url.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    openUrl(URL_FB);
+                }
+            });
+            jm_help.add(jmi_url);
+        }
+        
+        { // Issue
+            JMenuItem jmi_url = new JMenuItem("Report Issue / Enhancement");
+            jmi_url.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    openUrl(URL_ISSUE);
+                }
+            });
+            jm_help.add(jmi_url);
+        }
+        
+        // Help > About:
+        if(!application.isMac()) { // show About for only non-Mac platform!
+            // Add separator before the About menu-item:
+            jm_help.addSeparator();
+            
+            // About menu:
             JMenuItem jmi_about = new JMenuItem("About");
             jmi_about.setMnemonic('a');
             jmi_about.addActionListener(new ActionListener() {
@@ -536,11 +585,10 @@ class RESTMain implements RESTUserInterface {
                     showAboutDialog();
                 }
             });
-            jm_help.add(jmi_about);
-            
-            // Add Help menu to Menubar:
-            jmb.add(jm_help);
+            jm_help.add(jmi_about);    
         }
+        // Add Help menu to Menubar:
+        jmb.add(jm_help);
         
         frame.setJMenuBar(jmb);
     }
@@ -569,6 +617,32 @@ class RESTMain implements RESTUserInterface {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+    
+    private void openUrl(String url) {
+        Desktop dt = Desktop.isDesktopSupported()? Desktop.getDesktop(): null;
+        if(dt != null && dt.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                dt.browse(new URI(url));
+            }
+            catch (URISyntaxException ex) {
+                assert true: "Will never come here!";
+            }
+            catch(IOException ex) {
+                LOG.log(Level.WARNING, null, ex);
+                showUrlDialog(url);
+            }
+        }
+        else {
+            showUrlDialog(url);
+        }
+    }
+    
+    private void showUrlDialog(final String url) {
+        JOptionPane.showMessageDialog(frame,
+                "Visit this URL: " + url,  // Message
+                "Visit URL",               // Title
+                JOptionPane.INFORMATION_MESSAGE);
     }
     
     private void showOptionsDialog(){
