@@ -561,7 +561,7 @@ class RESTMain implements RESTUserInterface {
         }
         
         { // Issue
-            JMenuItem jmi_url = new JMenuItem("Report Issue / Enhancement");
+            JMenuItem jmi_url = new JMenuItem("Report Issue / Request Enhancement");
             jmi_url.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
