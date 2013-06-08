@@ -3,8 +3,8 @@ package org.wiztools.restclient.ui.history;
 import com.google.inject.ImplementedBy;
 import java.io.File;
 import java.io.IOException;
-import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.bean.Request;
+import org.wiztools.restclient.util.ConfigUtil;
 
 /**
  *
@@ -14,7 +14,7 @@ import org.wiztools.restclient.bean.Request;
 public interface HistoryManager {
     
     int DEFAULT_HISTORY_SIZE = 30;
-    File DEFAULT_FILE = new File(IGlobalOptions.CONF_DIR, "history.xml");
+    File DEFAULT_FILE = ConfigUtil.getConfigFile("history.xml");
     
     void setHistorySize(int size);
     int getHistorySize();
