@@ -11,6 +11,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
@@ -23,6 +25,8 @@ import org.wiztools.restclient.ui.UIUtil;
  * @author subwiz
  */
 public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
+    
+    private static final Logger LOG = Logger.getLogger(ReqUrlGoPanelImpl.class.getName());
     
     @Inject private RESTUserInterface rest_ui;
     
@@ -103,7 +107,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
             }
         }
         catch(IOException ex) {
-            // TODO
+            LOG.log(Level.WARNING, null, ex);
         }
     }
     
@@ -121,7 +125,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
                     UrlListPersistUtil.persist(urls);
                 }
                 catch(IOException ex) {
-                    // TODO
+                    LOG.log(Level.WARNING, null, ex);
                 }
             }
         });
