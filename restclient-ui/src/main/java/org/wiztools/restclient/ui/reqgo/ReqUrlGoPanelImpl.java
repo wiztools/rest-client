@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.*;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -89,6 +90,41 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
             }
         });
         add(jb_request, BorderLayout.EAST);
+    }
+    
+    @PostConstruct
+    protected void loadComboHistory() {
+        try {
+            List<String> urls = UrlListPersistUtil.load();
+            if(!urls.isEmpty()) {
+                for(String url: urls) {
+                    jcb_url.addItem(url);
+                }
+            }
+        }
+        catch(IOException ex) {
+            // TODO
+        }
+    }
+    
+    @PostConstruct
+    protected void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+                List<String> urls = new ArrayList<String>();
+                for(int i=0; i<jcb_url.getItemCount(); i++) {
+                    String url = (String) jcb_url.getItemAt(i);
+                    urls.add(url);
+                }
+                try {
+                    UrlListPersistUtil.persist(urls);
+                }
+                catch(IOException ex) {
+                    // TODO
+                }
+            }
+        });
     }
 
     @Override
