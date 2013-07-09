@@ -3,6 +3,7 @@ package org.wiztools.restclient;
 import groovy.lang.GroovyClassLoader;
 import groovy.util.GroovyTestSuite;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -19,6 +20,7 @@ import junit.textui.TestRunner;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.*;
+import org.wiztools.restclient.util.ConfigUtil;
 
 /**
  *
@@ -36,6 +38,10 @@ public class TestUtil {
         }
         try{
             GroovyClassLoader gcl = new GroovyClassLoader(TestUtil.class.getClassLoader());
+            File[] dependencies = ConfigUtil.getTestDependencies();
+            for(File dependency: dependencies) {
+                gcl.addClasspath(dependency.getAbsolutePath());
+            }
 
             Class testClass = gcl.parseClass(script, "__GenRESTTestCase__");
 
