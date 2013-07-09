@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.*;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ProxyConfig;
-import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.ui.RESTViewImpl;
 
 /**
@@ -22,8 +20,6 @@ import org.wiztools.restclient.ui.RESTViewImpl;
 public class OptionsProxyPanel extends JPanel implements IOptionsPanel {
     
     private static final Logger LOG = Logger.getLogger(OptionsProxyPanel.class.getName());
-    
-    private static final String PROP_PREFIX = "proxy.options.";
     
     private JCheckBox jcb_enable = new JCheckBox("Enable");
     private JCheckBox jcb_auth_enable = new JCheckBox("Authentication");
@@ -231,38 +227,19 @@ public class OptionsProxyPanel extends JPanel implements IOptionsPanel {
 
     @Override
     public void initOptions() {
-        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         ProxyConfig proxy = ProxyConfig.getInstance();
         
         proxy.acquire();
-        try{
-            proxy.setEnabled(Boolean.valueOf(options.getProperty(PROP_PREFIX + "is_enabled")));
-            proxy.setHost(options.getProperty(PROP_PREFIX + "host"));
-            proxy.setPort(Integer.parseInt(options.getProperty(PROP_PREFIX + "port")));
-            proxy.setAuthEnabled(Boolean.valueOf(options.getProperty(PROP_PREFIX + "is_auth_enabled")));
-            proxy.setUsername(options.getProperty(PROP_PREFIX + "username"));
-            proxy.setPassword(options.getProperty(PROP_PREFIX + "password").toCharArray());
-            setUIFromCache();
-        }
-        catch(Exception ex){
-            LOG.info("Cannot load Proxy options from properties.");
-        }
+        setUIFromCache();
         proxy.release();
     }
 
     @Override
     public void shutdownOptions() {
-        IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         ProxyConfig proxy = ProxyConfig.getInstance();
         
         proxy.acquire();
-        options.setProperty(PROP_PREFIX + "is_enabled", String.valueOf(proxy.isEnabled()));
-        options.setProperty(PROP_PREFIX + "host", proxy.getHost());
-        options.setProperty(PROP_PREFIX + "port", String.valueOf(proxy.getPort()));
-        options.setProperty(PROP_PREFIX + "is_auth_enabled", String.valueOf(proxy.isAuthEnabled()));
-        options.setProperty(PROP_PREFIX + "username", proxy.getUsername());
-        String pwd = proxy.getPassword()==null? "": new String(proxy.getPassword());
-        options.setProperty(PROP_PREFIX + "password", pwd);
+        proxy.write();
         proxy.release();
     }
 }
