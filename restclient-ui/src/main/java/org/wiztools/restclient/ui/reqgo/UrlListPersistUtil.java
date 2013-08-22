@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
-import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.util.ConfigUtil;
 
 /**
