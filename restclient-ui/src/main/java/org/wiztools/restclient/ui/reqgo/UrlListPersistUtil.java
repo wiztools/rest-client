@@ -39,7 +39,9 @@ public final class UrlListPersistUtil {
         else {
             List<String> out = new ArrayList<String>();
             
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(LIST_FILE)));
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(
+                        new FileInputStream(LIST_FILE), Charsets.UTF_8));
             String line;
             while((line = br.readLine()) != null) {
                 if(!line.trim().equals("")) { // ignore empty line
