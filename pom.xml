@@ -5,7 +5,7 @@
     <groupId>org.wiztools.restclient</groupId>
     <artifactId>restclient</artifactId>
     <packaging>pom</packaging>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>3.2.1</version>
     <name>restclient</name>
     <url>http://rest-client.googlecode.com/</url>
     <properties>
