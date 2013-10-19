@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -18,10 +19,12 @@ import org.wiztools.restclient.util.XMLCollectionUtil;
  */
 @Singleton
 public class HistoryManagerImpl implements HistoryManager {
+    private static final Logger LOG = Logger.getLogger(HistoryManagerImpl.class.getName());
+    
     private int maxSize = DEFAULT_HISTORY_SIZE;
     private int cursor;
     
-    private LinkedList<Request> data = new LinkedList<Request>();
+    private final LinkedList<Request> data = new LinkedList<Request>();
     
     @Inject private LifecycleManager lifecycle;
 
@@ -177,7 +180,12 @@ public class HistoryManagerImpl implements HistoryManager {
     
     @Override
     public void save(File file) throws IOException {
-        XMLCollectionUtil.writeRequestCollectionXML(data, file);
+        if(!data.isEmpty()) {
+            XMLCollectionUtil.writeRequestCollectionXML(data, file);
+        }
+        else {
+            LOG.info("No data to store in history");
+        }
     }
     
     @Override
