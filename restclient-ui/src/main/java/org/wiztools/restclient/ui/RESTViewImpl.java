@@ -420,6 +420,11 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
     
     @Override
+    public void showError(final Throwable ex){
+        messageDialog.showError(Util.getStackTrace(ex));
+    }
+    
+    @Override
     public void showMessage(final String title, final String message){
         messageDialog.showMessage(title, message);
     }

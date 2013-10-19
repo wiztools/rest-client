@@ -390,7 +390,10 @@ class RESTMain implements RESTUserInterface {
                         historyManager.load(f);
                     }
                     catch(IOException ex) {
-                        view.showError(Util.getStackTrace(ex));
+                        view.showError(ex);
+                    }
+                    catch(XMLException ex) {
+                        view.showError(ex);
                     }
                 }
             }

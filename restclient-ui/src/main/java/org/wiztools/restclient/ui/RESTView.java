@@ -39,6 +39,7 @@ public interface RESTView extends View {
     void setUrl(String url);
 
     void showError(final String error);
+    void showError(final Throwable ex);
 
     void showMessage(final String title, final String message);
     
