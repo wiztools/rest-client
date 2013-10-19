@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.ui.lifecycle.LifecycleManager;
 import org.wiztools.restclient.ui.lifecycle.Shutdown;
@@ -36,6 +37,9 @@ public class HistoryManagerImpl implements HistoryManager {
                 load(DEFAULT_FILE);
             }
             catch(IOException ex) {
+                ex.printStackTrace(System.err);
+            }
+            catch(XMLException ex) {
                 ex.printStackTrace(System.err);
             }
         }
@@ -189,7 +193,7 @@ public class HistoryManagerImpl implements HistoryManager {
     }
     
     @Override
-    public void load(File file) throws IOException {
+    public void load(File file) throws IOException, XMLException, IllegalStateException {
         if(data.isEmpty()) {
             List<Request> requests = XMLCollectionUtil.getRequestCollectionFromXMLFile(file);
             data.addAll(requests);
