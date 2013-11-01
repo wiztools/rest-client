@@ -19,19 +19,25 @@ public final class HttpUtil {
     public static final Charset DEFAULT_CHARSET = Charsets.UTF_8;
     
     public static ContentType getContentType(String header) {
-        if(header.contains("charset")) {
-            Pattern p = Pattern.compile("([^;]+);\\s*charset=([^;]+)");
-            Matcher m = p.matcher(header);
-            if(m.matches()) {
-                String contentType = m.group(1);
-                Charset charset = Charset.forName(m.group(2));
-                return new ContentTypeBean(contentType, charset);
-            }
-        }
-        else { // no charset header
+        final String[] arr = header.split("\\s*;\\s*");
+        if(arr.length == 1) {
             return new ContentTypeBean(header, null);
         }
-        return null;
+        else {
+            final String contentType = arr[0];
+            for(int i=1; i<arr.length; i++) {
+                final String headerPart = arr[i];
+                if(headerPart.contains("charset=")) {
+                    Pattern p = Pattern.compile("charset=(.+)");
+                    Matcher m = p.matcher(headerPart);
+                    if(m.matches()) {
+                        Charset charset = Charset.forName(m.group(1));
+                        return new ContentTypeBean(contentType, charset);
+                    }
+                }
+            }
+            return new ContentTypeBean(contentType, null);
+        }
     }
     
     public static ContentType getContentType(MultiValueMap<String, String> headers) {
@@ -115,41 +121,29 @@ public final class HttpUtil {
     
     public static boolean isWebImageContentType(final String contentType) {
         final String ct = getContentTypeBeforeSemiColon(contentType);
-        if(ct.equals("image/jpeg")
+        return ct.equals("image/jpeg")
                 || ct.equals("image/png")
-                || ct.equals("image/gif")) {
-            return true;
-        }
-        return false;
+                || ct.equals("image/gif");
     }
     
     public static boolean isTextContentType(final String contentType) {
         final String ct = getContentTypeBeforeSemiColon(contentType);
-        if(ct.startsWith("text/")
+        return ct.startsWith("text/")
                 || isXmlContentType(ct)
-                || isJsonContentType(ct)) {
-            return true;
-        }
-        return false;
+                || isJsonContentType(ct);
     }
     
     public static boolean isXmlContentType(final String contentType) {
         final String ct = getContentTypeBeforeSemiColon(contentType);
-        if(ct.startsWith("application/xml")
+        return ct.startsWith("application/xml")
                 || ct.startsWith("text/xml")
-                || ct.endsWith("+xml")){
-            return true;
-        }
-        return false;
+                || ct.endsWith("+xml");
     }
     
     public static boolean isJsonContentType(final String contentType) {
         final String ct = getContentTypeBeforeSemiColon(contentType);
-        if(ct.startsWith("application/json")
-                || ct.endsWith("+json")){
-            return true;
-        }
-        return false;
+        return ct.startsWith("application/json")
+                || ct.endsWith("+json");
     }
     
     public static Charset getCharsetDefault(final ContentType type) {
