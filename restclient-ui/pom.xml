@@ -43,9 +43,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>com.agiliumlabs.osxappbundle</groupId>
                 <artifactId>osxappbundle-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
+                <version>1.0.0</version>
                 <configuration>
                     <mainClass>org.wiztools.restclient.ui.Main</mainClass>
                     <bundleName>WizTools.org RESTClient</bundleName>
