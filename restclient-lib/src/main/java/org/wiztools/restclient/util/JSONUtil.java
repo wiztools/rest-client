@@ -3,11 +3,14 @@ package org.wiztools.restclient.util;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -15,6 +18,8 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author subwiz
  */
 public final class JSONUtil {
+    
+    private static final Logger LOG = Logger.getLogger(JSONUtil.class.getName());
     
     private JSONUtil(){}
     
@@ -24,14 +29,19 @@ public final class JSONUtil {
         }
     }
     
+    // Jackson Object Mapper used in indent operation:
+    private static final ObjectMapper jsonObjMapper = new ObjectMapper();
+    static {
+        jsonObjMapper.enable(DeserializationConfig.Feature.USE_BIG_DECIMAL_FOR_FLOATS);
+    }
+    
     public static String indentJSON(final String jsonIn) throws JSONParseException{
         JsonFactory fac = new JsonFactory();
         try{
             JsonParser parser = fac.createJsonParser(new StringReader(jsonIn));
-            ObjectMapper mapper = new ObjectMapper();
             JsonNode node = null;
             try{
-                node = mapper.readTree(parser);
+                node = jsonObjMapper.readTree(parser);
             }
             catch(JsonParseException ex){
                 throw new JSONParseException(ex.getMessage());
@@ -43,15 +53,14 @@ public final class JSONUtil {
             gen.useDefaultPrettyPrinter();
 
             // Now write:
-            mapper.writeTree(gen, node);
+            jsonObjMapper.writeTree(gen, node);
             
             gen.flush();
             gen.close();
             return out.toString();
         }
         catch(IOException ex){
-            ex.printStackTrace();
-            assert true: ex;
+            LOG.log(Level.SEVERE, null, ex);
         }
         return jsonIn;
     }
