@@ -55,17 +55,17 @@
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.12</version>
+            <version>1.9.13</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.2.5</version>
+            <version>4.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
-            <version>4.2.5</version>
+            <version>4.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
