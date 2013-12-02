@@ -145,7 +145,13 @@ public final class HttpUtil {
         return ct.startsWith("application/json")
                 || ct.endsWith("+json");
     }
-    
+
+    public static boolean isHTMLContentType(final String contentType) {
+        final String ct = getContentTypeBeforeSemiColon(contentType);
+        return ct.startsWith("text/html")
+                || ct.endsWith("+html");
+    }
+
     public static Charset getCharsetDefault(final ContentType type) {
         return type != null?
                 (type.getCharset() != null? type.getCharset(): DEFAULT_CHARSET)

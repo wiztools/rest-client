@@ -20,6 +20,7 @@ import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.ui.*;
+import org.wiztools.restclient.util.HTMLIndentUtil;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.JSONUtil;
 import org.wiztools.restclient.util.XMLIndentUtil;
@@ -153,7 +154,31 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
             };
         });
         jm_indent.add(jmi_indentJson);
-        
+
+
+        // Indent HTML
+        JMenuItem jmi_indentHTML = new JMenuItem("Indent HTML");
+        jmi_indentHTML.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                String resText = se_response.getText();
+                if("".equals(resText.trim())){
+                    view.setStatusMessage("No response body!");
+                    return;
+                }
+                try{
+                    String indentedJHTML =  HTMLIndentUtil.getIndented(resText);
+                    se_response.setText(indentedJHTML);
+                    se_response.setCaretPosition(0);
+                    view.setStatusMessage("Indent HTML: Success");
+                }
+                catch(Exception ex){
+                    view.setStatusMessage("Indent HTML: Not a valid HTML text.");
+                }
+            };
+        });
+        jm_indent.add(jmi_indentHTML);
+
         popupMenu.add(jm_indent);
         
         // Syntax color change
@@ -174,6 +199,17 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
             }
         });
         jm_syntax.add(jmi_syntax_json);
+
+        JMenuItem jmi_syntax_html = new JMenuItem("HTML");
+        jmi_syntax_html.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                actionTextEditorSyntaxChange(se_response, TextEditorSyntax.XML);
+            }
+        });
+        jm_syntax.add(jmi_syntax_html);
+
+
         JMenuItem jmi_syntax_none = new JMenuItem("None");
         jmi_syntax_none.addActionListener(new ActionListener() {
             @Override
@@ -238,12 +274,17 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
         // JSON or XML?
         boolean isXml = false;
         boolean isJson = false;
+        boolean isHTML = false;
+
         if(type != null) {
             if(HttpUtil.isXmlContentType(type.getContentType())){
                 isXml = true;
             }
             else if(HttpUtil.isJsonContentType(type.getContentType())){
                 isJson = true;
+            }
+            else if(HttpUtil.isHTMLContentType(type.getContentType())){
+                isHTML = true;
             }
         }
         
@@ -257,6 +298,9 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
             }
             if(isJson) {
                 se_response.setSyntax(TextEditorSyntax.JSON);
+            }
+            if(isHTML) {
+                se_response.setSyntax(TextEditorSyntax.XML);
             }
         }
         else { // No syntax!
@@ -289,12 +333,21 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
                 }
                 catch(JSONUtil.JSONParseException ex){
                     view.setStatusMessage("JSON indentation failed.");
-                    // LOG.warning(ex.getMessage());
+                    se_response.setText(responseBody);
+                }
+            }
+            else if(isHTML){
+                try{
+                    String indentedResponseBody = HTMLIndentUtil.getIndented(responseBody);
+                    se_response.setText(indentedResponseBody);
+                }
+                catch(Exception ex){
+                    view.setStatusMessage("HTML indentation failed.");
                     se_response.setText(responseBody);
                 }
             }
             else{
-                view.setStatusMessage("Response body neither XML nor JSON. No indentation.");
+                view.setStatusMessage("Response body neither XML,HTML nor JSON. No indentation.");
                 se_response.setText(responseBody);
             }
         }

@@ -5,5 +5,5 @@ package org.wiztools.restclient.ui;
  * @author subwiz
  */
 public enum TextEditorSyntax {
-    NONE, GROOVY, XML, JSON;
+    NONE, GROOVY, XML, JSON, HTML;
 }
