@@ -21,7 +21,7 @@ public final class HTMLIndentUtil {
         String formated_html = null;
         try {
             StringWriter writer = new StringWriter();
-            new SourceFormatter(new Source(inHTML)).setIndentString("\t").setTidyTags(true).setCollapseWhiteSpace(true).writeTo(writer);
+            new SourceFormatter(new Source(inHTML)).setIndentString("    ").setTidyTags(true).setCollapseWhiteSpace(true).writeTo(writer);
             formated_html = writer.toString();
         }
         catch (IOException e) {
