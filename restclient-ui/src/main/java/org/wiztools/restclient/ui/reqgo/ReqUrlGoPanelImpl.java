@@ -3,6 +3,7 @@ package org.wiztools.restclient.ui.reqgo;
 import com.jidesoft.swing.AutoCompletion;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.IOException;
@@ -30,17 +31,22 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     
     @Inject private RESTUserInterface rest_ui;
     
-    private ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
-    private ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
+    private final ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
+    private final ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
     
     private static final String TEXT_GO = "Go!";
     private static final String TEXT_STOP = "Stop!";
     
     private final JComboBox jcb_url = new JComboBox();
+    private final Dimension jcb_url_preferredSize;
     
     private final JButton jb_request = new JButton(icon_go);
     
     private final List<ActionListener> listeners = new ArrayList<ActionListener>();
+
+    public ReqUrlGoPanelImpl() {
+        jcb_url_preferredSize = jcb_url.getPreferredSize();
+    }
     
     @PostConstruct
     protected void init() {
@@ -104,6 +110,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
                 for(String url: urls) {
                     jcb_url.addItem(url);
                 }
+                jcb_url.setPreferredSize(jcb_url_preferredSize);
             }
         }
         catch(IOException ex) {
