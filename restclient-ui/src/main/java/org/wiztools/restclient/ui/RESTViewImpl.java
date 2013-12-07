@@ -376,7 +376,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
                 lastResponse = response;
 
                 // Update status message
-                setStatusMessage("Response received in: " + response.getExecutionTime() + " ms");
+                setStatusMessage("Response time: " + response.getExecutionTime() + " ms" + "; body-size: " + response.getResponseBody().length + " byte(s)");
             }
         });
     }

@@ -1,15 +1,16 @@
 package org.wiztools.restclient.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
+
 import org.wiztools.restclient.RCConstants;
 
 /**
@@ -43,20 +44,17 @@ public class StatusBarPanelImpl extends JPanel implements StatusBarPanel {
         
         // Label
         setBorder(BorderFactory.createBevelBorder(1));
-        setLayout(new GridLayout(1, 2));
+        setLayout(new BorderLayout());//new GridLayout(1, 2));
         jl_status.setFont(UIUtil.FONT_DIALOG_12_PLAIN);
-        add(jl_status);
+        add(jl_status, BorderLayout.CENTER);
         
         // Progress bar
-        JPanel jp_progressBar = new JPanel();
-        jp_progressBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
         Dimension d = jpb_status.getPreferredSize();
-        d.height = d.height - 2;
+        d.height = d.height - 4;
         jpb_status.setPreferredSize(d);
         jpb_status.setIndeterminate(true);
         jpb_status.setVisible(false);
-        jp_progressBar.add(jpb_status);
-        add(jp_progressBar);
+        add(jpb_status, BorderLayout.EAST);
     }
 
     @Override
