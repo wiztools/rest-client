@@ -34,9 +34,9 @@ public class XMLIndentUtilTest {
     @Test
     public void testGetIndentedISO() throws Exception {
         String inXml = FileUtil.getContentAsString(
-                new File("src/test/resources/input_ISO.xml"), Charsets.UTF_8);
+                new File("src/test/resources/input_ISO.xml"), Charsets.ISO_8859_1);
         String expectedResult = FileUtil.getContentAsString(
-                new File("src/test/resources/input_ISO.xml"), Charsets.UTF_8);
+                new File("src/test/resources/input_ISO.xml"), Charsets.ISO_8859_1);
         String result = XMLIndentUtil.getIndented(inXml);
         System.out.println("Expected:\n" + expectedResult);
         System.out.println("Is:\n" + result);
