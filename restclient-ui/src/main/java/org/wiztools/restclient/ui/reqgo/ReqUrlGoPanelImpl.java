@@ -38,15 +38,10 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     private static final String TEXT_STOP = "Stop!";
     
     private final JComboBox jcb_url = new JComboBox();
-    private final Dimension jcb_url_preferredSize;
     
     private final JButton jb_request = new JButton(icon_go);
     
     private final List<ActionListener> listeners = new ArrayList<ActionListener>();
-
-    public ReqUrlGoPanelImpl() {
-        jcb_url_preferredSize = jcb_url.getPreferredSize();
-    }
     
     @PostConstruct
     protected void init() {
@@ -107,10 +102,15 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
         try {
             List<String> urls = UrlListPersistUtil.load();
             if(!urls.isEmpty()) {
+                // We need dimension for Issue 196:
+                final Dimension d = jcb_url.getPreferredSize();
+                
                 for(String url: urls) {
                     jcb_url.addItem(url);
                 }
-                jcb_url.setPreferredSize(jcb_url_preferredSize);
+                
+                // Set the dimension for Issue 196:
+                jcb_url.setPreferredSize(d);
             }
         }
         catch(IOException ex) {
