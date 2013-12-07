@@ -11,8 +11,6 @@ import org.wiztools.commons.FileUtil;
  * Test of {@link XMLIndentUtil}.
  */
 public class XMLIndentUtilTest {
-    private static final int BUFFER_SIZE = 0x10000; // input buffer size in bytes (64 KB)
-
     /**
      * Test of XMLIndentUtil.getIndented(String inXml) with UTF-8 Encoding.
      */
