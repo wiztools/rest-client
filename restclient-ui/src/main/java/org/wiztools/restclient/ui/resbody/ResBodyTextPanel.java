@@ -1,19 +1,5 @@
 package org.wiztools.restclient.ui.resbody;
 
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.swing.*;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
@@ -24,6 +10,20 @@ import org.wiztools.restclient.util.HTMLIndentUtil;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.JSONUtil;
 import org.wiztools.restclient.util.XMLIndentUtil;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -300,7 +300,7 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
                 se_response.setSyntax(TextEditorSyntax.JSON);
             }
             if(isHTML) {
-                se_response.setSyntax(TextEditorSyntax.XML);
+                se_response.setSyntax(TextEditorSyntax.HTML);
             }
         }
         else { // No syntax!

@@ -1,10 +1,10 @@
 package org.wiztools.restclient.ui;
 
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
-import javax.swing.text.JTextComponent;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -37,6 +37,9 @@ public class RSyntaxScriptEditor implements ScriptEditor {
         }
         else if(syntax == TextEditorSyntax.JSON){
             textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
+        }
+        else if (syntax == TextEditorSyntax.HTML){
+            textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
         }
         else {
             textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
