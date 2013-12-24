@@ -25,10 +25,10 @@ public class OptionsProxyPanel extends JPanel implements IOptionsPanel {
     private JCheckBox jcb_auth_enable = new JCheckBox("Authentication");
     
     private final int jtf_size = 25;
-    private JTextField jtf_host = new JTextField(jtf_size);
-    private JTextField jtf_port = new JTextField(jtf_size);
-    private JTextField jtf_username = new JTextField(jtf_size);
-    private JPasswordField jpf_password = new JPasswordField(jtf_size);
+    private final JTextField jtf_host = new JTextField(jtf_size);
+    private final JTextField jtf_port = new JTextField(jtf_size);
+    private final JTextField jtf_username = new JTextField(jtf_size);
+    private final JPasswordField jpf_password = new JPasswordField(jtf_size);
     
     public OptionsProxyPanel(){
         toggleEnable(false);
