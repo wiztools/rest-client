@@ -28,10 +28,10 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
     private static final String MINUTES = "Minutes";
     private static final String SECONDS = "Seconds";
     private static final String MILLISECONDS = "Milli-seconds";
-    private JRadioButton jrb_minutes = new JRadioButton(MINUTES);
-    private JRadioButton jrb_seconds = new JRadioButton(SECONDS);
-    private JRadioButton jrb_millisecs = new JRadioButton(MILLISECONDS);
-    private JFormattedTextField jftf_timeout = new JFormattedTextField(
+    private final JRadioButton jrb_minutes = new JRadioButton(MINUTES);
+    private final JRadioButton jrb_seconds = new JRadioButton(SECONDS);
+    private final JRadioButton jrb_millisecs = new JRadioButton(MILLISECONDS);
+    private final JFormattedTextField jftf_timeout = new JFormattedTextField(
             Integer.parseInt(
             ServiceLocator.getInstance(IGlobalOptions.class)
             .getProperty("request-timeout-in-millis")));
