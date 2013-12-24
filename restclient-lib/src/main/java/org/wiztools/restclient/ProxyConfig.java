@@ -39,10 +39,20 @@ public final class ProxyConfig {
         IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
         _proxy.setEnabled(Boolean.valueOf(options.getProperty(PROP_PREFIX + "is_enabled")));
         _proxy.setHost(options.getProperty(PROP_PREFIX + "host"));
-        _proxy.setPort(Integer.parseInt(options.getProperty(PROP_PREFIX + "port")));
+        { // Port:
+            final String portStr = options.getProperty(PROP_PREFIX + "port");
+            if(portStr != null) {
+                _proxy.setPort(Integer.parseInt(portStr));
+            }
+        }
         _proxy.setAuthEnabled(Boolean.valueOf(options.getProperty(PROP_PREFIX + "is_auth_enabled")));
         _proxy.setUsername(options.getProperty(PROP_PREFIX + "username"));
-        _proxy.setPassword(options.getProperty(PROP_PREFIX + "password").toCharArray());
+        { // Password:
+            final String pwdStr = options.getProperty(PROP_PREFIX + "password");
+            if(pwdStr != null) {
+                _proxy.setPassword(pwdStr.toCharArray());
+            }
+        }
     }
     
     public void write() {
