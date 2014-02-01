@@ -47,16 +47,18 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
         out.setHostNameVerifier((SSLHostnameVerifier) jcb_ssl_hostname_verifier.getSelectedItem());
         out.setTrustSelfSignedCert(jcb_ssl_trust_self_signed_cert.isSelected());
         
-        if(StringUtil.isNotEmpty(jtf_ssl_keystore_file.getText()))
-            out.setKeyStore(jtf_ssl_keystore_file.getText());
-        if(jpf_ssl_keystore_pwd.getPassword().length > 0)
+        if(StringUtil.isNotEmpty(jtf_ssl_keystore_file.getText())) {
+            out.setKeyStore(new File(jtf_ssl_keystore_file.getText()));
+        }
+        if(jpf_ssl_keystore_pwd.getPassword().length > 0) {
             out.setKeyStorePassword(jpf_ssl_keystore_pwd.getPassword());
-        
-        if(StringUtil.isNotEmpty(jtf_ssl_truststore_file.getText()))
-            out.setTrustStore(jtf_ssl_truststore_file.getText());
-        if(jpf_ssl_truststore_pwd.getPassword().length > 0)
+        }
+        if(StringUtil.isNotEmpty(jtf_ssl_truststore_file.getText())) {
+            out.setTrustStore(new File(jtf_ssl_truststore_file.getText()));
+        }
+        if(jpf_ssl_truststore_pwd.getPassword().length > 0) {
             out.setTrustStorePassword(jpf_ssl_truststore_pwd.getPassword());
-        
+        }
         return out;
     }
 
@@ -65,12 +67,12 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
         jcb_ssl_hostname_verifier.setSelectedItem(sslReq.getHostNameVerifier());
         jcb_ssl_trust_self_signed_cert.setSelected(sslReq.isTrustSelfSignedCert());
         
-        jtf_ssl_keystore_file.setText(sslReq.getKeyStore());
+        jtf_ssl_keystore_file.setText(sslReq.getKeyStore().getAbsolutePath());
         if(sslReq.getKeyStorePassword() != null) {
             jpf_ssl_keystore_pwd.setText(new String(sslReq.getKeyStorePassword()));
         }
         
-        jtf_ssl_truststore_file.setText(sslReq.getTrustStore());
+        jtf_ssl_truststore_file.setText(sslReq.getTrustStore().getAbsolutePath());
         if(sslReq.getTrustStorePassword() != null) {
             jpf_ssl_truststore_pwd.setText(new String(sslReq.getTrustStorePassword()));
         }
