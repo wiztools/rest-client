@@ -1,5 +1,6 @@
 package org.wiztools.restclient.bean;
 
+import java.io.File;
 import java.util.Arrays;
 
 /**
@@ -8,9 +9,9 @@ import java.util.Arrays;
  */
 public class SSLReqBean implements SSLReq {
     
-    private String trustStore;
+    private File trustStore;
     private char[] trustStorePassword;
-    private String keyStore;
+    private File keyStore;
     private char[] keyStorePassword;
     private SSLHostnameVerifier hostNameVerifier = SSLHostnameVerifier.STRICT; // Default to strict!
     private boolean trustSelfSignedCert = false;
@@ -19,7 +20,7 @@ public class SSLReqBean implements SSLReq {
         this.hostNameVerifier = sslHostNameVerifier;
     }
 
-    public void setKeyStore(String sslKeyStore) {
+    public void setKeyStore(File sslKeyStore) {
         this.keyStore = sslKeyStore;
     }
 
@@ -31,7 +32,7 @@ public class SSLReqBean implements SSLReq {
         this.trustSelfSignedCert = sslTrustSelfSignedCert;
     }
 
-    public void setTrustStore(String sslTrustStore) {
+    public void setTrustStore(File sslTrustStore) {
         this.trustStore = sslTrustStore;
     }
 
@@ -45,7 +46,7 @@ public class SSLReqBean implements SSLReq {
     }
 
     @Override
-    public String getKeyStore() {
+    public File getKeyStore() {
         return keyStore;
     }
 
@@ -55,7 +56,7 @@ public class SSLReqBean implements SSLReq {
     }
 
     @Override
-    public String getTrustStore() {
+    public File getTrustStore() {
         return trustStore;
     }
 

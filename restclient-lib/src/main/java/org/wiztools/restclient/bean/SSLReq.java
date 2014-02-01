@@ -1,5 +1,6 @@
 package org.wiztools.restclient.bean;
 
+import java.io.File;
 import java.io.Serializable;
 
 /**
@@ -10,11 +11,11 @@ public interface SSLReq extends Serializable {
 
     SSLHostnameVerifier getHostNameVerifier();
 
-    String getKeyStore();
+    File getKeyStore();
 
     char[] getKeyStorePassword();
 
-    String getTrustStore();
+    File getTrustStore();
 
     char[] getTrustStorePassword();
 

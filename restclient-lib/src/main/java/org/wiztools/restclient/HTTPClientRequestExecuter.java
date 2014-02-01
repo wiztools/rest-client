@@ -352,8 +352,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 }
 
                 // Register the SSL Scheme:
-                final String trustStorePath = sslReq.getTrustStore();
-                final String keyStorePath = sslReq.getKeyStore();
+                final String trustStorePath = sslReq.getTrustStore().getAbsolutePath();
+                final String keyStorePath = sslReq.getKeyStore().getAbsolutePath();
 
                 final KeyStore trustStore  = StringUtil.isEmpty(trustStorePath)?
                         null:

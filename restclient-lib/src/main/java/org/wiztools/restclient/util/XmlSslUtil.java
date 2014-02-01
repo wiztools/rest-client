@@ -1,5 +1,6 @@
 package org.wiztools.restclient.util;
 
+import java.io.File;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
@@ -30,17 +31,17 @@ class XmlSslUtil {
         }
         
         // Key store
-        if(StringUtil.isNotEmpty(req.getKeyStore())) {
+        if(req.getKeyStore() != null) {
             Element e = new Element("keystore");
-            e.addAttribute(new Attribute("file", req.getKeyStore()));
+            e.addAttribute(new Attribute("file", req.getKeyStore().getAbsolutePath()));
             e.addAttribute(new Attribute("password", Util.base64encode(new String(req.getKeyStorePassword()))));
             eSsl.appendChild(e);
         }
         
         // Trust store
-        if(StringUtil.isNotEmpty(req.getTrustStore())) {
+        if(req.getTrustStore() != null) {
             Element e = new Element("truststore");
-            e.addAttribute(new Attribute("file", req.getTrustStore()));
+            e.addAttribute(new Attribute("file", req.getTrustStore().getAbsolutePath()));
             e.addAttribute(new Attribute("password", Util.base64encode(new String(req.getTrustStorePassword()))));
             eSsl.appendChild(e);
         }
@@ -62,11 +63,11 @@ class XmlSslUtil {
                 out.setHostNameVerifier(SSLHostnameVerifier.valueOf(e.getValue()));
             }
             else if("keystore".equals(name)) {
-                out.setKeyStore(e.getAttributeValue("file"));
+                out.setKeyStore(new File(e.getAttributeValue("file")));
                 out.setKeyStorePassword(Util.base64decode(e.getAttributeValue("password")).toCharArray());
             }
             else if("truststore".equals(name)) {
-                out.setTrustStore(e.getAttributeValue("file"));
+                out.setTrustStore(new File(e.getAttributeValue("file")));
                 out.setTrustStorePassword(Util.base64decode(e.getAttributeValue("password")).toCharArray());
             }
         }
