@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.Collections;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
+import org.wiztools.restclient.bean.TestExceptionResult;
 import org.wiztools.restclient.bean.TestResult;
 import org.wiztools.restclient.ui.UIUtil;
 
@@ -15,26 +16,26 @@ class ResTestPanelImpl extends JPanel implements ResTestPanel {
     
     private TestResult lastTestResult;
     
-    private JLabel jl_runCount = new JLabel("");
-    private JLabel jl_failureCount = new JLabel("");
-    private JLabel jl_errorCount = new JLabel("");
+    private final JLabel jl_runCount = new JLabel("");
+    private final JLabel jl_failureCount = new JLabel("");
+    private final JLabel jl_errorCount = new JLabel("");
     
-    private FailureTableModel tm_failures = new FailureTableModel();
-    private FailureTableModel tm_errors = new FailureTableModel();
+    private final FailureTableModel tm_failures = new FailureTableModel();
+    private final FailureTableModel tm_errors = new FailureTableModel();
     
     private JScrollPane jsp_jt_failures;
     private JScrollPane jsp_jt_errors;
     
-    private JTextArea jta_trace = new JTextArea();
+    private final JTextArea jta_trace = new JTextArea();
     private JScrollPane jsp_jta_trace;
     
-    private JLabel jl_status = new JLabel();
+    private final JLabel jl_status = new JLabel();
     
-    private JLabel jl_icon = new JLabel();
+    private final JLabel jl_icon = new JLabel();
     
-    private Icon ICON_DEFAULT = UIUtil.getIconFromClasspath("org/wiztools/restclient/test/eye.png");
-    private Icon ICON_SUCCESS = UIUtil.getIconFromClasspath("org/wiztools/restclient/test/accept.png");
-    private Icon ICON_FAILURE = UIUtil.getIconFromClasspath("org/wiztools/restclient/test/cross.png");
+    private final Icon ICON_DEFAULT = UIUtil.getIconFromClasspath("org/wiztools/restclient/test/eye.png");
+    private final Icon ICON_SUCCESS = UIUtil.getIconFromClasspath("org/wiztools/restclient/test/accept.png");
+    private final Icon ICON_FAILURE = UIUtil.getIconFromClasspath("org/wiztools/restclient/test/cross.png");
     
     private static final Font BOLD_FONT = new Font(Font.DIALOG, Font.PLAIN, 18);
     
@@ -187,10 +188,10 @@ class ResTestPanelImpl extends JPanel implements ResTestPanel {
         jl_status.setText("");
         
         // Clear Failures tab:
-        tm_failures.setData(Collections.EMPTY_LIST);
+        tm_failures.setData(Collections.<TestExceptionResult>emptyList());
         
         // Clear Errors tab:
-        tm_errors.setData(Collections.EMPTY_LIST);
+        tm_errors.setData(Collections.<TestExceptionResult>emptyList());
         
         // Clear trace tab:
         jta_trace.setText("");
