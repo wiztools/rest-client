@@ -31,11 +31,11 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     @Inject
     private AddMultipartStringDialog jd_addStringDialog;
     
-    private JButton jb_string = new JButton("String");
-    private JButton jb_file = new JButton("File");
+    private final JButton jb_string = new JButton("String");
+    private final JButton jb_file = new JButton("File");
     
     private final MultipartTableModel model = new MultipartTableModel();
-    private JTable jt = new JTable(model);
+    private final JTable jt = new JTable(model);
     
     private class MultipartTableModel extends AbstractTableModel {
         
