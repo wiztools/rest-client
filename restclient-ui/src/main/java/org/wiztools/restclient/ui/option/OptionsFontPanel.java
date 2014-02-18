@@ -34,10 +34,10 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
     
     private static final String PROP_PREFIX = "font.options.";
     
-    private JButton jb_default = new JButton("Restore Default");
+    private final JButton jb_default = new JButton("Restore Default");
     
-    private JList jl_font, jl_fontSize;
-    private JLabel jl_preview = new JLabel("WizTools.org RESTClient");
+    private JList<String> jl_font, jl_fontSize;
+    private final JLabel jl_preview = new JLabel("WizTools.org RESTClient");
     
     public OptionsFontPanel(){
         JPanel jp = this;
@@ -68,7 +68,7 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
         JPanel jp_center = new JPanel();
         jp_center.setLayout(new GridLayout(1, 2));
         String[] fontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-        jl_font = new JList(fontFamilyNames);
+        jl_font = new JList<String>(fontFamilyNames);
         jl_font.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jl_font.addListSelectionListener(previewListner);
         JScrollPane jsp_font = new JScrollPane(jl_font);
@@ -76,7 +76,7 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
         jp_center.add(jsp_font);
         String fontSizes[] = { "8", "10", "11", "12", "14", "16", "18",
             "20", "24", "30", "36", "40", "48", "60", "72" };
-        jl_fontSize = new JList(fontSizes);
+        jl_fontSize = new JList<String>(fontSizes);
         jl_fontSize.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jl_fontSize.addListSelectionListener(previewListner);
         JScrollPane jsp_fontSize = new JScrollPane(jl_fontSize);
