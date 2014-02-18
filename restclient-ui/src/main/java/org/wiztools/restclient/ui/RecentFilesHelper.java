@@ -70,7 +70,7 @@ class RecentFilesHelper {
     
     protected final List<File> getListRepresentation(String recentFilesStr) {
         if(StringUtil.isEmpty(recentFilesStr)) {
-            return Collections.EMPTY_LIST;
+            return Collections.<File>emptyList();
         }
         LinkedList<File> out = new LinkedList<File>();
         String[] arr = recentFilesStr.split(SPLIT_KEY);
