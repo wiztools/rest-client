@@ -32,19 +32,19 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
     @Inject RESTUserInterface rest_ui;
     
     // Authentication resources
-    private JComboBox jcb_types = new JComboBox(AuthHelper.getAll());
-    private JCheckBox jcb_preemptive = new JCheckBox();
+    private final JComboBox<String> jcb_types = new JComboBox<String>(AuthHelper.getAll());
+    private final JCheckBox jcb_preemptive = new JCheckBox();
     
     private static final int auth_text_size = 20;
-    private JTextField jtf_host = new JTextField(auth_text_size);
-    private JTextField jtf_realm = new JTextField(auth_text_size);
-    private JTextField jtf_domain = new JTextField(auth_text_size);
-    private JTextField jtf_workstation = new JTextField(auth_text_size);
-    private JTextField jtf_username = new JTextField(auth_text_size);
-    private JPasswordField jpf_password = new JPasswordField(auth_text_size);
-    private JTextField jtf_ntlm_username = new JTextField(auth_text_size);
-    private JPasswordField jpf_ntlm_password = new JPasswordField(auth_text_size);
-    private JTextField jtf_bearer_token = new JTextField(auth_text_size);
+    private final JTextField jtf_host = new JTextField(auth_text_size);
+    private final JTextField jtf_realm = new JTextField(auth_text_size);
+    private final JTextField jtf_domain = new JTextField(auth_text_size);
+    private final JTextField jtf_workstation = new JTextField(auth_text_size);
+    private final JTextField jtf_username = new JTextField(auth_text_size);
+    private final JPasswordField jpf_password = new JPasswordField(auth_text_size);
+    private final JTextField jtf_ntlm_username = new JTextField(auth_text_size);
+    private final JPasswordField jpf_ntlm_password = new JPasswordField(auth_text_size);
+    private final JTextField jtf_bearer_token = new JTextField(auth_text_size);
 
     @Override
     public Auth getAuth() {
@@ -142,7 +142,7 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         
         String method = (String) jcb_types.getSelectedItem();
         if(AuthHelper.isNone(method)) {
-            return Collections.EMPTY_LIST;
+            return Collections.<String>emptyList();
         }
         
         List<String> errors = new ArrayList<String>();
