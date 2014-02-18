@@ -14,13 +14,14 @@ import org.wiztools.restclient.bean.HTTPVersion;
 public class ReqEtcPanelImpl extends JPanel implements ReqEtcPanel {
     
     // HTTP Version Combo box
-    private JComboBox jcb_http_version = new JComboBox(HTTPVersion.values());
+    private final JComboBox<HTTPVersion> jcb_http_version =
+            new JComboBox<HTTPVersion>(HTTPVersion.values());
 
     // Follow redirect
-    private JCheckBox jcb_followRedirects = new JCheckBox("Follow HTTP Redirects? ");
+    private final JCheckBox jcb_followRedirects = new JCheckBox("Follow HTTP Redirects? ");
     
     // Ignore body
-    private JCheckBox jcb_ignoreResponseBody = new JCheckBox("Ignore Response Body? ");
+    private final JCheckBox jcb_ignoreResponseBody = new JCheckBox("Ignore Response Body? ");
     
     @PostConstruct
     protected void init() {
