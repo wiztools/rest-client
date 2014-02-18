@@ -33,7 +33,7 @@ public final class UrlListPersistUtil {
     
     public static List<String> load() throws IOException {
         if(!LIST_FILE.exists()) {
-            return Collections.EMPTY_LIST;
+            return Collections.<String>emptyList();
         }
         else {
             List<String> out = new ArrayList<String>();
