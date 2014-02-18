@@ -77,9 +77,9 @@ public final class TwoColumnTablePanel extends JPanel {
         }
         
         MultiValueMap<String, String> out = new MultiValueMapLinkedHashSet<String, String>();
-        for(int i=0; i<d.length; i++){
-            String key = (String) d[i][0];
-            String value = (String) d[i][1];
+        for (Object[] d1 : d) {
+            String key = (String) d1[0];
+            String value = (String) d1[1];
             out.put(key, value);
         }
         
