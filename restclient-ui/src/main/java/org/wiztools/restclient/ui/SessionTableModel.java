@@ -107,7 +107,7 @@ class SessionTableModel extends AbstractTableModel implements ISessionView{
 
     @Override
     public void clear() {
-        setData(Collections.EMPTY_MAP);
+        setData(Collections.<String, String>emptyMap());
     }
 
 }
