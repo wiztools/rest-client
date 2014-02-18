@@ -27,18 +27,18 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
     private static final int auth_text_size = 20;
     
     // SSL - general
-    private JComboBox jcb_ssl_hostname_verifier = new JComboBox(SSLHostnameVerifier.getAll());
-    private JCheckBox jcb_ssl_trust_self_signed_cert = new JCheckBox("Trust self-signed certificate? ");
+    private final JComboBox<SSLHostnameVerifier> jcb_ssl_hostname_verifier = new JComboBox<SSLHostnameVerifier>(SSLHostnameVerifier.getAll());
+    private final JCheckBox jcb_ssl_trust_self_signed_cert = new JCheckBox("Trust self-signed certificate? ");
     
     // SSL - trust store
-    private JTextField jtf_ssl_truststore_file = new JTextField(auth_text_size);
-    private JButton jb_ssl_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private JPasswordField jpf_ssl_truststore_pwd = new JPasswordField(auth_text_size);
+    private final JTextField jtf_ssl_truststore_file = new JTextField(auth_text_size);
+    private final JButton jb_ssl_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+    private final JPasswordField jpf_ssl_truststore_pwd = new JPasswordField(auth_text_size);
     
     // SSL - key store
-    private JTextField jtf_ssl_keystore_file = new JTextField(auth_text_size);
-    private JButton jb_ssl_keystore_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private JPasswordField jpf_ssl_keystore_pwd = new JPasswordField(auth_text_size);
+    private final JTextField jtf_ssl_keystore_file = new JTextField(auth_text_size);
+    private final JButton jb_ssl_keystore_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+    private final JPasswordField jpf_ssl_keystore_pwd = new JPasswordField(auth_text_size);
 
     @Override
     public SSLReq getSslReq() {
