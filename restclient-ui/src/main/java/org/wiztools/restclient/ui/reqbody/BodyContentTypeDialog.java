@@ -85,8 +85,8 @@ public class BodyContentTypeDialog extends EscapableDialog {
     }
     
     
-    private JComboBox jcb_content_type = new JComboBox(contentTypeArr);
-    private JComboBox jcb_charset = new JComboBox(charSetArr);
+    private final JComboBox<String> jcb_content_type = new JComboBox<String>(contentTypeArr);
+    private final JComboBox<String> jcb_charset = new JComboBox<String>(charSetArr);
     
     private String contentType = DEFAULT_CONTENT_TYPE;
     private String charset = DEFAULT_CHARSET;
