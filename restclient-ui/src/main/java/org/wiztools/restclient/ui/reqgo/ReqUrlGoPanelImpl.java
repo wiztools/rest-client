@@ -37,7 +37,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     private static final String TEXT_GO = "Go!";
     private static final String TEXT_STOP = "Stop!";
     
-    private final JComboBox jcb_url = new JComboBox();
+    private final JComboBox<String> jcb_url = new JComboBox<String>();
     
     private final JButton jb_request = new JButton(icon_go);
     
@@ -153,7 +153,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     }
     
     private void jb_requestActionPerformed() {
-        final Object item = jcb_url.getSelectedItem();
+        final String item = (String) jcb_url.getSelectedItem();
         final int count = jcb_url.getItemCount();
         final LinkedList l = new LinkedList();
         for(int i=0; i<count; i++){
@@ -168,7 +168,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
             jcb_url.insertItemAt(item, 0);
         }
         else{ // Add new item
-            if(((String)item).trim().length() != 0 ) {
+            if(item.trim().length() != 0 ) {
                 // The total number of items should not exceed 20
                 if(count > 19){
                     // Remove last item to give place
