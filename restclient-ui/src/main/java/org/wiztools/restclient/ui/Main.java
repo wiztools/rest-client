@@ -21,7 +21,7 @@ public class Main {
         //UIManager.put("Label.font", f);
         //UIManager.put("Button.font", f);
         //UIManager.put("RadioButton.font", f);
-        ArrayList excludes = new ArrayList();
+        ArrayList<String> excludes = new ArrayList<String>();
         //excludes.add("TitledBorder.font");
         //excludes.add("MenuBar.font");
         //excludes.add("MenuItem.font");
@@ -32,7 +32,7 @@ public class Main {
         
         Enumeration itr = UIManager.getDefaults().keys();
         while(itr.hasMoreElements()){
-            Object key = itr.nextElement();
+            String key = (String) itr.nextElement();
             Object value = UIManager.get (key);
             if ((value instanceof javax.swing.plaf.FontUIResource)
                     && (!excludes.contains(key))){
