@@ -47,7 +47,7 @@ public class XMLIndentUtilTest {
     @Test
     public void testGetIndentedNONE() throws Exception {
         String inXml = FileUtil.getContentAsString(
-                new File("src/test/resources/input_NONE.xml"), Charsets.US_ASCII);
+                new File("src/test/resources/input_None.xml"), Charsets.US_ASCII);
         String expectedResult = FileUtil.getContentAsString(
                 new File("src/test/resources/input_UTF.xml"), Charsets.UTF_8);
         String result = XMLIndentUtil.getIndented(inXml);
