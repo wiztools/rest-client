@@ -155,7 +155,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     private void jb_requestActionPerformed() {
         final String item = (String) jcb_url.getSelectedItem();
         final int count = jcb_url.getItemCount();
-        final LinkedList l = new LinkedList();
+        final LinkedList<String> l = new LinkedList<String>();
         for(int i=0; i<count; i++){
             l.add(jcb_url.getItemAt(i));
         }
