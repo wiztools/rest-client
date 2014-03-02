@@ -56,17 +56,17 @@ class RESTMain implements RESTUserInterface {
     private URLEncodeDecodeDialog urlEncodeDecodeDialog;
     
     // Requests and responses are generally saved in different dirs
-    private JFileChooser jfc_request = UIUtil.getNewJFileChooser();
-    private JFileChooser jfc_response = UIUtil.getNewJFileChooser();
-    private JFileChooser jfc_generic = UIUtil.getNewJFileChooser();
-    private JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
-    private JFileChooser jfc_history = UIUtil.getNewJFileChooser();
+    private final JFileChooser jfc_request = UIUtil.getNewJFileChooser();
+    private final JFileChooser jfc_response = UIUtil.getNewJFileChooser();
+    private final JFileChooser jfc_generic = UIUtil.getNewJFileChooser();
+    private final JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
+    private final JFileChooser jfc_history = UIUtil.getNewJFileChooser();
     
     @Inject private RecentFilesHelper recentFilesHelper;
     
     private static final String URL_BOOK = "http://www.amazon.com/dp/B00D9IIGP6";
     private static final String URL_FB = "http://www.facebook.com/wiztools.org";
-    private static final String URL_ISSUE = "http://code.google.com/p/rest-client/issues/list";
+    private static final String URL_ISSUE = "https://github.com/wiztools/rest-client/issues";
     
     private final JFrame frame;
     
