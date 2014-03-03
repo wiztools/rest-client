@@ -32,12 +32,15 @@ public class Main {
         
         Enumeration itr = UIManager.getDefaults().keys();
         while(itr.hasMoreElements()){
-            String key = (String) itr.nextElement();
-            Object value = UIManager.get (key);
-            if ((value instanceof javax.swing.plaf.FontUIResource)
-                    && (!excludes.contains(key))){
-                LOG.fine(key.toString());
-                UIManager.put (key, f);
+            Object o = itr.nextElement();
+            if(o instanceof String) {
+                String key = (String) o;
+                Object value = UIManager.get (key);
+                if ((value instanceof javax.swing.plaf.FontUIResource)
+                        && (!excludes.contains(key))){
+                    LOG.fine(key.toString());
+                    UIManager.put (key, f);
+                }
             }
         }
     }
