@@ -42,25 +42,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--plugin>
-                <groupId>com.agiliumlabs.osxappbundle</groupId>
-                <artifactId>osxappbundle-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <configuration>
-                    <mainClass>org.wiztools.restclient.ui.Main</mainClass>
-                    <bundleName>WizTools.org RESTClient</bundleName>
-                    <vmOptions>-Dcom.apple.macos.useScreenMenuBar=true</vmOptions>
-                    <iconFile>${basedir}/src/main/app-resources/rest-client_30.icns</iconFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin-->
         </plugins>
     </build>
     <dependencies>
