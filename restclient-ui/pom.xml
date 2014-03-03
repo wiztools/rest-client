@@ -42,7 +42,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <groupId>com.agiliumlabs.osxappbundle</groupId>
                 <artifactId>osxappbundle-maven-plugin</artifactId>
                 <version>1.0.0</version>
@@ -60,7 +60,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
         </plugins>
     </build>
     <dependencies>
