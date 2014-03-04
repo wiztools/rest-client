@@ -12,7 +12,10 @@ import org.wiztools.commons.SystemConstants;
 public interface IGlobalOptions {
     
     File CONF_DIR = new File(
-            SystemConstants.userHome +
+            (
+                AppBundler.ApplicationSupportDirectory!=null
+                        ? AppBundler.ApplicationSupportDirectory: SystemConstants.userHome
+            ) +
             SystemConstants.fileSeparator +
             ".rest-client");
 
