@@ -20,22 +20,24 @@ public class RCFileFilter extends FileFilter {
         if(f.isDirectory()){
             return true;
         }
-        String path = f.getAbsolutePath();
-        path = path.toLowerCase();
-        if(type.equals(FileType.REQUEST_EXT)){
-            if(path.endsWith(FileType.REQUEST_EXT)){
-                return true;
-            }
-        }
-        else if(type.equals(FileType.RESPONSE_EXT)){
-            if(path.endsWith(FileType.RESPONSE_EXT)){
-                return true;
-            }
-        }
-        else if(type.equals(FileType.ARCHIVE_EXT)){
-            if(path.endsWith(FileType.ARCHIVE_EXT)){
-                return true;
-            }
+        final String path = f.getAbsolutePath().toLowerCase();
+        
+        switch (type) {
+            case FileType.REQUEST_EXT:
+                if(path.endsWith(FileType.REQUEST_EXT)){
+                    return true;
+                }
+                break;
+            case FileType.RESPONSE_EXT:
+                if(path.endsWith(FileType.RESPONSE_EXT)){
+                    return true;
+                }
+                break;
+            case FileType.ARCHIVE_EXT:
+                if(path.endsWith(FileType.ARCHIVE_EXT)){
+                    return true;
+                }
+                break;
         }
         return false;
     }
@@ -43,14 +45,16 @@ public class RCFileFilter extends FileFilter {
     @Override
     public final String getDescription() {
         String description = null;
-        if(type.equals(FileType.REQUEST_EXT)){
-            description = "Request";
-        }
-        else if(type.equals(FileType.RESPONSE_EXT)){
-            description = "Response";
-        }
-        else if(type.equals(FileType.ARCHIVE_EXT)){
-            description = "Archive";
+        switch (type) {
+            case FileType.REQUEST_EXT:
+                description = "Request";
+                break;
+            case FileType.RESPONSE_EXT:
+                description = "Response";
+                break;
+            case FileType.ARCHIVE_EXT:
+                description = "Archive";
+                break;
         }
         return description;
     }
