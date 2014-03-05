@@ -23,10 +23,7 @@ class FileOpenUtil {
             Request request = XMLUtil.getRequestFromXMLFile(f);
             view.setUIFromRequest(request);
         }
-        catch(IOException ex){
-            e = ex;
-        }
-        catch(XMLException ex){
+        catch(IOException | XMLException ex){
             e = ex;
         }
         if(e != null){
@@ -40,10 +37,7 @@ class FileOpenUtil {
             Response response = XMLUtil.getResponseFromXMLFile(f);
             view.setUIFromResponse(response);
         }
-        catch(IOException ex){
-            e = ex;
-        }
-        catch(XMLException ex){
+        catch(IOException | XMLException ex){
             e = ex;
         }
         if(e != null){
@@ -65,10 +59,7 @@ class FileOpenUtil {
                 view.showError("Unable to load archive! Check if valid archive!");
             }
         }
-        catch(IOException ex){
-            e = ex;
-        }
-        catch(XMLException ex){
+        catch(IOException | XMLException ex){
             e = ex;
         }
         if(e != null){
