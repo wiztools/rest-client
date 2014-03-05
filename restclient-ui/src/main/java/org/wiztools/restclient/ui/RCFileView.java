@@ -12,17 +12,14 @@ import org.wiztools.restclient.FileType;
 public class RCFileView extends FileView {
     @Override
     public String getTypeDescription(final File f){
-        String path = f.getAbsolutePath();
-        path = path.toLowerCase();
-        String type = FileType.getType(f);
-        if(FileType.REQUEST_EXT.equals(type)){
-            return "Request";
-        }
-        else if(FileType.RESPONSE_EXT.equals(type)){
-            return "Response";
-        }
-        else if(FileType.ARCHIVE_EXT.equals(type)){
-            return "Archive";
+        final String type = FileType.getType(f);
+        switch (type) {
+            case FileType.REQUEST_EXT:
+                return "Request";
+            case FileType.RESPONSE_EXT:
+                return "Response";
+            case FileType.ARCHIVE_EXT:
+                return "Archive";
         }
         return null;
     }
@@ -36,7 +33,7 @@ public class RCFileView extends FileView {
     
     @Override
     public Icon getIcon(final File f){
-        Icon icon = null;
+        Icon icon;
         
         String type = FileType.getType(f);
         if(f.isDirectory()){
