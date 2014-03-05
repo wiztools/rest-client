@@ -9,8 +9,10 @@ import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import org.wiztools.filechooser.FDFileChooser;
+import org.wiztools.filechooser.FileChooser;
+import org.wiztools.filechooser.JFCFileChooser;
 
 /**
  *
@@ -25,10 +27,12 @@ public final class UIUtil {
     public static final Font FONT_MONO_12_PLAIN = new Font(Font.MONOSPACED, Font.PLAIN, 12);
     
     private static final RCFileView fileView = new RCFileView();
-    public static final JFileChooser getNewJFileChooser(){
-        JFileChooser jfc = new JFileChooser();
+    public static final FileChooser getNewFileChooser(){
+        JFCFileChooser jfc = new JFCFileChooser();
         jfc.setFileView(fileView);
         return jfc;
+        
+        // return new FDFileChooser();
     }
     
     public static ImageIcon getIconFromClasspath(String path){

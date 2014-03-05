@@ -1,14 +1,14 @@
 package org.wiztools.restclient.ui;
 
 import java.io.File;
-import javax.swing.filechooser.FileFilter;
+import org.wiztools.filechooser.FileFilter;
 import org.wiztools.restclient.FileType;
 
 /**
  *
  * @author Subhash
  */
-public class RCFileFilter extends FileFilter {
+public class RCFileFilter implements FileFilter {
     
     private final String type;
     public RCFileFilter(String type){

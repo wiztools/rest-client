@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
+import org.wiztools.filechooser.FileChooser;
 import org.wiztools.restclient.*;
 import org.wiztools.restclient.ui.*;
 import org.wiztools.restclient.util.Util;
@@ -35,7 +36,7 @@ public class RunTestDialog extends EscapableDialog {
     
     private RunTestDialog me;
     
-    private JFileChooser jfc = UIUtil.getNewJFileChooser();
+    private FileChooser jfc = UIUtil.getNewFileChooser();
     
     private File archiveFile;
     

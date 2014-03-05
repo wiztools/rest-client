@@ -17,12 +17,14 @@ import javax.inject.Singleton;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import javax.swing.filechooser.FileFilter;
 import org.simplericity.macify.eawt.Application;
 import org.simplericity.macify.eawt.ApplicationEvent;
 import org.simplericity.macify.eawt.ApplicationListener;
 import org.simplericity.macify.eawt.DefaultApplication;
 import org.wiztools.commons.FileUtil;
+import org.wiztools.filechooser.FileChooser;
+import org.wiztools.filechooser.FileChooserResponse;
+import org.wiztools.filechooser.FileFilter;
 import org.wiztools.restclient.FileType;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.RCConstants;
@@ -56,11 +58,11 @@ class RESTMain implements RESTUserInterface {
     private URLEncodeDecodeDialog urlEncodeDecodeDialog;
     
     // Requests and responses are generally saved in different dirs
-    private final JFileChooser jfc_request = UIUtil.getNewJFileChooser();
-    private final JFileChooser jfc_response = UIUtil.getNewJFileChooser();
-    private final JFileChooser jfc_generic = UIUtil.getNewJFileChooser();
-    private final JFileChooser jfc_archive = UIUtil.getNewJFileChooser();
-    private final JFileChooser jfc_history = UIUtil.getNewJFileChooser();
+    private final FileChooser jfc_request = UIUtil.getNewFileChooser();
+    private final FileChooser jfc_response = UIUtil.getNewFileChooser();
+    private final FileChooser jfc_generic = UIUtil.getNewFileChooser();
+    private final FileChooser jfc_archive = UIUtil.getNewFileChooser();
+    private final FileChooser jfc_history = UIUtil.getNewFileChooser();
     
     @Inject private RecentFilesHelper recentFilesHelper;
     
@@ -660,7 +662,7 @@ class RESTMain implements RESTUserInterface {
     @Override
     public File getOpenFile(final FileChooserType type, final Component parent){
         String title = null;
-        JFileChooser jfc = null;
+        FileChooser jfc = null;
         if(type == FileChooserType.OPEN_REQUEST){
             jfc = jfc_request;
             title = "Open Request";
@@ -690,8 +692,8 @@ class RESTMain implements RESTUserInterface {
             title = "Open";
         }
         jfc.setDialogTitle(title);
-        int status = jfc.showOpenDialog(parent);
-        if(status == JFileChooser.APPROVE_OPTION){
+        FileChooserResponse status = jfc.showOpenDialog(parent);
+        if(status == FileChooserResponse.APPROVE_OPTION){
             File f = jfc.getSelectedFile();
             return f;
         }
@@ -726,7 +728,7 @@ class RESTMain implements RESTUserInterface {
     // This method is invoked from SU.invokeLater
     @Override
     public File getSaveFile(final FileChooserType type){
-        JFileChooser jfc = null;
+        FileChooser jfc = null;
         String title = null;
         if(type == FileChooserType.SAVE_REQUEST){
             jfc = jfc_request;
@@ -749,8 +751,8 @@ class RESTMain implements RESTUserInterface {
             title = "Save History";
         }
         jfc.setDialogTitle(title);
-        int status = jfc.showSaveDialog(frame);
-        if(status == JFileChooser.APPROVE_OPTION){
+        FileChooserResponse status = jfc.showSaveDialog(frame);
+        if(status == FileChooserResponse.APPROVE_OPTION){
             File f = jfc.getSelectedFile();
             
             if(f == null){

@@ -56,6 +56,11 @@
             <version>3.2.3-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>org.wiztools</groupId>
+            <artifactId>filechooser-abstraction</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.jidesoft</groupId>
             <artifactId>jide-oss</artifactId>
             <version>3.5.13</version>
