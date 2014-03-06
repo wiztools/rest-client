@@ -11,17 +11,8 @@ import org.wiztools.restclient.FileType;
  */
 public class RCFileView extends FileView {
     @Override
-    public String getTypeDescription(final File f){
-        final String type = FileType.getType(f);
-        switch (type) {
-            case FileType.REQUEST_EXT:
-                return "Request";
-            case FileType.RESPONSE_EXT:
-                return "Response";
-            case FileType.ARCHIVE_EXT:
-                return "Archive";
-        }
-        return null;
+    public String getTypeDescription(final File f) {
+        return FileType.getNameFromExt(FileType.getType(f));
     }
     
     public static final String iconBasePath = "org/wiztools/restclient/";

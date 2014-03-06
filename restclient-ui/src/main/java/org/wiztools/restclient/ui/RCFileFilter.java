@@ -21,42 +21,21 @@ public class RCFileFilter implements FileFilter {
             return true;
         }
         final String path = f.getAbsolutePath().toLowerCase();
-        
-        switch (type) {
-            case FileType.REQUEST_EXT:
-                if(path.endsWith(FileType.REQUEST_EXT)){
-                    return true;
-                }
-                break;
-            case FileType.RESPONSE_EXT:
-                if(path.endsWith(FileType.RESPONSE_EXT)){
-                    return true;
-                }
-                break;
-            case FileType.ARCHIVE_EXT:
-                if(path.endsWith(FileType.ARCHIVE_EXT)){
-                    return true;
-                }
-                break;
+        if(FileType.REQUEST_EXT.equals(type) && path.endsWith(FileType.REQUEST_EXT)) {
+            return true;
+        }
+        else if(FileType.RESPONSE_EXT.equals(type) && path.endsWith(FileType.RESPONSE_EXT)) {
+            return true;
+        }
+        else if(FileType.ARCHIVE_EXT.equals(type) && path.endsWith(FileType.ARCHIVE_EXT)) {
+            return true;
         }
         return false;
     }
 
     @Override
     public final String getDescription() {
-        String description = null;
-        switch (type) {
-            case FileType.REQUEST_EXT:
-                description = "Request";
-                break;
-            case FileType.RESPONSE_EXT:
-                description = "Response";
-                break;
-            case FileType.ARCHIVE_EXT:
-                description = "Archive";
-                break;
-        }
-        return description;
+        return FileType.getNameFromExt(type);
     }
 
     public String getFileTypeExt(){
