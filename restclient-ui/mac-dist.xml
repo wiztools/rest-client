@@ -2,8 +2,9 @@
 <project name="RESTClient" default="bundle" basedir=".">
 
     <property environment="env" />
+    <property name="app.name" value="RESTClient"/>
     <property name="target.dir" value="target"/>
-    <property name="dmg.dir" value="${target.dir}/RESTClient"/>
+    <property name="dmg.dir" value="${target.dir}/${app.name}"/>
 
     <taskdef name="bundleapp"
              classname="com.oracle.appbundler.AppBundlerTask"   
@@ -30,7 +31,7 @@
         
         <!-- Create bundle -->
         <bundleapp outputdirectory="${dmg.dir}"
-            name="RESTClient"
+            name="${app.name}"
             displayname="WizTools.org RESTClient"
             identifier="org.wiztools.restclient.ui"
             mainclassname="org.wiztools.restclient.ui.Main"
@@ -59,6 +60,34 @@
             <arg value="internet-enable"/>
             <arg value="-yes"/>
             <arg value="${dmg.bin}"/>
+        </exec>
+        
+        <!-- Create pkg -->
+        <exec executable="productbuild">
+            <arg value="--component"/>
+            <arg value="${dmg.dir}/${app.name}.app"/>
+            <arg value="/Applications"/>
+            <arg value="${target.dir}/${app.name}-${prjVersion}.pkg"/>
+        </exec>
+    </target>
+    
+    <target name="sign" depends="bundle">
+        <fail message="Property not set: devID_app" unless="devID_app"/>
+        <fail message="Property not set: devID_inst" unless="devID_inst"/>
+        
+        <exec executable="codesign">
+            <arg value="-v"/>
+            <arg value="-f"/>
+            <arg value="-s"/>
+            <arg value="${devID_app}"/>
+            <arg value="${dmg.dir}/${app.name}.app"/>
+        </exec>
+        
+        <exec executable="productsign">
+            <arg value="--sign"/>
+            <arg value="${devID_inst}"/>
+            <arg value="${target.dir}/${app.name}-${prjVersion}.pkg"/>
+            <arg value="${target.dir}/${app.name}-signed-${prjVersion}.pkg"/>
         </exec>
     </target>
     
