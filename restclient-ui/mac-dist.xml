@@ -78,6 +78,7 @@
         <exec executable="codesign">
             <arg value="-v"/>
             <arg value="-f"/>
+            <arg value="--deep"/>
             <arg value="-s"/>
             <arg value="${devID_app}"/>
             <arg value="${dmg.dir}/${app.name}.app"/>
