@@ -93,4 +93,17 @@ public enum FileType {
         // Add extension:
         return new File(f.getParent(), f.getName() + type.getExtension());
     }
+    
+    public static String getNameFromExt(String ext) {
+        if(FileType.REQUEST_EXT.equals(ext)) {
+            return "Request";
+        }
+        else if(FileType.RESPONSE_EXT.equals(ext)) {
+            return "Response";
+        }
+        else if(FileType.ARCHIVE_EXT.equals(ext)) {
+            return "Archive";
+        }
+        return null;
+    }
 }
