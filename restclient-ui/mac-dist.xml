@@ -30,16 +30,19 @@
         
         <!-- Create bundle -->
         <bundleapp outputdirectory="${dmg.dir}"
-            name="WizTools.org RESTClient"
+            name="RESTClient"
             displayname="WizTools.org RESTClient"
-            identifier="org.wiztools.restclient.ui.Main"
+            identifier="org.wiztools.restclient.ui"
             mainclassname="org.wiztools.restclient.ui.Main"
-            icon="src/main/app-resources/rest-client_30.icns">
+            icon="src/main/app-resources/rest-client_30.icns"
+            shortversion="${prjVersion}">
             <runtime dir="${env.JAVA_HOME}" />
             <classpath file="target/restclient-ui-${prjVersion}-jar-with-dependencies.jar" />
             <option value="-Dapple.laf.useScreenMenuBar=true"/>
             <option value="-Dcom.apple.macos.use-file-dialog-packages=true"/>
             <option value="-Dcom.apple.macos.useScreenMenuBar=true"/>
+            <option value="-Dapple.awt.application.name=RESTClient"/>
+            <option value="-Dcom.apple.macos.smallTabs=true"/>
             <option value="-Dcom.apple.smallTabs=true"/>
             <option value="-Dfile.encoding=UTF-8"/>
             <option value="-Xmx1024M" name="Xmx"/>
@@ -57,6 +60,11 @@
             <arg value="-yes"/>
             <arg value="${dmg.bin}"/>
         </exec>
+    </target>
+    
+    <target name="clean">
+        <delete dir="${dmg.dir}"/>
+        <delete file="${dmg.bin}"/>
     </target>
 
 </project>
