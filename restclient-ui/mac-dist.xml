@@ -24,7 +24,7 @@
         <echo>Project version: ${prjVersion}</echo>
         
         <!-- DMG name -->
-        <property name="dmg.bin" value="${target.dir}/RESTClient-${prjVersion}.dmg"/>
+        <property name="dmg.bin" value="${target.dir}/${app.name}-${prjVersion}.dmg"/>
         
         <!-- Delete already existing file -->
         <delete file="${dmg.bin}"/>
