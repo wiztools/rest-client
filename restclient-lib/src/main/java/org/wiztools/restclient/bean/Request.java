@@ -19,6 +19,8 @@ public interface Request extends Cloneable, Serializable {
     MultiValueMap<String, String> getHeaders();
     
     List<HttpCookie> getCookies();
+    
+    CookieVersion getCookieVersion();
 
     HTTPVersion getHttpVersion();
 

@@ -18,8 +18,9 @@ public final class RequestBean implements Request {
     private URL url;
     private HTTPMethod method;
     private Auth auth;
-    private final MultiValueMap<String, String> headers = new MultiValueMapArrayList<String, String>();
-    private final List<HttpCookie> cookies = new ArrayList<HttpCookie>();
+    private final MultiValueMap<String, String> headers = new MultiValueMapArrayList<>();
+    private CookieVersion cookieVersion = CookieVersion.V_1;
+    private final List<HttpCookie> cookies = new ArrayList<>();
     private ReqEntity body;
     private String testScript;
     private SSLReq sslReq;
@@ -84,6 +85,15 @@ public final class RequestBean implements Request {
     public void addCookie(HttpCookie cookie) {
         this.cookies.add(cookie);
     }
+
+    @Override
+    public CookieVersion getCookieVersion() {
+        return cookieVersion;
+    }
+
+    public void setCookieVersion(CookieVersion cookieVersion) {
+        this.cookieVersion = cookieVersion;
+    }
     
     @Override
     public List<HttpCookie> getCookies() {
@@ -141,6 +151,7 @@ public final class RequestBean implements Request {
                 }
             }
         }
+        cloned.setCookieVersion(cookieVersion);
         if(!cookies.isEmpty()) {
             for(HttpCookie cookie: cookies) {
                 cloned.addCookie(cookie);
@@ -206,6 +217,7 @@ public final class RequestBean implements Request {
         hash = 23 * hash + (this.method != null ? this.method.hashCode() : 0);
         hash = 23 * hash + (this.auth != null ? this.auth.hashCode() : 0);
         hash = 23 * hash + (this.headers != null ? this.headers.hashCode() : 0);
+        hash = 23 * hash + (this.cookieVersion != null ? this.cookieVersion.hashCode() : 0);
         hash = 23 * hash + (this.cookies != null ? this.cookies.hashCode() : 0);
         hash = 23 * hash + (this.body != null ? this.body.hashCode() : 0);
         hash = 23 * hash + (this.testScript != null ? this.testScript.hashCode() : 0);
@@ -223,6 +235,7 @@ public final class RequestBean implements Request {
         sb.append(url).append(", ");
         sb.append(method).append(", ");
         sb.append(headers).append(", ");
+        sb.append(cookieVersion).append(", ");
         sb.append(cookies).append(", ");
         sb.append(body).append(", ");
         sb.append(auth).append(", ");
