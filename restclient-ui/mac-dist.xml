@@ -62,39 +62,6 @@
         </exec>
     </target>
     
-    <target name="sign" depends="bundle">
-        <echo>Run: certtool y | grep Developer\ ID</echo>
-    
-        <fail message="Property not set: devID_app" unless="devID_app"/>
-        <fail message="Property not set: devID_inst" unless="devID_inst"/>
-        
-        <!-- Sign app -->
-        <exec executable="codesign">
-            <arg value="-v"/>
-            <arg value="-f"/>
-            <arg value="--deep"/>
-            <arg value="-s"/>
-            <arg value="${devID_app}"/>
-            <arg value="${dmg.dir}/${app.name}.app"/>
-        </exec>
-        
-        <!-- Create pkg -->
-        <exec executable="productbuild">
-            <arg value="--component"/>
-            <arg value="${dmg.dir}/${app.name}.app"/>
-            <arg value="/Applications"/>
-            <arg value="${target.dir}/${app.name}-${prjVersion}.pkg"/>
-        </exec>
-        
-        <!-- Sign pkg -->
-        <exec executable="productsign">
-            <arg value="--sign"/>
-            <arg value="${devID_inst}"/>
-            <arg value="${target.dir}/${app.name}-${prjVersion}.pkg"/>
-            <arg value="${target.dir}/${app.name}-signed-${prjVersion}.pkg"/>
-        </exec>
-    </target>
-    
     <target name="clean">
         <delete dir="${dmg.dir}"/>
         <delete file="${dmg.bin}"/>
