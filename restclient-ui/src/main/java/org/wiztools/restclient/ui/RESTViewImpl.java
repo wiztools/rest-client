@@ -570,11 +570,17 @@ public class RESTViewImpl extends JPanel implements RESTView {
         // Cookies
         List<HttpCookie> cookies = request.getCookies();
         MultiValueMap<String, String> cookiesMap = new MultiValueMapArrayList<String, String>();
+        
+        int version = CookieVersion.DEFAULT_VERSION.getIntValue();
         for(HttpCookie cookie: cookies) {
             cookiesMap.put(cookie.getName(), cookie.getValue());
+            version = cookie.getVersion();
         }
         jp_2col_req_cookies.setData(cookiesMap);
-
+        
+        // Cookie version
+        jp_req_etc.setCookieVersion(CookieVersion.getValue(version));
+        
         // Body
         ReqEntity body = request.getBody();
         if(body != null){

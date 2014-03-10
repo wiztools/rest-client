@@ -9,6 +9,8 @@ public enum CookieVersion {
     
     private final String description;
     private final int version;
+    
+    public static final CookieVersion DEFAULT_VERSION = V_1;
 
     private CookieVersion(String description, int version) {
         this.description = description;
