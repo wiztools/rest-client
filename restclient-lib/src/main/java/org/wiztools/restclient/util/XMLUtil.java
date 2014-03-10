@@ -114,11 +114,16 @@ public final class XMLUtil {
             }
             reqElement.appendChild(e);
         }
-
+        
         // Cookies
         List<HttpCookie> cookies = bean.getCookies();
         if(!cookies.isEmpty()) {
             Element e = new Element("cookies");
+            
+            // Version:
+            CookieVersion cookieVersion = bean.getCookieVersion();
+            e.addAttribute(new Attribute("version", String.valueOf(cookieVersion.getIntValue())));
+            
             for(HttpCookie cookie: cookies) {
                 Element ee = new Element("cookie");
                 ee.addAttribute(new Attribute("name", cookie.getName()));
@@ -229,6 +234,8 @@ public final class XMLUtil {
                 }
             }
             else if ("cookies".equals(nodeName)) {
+                final int cookieVer = Integer.parseInt(tNode.getAttribute("version").getValue());
+                requestBean.setCookieVersion(CookieVersion.getValue(cookieVer));
                 List<HttpCookie> cookies = getCookiesFromCookiesNode(tNode);
                 for (HttpCookie cookie: cookies) {
                     requestBean.addCookie(cookie);
