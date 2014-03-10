@@ -20,8 +20,6 @@ public interface Request extends Cloneable, Serializable {
     
     List<HttpCookie> getCookies();
     
-    CookieVersion getCookieVersion();
-
     HTTPVersion getHttpVersion();
 
     HTTPMethod getMethod();

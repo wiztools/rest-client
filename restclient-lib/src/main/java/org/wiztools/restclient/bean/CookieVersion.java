@@ -5,15 +5,18 @@ package org.wiztools.restclient.bean;
  * @author subwiz
  */
 public enum CookieVersion {
-    V_0, V_1;
+    V_1("Cookie v1", 1), V_0("Cookie v0", 0);
+    
+    private final String description;
+    private final int version;
+
+    private CookieVersion(String description, int version) {
+        this.description = description;
+        this.version = version;
+    }
     
     public int getIntValue() {
-        if(this.equals(V_0)) {
-            return 0;
-        }
-        else {
-            return 1;
-        }
+        return version;
     }
     
     public static CookieVersion getValue(int ver) throws IllegalArgumentException {
@@ -26,5 +29,10 @@ public enum CookieVersion {
         else {
             throw new IllegalArgumentException("Accepted parameters: 0/1");
         }
+    }
+
+    @Override
+    public String toString() {
+        return description;
     }
 }

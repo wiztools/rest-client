@@ -269,6 +269,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
                 for(final String value: values) {
                     try {
                         HttpCookie cookie = new HttpCookie(key, value);
+                        cookie.setVersion(jp_req_etc.getCookieVersion().getIntValue());
                         request.addCookie(cookie);
                     }
                     catch(IllegalArgumentException ex) {

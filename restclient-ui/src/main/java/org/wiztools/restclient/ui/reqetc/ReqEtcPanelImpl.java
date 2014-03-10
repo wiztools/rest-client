@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
+import org.wiztools.restclient.bean.CookieVersion;
 import org.wiztools.restclient.bean.HTTPVersion;
 
 /**
@@ -15,7 +16,11 @@ public class ReqEtcPanelImpl extends JPanel implements ReqEtcPanel {
     
     // HTTP Version Combo box
     private final JComboBox<HTTPVersion> jcb_http_version =
-            new JComboBox<HTTPVersion>(HTTPVersion.values());
+            new JComboBox<>(HTTPVersion.values());
+    
+    // Cookie versions
+    private final JComboBox<CookieVersion> jcb_cookie_version =
+            new JComboBox<>(CookieVersion.values());
 
     // Follow redirect
     private final JCheckBox jcb_followRedirects = new JCheckBox("Follow HTTP Redirects? ");
@@ -28,8 +33,11 @@ public class ReqEtcPanelImpl extends JPanel implements ReqEtcPanel {
         JPanel jp_etc = new JPanel(new GridLayout(3, 1));
         { // Http Version
             JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            jp.add(new JLabel("HTTP Version: "));
+            jp.add(new JLabel("Versions: "));
+            
             jp.add(jcb_http_version);
+            jp.add(jcb_cookie_version);
+            
             jp_etc.add(jp);
         }
         
@@ -66,6 +74,18 @@ public class ReqEtcPanelImpl extends JPanel implements ReqEtcPanel {
     @Override
     public Component getComponent() {
         return this;
+    }
+
+    @Override
+    public CookieVersion getCookieVersion() {
+        return (CookieVersion) jcb_cookie_version.getSelectedItem();
+    }
+
+    @Override
+    public void setCookieVersion(CookieVersion version) {
+        if(version != null) {
+            jcb_cookie_version.setSelectedItem(version);
+        }
     }
 
     @Override
