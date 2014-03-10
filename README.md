@@ -13,7 +13,7 @@ The first version of RESTClient was released late 2007. Since then the tool has 
 
 ### Download
 
-Preferred binary download host: [FossHub](http://code.fosshub.com/WizToolsorg-RESTClient/downloads).
+Preferred binary download host: [FossHub](http://code.fosshub.com/WizToolsorg-RESTClient/downloads). Archives of earlier releases available at [Google Code](https://code.google.com/p/rest-client/downloads/list).
 
 ### Book
 
