@@ -9,7 +9,7 @@ RESTClient is a Java application to test RESTful webservices. It can be used to 
 
 ### Since 2007
 
-The first version of RESTClient was released late 2007. Since then the tool has been in continuous development. Visit [project news page](/wiztools/rest-client/wiki/News) for history of releases.
+The first version of RESTClient was released late 2007. Since then the tool has been in continuous development. Visit [project news page](https://github.com/wiztools/rest-client/wiki/News) for history of releases.
 
 ### Download
 
