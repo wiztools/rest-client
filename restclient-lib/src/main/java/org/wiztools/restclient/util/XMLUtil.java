@@ -187,7 +187,13 @@ public final class XMLUtil {
             
             HttpCookie cookie = new HttpCookie(e.getAttributeValue("name"),
                     e.getAttributeValue("value"));
-            cookie.setVersion(Integer.parseInt(e.getAttributeValue("version")));
+            final String cookieVerStr = e.getAttributeValue("version");
+            if(cookieVerStr != null) {
+                cookie.setVersion(Integer.parseInt(cookieVerStr));
+            }
+            else {
+                cookie.setVersion(CookieVersion.DEFAULT_VERSION.getIntValue());
+            }
             out.add(cookie);
         }
         
