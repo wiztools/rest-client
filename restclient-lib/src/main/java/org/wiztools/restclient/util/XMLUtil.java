@@ -13,6 +13,7 @@ import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.XMLEvent;
 import nu.xom.*;
 import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.RCConstants;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.*;
@@ -188,7 +189,7 @@ public final class XMLUtil {
             HttpCookie cookie = new HttpCookie(e.getAttributeValue("name"),
                     e.getAttributeValue("value"));
             final String cookieVerStr = e.getAttributeValue("version");
-            if(cookieVerStr != null) {
+            if(StringUtil.isNotEmpty(cookieVerStr)) {
                 cookie.setVersion(Integer.parseInt(cookieVerStr));
             }
             else {
