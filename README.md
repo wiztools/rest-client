@@ -11,9 +11,11 @@ RESTClient is a Java application to test RESTful webservices. It can be used to 
 
 The first version of RESTClient was released late 2007. Since then the tool has been in continuous development. Visit [project news page](https://github.com/wiztools/rest-client/wiki/News) for history of releases.
 
-### Download
+### Download | Purchase
 
 Preferred binary download host: [FossHub](http://code.fosshub.com/WizToolsorg-RESTClient/downloads). Archives of earlier releases available at [Google Code](https://code.google.com/p/rest-client/downloads/list).
+
+RESTClient Signed Mac build is also available for purchase from [FastSpring store](http://sites.fastspring.com/wiztools/product/restclient). Read [this FAQ](https://github.com/wiztools/rest-client/wiki/Mac-Build-FAQ) for details. Your support for the project ensures its continued development.
 
 ### Support
 
