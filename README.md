@@ -29,9 +29,9 @@ One source of revenue for this project is from sale of this book. Show your supp
 
 ### Screenshot
 
-3.2 release:
+3.3 release:
 
-[![](http://farm3.staticflickr.com/2827/9007025500_030273a590_o.png)](http://www.flickr.com/photos/subwiz/9007025500/)
+[![](http://farm4.staticflickr.com/3688/13246417915_202a0841c0_b.jpg)](http://www.flickr.com/photos/subwiz/13246417915/)
 
 More screenshots here: http://flickr.com/photos/subwiz/tags/restclient/
 
