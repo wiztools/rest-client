@@ -134,6 +134,7 @@ public class HTTPClientRequestExecuterTest {
     public void testMultipleExecution() throws Exception{
         try{
             RequestBean request = getRequestBean();
+            request.setMethod(HTTPMethod.GET);
             RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
             View view = new ViewAdapter();
             executer.execute(request, view);
