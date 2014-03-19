@@ -372,8 +372,10 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 }
 
                 // Register the SSL Scheme:
-                final String trustStorePath = sslReq.getTrustStore().getAbsolutePath();
-                final String keyStorePath = sslReq.getKeyStore().getAbsolutePath();
+                final String trustStorePath = sslReq.getTrustStore() != null?
+                        sslReq.getTrustStore().getAbsolutePath(): null;
+                final String keyStorePath = sslReq.getKeyStore() != null?
+                        sslReq.getKeyStore().getAbsolutePath(): null;
 
                 final KeyStore trustStore  = StringUtil.isEmpty(trustStorePath)?
                         null:
@@ -384,7 +386,6 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
 
                 final TrustStrategy trustStrategy = sslReq.isTrustSelfSignedCert()
                         ? new TrustSelfSignedStrategy(): null;
-
                 
                 SSLContext ctx = new SSLContextBuilder()
                         .loadKeyMaterial(keyStore, sslReq.getKeyStorePassword()!=null? sslReq.getKeyStorePassword(): null)
