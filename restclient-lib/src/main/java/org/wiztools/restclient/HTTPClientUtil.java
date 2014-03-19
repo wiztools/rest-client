@@ -100,4 +100,9 @@ class HTTPClientUtil {
         }
         return entity;
     }
+    
+    public static org.apache.http.entity.ContentType getContentType(
+            org.wiztools.restclient.bean.ContentType ct) {
+        return ContentType.create(ct.getContentType(), ct.getCharset());
+    }
 }
