@@ -34,6 +34,7 @@ import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.auth.AuthSchemeBase;
@@ -58,6 +59,7 @@ import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.http.EntityEnclosingDelete;
 import org.wiztools.restclient.http.NoValidationCookieSpecFactory;
 import org.wiztools.restclient.http.RESTClientCookieStore;
+import org.wiztools.restclient.util.ApacheHttpUtil;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.IDNUtil;
 import org.wiztools.restclient.util.Util;
@@ -285,7 +287,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                         }
                         else if(bean instanceof ReqEntityMultipart) {
                             ReqEntityMultipart multipart = (ReqEntityMultipart)bean;
-                            MultipartEntity me = new MultipartEntity();
+                            
+                            MultipartEntityBuilder meb = MultipartEntityBuilder.create();
                             for(ReqEntityPart part: multipart.getBody()) {
                                 if(part instanceof ReqEntityStringPart) {
                                     ReqEntityStringPart p = (ReqEntityStringPart)part;
@@ -293,12 +296,12 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                     ContentType ct = p.getContentType();
                                     StringBody sb = null;
                                     if(ct != null) {
-                                        sb = new StringBody(body, ct.getContentType(), HttpUtil.getCharsetDefault(ct));
+                                        sb = new StringBody(body, ApacheHttpUtil.getHCContentType(ct));
                                     }
                                     else {
-                                        sb = new StringBody(body);
+                                        sb = new StringBody(body, org.apache.http.entity.ContentType.TEXT_PLAIN);
                                     }
-                                    me.addPart(part.getName(), sb);
+                                    meb.addPart(part.getName(), sb);
                                 }
                                 else if(part instanceof ReqEntityFilePart) {
                                     ReqEntityFilePart p = (ReqEntityFilePart)part;
@@ -306,15 +309,15 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                     ContentType ct = p.getContentType();
                                     FileBody fb = null;
                                     if(ct != null) {
-                                        fb = new FileBody(body, ct.getContentType(), HttpUtil.getCharsetDefault(ct).name());
+                                        fb = new FileBody(body, ApacheHttpUtil.getHCContentType(ct), body.getName());
                                     }
                                     else {
                                         fb = new FileBody(body);
                                     }
-                                    me.addPart(part.getName(), fb);
+                                    meb.addPart(part.getName(), fb);
                                 }
                             }
-                            eeMethod.setEntity(me);
+                            eeMethod.setEntity(meb.build());
                         }
                         
                         
