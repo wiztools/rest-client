@@ -69,8 +69,6 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
     private static final Logger LOG = Logger.getLogger(HTTPClientRequestExecuter.class.getName());
 
     private CloseableHttpClient httpClient;
-    
-    private HttpClientBuilder hcBuilder;
 
     private boolean interruptedShutdown = false;
     private boolean isRequestCompleted = false;
@@ -97,11 +95,12 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             view.doStart(request);
         }
 
-        // Needed for specifying HTTP pre-emptive authentication
+        // Needed for specifying HTTP pre-emptive authentication:
         HttpContext httpContext = null;
         
-        hcBuilder = HttpClientBuilder.create();
-        RequestConfig.Builder rcBuilder = RequestConfig.custom();
+        // Create all the builder objects:
+        final HttpClientBuilder hcBuilder = HttpClientBuilder.create();
+        final RequestConfig.Builder rcBuilder = RequestConfig.custom();
         final RequestBuilder reqBuilder;
         switch(request.getMethod()){
             case GET:
@@ -145,7 +144,6 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         ProtocolVersion protocolVersion =
                 httpVersion==HTTPVersion.HTTP_1_1? new ProtocolVersion("HTTP", 1, 1):
                     new ProtocolVersion("HTTP", 1, 0);
-        
         reqBuilder.setVersion(protocolVersion);
 
         // Set request timeout (default 1 minute--60000 milliseconds)
@@ -177,7 +175,6 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             Auth auth = request.getAuth();
             List<String> authPrefs = new ArrayList<>();
             if(auth instanceof BasicAuth) {
-                // AuthSchemes.
                 authPrefs.add(AuthSchemes.BASIC);
             }
             else if(auth instanceof DigestAuth) {
@@ -202,7 +199,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                         new UsernamePasswordCredentials(uid, pwd));
                 hcBuilder.setDefaultCredentialsProvider(credsProvider);
                 
-                // preemptive mode
+                // preemptive mode:
                 if (a.isPreemptive()) {
                     AuthCache authCache = new BasicAuthCache();
                     AuthSchemeBase authScheme = a instanceof BasicAuth?
@@ -232,11 +229,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             // Logic written in same place where Header is processed--a little down!
         }
 
-        AbstractHttpMessage method = null;
-
         try {
-
-            // method.setParams(new BasicHttpParams().setParameter(urlStr, url));
             
             { // Authorization Header Authentication:
                 Auth auth = request.getAuth();
@@ -264,12 +257,6 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             // Cookies
             {
                 // Set cookie policy:
-                /*
-                httpclient.getCookieSpecs().register(
-                        NoValidationCookieSpecFactory.NAME, new NoValidationCookieSpecFactory());
-                httpclient.getParams().setParameter(
-                        ClientPNames.COOKIE_POLICY, NoValidationCookieSpecFactory.NAME);*/
-                
                 rcBuilder.setCookieSpec(CookieSpecs.BEST_MATCH);
                 
                 // Add to CookieStore:
@@ -290,7 +277,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             }    
 
             // POST/PUT/PATCH/DELETE method specific logic
-            if (Arrays.asList(new String[]{"POST", "PUT", "PATCH", "DELETE"}).contains(reqBuilder.getMethod())) {
+            if (HttpUtil.isEntityEnclosingMethod(reqBuilder.getMethod())) {
 
                 // Create and set RequestEntity
                 ReqEntity bean = request.getBody();
@@ -397,9 +384,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 hcBuilder.setSSLSocketFactory(sf);
             }
 
-            // How to handle retries and redirects:
-            // httpclient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler());
-            
+            // How to handle redirects:
             rcBuilder.setRedirectsEnabled(request.isFollowRedirect());
 
             // Now Execute:
@@ -511,7 +496,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             }
         }
         finally {
-            if (method != null && !interruptedShutdown) {
+            if (!interruptedShutdown) {
                 try {
                     if(httpClient != null) httpClient.close();
                 }
