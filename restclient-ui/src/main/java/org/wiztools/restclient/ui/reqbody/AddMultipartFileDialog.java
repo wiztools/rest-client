@@ -145,6 +145,7 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
                     "Name must be present!",
                     "Validation: name empty!",
                     JOptionPane.ERROR_MESSAGE);
+            jtf_name.requestFocus();
             return false;
         }
         if(StringUtil.isEmpty(jtf_fileName.getText())) {
