@@ -3,9 +3,6 @@ package org.wiztools.restclient;
 import java.io.*;
 import java.net.HttpCookie;
 import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
-import java.nio.charset.UnsupportedCharsetException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -13,7 +10,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +43,6 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.message.AbstractHttpMessage;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
@@ -396,8 +391,10 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             httpClient = hcBuilder.build();
             
             HttpResponse http_res = httpClient.execute(req, httpContext);
+            
             long endTime = System.currentTimeMillis();
-
+            
+            // Create response:
             ResponseBean response = new ResponseBean();
 
             response.setExecutionTime(endTime - startTime);
@@ -406,43 +403,10 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             response.setStatusLine(http_res.getStatusLine().toString());
 
             final Header[] responseHeaders = http_res.getAllHeaders();
-            String contentType = null;
             for (Header header : responseHeaders) {
                 response.addHeader(header.getName(), header.getValue());
-                if(header.getName().equalsIgnoreCase("content-type")) {
-                    contentType = header.getValue();
-                }
             }
-
-            // find out the charset:
-            final Charset charset;
-            {
-                Charset c;
-                if(contentType != null) {
-                    final String charsetStr = HttpUtil.getCharsetFromContentType(contentType);
-                    try{
-                        c = Charset.forName(charsetStr);
-                    }
-                    catch(IllegalCharsetNameException ex) {
-                        LOG.log(Level.WARNING, "Charset name is illegal: {0}", charsetStr);
-                        c = Charset.defaultCharset();
-                    }
-                    catch(UnsupportedCharsetException ex) {
-                        LOG.log(Level.WARNING, "Charset {0} is not supported in this JVM.", charsetStr);
-                        c = Charset.defaultCharset();
-                    }
-                    catch(IllegalArgumentException ex) {
-                        LOG.log(Level.WARNING, "Charset parameter is not available in Content-Type header!");
-                        c = Charset.defaultCharset();
-                    }
-                }
-                else {
-                    c = Charset.defaultCharset();
-                    LOG.log(Level.WARNING, "Content-Type header not available in response. Using platform default encoding: {0}", c.name());
-                }
-                charset = c;
-            }
-
+            
             // Response body:
             final HttpEntity entity = http_res.getEntity();
             if(entity != null) {
