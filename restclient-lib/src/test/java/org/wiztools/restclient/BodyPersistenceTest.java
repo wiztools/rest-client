@@ -89,9 +89,9 @@ public class BodyPersistenceTest {
     @Test
     public void testMultipartBody() throws Exception {
         System.out.println("testMultipartBody");
-        List<ReqEntityPart> parts = new ArrayList<ReqEntityPart>();
+        List<ReqEntityPart> parts = new ArrayList<>();
         ContentType ct = new ContentTypeBean("text/plain", Charsets.UTF_8);
-        ReqEntityFilePartBean partFile = new ReqEntityFilePartBean("hosts.txt", ct, new File("/etc/hosts"));
+        ReqEntityFilePartBean partFile = new ReqEntityFilePartBean("hosts-txt-name", "hosts.txt", ct, new File("/etc/hosts"));
         ReqEntityStringPartBean partString = new ReqEntityStringPartBean("aarthi.txt", ct, "Hello Babes!");
         parts.add(partFile);
         parts.add(partString);

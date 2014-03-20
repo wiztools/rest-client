@@ -233,7 +233,6 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                     final String authHeader = a.getAuthorizationHeaderValue();
                     if(StringUtil.isNotEmpty(authHeader)) {
                         Header header = new BasicHeader("Authorization", authHeader);
-                        
                         reqBuilder.addHeader(header);
                     }
                 }
@@ -297,7 +296,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                         sb = new StringBody(body, HTTPClientUtil.getContentType(ct));
                                     }
                                     else {
-                                        sb = new StringBody(body, org.apache.http.entity.ContentType.TEXT_PLAIN);
+                                        sb = new StringBody(body, org.apache.http.entity.ContentType.DEFAULT_TEXT);
                                     }
                                     meb.addPart(part.getName(), sb);
                                 }
@@ -307,12 +306,12 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                     ContentType ct = p.getContentType();
                                     final FileBody fb;
                                     if(ct != null) {
-                                        fb = new FileBody(body, HTTPClientUtil.getContentType(ct), body.getName());
+                                        fb = new FileBody(body, HTTPClientUtil.getContentType(ct), p.getFilename());
                                     }
                                     else {
-                                        fb = new FileBody(body);
+                                        fb = new FileBody(body, org.apache.http.entity.ContentType.DEFAULT_BINARY, p.getFilename());
                                     }
-                                    meb.addPart(part.getName(), fb);
+                                    meb.addPart(p.getName(), fb);
                                 }
                             }
                             

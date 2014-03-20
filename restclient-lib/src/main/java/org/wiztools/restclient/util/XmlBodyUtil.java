@@ -62,7 +62,7 @@ class XmlBodyUtil {
     }
     
     private static List<ReqEntityPart> getMultipartParts(Element e) {
-        List<ReqEntityPart> parts = new ArrayList<ReqEntityPart>();
+        List<ReqEntityPart> parts = new ArrayList<>();
         Elements children = e.getChildElements();
         for(int i=0; i<children.size(); i++) {
             ReqEntityPart part = getMultipartPart(children.get(i));
@@ -83,7 +83,8 @@ class XmlBodyUtil {
         }
         else if("file".equals(name)) {
             File file = new File(e.getValue());
-            return new ReqEntityFilePartBean(partName, ct, file);
+            String fileName = e.getAttributeValue("filename");
+            return new ReqEntityFilePartBean(partName, fileName, ct, file);
         }
         else {
             throw new XMLException("Unsupported element encountered inside <multipart>: " + name);
@@ -164,6 +165,7 @@ class XmlBodyUtil {
                     Element ePart = new Element("file");
                     addContentTypeCharsetAttribute(p.getContentType(), ePart);
                     ePart.addAttribute(new Attribute("name", p.getName()));
+                    ePart.addAttribute(new Attribute("filename", p.getFilename()));
                     ePart.appendChild(p.getPart().getAbsolutePath());
                     
                     eMultipart.appendChild(ePart);

@@ -25,14 +25,15 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
     @Inject
     private ContentTypeCharsetComponent jp_contentType;
     
-    private JTextField jtf_fileName = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
-    private JTextField jtf_file = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
+    private final JTextField jtf_name = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
+    private final JTextField jtf_fileName = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
+    private final JTextField jtf_file = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
     
-    private JButton jb_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+    private final JButton jb_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     
-    private JButton jb_add = new JButton("Add");
-    private JButton jb_addAndClose = new JButton("Add & close");
-    private JButton jb_cancel = new JButton("Cancel");
+    private final JButton jb_add = new JButton("Add");
+    private final JButton jb_addAndClose = new JButton("Add & close");
+    private final JButton jb_cancel = new JButton("Cancel");
 
     @Inject
     public AddMultipartFileDialog(RESTUserInterface rest_ui) {
@@ -80,14 +81,16 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
         { // Center
             JPanel jp = new JPanel(new BorderLayout());
             
-            JPanel jp_west = new JPanel(new GridLayout(3, 2));
+            JPanel jp_west = new JPanel(new GridLayout(4, 2));
             jp_west.add(new JLabel(" Content type: "));
+            jp_west.add(new JLabel(" Name: "));
             jp_west.add(new JLabel(" File name: "));
             jp_west.add(new JLabel(" File: "));
             jp.add(jp_west, BorderLayout.WEST);
             
-            JPanel jp_center = new JPanel(new GridLayout(3, 2));
+            JPanel jp_center = new JPanel(new GridLayout(4, 2));
             jp_center.add(jp_contentType.getComponent());
+            jp_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jtf_name));
             jp_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jtf_fileName));
             JPanel jp_file = new JPanel(new FlowLayout(FlowLayout.LEFT));
             jp_file.add(jtf_file);
@@ -126,7 +129,7 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
         // Content type charset correction:
         ContentTypeSelectorOnFile.select(jp_contentType, f, this);
         
-        // Set name:
+        // Set filename:
         if(StringUtil.isEmpty(jtf_fileName.getText())) {
             jtf_fileName.setText(f.getName());
         }
@@ -137,20 +140,28 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
     
     private boolean add() {
         // Validation:
-        if(StringUtil.isEmpty(jtf_fileName.getText())) {
+        if(StringUtil.isEmpty(jtf_name.getText())) {
             JOptionPane.showMessageDialog(this,
                     "Name must be present!",
                     "Validation: name empty!",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if(StringUtil.isEmpty(jtf_fileName.getText())) {
+            JOptionPane.showMessageDialog(this,
+                    "File name must be present!",
+                    "Validation: filename empty!",
                     JOptionPane.ERROR_MESSAGE);
             jtf_fileName.requestFocus();
             return false;
         }
         
         // Read values:
+        final String name = jtf_name.getText();
         final String fileName = jtf_fileName.getText();
         final ContentType ct = jp_contentType.getContentType();
         final File file = new File(jtf_file.getText());
-        final ReqEntityFilePart part = new ReqEntityFilePartBean(fileName, ct, file);
+        final ReqEntityFilePart part = new ReqEntityFilePartBean(name, fileName, ct, file);
         
         // Trigger all listeners:
         for(AddMultipartPartListener l: listeners) {

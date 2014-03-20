@@ -9,20 +9,28 @@ import java.io.File;
 public class ReqEntityFilePartBean extends ReqEntityBasePart implements ReqEntityFilePart {
     
     private final File file;
+    private final String filename;
 
-    public ReqEntityFilePartBean(String fileName, ContentType type, File file) {
-        super(fileName, type);
+    public ReqEntityFilePartBean(String name, String fileName, ContentType type, File file) {
+        super(name, type);
         this.file = file;
+        this.filename = fileName;
     }
     
-    public ReqEntityFilePartBean(File file) {
-        super(file.getName(), null);
+    public ReqEntityFilePartBean(String name, File file) {
+        super(name, null);
         this.file = file;
+        this.filename = file.getName();
     }
 
     @Override
     public File getPart() {
         return file;
+    }
+
+    @Override
+    public String getFilename() {
+        return filename;
     }
 
     @Override
@@ -40,6 +48,9 @@ public class ReqEntityFilePartBean extends ReqEntityBasePart implements ReqEntit
         if (this.file != other.file && (this.file == null || !this.file.equals(other.file))) {
             return false;
         }
+        if (this.filename != other.filename && (this.filename == null || !this.filename.equals(other.filename))) {
+            return false;
+        }
         return true;
     }
 
@@ -48,6 +59,7 @@ public class ReqEntityFilePartBean extends ReqEntityBasePart implements ReqEntit
         int hash = 5;
         hash = 19 * hash + (super.hashCode());
         hash = 19 * hash + (this.file != null ? this.file.hashCode() : 0);
+        hash = 19 * hash + (this.filename != null ? this.filename.hashCode() : 0);
         return hash;
     }
 
@@ -55,7 +67,8 @@ public class ReqEntityFilePartBean extends ReqEntityBasePart implements ReqEntit
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("@ReqEntityFilePart[")
-                .append("fileName=").append(name).append(", ")
+                .append("name=").append(name).append(", ")
+                .append("fileName=").append(filename).append(", ")
                 .append("contentType=").append(contentType).append(", ")
                 .append("file=").append(file)
                 .append("]");
