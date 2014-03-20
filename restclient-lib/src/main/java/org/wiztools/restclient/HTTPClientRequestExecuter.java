@@ -461,12 +461,18 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         }
         finally {
             if (!interruptedShutdown) {
+                // for interrupted shutdown, httpClient is already closed
+                // close it only when otherwise:
                 try {
                     if(httpClient != null) httpClient.close();
                 }
                 catch(IOException ex) {
                     LOG.log(Level.WARNING, "Exception when closing httpClient", ex);
                 }
+            }
+            else {
+                // reset value to default:
+                interruptedShutdown = false;
             }
             for(View view: views){
                 view.doEnd();
