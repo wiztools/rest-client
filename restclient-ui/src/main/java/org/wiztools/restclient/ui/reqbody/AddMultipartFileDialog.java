@@ -192,6 +192,7 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
     @Override
     public void clear() {
         jp_contentType.clear();
+        jtf_name.setText("");
         jtf_fileName.setText("");
         jtf_file.setText("");
     }
