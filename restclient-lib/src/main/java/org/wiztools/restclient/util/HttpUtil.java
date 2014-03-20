@@ -1,6 +1,9 @@
 package org.wiztools.restclient.util;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.wiztools.commons.Charsets;
@@ -8,6 +11,7 @@ import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.bean.ContentTypeBean;
+import org.wiztools.restclient.bean.HTTPMethod;
 
 /**
  *
@@ -156,5 +160,16 @@ public final class HttpUtil {
         return type != null?
                 (type.getCharset() != null? type.getCharset(): DEFAULT_CHARSET)
                 : DEFAULT_CHARSET;
+    }
+    
+    private static final List<String> entityEnclosingMethods = 
+            Collections.unmodifiableList(
+                    Arrays.asList(new String[]{"POST", "PUT", "PATCH", "DELETE"}));
+    public boolean isEntityEnclosingMethod(final String method) {
+        return entityEnclosingMethods.contains(method);
+    }
+    
+    public boolean isEntityEnclosingMethod(final HTTPMethod method) {
+        return isEntityEnclosingMethod(method.name());
     }
 }
