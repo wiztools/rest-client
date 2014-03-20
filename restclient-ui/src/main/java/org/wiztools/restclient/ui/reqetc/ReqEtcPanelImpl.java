@@ -33,7 +33,7 @@ public class ReqEtcPanelImpl extends JPanel implements ReqEtcPanel {
         JPanel jp_etc = new JPanel(new GridLayout(3, 1));
         { // Http Version
             JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            jp.add(new JLabel("Versions: "));
+            jp.add(new JLabel("Version: "));
             
             jp.add(jcb_http_version);
             jp.add(jcb_cookie_version);
