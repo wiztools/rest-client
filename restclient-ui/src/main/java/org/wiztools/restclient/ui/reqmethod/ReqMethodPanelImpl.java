@@ -21,14 +21,14 @@ import org.wiztools.restclient.ui.RESTView;
 public class ReqMethodPanelImpl extends JPanel implements ReqMethodPanel {
     @Inject RESTView view;
     
-    private JRadioButton jrb_req_get = new JRadioButton("GET");
-    private JRadioButton jrb_req_post = new JRadioButton("POST");
-    private JRadioButton jrb_req_put = new JRadioButton("PUT");
-    private JRadioButton jrb_req_patch = new JRadioButton("PATCH");
-    private JRadioButton jrb_req_delete = new JRadioButton("DELETE");
-    private JRadioButton jrb_req_head = new JRadioButton("HEAD");
-    private JRadioButton jrb_req_options = new JRadioButton("OPTIONS");
-    private JRadioButton jrb_req_trace = new JRadioButton("TRACE");
+    private final JRadioButton jrb_req_get = new JRadioButton("GET");
+    private final JRadioButton jrb_req_post = new JRadioButton("POST");
+    private final JRadioButton jrb_req_put = new JRadioButton("PUT");
+    private final JRadioButton jrb_req_patch = new JRadioButton("PATCH");
+    private final JRadioButton jrb_req_delete = new JRadioButton("DELETE");
+    private final JRadioButton jrb_req_head = new JRadioButton("HEAD");
+    private final JRadioButton jrb_req_options = new JRadioButton("OPTIONS");
+    private final JRadioButton jrb_req_trace = new JRadioButton("TRACE");
     
     @Override
     public boolean doesSelectedMethodSupportEntityBody() {
