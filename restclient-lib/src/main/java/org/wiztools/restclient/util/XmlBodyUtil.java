@@ -84,6 +84,10 @@ class XmlBodyUtil {
         else if("file".equals(name)) {
             File file = new File(e.getValue());
             String fileName = e.getAttributeValue("filename");
+            
+            // filename: backward-compatibility:
+            fileName = StringUtil.isEmpty(fileName)? file.getName(): fileName;
+            
             return new ReqEntityFilePartBean(partName, fileName, ct, file);
         }
         else {
@@ -165,7 +169,15 @@ class XmlBodyUtil {
                     Element ePart = new Element("file");
                     addContentTypeCharsetAttribute(p.getContentType(), ePart);
                     ePart.addAttribute(new Attribute("name", p.getName()));
-                    ePart.addAttribute(new Attribute("filename", p.getFilename()));
+                    { // filename: backward compatibility!
+                        String fileName = p.getFilename();
+                        if(StringUtil.isNotEmpty(fileName)) {
+                            ePart.addAttribute(new Attribute("filename", p.getFilename()));
+                        }
+                        else {
+                            ePart.addAttribute(new Attribute("filename", p.getPart().getName()));
+                        }
+                    }
                     ePart.appendChild(p.getPart().getAbsolutePath());
                     
                     eMultipart.appendChild(ePart);
