@@ -1,5 +1,7 @@
 # WizTools.org RESTClient
 
+Connect with us on [Facebook](https://www.facebook.com/wiztools.org).
+
 ## About
 
 RESTClient is a Java application to test RESTful webservices. It can be used to test variety of HTTP communications. There are two executables:
