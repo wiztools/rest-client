@@ -3,7 +3,8 @@ package org.wiztools.restclient;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
-import com.mycila.inject.jsr250.Jsr250;
+import com.mycila.guice.ext.closeable.CloseableModule;
+import com.mycila.guice.ext.jsr250.Jsr250Module;
 
 /**
  *
@@ -11,7 +12,7 @@ import com.mycila.inject.jsr250.Jsr250;
  */
 public class ServiceLocator {
     private static final Injector injector =  Guice.createInjector(
-            Stage.PRODUCTION, Jsr250.newJsr250Module());
+            Stage.PRODUCTION, new CloseableModule(), new Jsr250Module());
 
     private ServiceLocator() {}
     
