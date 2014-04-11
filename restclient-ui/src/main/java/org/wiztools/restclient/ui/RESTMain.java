@@ -26,8 +26,10 @@ import org.wiztools.filechooser.FileChooser;
 import org.wiztools.filechooser.FileChooserResponse;
 import org.wiztools.filechooser.FileFilter;
 import org.wiztools.restclient.FileType;
+import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.RCConstants;
+import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
@@ -695,6 +697,7 @@ class RESTMain implements RESTUserInterface {
         FileChooserResponse status = jfc.showOpenDialog(parent);
         if(status == FileChooserResponse.APPROVE_OPTION){
             File f = jfc.getSelectedFile();
+            ServiceLocator.getInstance(IGlobalOptions.class).setProperty(UIUtil.LAST_CURRENT_DIR_KEY, f.getParent());
             return f;
         }
         return null;
