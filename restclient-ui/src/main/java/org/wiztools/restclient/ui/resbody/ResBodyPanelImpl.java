@@ -8,13 +8,14 @@ import javax.swing.JScrollPane;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.ui.FontableEditor;
+import org.wiztools.restclient.ui.ScrollableComponent;
 import org.wiztools.restclient.util.HttpUtil;
 
 /**
  *
  * @author subwiz
  */
-public class ResBodyPanelImpl extends AbstractResBody implements FontableEditor {
+public class ResBodyPanelImpl extends AbstractResBody implements FontableEditor, ScrollableComponent {
     
     @Inject private ResBodyTextPanel jp_text;
     @Inject private ResBodyImagePanel jp_image;
@@ -68,6 +69,11 @@ public class ResBodyPanelImpl extends AbstractResBody implements FontableEditor 
     @Override
     public Font getEditorFont() {
         return jp_text.getEditorFont();
+    }
+
+    @Override
+    public void setScrollSpeed(int scrollSpeed) {
+        jsp.getVerticalScrollBar().setUnitIncrement(scrollSpeed);
     }
 
     @Override
