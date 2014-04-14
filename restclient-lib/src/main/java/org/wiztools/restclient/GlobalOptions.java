@@ -17,7 +17,7 @@ final public class GlobalOptions implements IGlobalOptions {
     
     private final static Logger LOG = Logger.getLogger(GlobalOptions.class.getName());
     
-    public static final Integer DEFAULT_TIMEOUT_MILLIS = new Integer(60000);
+    public static final Integer DEFAULT_TIMEOUT_MILLIS = 60000;
     private static final File CONF_PROPERTY = new File(CONF_DIR, "rest-client.properties");
     
     private final Properties prop = new Properties();
