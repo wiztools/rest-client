@@ -16,12 +16,13 @@ import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.ui.FontableEditor;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;
+import org.wiztools.restclient.ui.ScrollableComponent;
 
 /**
  *
  * @author subwiz
  */
-public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEditor {
+public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEditor, ScrollableComponent {
     @Inject RESTView view;
     @Inject RESTUserInterface rest_ui;
     
@@ -31,6 +32,8 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     @Inject private ReqBodyPanelByteArray jp_body_byte_array;
     @Inject private ReqBodyPanelUrlStream jp_body_url_stream;
     @Inject private ReqBodyPanelMultipart jp_body_multipart;
+    
+    private final JScrollPane jsp = new JScrollPane();
     
     private final List<ReqBodyPanel> allPanels = new ArrayList<ReqBodyPanel>();
     
@@ -139,7 +142,6 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
         allPanels.add(jp_body_multipart);
         
         // Create UI:
-        final JScrollPane jsp = new JScrollPane();
         jsp.setViewportView(jp_body_none);
 
         setLayout(new BorderLayout());
@@ -165,6 +167,11 @@ public class ReqBodyPanelImpl extends JPanel implements ReqBodyPanel, FontableEd
     @Override
     public Font getEditorFont() {
         return jp_body_string.getEditorFont();
+    }
+
+    @Override
+    public void setScrollSpeed(int scrollSpeed) {
+        jsp.getVerticalScrollBar().setUnitIncrement(scrollSpeed);
     }
 
     @Override

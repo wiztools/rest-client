@@ -36,6 +36,8 @@ public interface RESTView extends View {
 
     void setTextAreaFont(final Font f);
 
+    void setTextAreaScrollSpeed(final int scrollSpeed);
+
     void setUrl(String url);
 
     void showError(final String error);

@@ -656,7 +656,13 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Override
     public void setTextAreaFont(final Font f){
         ((FontableEditor) jp_req_body).setEditorFont(f);
-        ((FontableEditor)jp_res_body).setEditorFont(f);
+        ((FontableEditor) jp_res_body).setEditorFont(f);
+    }
+
+    @Override
+    public void setTextAreaScrollSpeed(final int scrollSpeed) {
+        ((ScrollableComponent) jp_req_body).setScrollSpeed(scrollSpeed);
+        ((ScrollableComponent) jp_res_body).setScrollSpeed(scrollSpeed);
     }
 
     @Override
