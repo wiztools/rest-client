@@ -1,9 +1,9 @@
 package org.wiztools.restclient.server;
 
 import java.util.logging.Logger;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
  *
@@ -52,8 +52,12 @@ public class TraceServer {
         server = new Server(PORT);
 
         // Attach the trace servlet
-        Context root = new Context(server,"/",Context.SESSIONS);
-        root.addServlet(new ServletHolder(new TraceServlet()), "/*");
+        ServletContextHandler ctx = new ServletContextHandler();
+        ctx.setContextPath("/");
+        server.setHandler(ctx);
+        
+        ctx.addServlet(new ServletHolder(new TraceServlet()), "/*");
+        
         server.setStopAtShutdown(true);
     }
     

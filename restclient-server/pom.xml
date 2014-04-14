@@ -14,9 +14,9 @@
     <name>${project.artifactId}</name>
     <dependencies>
         <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty</artifactId>
-            <version>6.1.26</version>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>9.1.4.v20140401</version>
         </dependency>
     </dependencies>
 </project>
