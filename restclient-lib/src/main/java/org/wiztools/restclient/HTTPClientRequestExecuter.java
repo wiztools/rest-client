@@ -41,6 +41,7 @@ import org.apache.http.impl.auth.DigestScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
@@ -125,6 +126,9 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             default:
                 throw new IllegalStateException("Method not defined!");
         }
+        
+        // Retry handler (no-retries):
+        hcBuilder.setRetryHandler(new DefaultHttpRequestRetryHandler(0, false));
         
         // Url:
         final URL url = IDNUtil.getIDNizedURL(request.getUrl());
