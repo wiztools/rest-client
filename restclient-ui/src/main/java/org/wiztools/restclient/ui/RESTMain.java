@@ -22,6 +22,7 @@ import org.simplericity.macify.eawt.ApplicationEvent;
 import org.simplericity.macify.eawt.ApplicationListener;
 import org.simplericity.macify.eawt.DefaultApplication;
 import org.wiztools.commons.FileUtil;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.filechooser.FileChooser;
 import org.wiztools.filechooser.FileChooserResponse;
 import org.wiztools.filechooser.FileFilter;
@@ -29,7 +30,6 @@ import org.wiztools.restclient.FileType;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.RCConstants;
-import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
@@ -54,6 +54,7 @@ class RESTMain implements RESTUserInterface {
     @Inject private AboutDialog aboutDialog;
     @Inject private OptionsDialog optionsDialog;
     @Inject private PasswordGenDialog passwordGenDialog;
+    @Inject private IGlobalOptions options;
     
     @Inject private HistoryManager historyManager;
     
@@ -82,7 +83,6 @@ class RESTMain implements RESTUserInterface {
         
         // Application logic:
         frame = new JFrame(RCConstants.TITLE + RCConstants.VERSION);
-        init();
     }
     
     @Override
@@ -600,15 +600,43 @@ class RESTMain implements RESTUserInterface {
         frame.setJMenuBar(jmb);
     }
     
-    private void init() {
+    private void initJFC() {
         // JFileChooser: Initialize
         jfc_request.addChoosableFileFilter(new RCFileFilter(FileType.REQUEST_EXT));
         jfc_response.addChoosableFileFilter(new RCFileFilter(FileType.RESPONSE_EXT));
         jfc_archive.addChoosableFileFilter(new RCFileFilter(FileType.ARCHIVE_EXT));
+        
+        // init last dir:
+        { // request jfc:
+            final String lastDir = options.getProperty(UIUtil.LAST_CWD_REQ);
+            if(StringUtil.isNotEmpty(lastDir)) {
+                jfc_request.setCurrentDirectory(new File(lastDir));
+            }
+        }
+        { // response jfc:
+            final String lastDir = options.getProperty(UIUtil.LAST_CWD_RES);
+            if(StringUtil.isNotEmpty(lastDir)) {
+                jfc_response.setCurrentDirectory(new File(lastDir));
+            }
+        }
+        { // archive jfc:
+            final String lastDir = options.getProperty(UIUtil.LAST_CWD_ARC);
+            if(StringUtil.isNotEmpty(lastDir)) {
+                jfc_archive.setCurrentDirectory(new File(lastDir));
+            }
+        }
+        { // history jfc:
+            final String lastDir = options.getProperty(UIUtil.LAST_CWD_HIS);
+            if(StringUtil.isNotEmpty(lastDir)) {
+                jfc_history.setCurrentDirectory(new File(lastDir));
+            }
+        }
     }
     
     @PostConstruct
     public void show() {
+        initJFC();
+        
         frame.setContentPane(view.getContainer());
         createMenu();
         ImageIcon icon =
@@ -656,6 +684,27 @@ class RESTMain implements RESTUserInterface {
         optionsDialog.setVisible(true);
     }
     
+    private void saveLastDir(final FileChooserType type, final File dir) {
+        switch(type) {
+            case OPEN_REQUEST:
+            case SAVE_REQUEST:
+                options.setProperty(UIUtil.LAST_CWD_REQ, dir.getPath());
+                break;
+            case OPEN_RESPONSE:
+            case SAVE_RESPONSE:
+                options.setProperty(UIUtil.LAST_CWD_RES, dir.getPath());
+                break;
+            case OPEN_ARCHIVE:
+            case SAVE_ARCHIVE:
+                options.setProperty(UIUtil.LAST_CWD_ARC, dir.getPath());
+                break;
+            case OPEN_HISTORY:
+            case SAVE_HISTORY:
+                options.setProperty(UIUtil.LAST_CWD_HIS, dir.getPath());
+                break;
+        }
+    }
+    
     @Override
     public File getOpenFile(final FileChooserType type){
         return getOpenFile(type, frame);
@@ -697,7 +746,7 @@ class RESTMain implements RESTUserInterface {
         FileChooserResponse status = jfc.showOpenDialog(parent);
         if(status == FileChooserResponse.APPROVE_OPTION){
             File f = jfc.getSelectedFile();
-            ServiceLocator.getInstance(IGlobalOptions.class).setProperty(UIUtil.LAST_CURRENT_DIR_KEY, f.getParent());
+            saveLastDir(type, f.getParentFile());
             return f;
         }
         return null;
@@ -799,6 +848,7 @@ class RESTMain implements RESTUserInterface {
                         "File exists",
                         JOptionPane.YES_NO_OPTION);
                 if(yesNo == JOptionPane.YES_OPTION){
+                    saveLastDir(type, f.getParentFile());
                     return f;
                 }
                 else{
@@ -809,6 +859,7 @@ class RESTMain implements RESTUserInterface {
                 }
             }
             else{ // If the file is new one
+                saveLastDir(type, f.getParentFile());
                 return f;
             }
         }
