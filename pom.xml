@@ -5,7 +5,7 @@
     <groupId>org.wiztools.restclient</groupId>
     <artifactId>restclient</artifactId>
     <packaging>pom</packaging>
-    <version>3.3.1-SNAPSHOT</version>
+    <version>3.3.1</version>
     <name>restclient</name>
     <url>https://github.com/wiztools/rest-client</url>
     <properties>
@@ -27,7 +27,8 @@
         <connection>scm:git:https://github.com/wiztools/rest-client.git</connection>
         <developerConnection>scm:git:https://github.com/wiztools/rest-client.git</developerConnection>
         <url>https://github.com/wiztools/rest-client</url>
-    </scm>
+      <tag>restclient-3.3.1</tag>
+  </scm>
     <developers>
         <developer>
             <id>subwiz</id>
