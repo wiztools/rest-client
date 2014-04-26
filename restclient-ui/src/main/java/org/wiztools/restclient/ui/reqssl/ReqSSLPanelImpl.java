@@ -4,17 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
-import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.bean.KeyStoreType;
 import org.wiztools.restclient.bean.SSLHostnameVerifier;
 import org.wiztools.restclient.bean.SSLKeyStore;
-import org.wiztools.restclient.bean.SSLKeyStoreBean;
 import org.wiztools.restclient.bean.SSLReq;
 import org.wiztools.restclient.bean.SSLReqBean;
 import org.wiztools.restclient.ui.*;
@@ -34,16 +28,10 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
     private final JCheckBox jcb_ssl_trust_self_signed_cert = new JCheckBox("Trust self-signed certificate? ");
     
     // SSL - trust store
-    private final StoreTypePanel jp_truststore_type = new StoreTypePanel();
-    private final JTextField jtf_ssl_truststore_file = new JTextField(auth_text_size);
-    private final JButton jb_ssl_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private final JPasswordField jpf_ssl_truststore_pwd = new JPasswordField(auth_text_size);
+    @Inject private KeyStorePanel jp_truststore;
     
     // SSL - key store
-    private final StoreTypePanel jp_keystore_type = new StoreTypePanel();
-    private final JTextField jtf_ssl_keystore_file = new JTextField(auth_text_size);
-    private final JButton jb_ssl_keystore_browse = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private final JPasswordField jpf_ssl_keystore_pwd = new JPasswordField(auth_text_size);
+    @Inject private KeyStorePanel jp_keystore;
 
     @Override
     public SSLReq getSslReq() {
@@ -52,31 +40,12 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
         out.setHostNameVerifier((SSLHostnameVerifier) jcb_ssl_hostname_verifier.getSelectedItem());
         out.setTrustSelfSignedCert(jcb_ssl_trust_self_signed_cert.isSelected());
         
-        if(StringUtil.isNotEmpty(jtf_ssl_keystore_file.getText())) {
-            SSLKeyStoreBean keyStore = new SSLKeyStoreBean();
-            
-            keyStore.setFile(new File(jtf_ssl_keystore_file.getText()));
-            keyStore.setType(jp_keystore_type.getSelectedKeyStoreType());
-            if(jpf_ssl_keystore_pwd.getPassword().length > 0) {
-                keyStore.setPassword(jpf_ssl_keystore_pwd.getPassword());
-            }
-            
-            out.setKeyStore(keyStore);
-        }
+        SSLKeyStore trustStore = jp_truststore.getKeyStore();    
+        out.setTrustStore(trustStore);
         
-        
-        if(StringUtil.isNotEmpty(jtf_ssl_truststore_file.getText())) {
-            SSLKeyStoreBean trustStore = new SSLKeyStoreBean();
-            
-            trustStore.setFile(new File(jtf_ssl_truststore_file.getText()));
-            trustStore.setType(jp_truststore_type.getSelectedKeyStoreType());
-            if(jpf_ssl_truststore_pwd.getPassword().length > 0) {
-                trustStore.setPassword(jpf_ssl_truststore_pwd.getPassword());
-            }
-            
-            out.setTrustStore(trustStore);
-        }
-        
+        SSLKeyStore keyStore = jp_keystore.getKeyStore();
+        out.setKeyStore(keyStore);
+
         return out;
     }
 
@@ -88,22 +57,14 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
         { // key store:
             final SSLKeyStore keyStore = sslReq.getKeyStore();
             if(keyStore != null) {
-                jp_keystore_type.setSelectedKeyStoreType(keyStore.getType());
-                jtf_ssl_keystore_file.setText(keyStore.getFile().getAbsolutePath());
-                if(keyStore.getPassword() != null) {
-                    jpf_ssl_keystore_pwd.setText(new String(keyStore.getPassword()));
-                }
+                jp_keystore.setKeyStore(keyStore);
             }
         }
         
         { // trust store:
             final SSLKeyStore trustStore = sslReq.getTrustStore();
             if(trustStore != null) {
-                jp_truststore_type.setSelectedKeyStoreType(trustStore.getType());
-                jtf_ssl_truststore_file.setText(trustStore.getFile().getAbsolutePath());
-                if(trustStore.getPassword() != null) {
-                    jpf_ssl_truststore_pwd.setText(new String(trustStore.getPassword()));
-                }
+                jp_truststore.setKeyStore(trustStore);
             }
         }
     }
@@ -113,14 +74,8 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
         jcb_ssl_hostname_verifier.setSelectedItem(SSLHostnameVerifier.STRICT);
         jcb_ssl_trust_self_signed_cert.setSelected(false);
         
-        jp_keystore_type.setSelectedKeyStoreType(KeyStoreType.JKS);
-        jp_truststore_type.setSelectedKeyStoreType(KeyStoreType.JKS);
-        
-        jtf_ssl_keystore_file.setText("");
-        jtf_ssl_truststore_file.setText("");
-        
-        jpf_ssl_keystore_pwd.setText("");
-        jpf_ssl_truststore_pwd.setText("");
+        jp_truststore.clear();
+        jp_keystore.clear();
     }
     
     @PostConstruct
@@ -149,83 +104,19 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
             jtp_ssl.addTab("General", UIUtil.getFlowLayoutPanelLeftAligned(jpGrid));
         }
 
-        { // Trust store:
-            JPanel jp = new JPanel(new BorderLayout(RESTView.BORDER_WIDTH, 2));
-
-            JPanel jp_label = new JPanel(new GridLayout(3, 1));
-            jp_label.add(new JLabel("Truststore type:"));
-            jp_label.add(new JLabel("Truststore file:"));
-            jp_label.add(new JLabel("Truststore password:"));
-            jp.add(jp_label, BorderLayout.WEST);
-
-            JPanel jp_input = new JPanel(new GridLayout(3, 1));
+        { // Trust / Key store:
+            jp_truststore.setLabel("Truststore:");
+            jp_truststore.setTitle("Enter Truststore Details");
             
-            jp_input.add(jp_truststore_type);
+            jp_keystore.setLabel("Keystore:");
+            jp_keystore.setTitle("Enter Keystore Details");
             
-            JPanel jp_truststore_file = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_truststore_file);
-            jb_ssl_browse.setToolTipText("Open truststore file.");
-            jb_ssl_browse.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
-                    if(f == null){
-                        // do nothing--cancel pressed
-                    }
-                    else if(f.canRead()){
-                        jtf_ssl_truststore_file.setText(f.getAbsolutePath());
-                    }
-                    else{
-                        view.setStatusMessage("Truststore file cannot be read.");
-                    }
-                }
-            });
-            jp_truststore_file.add(jb_ssl_browse);
-            jp_input.add(jp_truststore_file);
-
-            jp_input.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_truststore_pwd));
-            jp.add(jp_input, BorderLayout.CENTER);
-
-            jtp_ssl.addTab("Truststore", UIUtil.getJScrollPaneWrapped(jp));
-        }
-
-        { // Key store
-            JPanel jp = new JPanel(new BorderLayout(RESTView.BORDER_WIDTH, 2));
-
-            JPanel jp_label = new JPanel(new GridLayout(3, 1));
-            jp_label.add(new JLabel("Keystore type:"));
-            jp_label.add(new JLabel("Keystore file:"));
-            jp_label.add(new JLabel("Keystore password:"));
-            jp.add(jp_label, BorderLayout.WEST);
-
-            JPanel jp_input = new JPanel(new GridLayout(3, 1));
+            JPanel jp_grid = new JPanel(new GridLayout(2, 1));
+            jp_grid.add(jp_truststore);
+            jp_grid.add(jp_keystore);
             
-            jp_input.add(jp_keystore_type);
-            
-            JPanel jp_keystore_file = UIUtil.getFlowLayoutPanelLeftAligned(jtf_ssl_keystore_file);
-            jb_ssl_keystore_browse.setToolTipText("Open keystore file.");
-            jb_ssl_keystore_browse.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
-                    if(f == null){
-                        // do nothing--cancel pressed
-                    }
-                    else if(f.canRead()){
-                        jtf_ssl_keystore_file.setText(f.getAbsolutePath());
-                    }
-                    else{
-                        view.setStatusMessage("Keystore file cannot be read.");
-                    }
-                }
-            });
-            jp_keystore_file.add(jb_ssl_keystore_browse);
-            jp_input.add(jp_keystore_file);
-
-            jp_input.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_ssl_keystore_pwd));
-
-            jp.add(jp_input, BorderLayout.CENTER);
-
-            jtp_ssl.addTab("Keystore", UIUtil.getJScrollPaneWrapped(jp));
+            jtp_ssl.addTab("Truststore / Keystore",
+                    UIUtil.getFlowLayoutPanelLeftAligned(jp_grid));
         }
 
         add(jtp_ssl);

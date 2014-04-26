@@ -45,6 +45,17 @@ public final class UIUtil {
         return new ImageIcon(url);
     }
     
+    public static JPanel getFlowLayoutLeftAlignedMulti(Component ... components) {
+        JPanel jp = new JPanel();
+        jp.setLayout(new FlowLayout(FlowLayout.LEFT));
+        
+        for(Component c: components) {
+            jp.add(c);
+        }
+        
+        return jp;
+    }
+    
     public static JPanel getFlowLayoutPanelLeftAligned(Component component){
         return getFlowLayoutPanelLeftAligned(null, component);
     }
