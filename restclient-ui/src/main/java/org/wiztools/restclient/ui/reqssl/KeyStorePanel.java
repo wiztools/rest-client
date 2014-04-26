@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.MessageFormat;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JButton;
@@ -23,11 +24,13 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     @Inject private KeyStoreDialog jd;
     
     private final JLabel jl = new JLabel();
-    private final JTextField jtf = new JTextField(18);
+    private final JTextField jtf = new JTextField(20);
     private final JButton jb_addEdit = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "add.png"));
     private final JButton jb_clear = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "delete.png"));
     
     private SSLKeyStore keyStore = null;
+    
+    private final String tmpl = "type={0}; fileName={1}";
     
     @PostConstruct
     public void init() {
@@ -74,7 +77,8 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     @Override
     public void ok(SSLKeyStore store) {
         if(store != null) {
-            String txt = store.getType() + "; " + store.getFile().getName();
+            String txt = MessageFormat.format(tmpl,
+                    store.getType(), store.getFile().getName());
             jtf.setText(txt);
             
             keyStore = store;
