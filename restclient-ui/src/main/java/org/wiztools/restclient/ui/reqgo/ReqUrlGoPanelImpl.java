@@ -37,11 +37,11 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     private static final String TEXT_GO = "Go!";
     private static final String TEXT_STOP = "Stop!";
     
-    private final JComboBox<String> jcb_url = new JComboBox<String>();
+    private final JComboBox<String> jcb_url = new JComboBox<>();
     
     private final JButton jb_request = new JButton(icon_go);
     
-    private final List<ActionListener> listeners = new ArrayList<ActionListener>();
+    private final List<ActionListener> listeners = new ArrayList<>();
     
     @PostConstruct
     protected void init() {
@@ -123,7 +123,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
         Runtime.getRuntime().addShutdownHook(new Thread(){
             @Override
             public void run() {
-                List<String> urls = new ArrayList<String>();
+                List<String> urls = new ArrayList<>();
                 for(int i=0; i<jcb_url.getItemCount(); i++) {
                     String url = (String) jcb_url.getItemAt(i);
                     urls.add(url);
@@ -155,7 +155,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     private void jb_requestActionPerformed() {
         final String item = (String) jcb_url.getSelectedItem();
         final int count = jcb_url.getItemCount();
-        final LinkedList<String> l = new LinkedList<String>();
+        final LinkedList<String> l = new LinkedList<>();
         for(int i=0; i<count; i++){
             l.add(jcb_url.getItemAt(i));
         }
