@@ -364,10 +364,10 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
 
                 final KeyStore trustStore  = StringUtil.isEmpty(trustStorePath)?
                         null:
-                        getKeyStore(trustStorePath, sslReq.getTrustStorePassword());
+                        getKeyStore(sslReq.getTrustStoreType(), trustStorePath, sslReq.getTrustStorePassword());
                 final KeyStore keyStore = StringUtil.isEmpty(keyStorePath)?
                         null:
-                    getKeyStore(keyStorePath, sslReq.getKeyStorePassword());
+                    getKeyStore(sslReq.getKeyStoreType(), keyStorePath, sslReq.getKeyStorePassword());
 
                 final TrustStrategy trustStrategy = sslReq.isTrustSelfSignedCert()
                         ? new TrustSelfSignedStrategy(): null;
@@ -484,10 +484,10 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         }
     }
 
-    private KeyStore getKeyStore(String storePath, char[] storePassword)
+    private KeyStore getKeyStore(KeyStoreType type, String storePath, char[] storePassword)
             throws KeyStoreException, IOException,
             NoSuchAlgorithmException, CertificateException {
-        KeyStore store  = KeyStore.getInstance(KeyStore.getDefaultType());
+        KeyStore store  = KeyStore.getInstance(type.name());
         if(StringUtil.isNotEmpty(storePath)) {
             try(FileInputStream instream = new FileInputStream(new File(storePath))) {
                 store.load(instream, storePassword);
