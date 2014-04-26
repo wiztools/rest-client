@@ -1,18 +1,13 @@
 package org.wiztools.restclient.ui.reqgo;
 
-import com.jidesoft.swing.AutoCompletion;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.*;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -30,14 +25,13 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     private static final Logger LOG = Logger.getLogger(ReqUrlGoPanelImpl.class.getName());
     
     @Inject private RESTUserInterface rest_ui;
+    @Inject private UrlComboBox jcb_url;
     
     private final ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
     private final ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
     
     private static final String TEXT_GO = "Go!";
     private static final String TEXT_STOP = "Stop!";
-    
-    private final JComboBox<String> jcb_url = new JComboBox<>();
     
     private final JButton jb_request = new JButton(icon_go);
     
@@ -72,17 +66,6 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
         add(jl_url, BorderLayout.WEST);
         
         // Center:
-        jcb_url.setToolTipText("URL");
-        jcb_url.setEditable(true);
-        jcb_url.getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                ((JTextField) jcb_url.getEditor().getEditorComponent()).selectAll();
-            }
-        });
-        AutoCompletion ac = new AutoCompletion(jcb_url);
-        ac.setStrict(false);
-        ac.setStrictCompletion(false);
         add(jcb_url, BorderLayout.CENTER);
         
         // East:
@@ -95,47 +78,6 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
             }
         });
         add(jb_request, BorderLayout.EAST);
-    }
-    
-    @PostConstruct
-    protected void loadComboHistory() {
-        try {
-            List<String> urls = UrlListPersistUtil.load();
-            if(!urls.isEmpty()) {
-                // We need dimension for Issue 196:
-                final Dimension d = jcb_url.getPreferredSize();
-                
-                for(String url: urls) {
-                    jcb_url.addItem(url);
-                }
-                
-                // Set the dimension for Issue 196:
-                jcb_url.setPreferredSize(d);
-            }
-        }
-        catch(IOException ex) {
-            LOG.log(Level.WARNING, null, ex);
-        }
-    }
-    
-    @PostConstruct
-    protected void registerShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(){
-            @Override
-            public void run() {
-                List<String> urls = new ArrayList<>();
-                for(int i=0; i<jcb_url.getItemCount(); i++) {
-                    String url = (String) jcb_url.getItemAt(i);
-                    urls.add(url);
-                }
-                try {
-                    UrlListPersistUtil.persist(urls);
-                }
-                catch(IOException ex) {
-                    LOG.log(Level.WARNING, null, ex);
-                }
-            }
-        });
     }
 
     @Override
@@ -153,35 +95,8 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     }
     
     private void jb_requestActionPerformed() {
-        final String item = (String) jcb_url.getSelectedItem();
-        final int count = jcb_url.getItemCount();
-        final LinkedList<String> l = new LinkedList<>();
-        for(int i=0; i<count; i++){
-            l.add(jcb_url.getItemAt(i));
-        }
-        if(l.contains(item)){ // Item already present
-            // Remove and add to bring it to the top
-            // l.remove(item);
-            // l.addFirst(item);
-            // System.out.println("Removing and inserting at top");
-            jcb_url.removeItem(item);
-            jcb_url.insertItemAt(item, 0);
-        }
-        else{ // Add new item
-            if(item.trim().length() != 0 ) {
-                // The total number of items should not exceed 20
-                if(count > 19){
-                    // Remove last item to give place
-                    // to new one
-                    //l.removeLast();
-                    jcb_url.removeItemAt(count - 1);
-                }
-                //l.addFirst(item);
-                jcb_url.insertItemAt(item, 0);
-            }
-        }
-        // make the selected item is the item we want
-        jcb_url.setSelectedItem(item);
+        jcb_url.push();
+        
         for(ActionListener listener: listeners) {
             listener.actionPerformed(null);
         }
