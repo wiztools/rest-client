@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui.reqauth;
+package org.wiztools.restclient.ui.reqssl;
 
 import com.google.inject.ImplementedBy;
 import org.wiztools.restclient.bean.SSLReq;

@@ -10,6 +10,7 @@ import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import org.wiztools.filechooser.FileChooser;
 import org.wiztools.filechooser.JFCFileChooser;
 
@@ -59,6 +60,10 @@ public final class UIUtil {
         }
         jp.add(component);
         return jp;
+    }
+    
+    public static Component getJScrollPaneWrapped(Component component) {
+        return new JScrollPane(component);
     }
     
     public static void clipboardCopy(String str) {

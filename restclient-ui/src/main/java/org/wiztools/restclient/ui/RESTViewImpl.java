@@ -27,7 +27,7 @@ import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.ui.history.HistoryManager;
 import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
-import org.wiztools.restclient.ui.reqauth.ReqSSLPanel;
+import org.wiztools.restclient.ui.reqssl.ReqSSLPanel;
 import org.wiztools.restclient.ui.reqbody.ReqBodyPanel;
 import org.wiztools.restclient.ui.reqetc.ReqEtcPanel;
 import org.wiztools.restclient.ui.reqgo.ReqUrlGoPanel;
