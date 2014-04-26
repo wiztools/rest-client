@@ -1,6 +1,12 @@
 package org.wiztools.restclient.bean;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 
 /**
  *
@@ -37,6 +43,19 @@ public class SSLKeyStoreBean implements SSLKeyStore {
     @Override
     public char[] getPassword() {
         return password;
+    }
+    
+    @Override
+    public KeyStore getKeyStore()
+            throws KeyStoreException, IOException,
+            NoSuchAlgorithmException, CertificateException {
+        KeyStore store  = KeyStore.getInstance(type.name());
+        if(file != null) {
+            try(FileInputStream instream = new FileInputStream(file)) {
+                store.load(instream, password);
+            }
+        }
+        return store;
     }
 
     @Override

@@ -357,17 +357,12 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 }
 
                 // Register the SSL Scheme:
-                final String trustStorePath = sslReq.getTrustStore() != null?
-                        sslReq.getTrustStore().getFile().getAbsolutePath(): null;
-                final String keyStorePath = sslReq.getKeyStore() != null?
-                        sslReq.getKeyStore().getFile().getAbsolutePath(): null;
-
-                final KeyStore trustStore  = StringUtil.isEmpty(trustStorePath)?
+                final KeyStore trustStore  = sslReq.getTrustStore() == null?
                         null:
-                        getKeyStore(sslReq.getTrustStore());
-                final KeyStore keyStore = StringUtil.isEmpty(keyStorePath)?
+                        sslReq.getTrustStore().getKeyStore();
+                final KeyStore keyStore = sslReq.getKeyStore() == null?
                         null:
-                        getKeyStore(sslReq.getKeyStore());
+                        sslReq.getKeyStore().getKeyStore();
 
                 final TrustStrategy trustStrategy = sslReq.isTrustSelfSignedCert()
                         ? new TrustSelfSignedStrategy(): null;
@@ -482,18 +477,6 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             }
             isRequestCompleted = true;
         }
-    }
-
-    private KeyStore getKeyStore(SSLKeyStore sslStore)
-            throws KeyStoreException, IOException,
-            NoSuchAlgorithmException, CertificateException {
-        KeyStore store  = KeyStore.getInstance(sslStore.getType().name());
-        if(sslStore.getFile() != null) {
-            try(FileInputStream instream = new FileInputStream(sslStore.getFile())) {
-                store.load(instream, sslStore.getPassword());
-            }
-        }
-        return store;
     }
 
     @Override
