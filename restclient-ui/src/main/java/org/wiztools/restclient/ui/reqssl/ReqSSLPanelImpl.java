@@ -21,8 +21,6 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
     @Inject RESTView view;
     @Inject RESTUserInterface rest_ui;
     
-    private static final int auth_text_size = 20;
-    
     // SSL - general
     private final JComboBox<SSLHostnameVerifier> jcb_ssl_hostname_verifier = new JComboBox<>(SSLHostnameVerifier.getAll());
     private final JCheckBox jcb_ssl_trust_self_signed_cert = new JCheckBox("Trust self-signed certificate? ");

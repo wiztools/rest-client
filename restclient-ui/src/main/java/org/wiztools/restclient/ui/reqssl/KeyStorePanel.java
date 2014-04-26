@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.wiztools.restclient.bean.SSLKeyStore;
+import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.UIUtil;
 
 /**
@@ -22,9 +23,9 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     @Inject private KeyStoreDialog jd;
     
     private final JLabel jl = new JLabel();
-    private final JTextField jtf = new JTextField(15);
-    private final JButton jb_addEdit = new JButton("Add/Edit");
-    private final JButton jb_clear = new JButton("Clear");
+    private final JTextField jtf = new JTextField(18);
+    private final JButton jb_addEdit = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "add.png"));
+    private final JButton jb_clear = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "delete.png"));
     
     private SSLKeyStore keyStore = null;
     
@@ -33,6 +34,9 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
         jtf.setEditable(false);
         
         jd.addKeyStoreListener(this);
+        
+        jb_addEdit.setToolTipText("Add / Edit");
+        jb_clear.setToolTipText("Clear");
         
         jb_addEdit.addActionListener(new ActionListener() {
             @Override
@@ -93,6 +97,6 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     
     public void clear() {
         jd.clear();
-        ok(null);
+        keyStore = null;
     }
 }

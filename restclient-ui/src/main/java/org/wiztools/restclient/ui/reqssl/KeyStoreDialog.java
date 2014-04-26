@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -165,6 +166,13 @@ public class KeyStoreDialog extends EscapableDialog {
     
     private void ok() {
         final SSLKeyStore store = getKeyStore();
+        if(store == null) {
+            JOptionPane.showMessageDialog(this,
+                    "One or more required details not provided.",
+                    "Validation error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         for(KeyStoreListener listener: listeners) {
             listener.ok(store);
         }
