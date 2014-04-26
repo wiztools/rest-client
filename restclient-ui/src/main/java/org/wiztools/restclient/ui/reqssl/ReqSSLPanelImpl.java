@@ -13,6 +13,8 @@ import javax.swing.*;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.KeyStoreType;
 import org.wiztools.restclient.bean.SSLHostnameVerifier;
+import org.wiztools.restclient.bean.SSLKeyStore;
+import org.wiztools.restclient.bean.SSLKeyStoreBean;
 import org.wiztools.restclient.bean.SSLReq;
 import org.wiztools.restclient.bean.SSLReqBean;
 import org.wiztools.restclient.ui.*;
@@ -50,21 +52,31 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
         out.setHostNameVerifier((SSLHostnameVerifier) jcb_ssl_hostname_verifier.getSelectedItem());
         out.setTrustSelfSignedCert(jcb_ssl_trust_self_signed_cert.isSelected());
         
-        out.setKeyStoreType(jp_keystore_type.getSelectedKeyStoreType());
         if(StringUtil.isNotEmpty(jtf_ssl_keystore_file.getText())) {
-            out.setKeyStore(new File(jtf_ssl_keystore_file.getText()));
-        }
-        if(jpf_ssl_keystore_pwd.getPassword().length > 0) {
-            out.setKeyStorePassword(jpf_ssl_keystore_pwd.getPassword());
+            SSLKeyStoreBean keyStore = new SSLKeyStoreBean();
+            
+            keyStore.setFile(new File(jtf_ssl_keystore_file.getText()));
+            keyStore.setType(jp_keystore_type.getSelectedKeyStoreType());
+            if(jpf_ssl_keystore_pwd.getPassword().length > 0) {
+                keyStore.setPassword(jpf_ssl_keystore_pwd.getPassword());
+            }
+            
+            out.setKeyStore(keyStore);
         }
         
-        out.setTrustStoreType(jp_truststore_type.getSelectedKeyStoreType());
+        
         if(StringUtil.isNotEmpty(jtf_ssl_truststore_file.getText())) {
-            out.setTrustStore(new File(jtf_ssl_truststore_file.getText()));
+            SSLKeyStoreBean trustStore = new SSLKeyStoreBean();
+            
+            trustStore.setFile(new File(jtf_ssl_truststore_file.getText()));
+            trustStore.setType(jp_truststore_type.getSelectedKeyStoreType());
+            if(jpf_ssl_truststore_pwd.getPassword().length > 0) {
+                trustStore.setPassword(jpf_ssl_truststore_pwd.getPassword());
+            }
+            
+            out.setTrustStore(trustStore);
         }
-        if(jpf_ssl_truststore_pwd.getPassword().length > 0) {
-            out.setTrustStorePassword(jpf_ssl_truststore_pwd.getPassword());
-        }
+        
         return out;
     }
 
@@ -73,16 +85,26 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
         jcb_ssl_hostname_verifier.setSelectedItem(sslReq.getHostNameVerifier());
         jcb_ssl_trust_self_signed_cert.setSelected(sslReq.isTrustSelfSignedCert());
         
-        jp_keystore_type.setSelectedKeyStoreType(sslReq.getKeyStoreType());
-        jtf_ssl_keystore_file.setText(sslReq.getKeyStore().getAbsolutePath());
-        if(sslReq.getKeyStorePassword() != null) {
-            jpf_ssl_keystore_pwd.setText(new String(sslReq.getKeyStorePassword()));
+        { // key store:
+            final SSLKeyStore keyStore = sslReq.getKeyStore();
+            if(keyStore != null) {
+                jp_keystore_type.setSelectedKeyStoreType(keyStore.getType());
+                jtf_ssl_keystore_file.setText(keyStore.getFile().getAbsolutePath());
+                if(keyStore.getPassword() != null) {
+                    jpf_ssl_keystore_pwd.setText(new String(keyStore.getPassword()));
+                }
+            }
         }
         
-        jp_truststore_type.setSelectedKeyStoreType(sslReq.getTrustStoreType());
-        jtf_ssl_truststore_file.setText(sslReq.getTrustStore().getAbsolutePath());
-        if(sslReq.getTrustStorePassword() != null) {
-            jpf_ssl_truststore_pwd.setText(new String(sslReq.getTrustStorePassword()));
+        { // trust store:
+            final SSLKeyStore trustStore = sslReq.getTrustStore();
+            if(trustStore != null) {
+                jp_truststore_type.setSelectedKeyStoreType(trustStore.getType());
+                jtf_ssl_truststore_file.setText(trustStore.getFile().getAbsolutePath());
+                if(trustStore.getPassword() != null) {
+                    jpf_ssl_truststore_pwd.setText(new String(trustStore.getPassword()));
+                }
+            }
         }
     }
     

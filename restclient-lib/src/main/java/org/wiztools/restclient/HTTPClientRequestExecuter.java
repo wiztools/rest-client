@@ -357,23 +357,23 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 }
 
                 // Register the SSL Scheme:
-                final String trustStorePath = sslReq.getTrustStore() != null?
-                        sslReq.getTrustStore().getAbsolutePath(): null;
-                final String keyStorePath = sslReq.getKeyStore() != null?
-                        sslReq.getKeyStore().getAbsolutePath(): null;
+                final String trustStorePath = (sslReq.getTrustStore() != null && sslReq.getTrustStore().getFile() != null)?
+                        sslReq.getTrustStore().getFile().getAbsolutePath(): null;
+                final String keyStorePath = (sslReq.getKeyStore() != null && sslReq.getKeyStore().getFile() != null)?
+                        sslReq.getKeyStore().getFile().getAbsolutePath(): null;
 
                 final KeyStore trustStore  = StringUtil.isEmpty(trustStorePath)?
                         null:
-                        getKeyStore(sslReq.getTrustStoreType(), trustStorePath, sslReq.getTrustStorePassword());
+                        getKeyStore(sslReq.getTrustStore().getType(), trustStorePath, sslReq.getTrustStore().getPassword());
                 final KeyStore keyStore = StringUtil.isEmpty(keyStorePath)?
                         null:
-                    getKeyStore(sslReq.getKeyStoreType(), keyStorePath, sslReq.getKeyStorePassword());
+                    getKeyStore(sslReq.getKeyStore().getType(), keyStorePath, sslReq.getKeyStore().getPassword());
 
                 final TrustStrategy trustStrategy = sslReq.isTrustSelfSignedCert()
                         ? new TrustSelfSignedStrategy(): null;
                 
                 SSLContext ctx = new SSLContextBuilder()
-                        .loadKeyMaterial(keyStore, sslReq.getKeyStorePassword()!=null? sslReq.getKeyStorePassword(): null)
+                        .loadKeyMaterial(keyStore, sslReq.getKeyStore().getPassword()!=null? sslReq.getKeyStore().getPassword(): null)
                         .loadTrustMaterial(trustStore, trustStrategy)
                         .setSecureRandom(null)
                         .useTLS()

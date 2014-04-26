@@ -7,6 +7,7 @@ import nu.xom.Elements;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.KeyStoreType;
 import org.wiztools.restclient.bean.SSLHostnameVerifier;
+import org.wiztools.restclient.bean.SSLKeyStoreBean;
 import org.wiztools.restclient.bean.SSLReq;
 import org.wiztools.restclient.bean.SSLReqBean;
 
@@ -34,18 +35,18 @@ class XmlSslUtil {
         // Key store
         if(req.getKeyStore() != null) {
             Element e = new Element("keystore");
-            e.addAttribute(new Attribute("type", req.getKeyStoreType().name()));
-            e.addAttribute(new Attribute("file", req.getKeyStore().getAbsolutePath()));
-            e.addAttribute(new Attribute("password", Util.base64encode(new String(req.getKeyStorePassword()))));
+            e.addAttribute(new Attribute("type", req.getKeyStore().getType().name()));
+            e.addAttribute(new Attribute("file", req.getKeyStore().getFile().getAbsolutePath()));
+            e.addAttribute(new Attribute("password", Util.base64encode(new String(req.getKeyStore().getPassword()))));
             eSsl.appendChild(e);
         }
         
         // Trust store
         if(req.getTrustStore() != null) {
             Element e = new Element("truststore");
-            e.addAttribute(new Attribute("type", req.getTrustStoreType().name()));
-            e.addAttribute(new Attribute("file", req.getTrustStore().getAbsolutePath()));
-            e.addAttribute(new Attribute("password", Util.base64encode(new String(req.getTrustStorePassword()))));
+            e.addAttribute(new Attribute("type", req.getTrustStore().getType().name()));
+            e.addAttribute(new Attribute("file", req.getTrustStore().getFile().getAbsolutePath()));
+            e.addAttribute(new Attribute("password", Util.base64encode(new String(req.getTrustStore().getPassword()))));
             eSsl.appendChild(e);
         }
         
@@ -67,22 +68,26 @@ class XmlSslUtil {
                     out.setHostNameVerifier(SSLHostnameVerifier.valueOf(e.getValue()));
                     break;
                 case "keystore":
+                    final SSLKeyStoreBean keyStore = new SSLKeyStoreBean();
                     { // type:
                         final String typeStr = e.getAttributeValue("type");
                         if(StringUtil.isNotEmpty(typeStr))
-                            out.setKeyStoreType(KeyStoreType.valueOf(typeStr));
+                            keyStore.setType(KeyStoreType.valueOf(typeStr));
                     }
-                    out.setKeyStore(new File(e.getAttributeValue("file")));
-                    out.setKeyStorePassword(Util.base64decode(e.getAttributeValue("password")).toCharArray());
+                    keyStore.setFile(new File(e.getAttributeValue("file")));
+                    keyStore.setPassword(Util.base64decode(e.getAttributeValue("password")).toCharArray());
+                    out.setKeyStore(keyStore);
                     break;
                 case "truststore":
+                    final SSLKeyStoreBean trustStore = new SSLKeyStoreBean();
                     { // type:
                         final String typeStr = e.getAttributeValue("type");
                         if(StringUtil.isNotEmpty(typeStr))
-                            out.setTrustStoreType(KeyStoreType.valueOf(typeStr));
+                            trustStore.setType(KeyStoreType.valueOf(typeStr));
                     }
-                    out.setTrustStore(new File(e.getAttributeValue("file")));
-                    out.setTrustStorePassword(Util.base64decode(e.getAttributeValue("password")).toCharArray());
+                    trustStore.setFile(new File(e.getAttributeValue("file")));
+                    trustStore.setPassword(Util.base64decode(e.getAttributeValue("password")).toCharArray());
+                    out.setTrustStore(trustStore);
                     break;
             }
         }
