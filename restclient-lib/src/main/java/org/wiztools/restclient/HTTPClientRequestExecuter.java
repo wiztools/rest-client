@@ -357,17 +357,17 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 }
 
                 // Register the SSL Scheme:
-                final String trustStorePath = (sslReq.getTrustStore() != null && sslReq.getTrustStore().getFile() != null)?
+                final String trustStorePath = sslReq.getTrustStore() != null?
                         sslReq.getTrustStore().getFile().getAbsolutePath(): null;
-                final String keyStorePath = (sslReq.getKeyStore() != null && sslReq.getKeyStore().getFile() != null)?
+                final String keyStorePath = sslReq.getKeyStore() != null?
                         sslReq.getKeyStore().getFile().getAbsolutePath(): null;
 
                 final KeyStore trustStore  = StringUtil.isEmpty(trustStorePath)?
                         null:
-                        getKeyStore(sslReq.getTrustStore().getType(), trustStorePath, sslReq.getTrustStore().getPassword());
+                        getKeyStore(sslReq.getTrustStore());
                 final KeyStore keyStore = StringUtil.isEmpty(keyStorePath)?
                         null:
-                    getKeyStore(sslReq.getKeyStore().getType(), keyStorePath, sslReq.getKeyStore().getPassword());
+                        getKeyStore(sslReq.getKeyStore());
 
                 final TrustStrategy trustStrategy = sslReq.isTrustSelfSignedCert()
                         ? new TrustSelfSignedStrategy(): null;
@@ -484,13 +484,13 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         }
     }
 
-    private KeyStore getKeyStore(KeyStoreType type, String storePath, char[] storePassword)
+    private KeyStore getKeyStore(SSLKeyStore sslStore)
             throws KeyStoreException, IOException,
             NoSuchAlgorithmException, CertificateException {
-        KeyStore store  = KeyStore.getInstance(type.name());
-        if(StringUtil.isNotEmpty(storePath)) {
-            try(FileInputStream instream = new FileInputStream(new File(storePath))) {
-                store.load(instream, storePassword);
+        KeyStore store  = KeyStore.getInstance(sslStore.getType().name());
+        if(sslStore.getFile() != null) {
+            try(FileInputStream instream = new FileInputStream(sslStore.getFile())) {
+                store.load(instream, sslStore.getPassword());
             }
         }
         return store;
