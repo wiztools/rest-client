@@ -51,7 +51,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
         jb_clear.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                jd.clear();
+                clear();
             }
         });
         
