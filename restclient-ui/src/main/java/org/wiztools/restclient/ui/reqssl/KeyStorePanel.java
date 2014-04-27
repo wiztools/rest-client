@@ -24,7 +24,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     @Inject private KeyStoreDialog jd;
     
     private final JLabel jl = new JLabel();
-    private final JTextField jtf = new JTextField(20);
+    private final JTextField jtf = new JTextField(23);
     private final JButton jb_addEdit = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "pencil_add.png"));
     private final JButton jb_clear = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "delete.png"));
     
