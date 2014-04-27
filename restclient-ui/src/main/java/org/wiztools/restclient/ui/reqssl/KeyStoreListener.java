@@ -7,6 +7,6 @@ import org.wiztools.restclient.bean.SSLKeyStore;
  * @author subwiz
  */
 public interface KeyStoreListener {
-    void ok(SSLKeyStore store);
-    void cancel();
+    void onOk(SSLKeyStore store);
+    void onCancel();
 }

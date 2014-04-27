@@ -75,7 +75,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     }
 
     @Override
-    public void ok(SSLKeyStore store) {
+    public void onOk(SSLKeyStore store) {
         if(store != null) {
             String txt = MessageFormat.format(tmpl,
                     store.getType(), store.getFile().getName());
@@ -86,7 +86,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     }
     
     @Override
-    public void cancel() {
+    public void onCancel() {
         jd.setKeyStore(keyStore);
     }
     
@@ -96,7 +96,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     
     public void setKeyStore(SSLKeyStore store) {
         jd.setKeyStore(store);
-        ok(store);
+        onOk(store);
     }
     
     public void clear() {

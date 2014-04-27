@@ -174,14 +174,14 @@ public class KeyStoreDialog extends EscapableDialog {
             return;
         }
         for(KeyStoreListener listener: listeners) {
-            listener.ok(store);
+            listener.onOk(store);
         }
         setVisible(false);
     }
     
     private void cancel() {
         for(KeyStoreListener listener: listeners) {
-            listener.cancel();
+            listener.onCancel();
         }
         setVisible(false);
     }
