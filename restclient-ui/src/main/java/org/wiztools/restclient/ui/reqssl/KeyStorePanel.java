@@ -30,7 +30,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     
     private SSLKeyStore keyStore = null;
     
-    private final String tmpl = "type={0}; fileName={1}";
+    private final String tmpl = "type={0}; fileName={1}; password={3}";
     
     @PostConstruct
     public void init() {
@@ -77,8 +77,9 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     @Override
     public void onOk(SSLKeyStore store) {
         if(store != null) {
+            String pwdAvailable = (store.getPassword()!=null && store.getPassword().length > 0)? "Yes": "No";
             String txt = MessageFormat.format(tmpl,
-                    store.getType(), store.getFile().getName());
+                    store.getType(), store.getFile().getName(), pwdAvailable);
             jtf.setText(txt);
             
             keyStore = store;
