@@ -49,22 +49,13 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
 
     @Override
     public void setSslReq(SSLReq sslReq) {
+        // general tab:
         jcb_ssl_hostname_verifier.setSelectedItem(sslReq.getHostNameVerifier());
         jcb_ssl_trust_self_signed_cert.setSelected(sslReq.isTrustSelfSignedCert());
         
-        { // key store:
-            final SSLKeyStore keyStore = sslReq.getKeyStore();
-            if(keyStore != null) {
-                jp_keystore.setKeyStore(keyStore);
-            }
-        }
-        
-        { // trust store:
-            final SSLKeyStore trustStore = sslReq.getTrustStore();
-            if(trustStore != null) {
-                jp_truststore.setKeyStore(trustStore);
-            }
-        }
+        // truststore / keystore tab:
+        jp_truststore.setKeyStore(sslReq.getTrustStore());
+        jp_keystore.setKeyStore(sslReq.getKeyStore());
     }
     
     @Override
