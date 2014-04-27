@@ -30,7 +30,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     
     private SSLKeyStore keyStore = null;
     
-    private final String tmpl = "type={0}; fileName={1}; password={2}";
+    private static final String tmpl = "type={0}; fileName={1}; password={2}";
     
     @PostConstruct
     public void init() {
@@ -76,19 +76,18 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
 
     @Override
     public void onOk(SSLKeyStore store) {
-        if(store != null) {
-            String pwdAvailable = (store.getPassword()!=null && store.getPassword().length > 0)? "Yes": "No";
-            String txt = MessageFormat.format(tmpl,
-                    store.getType(), store.getFile().getName(), pwdAvailable);
-            jtf.setText(txt);
-            jtf.setCaretPosition(0);
-            
-            keyStore = store;
-        }
+        String pwdAvailable = (store.getPassword()!=null && store.getPassword().length > 0)? "Yes": "No";
+        String txt = MessageFormat.format(tmpl,
+                store.getType(), store.getFile().getName(), pwdAvailable);
+        jtf.setText(txt);
+        jtf.setCaretPosition(0);
+
+        keyStore = store;
     }
     
     @Override
     public void onCancel() {
+        // set the previous value:
         jd.setKeyStore(keyStore);
     }
     
@@ -97,8 +96,13 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     }
     
     public void setKeyStore(SSLKeyStore store) {
-        jd.setKeyStore(store);
-        onOk(store);
+        if(store != null) {
+            jd.setKeyStore(store);
+            onOk(store);
+        }
+        else {
+            clear();
+        }
     }
     
     public void clear() {
