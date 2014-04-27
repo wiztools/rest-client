@@ -52,7 +52,6 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jd.clear();
-                jtf.setText("");
             }
         });
         
@@ -107,6 +106,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     
     public void clear() {
         jd.clear();
+        jtf.setText("");
         keyStore = null;
     }
 }
