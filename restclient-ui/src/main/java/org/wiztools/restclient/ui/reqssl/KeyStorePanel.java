@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.MessageFormat;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -44,7 +46,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
         jb_addEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                jd.setVisible(true);
+                onAddEdit();
             }
         });
         
@@ -52,6 +54,15 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 clear();
+            }
+        });
+        
+        jtf.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() == 2) {
+                    onAddEdit();
+                }
             }
         });
         
@@ -102,6 +113,10 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
         else {
             clear();
         }
+    }
+    
+    private void onAddEdit() {
+        jd.setVisible(true);
     }
     
     public void clear() {
