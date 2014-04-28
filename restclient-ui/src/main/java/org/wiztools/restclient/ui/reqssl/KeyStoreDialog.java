@@ -4,6 +4,7 @@ import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -28,12 +29,14 @@ import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;
 import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.ui.dnd.DndAction;
+import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 
 /**
  *
  * @author subwiz
  */
-public class KeyStoreDialog extends EscapableDialog {
+public class KeyStoreDialog extends EscapableDialog implements DndAction {
     
     @Inject private RESTUserInterface rest_ui;
     @Inject private RESTView view;
@@ -60,6 +63,12 @@ public class KeyStoreDialog extends EscapableDialog {
     
     @PostConstruct
     protected void init() {
+        // DnD:
+        FileDropTargetListener dndListener = new FileDropTargetListener();
+        dndListener.addDndAction(this);
+        new DropTarget(jtf_file, dndListener);
+        new DropTarget(jb_browse, dndListener);
+        
         jb_browse.setToolTipText("Open file");
         jb_browse.addActionListener(new ActionListener() {
             @Override
@@ -189,5 +198,17 @@ public class KeyStoreDialog extends EscapableDialog {
     @Override
     public void doEscape(AWTEvent event) {
         cancel();
+    }
+
+    @Override
+    public void onDrop(List<File> files) {
+        for(File f: files) {
+            jtf_file.setText(f.getPath());
+        }
+    }
+
+    @Override
+    public void onDropRepaint() {
+        jtf_file.repaint();
     }
 }
