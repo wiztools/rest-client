@@ -81,7 +81,7 @@
         <dependency>
             <groupId>org.wiztools.restclient</groupId>
             <artifactId>restclient-server</artifactId>
-            <version>3.3.2-SNAPSHOT</version>
+            <version>3.4-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
