@@ -3,9 +3,11 @@ package org.wiztools.restclient.ui.reqbody;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JButton;
@@ -19,6 +21,8 @@ import org.wiztools.restclient.ui.FileChooserType;
 import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.ui.dnd.DndAction;
+import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 
 /**
  *
@@ -37,6 +41,17 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
     
     @PostConstruct
     public void init() {
+        // DnD:
+        FileDropTargetListener l = new FileDropTargetListener();
+        l.addDndAction(new DndAction() {
+            @Override
+            public void onDrop(List<File> files) {
+                selectFile(files.get(0));
+            }
+        });
+        new DropTarget(jtf_file, l);
+        new DropTarget(jb_body_file, l);
+        
         setLayout(new BorderLayout());
         
         // North
@@ -62,6 +77,10 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
     
     private void selectFile() {
         File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
+        selectFile(f);
+    }
+    
+    private void selectFile(File f) {
         if(f == null){ // Pressed cancel?
             return;
         }

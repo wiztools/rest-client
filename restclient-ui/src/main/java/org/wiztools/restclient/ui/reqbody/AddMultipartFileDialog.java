@@ -4,9 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
@@ -15,6 +17,8 @@ import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.bean.ReqEntityFilePart;
 import org.wiztools.restclient.bean.ReqEntityFilePartBean;
 import org.wiztools.restclient.ui.*;
+import org.wiztools.restclient.ui.dnd.DndAction;
+import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 
 /**
  *
@@ -44,6 +48,17 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
     
     @PostConstruct
     protected void init() {
+        // DnD:
+        FileDropTargetListener l = new FileDropTargetListener();
+        l.addDndAction(new DndAction() {
+            @Override
+            public void onDrop(List<File> files) {
+                selectFile(files.get(0));
+            }
+        });
+        new DropTarget(jtf_file, l);
+        new DropTarget(jb_file, l);
+        
         // Button listeners:
         jb_add.addActionListener(new ActionListener() {
             @Override
@@ -115,6 +130,11 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
     
     private void selectFile() {
         File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
+        selectFile(f);
+    }
+    
+    private void selectFile(File f) {
+        
         if(f == null){ // Pressed cancel?
             return;
         }
