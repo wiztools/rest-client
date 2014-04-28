@@ -9,5 +9,4 @@ import java.util.List;
  */
 public interface DndAction {
     void onDrop(List<File> files);
-    void onDropRepaint();
 }

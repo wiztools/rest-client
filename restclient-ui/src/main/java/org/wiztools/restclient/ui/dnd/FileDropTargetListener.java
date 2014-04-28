@@ -1,5 +1,6 @@
 package org.wiztools.restclient.ui.dnd;
 
+import java.awt.Cursor;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -23,9 +24,6 @@ import java.util.logging.Logger;
  *  void onDrop(List<File> files) {
  *      // what to do with dropped files.
  *  }
- *  void onDropRepaint() {
- *      // repaint the component.
- *  }
  * });
  * new java.awt.dnd.DropTarget(component, l);
  * </code>
@@ -44,12 +42,14 @@ public class FileDropTargetListener implements DropTargetListener {
 
     @Override
     public void dragEnter(DropTargetDragEvent dtde) {
-        // do nothing!
+        dtde.getDropTargetContext().getComponent()
+                .setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
     }
 
     @Override
     public void dragOver(DropTargetDragEvent dtde) {
-        // do nothing!
+        dtde.getDropTargetContext().getComponent()
+                .setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
     }
 
     @Override
@@ -59,7 +59,8 @@ public class FileDropTargetListener implements DropTargetListener {
 
     @Override
     public void dragExit(DropTargetEvent dte) {
-        // do nothing!
+        dte.getDropTargetContext().getComponent()
+                .setCursor(Cursor.getDefaultCursor());
     }
 
     @Override
@@ -81,9 +82,8 @@ public class FileDropTargetListener implements DropTargetListener {
         }
         finally {
             evt.dropComplete(true);
-            for(DndAction a: actions) {
-                a.onDropRepaint();
-            }
+            evt.getDropTargetContext().getComponent()
+                    .setCursor(Cursor.getDefaultCursor());
         }
     }
     

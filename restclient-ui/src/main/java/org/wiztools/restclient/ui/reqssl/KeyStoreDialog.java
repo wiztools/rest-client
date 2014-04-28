@@ -206,9 +206,4 @@ public class KeyStoreDialog extends EscapableDialog implements DndAction {
             jtf_file.setText(f.getPath());
         }
     }
-
-    @Override
-    public void onDropRepaint() {
-        jtf_file.repaint();
-    }
 }
