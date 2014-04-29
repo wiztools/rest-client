@@ -4,12 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
@@ -20,6 +22,8 @@ import org.wiztools.restclient.bean.ReqEntity;
 import org.wiztools.restclient.bean.ReqEntityString;
 import org.wiztools.restclient.bean.ReqEntityStringBean;
 import org.wiztools.restclient.ui.*;
+import org.wiztools.restclient.ui.dnd.DndAction;
+import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 
 /**
  *
@@ -35,8 +39,8 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     
     private final ScriptEditor se_req_body = ScriptEditorFactory.getXMLScriptEditor();
     
-    private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private JButton jb_body_params = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
+    private final JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+    private final JButton jb_body_params = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
     
     @PostConstruct
     protected void init() {
@@ -137,10 +141,25 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         });
         
         add(se_req_body.getEditorView(), BorderLayout.CENTER);
+        
+        // DnD:
+        FileDropTargetListener l = new FileDropTargetListener();
+        l.addDndAction(new DndAction() {
+            @Override
+            public void onDrop(List<File> files) {
+                loadFile(files.get(0));
+            }
+        });
+        new DropTarget(jb_body_file, l);
+        new DropTarget(se_req_body.getEditorView(), l);
     }
     
     private void loadFile() {
         File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
+        loadFile(f);
+    }
+    
+    private void loadFile(File f) {
         if(f == null){ // Pressed cancel?
             return;
         }

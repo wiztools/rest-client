@@ -3,11 +3,13 @@ package org.wiztools.restclient.ui.reqbody;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
@@ -20,6 +22,8 @@ import org.wiztools.restclient.ui.FileChooserType;
 import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.ui.dnd.DndAction;
+import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 import org.wiztools.restclient.util.HexDump;
 import org.wiztools.restclient.util.Util;
 import org.wiztools.restclient.util.XMLUtil;
@@ -32,9 +36,9 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
     @Inject private RESTUserInterface rest_ui;
     @Inject private ContentTypeCharsetComponent jp_content_type_charset;
     
-    private JButton jb_body = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+    private final JButton jb_body = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
     
-    private JTextArea jta = new JTextArea();
+    private final JTextArea jta = new JTextArea();
     
     private byte[] body;
     
@@ -62,10 +66,25 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
         jta.setEditable(false);
         
         add(new JScrollPane(jta), BorderLayout.CENTER);
+        
+        // DnD:
+        FileDropTargetListener l = new FileDropTargetListener();
+        l.addDndAction(new DndAction() {
+            @Override
+            public void onDrop(List<File> files) {
+                fileOpen(files.get(0));
+            }
+        });
+        new DropTarget(jta, l);
+        new DropTarget(jb_body, l);
     }
     
     private void fileOpen() {
         File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
+        fileOpen(f);
+    }
+    
+    private void fileOpen(File f) {
         if(f == null){ // Pressed cancel?
             return;
         }
