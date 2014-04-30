@@ -3,8 +3,10 @@ package org.wiztools.restclient.ui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,6 +27,8 @@ import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.bean.*;
+import org.wiztools.restclient.ui.dnd.DndAction;
+import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 import org.wiztools.restclient.ui.history.HistoryManager;
 import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
 import org.wiztools.restclient.ui.reqssl.ReqSSLPanel;
@@ -172,6 +176,16 @@ public class RESTViewImpl extends JPanel implements RESTView {
     
     @PostConstruct
     protected void init() {
+        // DnD:
+        FileDropTargetListener l = new FileDropTargetListener();
+        l.addDndAction(new DndAction() {
+            @Override
+            public void onDrop(List<File> files) {
+                FileOpenUtil.open(view, files.get(0));
+            }
+        });
+        new DropTarget(this, l);
+        
         // Set the font of ScriptEditors:
         String fontName = ServiceLocator.getInstance(IGlobalOptions.class)
                 .getProperty(FontableEditor.FONT_NAME_PROPERTY);

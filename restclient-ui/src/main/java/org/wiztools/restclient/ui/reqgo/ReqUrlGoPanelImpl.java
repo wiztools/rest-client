@@ -3,9 +3,7 @@ package org.wiztools.restclient.ui.reqgo;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Toolkit;
-import java.awt.dnd.DropTarget;
 import java.awt.event.*;
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -14,12 +12,9 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
-import org.wiztools.restclient.ui.FileOpenUtil;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;
 import org.wiztools.restclient.ui.UIUtil;
-import org.wiztools.restclient.ui.dnd.DndAction;
-import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 
 /**
  *
@@ -57,16 +52,6 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
                 }
             });
         }
-        
-        // DnD:
-        FileDropTargetListener l = new FileDropTargetListener();
-        l.addDndAction(new DndAction() {
-            @Override
-            public void onDrop(List<File> files) {
-                FileOpenUtil.open(rest_ui.getView(), files.get(0));
-            }
-        });
-        new DropTarget(this, l);
         
         // Layout follows:
         
