@@ -14,19 +14,16 @@ import org.wiztools.restclient.*;
  *
  * @author subwiz
  */
-class FileOpenUtil {
+public class FileOpenUtil {
     private FileOpenUtil() {}
     
-    static void openRequest(RESTViewImpl view, File f) {
+    public static void openRequest(RESTView view, File f) {
         Exception e = null;
         try{
             Request request = XMLUtil.getRequestFromXMLFile(f);
             view.setUIFromRequest(request);
         }
-        catch(IOException ex){
-            e = ex;
-        }
-        catch(XMLException ex) {
+        catch(IOException | XMLException ex){
             e = ex;
         }
         if(e != null){
@@ -34,16 +31,13 @@ class FileOpenUtil {
         }
     }
     
-    static void openResponse(final RESTViewImpl view, final File f) {
+    public static void openResponse(final RESTView view, final File f) {
         Exception e = null;
         try{
             Response response = XMLUtil.getResponseFromXMLFile(f);
             view.setUIFromResponse(response);
         }
-        catch(IOException ex){
-            e = ex;
-        }
-        catch(XMLException ex) {
+        catch(IOException | XMLException ex){
             e = ex;
         }
         if(e != null){
@@ -51,7 +45,7 @@ class FileOpenUtil {
         }
     }
     
-    static void openArchive(final RESTViewImpl view, final File f) {
+    public static void openArchive(final RESTView view, final File f) {
         Exception e = null;
         try{
             ReqResBean encp = Util.getReqResArchive(f);
@@ -65,10 +59,7 @@ class FileOpenUtil {
                 view.showError("Unable to load archive! Check if valid archive!");
             }
         }
-        catch(IOException ex){
-            e = ex;
-        }
-        catch(XMLException ex) {
+        catch(IOException | XMLException ex){
             e = ex;
         }
         if(e != null){
@@ -76,7 +67,7 @@ class FileOpenUtil {
         }
     }
     
-    static void open(final RESTViewImpl view, final File f) {
+    public static void open(final RESTView view, final File f) {
         final String fileName = f.getName().toLowerCase();
         if(fileName.endsWith(".rcq")) { // Request
             openRequest(view, f);
