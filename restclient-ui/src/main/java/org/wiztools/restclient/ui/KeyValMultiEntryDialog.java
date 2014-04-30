@@ -4,6 +4,7 @@ import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -16,6 +17,8 @@ import javax.swing.*;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.MessageI18N;
+import org.wiztools.restclient.ui.dnd.DndAction;
+import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 import org.wiztools.restclient.util.Util;
 
 /**
@@ -24,15 +27,15 @@ import org.wiztools.restclient.util.Util;
  */
 class KeyValMultiEntryDialog extends EscapableDialog {
 
-    private JButton jb_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private JButton jb_help = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "question.png"));
-    private JButton jb_add = new JButton("Add");
-    private JButton jb_cancel = new JButton("Cancel");
+    private final JButton jb_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+    private final JButton jb_help = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "question.png"));
+    private final JButton jb_add = new JButton("Add");
+    private final JButton jb_cancel = new JButton("Cancel");
     private JScrollPane jsp_in;
-    private JTextArea jta_in = new JTextArea(18, 35);
-    private JDialog me;
-    private RESTUserInterface ui;
-    private MultiEntryAdd callback;
+    private final JTextArea jta_in = new JTextArea(18, 35);
+    private final JDialog me;
+    private final RESTUserInterface ui;
+    private final MultiEntryAdd callback;
 
     public KeyValMultiEntryDialog(RESTUserInterface ui, MultiEntryAdd callback) {
         super(ui.getFrame(), true);
@@ -42,6 +45,18 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         this.callback = callback;
 
         init();
+        dnd();
+    }
+    
+    private void dnd() {
+        FileDropTargetListener l = new FileDropTargetListener();
+        l.addDndAction(new DndAction() {
+            @Override
+            public void onDrop(List<File> files) {
+                loadFromFile(files.get(0));
+            }
+        });
+        new DropTarget(jta_in, l);
     }
 
     private void init() {
@@ -52,6 +67,7 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         jp_north.setLayout(new FlowLayout(FlowLayout.LEFT));
         jb_file.setToolTipText("Load from file");
         jb_file.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 loadFromFile();
             }
@@ -59,6 +75,7 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         jp_north.add(jb_file);
         jb_help.setToolTipText("Help");
         jb_help.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(me,
                         MessageI18N.getMessage("help.keyval.multi"),
@@ -77,6 +94,7 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         jb_add.setMnemonic('a');
         getRootPane().setDefaultButton(jb_add);
         jb_add.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 add();
             }
@@ -84,6 +102,7 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         jp_south.add(jb_add);
         jb_cancel.setMnemonic('c');
         jb_cancel.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 me.setVisible(false);
             }
@@ -101,8 +120,12 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         jta_in.requestFocus();
     }
     
-    private void loadFromFile(){
+    private void loadFromFile() {
         File f = ui.getOpenFile(FileChooserType.OPEN_TEST_SCRIPT, me);
+        loadFromFile(f);
+    }
+    
+    private void loadFromFile(File f) {
         if(f != null){
             try{
                 String content = FileUtil.getContentAsString(f, Charsets.UTF_8);
@@ -125,8 +148,8 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         }
         String[] line_arr = str.split("\\n");
 
-        List<String> linesNotMatching = new ArrayList<String>();
-        Map<String, String> keyValMap = new LinkedHashMap<String, String>();
+        List<String> linesNotMatching = new ArrayList<>();
+        Map<String, String> keyValMap = new LinkedHashMap<>();
 
         for (String line : line_arr) {
             int index = line.indexOf(':');
