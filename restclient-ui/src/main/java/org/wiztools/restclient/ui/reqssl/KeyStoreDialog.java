@@ -8,6 +8,7 @@ import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -21,6 +22,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.KeyStoreType;
+import static org.wiztools.restclient.bean.KeyStoreType.*;
 import org.wiztools.restclient.bean.SSLKeyStore;
 import org.wiztools.restclient.bean.SSLKeyStoreBean;
 import org.wiztools.restclient.ui.EscapableDialog;
@@ -141,6 +143,9 @@ public class KeyStoreDialog extends EscapableDialog {
         loadFile(f);
     }
     
+    private static final String fmtChangeMsg = "Keystore seems to be in {0} format.\nWant to update the format to {0}?";
+    private static final String fmtChangeDialogTitle = "Change `Format' to {0}?";
+    
     private void loadFile(File f) {
         if(f == null) {
             // do nothing--cancel pressed
@@ -148,13 +153,24 @@ public class KeyStoreDialog extends EscapableDialog {
         else if(f.canRead()) {
             final String fileName = f.getName();
             if(fileName.endsWith(".p12") || fileName.endsWith(".pfx")) {
-                if(jp_type.getSelectedKeyStoreType() == KeyStoreType.JKS) {
+                if(jp_type.getSelectedKeyStoreType() == JKS) {
                     final int result = JOptionPane.showConfirmDialog(this,
-                            "Seems to be PKCS12 format. Want to update the format to PKCS12?",
-                            "Change `Format' to PKCS12?",
+                            MessageFormat.format(fmtChangeMsg, PKCS12),
+                            MessageFormat.format(fmtChangeDialogTitle, PKCS12),
                             JOptionPane.YES_NO_OPTION);
                     if(result == JOptionPane.YES_OPTION) {
-                        jp_type.setSelectedKeyStoreType(KeyStoreType.PKCS12);
+                        jp_type.setSelectedKeyStoreType(PKCS12);
+                    }
+                }
+            }
+            else if(fileName.endsWith(".jks")) {
+                if(jp_type.getSelectedKeyStoreType() == PKCS12) {
+                    final int result = JOptionPane.showConfirmDialog(this,
+                            MessageFormat.format(fmtChangeMsg, JKS),
+                            MessageFormat.format(fmtChangeDialogTitle, JKS),
+                            JOptionPane.YES_NO_OPTION);
+                    if(result == JOptionPane.YES_OPTION) {
+                        jp_type.setSelectedKeyStoreType(JKS);
                     }
                 }
             }
