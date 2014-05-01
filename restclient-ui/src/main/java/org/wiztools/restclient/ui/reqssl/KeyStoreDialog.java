@@ -36,7 +36,7 @@ import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
  *
  * @author subwiz
  */
-public class KeyStoreDialog extends EscapableDialog implements DndAction {
+public class KeyStoreDialog extends EscapableDialog {
     
     @Inject private RESTUserInterface rest_ui;
     @Inject private RESTView view;
@@ -65,7 +65,12 @@ public class KeyStoreDialog extends EscapableDialog implements DndAction {
     protected void init() {
         // DnD:
         FileDropTargetListener dndListener = new FileDropTargetListener();
-        dndListener.addDndAction(this);
+        dndListener.addDndAction(new DndAction() {
+            @Override
+            public void onDrop(List<File> files) {
+                loadFile(files.get(0));
+            }
+        });
         new DropTarget(jtf_file, dndListener);
         new DropTarget(jb_browse, dndListener);
         
@@ -73,16 +78,7 @@ public class KeyStoreDialog extends EscapableDialog implements DndAction {
         jb_browse.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
-                if(f == null) {
-                    // do nothing--cancel pressed
-                }
-                else if(f.canRead()){
-                    jtf_file.setText(f.getAbsolutePath());
-                }
-                else{
-                    view.setStatusMessage("File cannot be read.");
-                }
+                loadFile();
             }
         });
         jb_ok.addActionListener(new ActionListener() {
@@ -104,7 +100,7 @@ public class KeyStoreDialog extends EscapableDialog implements DndAction {
         // Label column:
         JPanel jp_label = new JPanel(new GridLayout(3, 1));
         // 1, 2, 3:
-        jp_label.add(new JLabel("Type: "));
+        jp_label.add(new JLabel("Format: "));
         jp_label.add(new JLabel("File: "));
         jp_label.add(new JLabel("Password: "));
         
@@ -138,6 +134,35 @@ public class KeyStoreDialog extends EscapableDialog implements DndAction {
         setContentPane(jp);
         
         pack();
+    }
+    
+    private void loadFile() {
+        File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
+        loadFile(f);
+    }
+    
+    private void loadFile(File f) {
+        if(f == null) {
+            // do nothing--cancel pressed
+        }
+        else if(f.canRead()) {
+            final String fileName = f.getName();
+            if(fileName.endsWith(".p12") || fileName.endsWith(".pfx")) {
+                if(jp_type.getSelectedKeyStoreType() == KeyStoreType.JKS) {
+                    final int result = JOptionPane.showConfirmDialog(this,
+                            "Seems to be PKCS12 format. Want to update the format to PKCS12?",
+                            "Change `Format' to PKCS12?",
+                            JOptionPane.YES_NO_OPTION);
+                    if(result == JOptionPane.YES_OPTION) {
+                        jp_type.setSelectedKeyStoreType(KeyStoreType.PKCS12);
+                    }
+                }
+            }
+            jtf_file.setText(f.getAbsolutePath());
+        }
+        else {
+            view.setStatusMessage("File cannot be read.");
+        }
     }
     
     public void setKeyStore(SSLKeyStore store) {
@@ -198,12 +223,5 @@ public class KeyStoreDialog extends EscapableDialog implements DndAction {
     @Override
     public void doEscape(AWTEvent event) {
         cancel();
-    }
-
-    @Override
-    public void onDrop(List<File> files) {
-        for(File f: files) {
-            jtf_file.setText(f.getPath());
-        }
     }
 }
