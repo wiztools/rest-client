@@ -368,7 +368,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                         ? new TrustSelfSignedStrategy(): null;
                 
                 SSLContext ctx = new SSLContextBuilder()
-                        .loadKeyMaterial(keyStore, sslReq.getKeyStore().getPassword()!=null? sslReq.getKeyStore().getPassword(): null)
+                        .loadKeyMaterial(keyStore, sslReq.getKeyStore()!=null? sslReq.getKeyStore().getPassword(): null)
                         .loadTrustMaterial(trustStore, trustStrategy)
                         .setSecureRandom(null)
                         .useTLS()
