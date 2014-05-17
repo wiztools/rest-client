@@ -20,7 +20,6 @@ public interface ScriptEditor {
 
     /**
      * The editor component is returned.
-     * @return
      */
     public JTextComponent getEditorComponent();
 

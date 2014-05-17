@@ -14,7 +14,7 @@ import javax.swing.JDialog;
 
 /**
  *
- * @author schandran
+ * @author subwiz
  */
 public abstract class EscapableDialog extends JDialog implements KeyListener, ContainerListener {
     
@@ -82,8 +82,7 @@ public abstract class EscapableDialog extends JDialog implements KeyListener, Co
     }
     
     /**
-     * Center the dialog relative to parent before displaying
-     * @param boo
+     * Center the dialog relative to parent before displaying.
      */
     @Override
     public void setVisible(boolean boo){
