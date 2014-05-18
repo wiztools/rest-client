@@ -23,7 +23,7 @@ Post your queries in [Google Group mailing list](https://groups.google.com/forum
 
 ### Book
 
-[![](http://books.wiztools.org/restclient-book/restclient-book-small.jpg)](http://www.amazon.com/dp/B00D9IIGP6?tag=wiztooorg-20)
+[![](http://books.wiztools.org/restclient-book/restclient-book-small.jpg)](http://www.amazon.com/dp/B00KEADQF2?tag=wiztooorg-20)
 
 One source of revenue for this project is from sale of this book. Show your support for the project by purchasing this book.
 
