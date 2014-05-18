@@ -69,7 +69,7 @@ class RESTMain implements RESTUserInterface {
     
     @Inject private RecentFilesHelper recentFilesHelper;
     
-    private static final String URL_BOOK = "http://www.amazon.com/dp/B00D9IIGP6";
+    private static final String URL_BOOK = "http://www.amazon.com/dp/B00KEADQF2";
     private static final String URL_FB = "http://www.facebook.com/wiztools.org";
     private static final String URL_ISSUE = "https://github.com/wiztools/rest-client/issues";
     
