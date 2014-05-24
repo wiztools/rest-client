@@ -29,7 +29,7 @@ One source of revenue for this project is from sale of this book. Show your supp
 
 ### Screenshot
 
-3.3 release:
+3.4 release:
 
 [![](https://farm3.staticflickr.com/2903/14255546511_ae1d25bd25_z.jpg)](https://www.flickr.com/photos/subwiz/14255546511)
 
