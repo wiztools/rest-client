@@ -31,7 +31,7 @@ One source of revenue for this project is from sale of this book. Show your supp
 
 3.3 release:
 
-[![](http://farm4.staticflickr.com/3688/13246417915_202a0841c0_b.jpg)](http://www.flickr.com/photos/subwiz/13246417915/)
+[![](https://farm3.staticflickr.com/2903/14255546511_ae1d25bd25_s.jpg)](https://www.flickr.com/photos/subwiz/14255546511)
 
 More screenshots here: http://flickr.com/photos/subwiz/tags/restclient/
 
