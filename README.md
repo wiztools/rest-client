@@ -23,15 +23,15 @@ Post your queries in [Google Group mailing list](https://groups.google.com/forum
 
 ### Book
 
-[![](http://books.wiztools.org/restclient-book/restclient-book-small.jpg)](http://www.amazon.com/dp/B00D9IIGP6?tag=wiztooorg-20)
+[![](http://books.wiztools.org/restclient-book/restclient-book-small.jpg)](http://www.amazon.com/dp/B00KEADQF2?tag=wiztooorg-20)
 
 One source of revenue for this project is from sale of this book. Show your support for the project by purchasing this book.
 
 ### Screenshot
 
-3.3 release:
+3.4 release:
 
-[![](http://farm4.staticflickr.com/3688/13246417915_202a0841c0_b.jpg)](http://www.flickr.com/photos/subwiz/13246417915/)
+[![](https://farm3.staticflickr.com/2903/14255546511_ae1d25bd25_z.jpg)](https://www.flickr.com/photos/subwiz/14255546511)
 
 More screenshots here: http://flickr.com/photos/subwiz/tags/restclient/
 

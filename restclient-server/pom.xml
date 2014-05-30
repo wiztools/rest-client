@@ -4,19 +4,19 @@
     <parent>
         <groupId>org.wiztools.restclient</groupId>
         <artifactId>restclient</artifactId>
-        <version>3.4-SNAPSHOT</version>
+        <version>3.4.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wiztools.restclient</groupId>
     <artifactId>restclient-server</artifactId>
     <packaging>jar</packaging>
-    <version>3.4-SNAPSHOT</version>
+    <version>3.4.1-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <dependencies>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>9.1.4.v20140401</version>
+            <version>9.1.5.v20140505</version>
         </dependency>
     </dependencies>
 </project>

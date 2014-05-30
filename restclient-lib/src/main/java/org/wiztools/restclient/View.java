@@ -9,7 +9,7 @@ import org.wiztools.restclient.bean.Request;
  * of View implementation could be passed to RequestExecuter--it is an vararg
  * parameter). The callback methods will be called during various stages in
  * request processing.
- * @author schandran
+ * @author subwiz
  */
 public interface View {
     /**
@@ -21,7 +21,7 @@ public interface View {
     /**
      * When the request processing is completed, the response object is
      * received by this method.
-     * @param response
+     * @param response The response object from the successful request execution.
      */
     public void doResponse(Response response);
 
@@ -39,7 +39,7 @@ public interface View {
     /**
      * Whenever an error is encountered, this is called. This usually is the
      * error trace.
-     * @param error
+     * @param error The error as string.
      */
     public void doError(String error);
 }

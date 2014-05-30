@@ -55,7 +55,7 @@ public final class HttpUtil {
     
     /**
      * Parses the HTTP response status line, and returns the status code.
-     * @param statusLine
+     * @param statusLine The HTTP status line.
      * @return The status code from HTTP response status line.
      */
     public static int getStatusCodeFromStatusLine(final String statusLine){
@@ -71,8 +71,8 @@ public final class HttpUtil {
 
     /**
      * Method formats content-type and charset for use as HTTP header value
-     * @param contentType
-     * @param charset
+     * @param contentType The content type string.
+     * @param charset The charset string.
      * @return The formatted content-type and charset.
      */
     public static String getFormattedContentType(final String contentType, final String charset){
@@ -104,8 +104,8 @@ public final class HttpUtil {
      * application/xml;charset=UTF-8
      *
      * This method will return "application/xml".
-     * @param contentType
-     * @return
+     * @param contentType The content-type string.
+     * @return The mime part of the content-type string.
      */
     public static String getMimeFromContentType(final String contentType) {
         final int occurance = contentType.indexOf(';');

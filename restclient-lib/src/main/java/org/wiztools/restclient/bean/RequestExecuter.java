@@ -30,6 +30,7 @@ public interface RequestExecuter {
      * use this:
      *
      * <pre>
+     *
      * import org.wiztools.restclient.Request;
      * import org.wiztools.restclient.View;
      * import org.wiztools.restclient.RequestExecuter;
@@ -41,11 +42,11 @@ public interface RequestExecuter {
      * final View view = ...;
      * final RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
      * Thread t = new Thread(){
-     *      @Override
+     *      {@literal @}Override
      *      public void run(){
      *          executer.execute(request, view);
      *      }
-     *      @Override
+     *      {@literal @}Override
      *      public void interrupt(){
      *          executer.abortExecution();
      *          super.interrupt();
@@ -55,6 +56,7 @@ public interface RequestExecuter {
      *
      * // to interrupt in later stage:
      * t.interrupt();
+     * 
      * </pre>
      */
     void abortExecution();

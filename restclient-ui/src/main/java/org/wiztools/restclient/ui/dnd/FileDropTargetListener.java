@@ -18,7 +18,8 @@ import java.util.logging.Logger;
 /**
  * Usage:
  * 
- * <code>
+ * <pre>
+ * {@code 
  * FileDropTargetListener l = new FileDropTargetListener();
  * l.addDndAction(new DndAction() {
  *  void onDrop(List<File> files) {
@@ -26,7 +27,8 @@ import java.util.logging.Logger;
  *  }
  * });
  * new java.awt.dnd.DropTarget(component, l);
- * </code>
+ * }
+ * </pre>
  * 
  * @author subwiz
  */
