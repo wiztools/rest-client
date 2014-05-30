@@ -21,22 +21,19 @@ import org.wiztools.restclient.util.Util;
 
 /**
  *
- * @author schandran
+ * @author subwiz
  */
 public class OptionsDialog extends EscapableDialog {
     
     private static final Logger LOG = Logger.getLogger(OptionsDialog.class.getName());
     
-    private final OptionsDialog me;
-    
-    private Map<String, IOptionsPanel> panels = new LinkedHashMap<String, IOptionsPanel>();
+    private final Map<String, IOptionsPanel> panels = new LinkedHashMap<>();
     
     private static final ResourceBundle rb = ResourceBundle.getBundle("org.wiztools.restclient.uioptionsdialog");
     
     @Inject
     public OptionsDialog(RESTUserInterface ui){
         super(ui.getFrame(), true);
-        me = this;
     }
     
     @PostConstruct
@@ -50,11 +47,8 @@ public class OptionsDialog extends EscapableDialog {
             try {
                 LOG.log(Level.FINEST, "OptionsPanel adding: {0}", arrt[1]);
                 panels.put(arrt[0], (IOptionsPanel) Class.forName(arrt[1]).newInstance());
-            } catch (ClassNotFoundException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-            } catch(InstantiationException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-            } catch(IllegalAccessException ex){
+            }
+            catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                 LOG.log(Level.SEVERE, null, ex);
             }
         }
@@ -86,7 +80,7 @@ public class OptionsDialog extends EscapableDialog {
         JPanel jp_encp_south = new JPanel();
         jp_encp_south.setLayout(new FlowLayout(FlowLayout.CENTER));
         JButton jb_ok = new JButton("Ok");
-        me.getRootPane().setDefaultButton(jb_ok);
+        this.getRootPane().setDefaultButton(jb_ok);
         jb_ok.setMnemonic('o');
         jb_ok.addActionListener(new ActionListener() {
             @Override
@@ -134,7 +128,7 @@ public class OptionsDialog extends EscapableDialog {
     }
     
     private void actionOk(){
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
         
         for(String key: panels.keySet()){
             List<String> t = panels.get(key).validateInput();
@@ -145,7 +139,7 @@ public class OptionsDialog extends EscapableDialog {
         
         if(errors.size() > 0){
             final String errStr = Util.getHTMLListFromList(errors);
-            JOptionPane.showMessageDialog(me,
+            JOptionPane.showMessageDialog(this,
                     errStr,
                     "Error in input.",
                     JOptionPane.ERROR_MESSAGE);
@@ -157,7 +151,7 @@ public class OptionsDialog extends EscapableDialog {
             panels.get(key).saveOptions();
         }
 
-        me.setVisible(false);
+        this.setVisible(false);
     }
     
     private void actionCancel(){
@@ -167,6 +161,6 @@ public class OptionsDialog extends EscapableDialog {
         }
         
         // Finally, hide:
-        me.setVisible(false);
+        this.setVisible(false);
     }
 }
