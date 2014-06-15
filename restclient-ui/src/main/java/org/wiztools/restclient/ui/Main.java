@@ -38,7 +38,7 @@ public class Main {
                 Object value = UIManager.get (key);
                 if ((value instanceof javax.swing.plaf.FontUIResource)
                         && (!excludes.contains(key))){
-                    LOG.fine(key.toString());
+                    LOG.fine(key);
                     UIManager.put (key, f);
                 }
             }
@@ -50,12 +50,13 @@ public class Main {
      */
     public static void main(final String[] args) {
         
-        // Do the global settings:
-        globalUISettings();
-        
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                // Do the global settings:
+                // globalUISettings();
+                
+                // Initialize the UI:
                 RESTUserInterface ui = ServiceLocator.getInstance(
                         RESTUserInterface.class);
             }
