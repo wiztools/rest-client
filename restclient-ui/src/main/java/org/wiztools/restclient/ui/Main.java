@@ -3,9 +3,11 @@ package org.wiztools.restclient.ui;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.ServiceLocator;
 
 /**
@@ -16,8 +18,8 @@ public class Main {
     
     private static final Logger LOG = Logger.getLogger(Main.class.getName());
     
-    private static void globalUISettings(){
-        Font f = new Font(Font.DIALOG, Font.PLAIN, 12);
+    private static void setGlobalUIFontSize(final int fontSize){
+        Font f = new Font(Font.DIALOG, Font.PLAIN, fontSize);
         //UIManager.put("Label.font", f);
         //UIManager.put("Button.font", f);
         //UIManager.put("RadioButton.font", f);
@@ -49,7 +51,19 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
+        // Set the font:
+        final String t = System.getProperty(RCUIConstants.SYS_PROPERTY_FONT_SIZE);
+        if(StringUtil.isNotEmpty(t)) {
+            try {
+                final int fontSize = Integer.parseInt(t);
+                setGlobalUIFontSize(fontSize);
+            }
+            catch(NumberFormatException ex) {
+                LOG.log(Level.WARNING, "Illegal font size specified: {0}", t);
+            }
+        }
         
+        // Work on the UI:
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
