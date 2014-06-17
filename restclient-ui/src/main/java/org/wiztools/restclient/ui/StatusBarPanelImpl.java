@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.util.Calendar;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.swing.*;
 
 import org.wiztools.restclient.RCConstants;
@@ -19,10 +18,8 @@ import org.wiztools.restclient.RCConstants;
  */
 public class StatusBarPanelImpl extends JPanel implements StatusBarPanel {
     
-    @Inject private RESTView view;
-    
-    private JLabel jl_status = new JLabel(" " + RCConstants.TITLE);
-    private JProgressBar jpb_status = new JProgressBar();
+    private final JLabel jl_status = new JLabel(" " + RCConstants.TITLE);
+    private final JProgressBar jpb_status = new JProgressBar();
     
     private Calendar statusLastUpdated;
     
@@ -44,7 +41,7 @@ public class StatusBarPanelImpl extends JPanel implements StatusBarPanel {
         
         // Label
         setBorder(BorderFactory.createBevelBorder(1));
-        setLayout(new BorderLayout());//new GridLayout(1, 2));
+        setLayout(new BorderLayout());
         jl_status.setFont(UIUtil.FONT_DIALOG_PLAIN);
         add(jl_status, BorderLayout.CENTER);
         
