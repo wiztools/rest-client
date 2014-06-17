@@ -56,6 +56,10 @@ public class Main {
         if(StringUtil.isNotEmpty(t)) {
             try {
                 final int fontSize = Integer.parseInt(t);
+                if(fontSize < RCUIConstants.MIN_UI_FONT_SIZE) {
+                    throw new NumberFormatException("Font size value cannot be less than "
+                        + RCUIConstants.MIN_UI_FONT_SIZE + ".");
+                }
                 setGlobalUIFontSize(fontSize);
             }
             catch(NumberFormatException ex) {
@@ -67,10 +71,6 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                // Do the global settings:
-                // globalUISettings();
-                
-                // Initialize the UI:
                 RESTUserInterface ui = ServiceLocator.getInstance(
                         RESTUserInterface.class);
             }
