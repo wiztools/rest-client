@@ -62,7 +62,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
         
         add(jp_north, BorderLayout.NORTH);
         
-        jta.setFont(UIUtil.FONT_MONO_12_PLAIN);
+        jta.setFont(UIUtil.FONT_MONO_PLAIN);
         jta.setEditable(false);
         
         add(new JScrollPane(jta), BorderLayout.CENTER);

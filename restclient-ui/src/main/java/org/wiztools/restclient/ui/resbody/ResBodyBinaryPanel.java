@@ -18,7 +18,7 @@ public class ResBodyBinaryPanel extends AbstractResBody {
     @PostConstruct
     protected void init() {
         jta.setEditable(false);
-        jta.setFont(UIUtil.FONT_MONO_12_PLAIN);
+        jta.setFont(UIUtil.FONT_MONO_PLAIN);
         setLayout(new GridLayout());
         add(jta);
     }

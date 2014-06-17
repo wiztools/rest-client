@@ -3,11 +3,9 @@ package org.wiztools.restclient.ui;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.ServiceLocator;
 
 /**
@@ -23,7 +21,7 @@ public class Main {
         //UIManager.put("Label.font", f);
         //UIManager.put("Button.font", f);
         //UIManager.put("RadioButton.font", f);
-        ArrayList<String> excludes = new ArrayList<String>();
+        ArrayList<String> excludes = new ArrayList<>();
         //excludes.add("TitledBorder.font");
         //excludes.add("MenuBar.font");
         //excludes.add("MenuItem.font");
@@ -52,19 +50,9 @@ public class Main {
      */
     public static void main(final String[] args) {
         // Set the font:
-        final String t = System.getProperty(RCUIConstants.SYS_PROPERTY_FONT_SIZE);
-        if(StringUtil.isNotEmpty(t)) {
-            try {
-                final int fontSize = Integer.parseInt(t);
-                if(fontSize < RCUIConstants.MIN_UI_FONT_SIZE) {
-                    throw new NumberFormatException("Font size value cannot be less than "
-                        + RCUIConstants.MIN_UI_FONT_SIZE + ".");
-                }
-                setGlobalUIFontSize(fontSize);
-            }
-            catch(NumberFormatException ex) {
-                LOG.log(Level.WARNING, "Illegal font size specified: {0}", t);
-            }
+        final int fontSize = RCUIConstants.getUIFontSize();
+        if(fontSize != -1) {
+            setGlobalUIFontSize(fontSize);
         }
         
         // Work on the UI:

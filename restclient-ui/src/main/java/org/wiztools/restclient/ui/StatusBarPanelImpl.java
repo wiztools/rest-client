@@ -45,7 +45,7 @@ public class StatusBarPanelImpl extends JPanel implements StatusBarPanel {
         // Label
         setBorder(BorderFactory.createBevelBorder(1));
         setLayout(new BorderLayout());//new GridLayout(1, 2));
-        jl_status.setFont(UIUtil.FONT_DIALOG_12_PLAIN);
+        jl_status.setFont(UIUtil.FONT_DIALOG_PLAIN);
         add(jl_status, BorderLayout.CENTER);
         
         // Progress bar

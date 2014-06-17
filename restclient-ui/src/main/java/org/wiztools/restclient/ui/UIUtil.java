@@ -22,9 +22,12 @@ public final class UIUtil {
     
     private UIUtil(){}
     
-    public static final Font FONT_DIALOG_12_PLAIN = new Font(Font.DIALOG, Font.PLAIN, 12);
-    public static final Font FONT_DIALOG_12_BOLD = new Font(Font.DIALOG, Font.BOLD, 12);
-    public static final Font FONT_MONO_12_PLAIN = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+    public static final Font FONT_DIALOG_PLAIN = new Font(Font.DIALOG, Font.PLAIN,
+            RCUIConstants.getUIFontSizeDefault());
+    public static final Font FONT_DIALOG_BOLD = new Font(Font.DIALOG, Font.BOLD,
+            RCUIConstants.getUIFontSizeDefault());
+    public static final Font FONT_MONO_PLAIN = new Font(Font.MONOSPACED, Font.PLAIN,
+            RCUIConstants.getUIFontSizeDefault());
     
     public static final String LAST_CWD_REQ = "filesystem.lastdir.request";
     public static final String LAST_CWD_RES = "filesystem.lastdir.response";
