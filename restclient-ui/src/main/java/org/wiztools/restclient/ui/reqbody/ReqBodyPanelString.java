@@ -22,6 +22,8 @@ import org.wiztools.restclient.bean.ReqEntity;
 import org.wiztools.restclient.bean.ReqEntityString;
 import org.wiztools.restclient.bean.ReqEntityStringBean;
 import org.wiztools.restclient.ui.*;
+import org.wiztools.restclient.ui.component.BodyPopupMenu;
+import org.wiztools.restclient.ui.component.BodyPopupMenuListener;
 import org.wiztools.restclient.ui.dnd.DndAction;
 import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 
@@ -84,37 +86,25 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         
         // Center
         // Popup menu for body content tab
-        final JPopupMenu jpm_req_body = new JPopupMenu();
-        
-        JMenu jm_syntax = new JMenu("Syntax Color");
-        JMenuItem jmi_syntax_none = new JMenuItem("None");
-        jmi_syntax_none.addActionListener(new ActionListener() {
+        BodyPopupMenuListener listener = new BodyPopupMenuListener() {
+
             @Override
-            public void actionPerformed(ActionEvent arg0) {
-                se_req_body.setSyntax(TextEditorSyntax.NONE);
+            public void onSuccess(String msg) {
+                view.setStatusMessage(msg);
             }
-        });
-        jm_syntax.add(jmi_syntax_none);
-        JMenuItem jmi_syntax_xml = new JMenuItem("XML");
-        jmi_syntax_xml.addActionListener(new ActionListener() {
+
             @Override
-            public void actionPerformed(ActionEvent arg0) {
-                se_req_body.setSyntax(TextEditorSyntax.XML);
+            public void onFailure(String msg) {
+                view.setStatusMessage(msg);
             }
-        });
-        jm_syntax.add(jmi_syntax_xml);
-        JMenuItem jmi_syntax_json = new JMenuItem("JSON");
-        jmi_syntax_json.addActionListener(new ActionListener() {
+
             @Override
-            public void actionPerformed(ActionEvent arg0) {
-                se_req_body.setSyntax(TextEditorSyntax.JSON);
+            public void onMessage(String msg) {
+                view.setStatusMessage(msg);
             }
-        });
-        jm_syntax.add(jmi_syntax_json);
-        
-        jpm_req_body.add(jm_syntax);
-        
-        se_req_body.setPopupMenu(jpm_req_body);
+        };
+        final BodyPopupMenu bpm = new BodyPopupMenu(se_req_body, listener, false);
+        se_req_body.setPopupMenu(bpm);
         
         /*
          * Following code is written becuase of what seems to be a bug in
@@ -125,7 +115,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         se_req_body.getEditorComponent().addMouseListener(new MouseAdapter() {
             private void eEnable() {
                 if(se_req_body.getEditorComponent().isEnabled()) {
-                    Component[] components = jpm_req_body.getComponents();
+                    Component[] components = bpm.getComponents();
                     for(Component c: components) {
                         if(!c.isEnabled()) {
                             c.setEnabled(true);
