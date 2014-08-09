@@ -34,6 +34,7 @@ public final class JSONUtil {
     private static final ObjectMapper jsonObjMapper = new ObjectMapper();
     static {
         jsonObjMapper.enable(DeserializationConfig.Feature.USE_BIG_DECIMAL_FOR_FLOATS);
+        jsonObjMapper.enable(DeserializationConfig.Feature.USE_BIG_INTEGER_FOR_INTS);
     }
     
     public static String indentJSON(final String jsonIn) throws JSONParseException{
