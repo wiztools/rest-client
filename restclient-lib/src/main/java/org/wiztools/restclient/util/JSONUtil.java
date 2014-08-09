@@ -12,6 +12,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.util.DefaultPrettyPrinter;
 
 /**
  *
@@ -50,7 +51,9 @@ public final class JSONUtil {
 
             // Create pretty printer:
             JsonGenerator gen = fac.createJsonGenerator(out);
-            gen.useDefaultPrettyPrinter();
+            DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
+            pp.indentArraysWith(new DefaultPrettyPrinter.Lf2SpacesIndenter());
+            gen.setPrettyPrinter(pp);
 
             // Now write:
             jsonObjMapper.writeTree(gen, node);
