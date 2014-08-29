@@ -4,13 +4,13 @@
     <parent>
         <groupId>org.wiztools.restclient</groupId>
         <artifactId>restclient</artifactId>
-        <version>3.4.1</version>
+        <version>3.4.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wiztools.restclient</groupId>
     <artifactId>restclient-server</artifactId>
     <packaging>jar</packaging>
-    <version>3.4.1</version>
+    <version>3.4.2-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <dependencies>
         <dependency>
