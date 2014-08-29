@@ -25,7 +25,7 @@
     </issueManagement>
     <scm>
         <connection>scm:git:https://github.com/wiztools/rest-client.git</connection>
-        <developerConnection>scm:git:https://github.com/wiztools/rest-client.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:wiztools/rest-client.git</developerConnection>
         <url>https://github.com/wiztools/rest-client</url>
       <tag>HEAD</tag>
   </scm>
