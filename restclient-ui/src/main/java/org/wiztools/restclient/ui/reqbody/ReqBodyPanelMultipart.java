@@ -212,6 +212,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
             
             JPanel jp_east = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             { // config button:
+                jb_config.setToolTipText("Set multipart mode");
                 jb_config.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -257,6 +258,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     @Override
     public void clear() {
+        rbBrowserCompatible.setSelected(true);
         model.clear();
     }
 
