@@ -32,6 +32,7 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.AbstractHttpEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -290,6 +291,22 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                             ReqEntityMultipart multipart = (ReqEntityMultipart)bean;
                             
                             MultipartEntityBuilder meb = MultipartEntityBuilder.create();
+                            
+                            // Format:
+                            MultipartFormat multipartFormat = multipart.getFormat();
+                            switch(multipartFormat) {
+                                case BROWSER_COMPATIBLE:
+                                    meb.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+                                    break;
+                                case RFC_6532:
+                                    meb.setMode(HttpMultipartMode.RFC6532);
+                                    break;
+                                case STRICT:
+                                    meb.setMode(HttpMultipartMode.STRICT);
+                                    break;
+                            }
+                            
+                            // Parts:
                             for(ReqEntityPart part: multipart.getBody()) {
                                 if(part instanceof ReqEntityStringPart) {
                                     ReqEntityStringPart p = (ReqEntityStringPart)part;
