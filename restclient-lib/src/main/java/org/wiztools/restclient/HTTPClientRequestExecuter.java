@@ -293,8 +293,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                             MultipartEntityBuilder meb = MultipartEntityBuilder.create();
                             
                             // Format:
-                            MultipartFormat multipartFormat = multipart.getFormat();
-                            switch(multipartFormat) {
+                            MultipartMode mpMode = multipart.getMode();
+                            switch(mpMode) {
                                 case BROWSER_COMPATIBLE:
                                     meb.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
                                     break;

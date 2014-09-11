@@ -7,6 +7,6 @@ import java.util.List;
  * @author subwiz
  */
 public interface ReqEntityMultipart extends ReqEntity {
-    MultipartFormat getFormat();
+    MultipartMode getMode();
     List<ReqEntityPart> getBody();
 }

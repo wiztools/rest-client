@@ -265,7 +265,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
         if(entity instanceof ReqEntityMultipart) {
             ReqEntityMultipart e = (ReqEntityMultipart) entity;
             
-            MultipartFormat format = e.getFormat();
+            MultipartMode format = e.getMode();
             switch(format) {
                 case BROWSER_COMPATIBLE:
                     rbBrowserCompatible.setSelected(true);
@@ -289,15 +289,15 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     @Override
     public ReqEntity getEntity() {
-        MultipartFormat format = null;
+        MultipartMode format = null;
         if(rbBrowserCompatible.isSelected()) {
-            format = MultipartFormat.BROWSER_COMPATIBLE;
+            format = MultipartMode.BROWSER_COMPATIBLE;
         }
         else if(rbRFC6532.isSelected()) {
-            format = MultipartFormat.RFC_6532;
+            format = MultipartMode.RFC_6532;
         }
         else if(rbStrict.isSelected()) {
-            format = MultipartFormat.STRICT;
+            format = MultipartMode.STRICT;
         }
         ReqEntity entity = new ReqEntityMultipartBean(
                 (LinkedList<ReqEntityPart>)model.list.clone(), format);

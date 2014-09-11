@@ -51,14 +51,20 @@ class XmlBodyUtil {
                 }
             }
             else if("multipart".equals(name)) {
-                List<ReqEntityPart> parts = getMultipartParts(e);
-                return new ReqEntityMultipartBean(parts);
+                return getMultipart(e);
             }
             else {
                 throw new XMLException("Unsupported element encountered inside <body>: " + name);
             }
         }
         return null;
+    }
+    
+    private static ReqEntityMultipartBean getMultipart(Element e) {
+        final String mode = e.getAttributeValue("mode");
+        MultipartMode format = StringUtil.isNotEmpty(mode)? MultipartMode.valueOf(mode): null;
+        List<ReqEntityPart> parts = getMultipartParts(e);
+        return new ReqEntityMultipartBean(parts, format);
     }
     
     private static List<ReqEntityPart> getMultipartParts(Element e) {
@@ -150,6 +156,9 @@ class XmlBodyUtil {
             ReqEntityMultipart entity = (ReqEntityMultipart) bean;
             
             Element eMultipart = new Element("multipart");
+            
+            eMultipart.addAttribute(
+                    new Attribute("mode", entity.getMode().name()));
             
             List<ReqEntityPart> parts = entity.getBody();
             for(ReqEntityPart part: parts) {
