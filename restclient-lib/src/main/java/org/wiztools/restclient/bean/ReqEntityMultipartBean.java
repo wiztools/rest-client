@@ -9,10 +9,21 @@ import java.util.List;
  */
 public class ReqEntityMultipartBean implements ReqEntityMultipart {
     
+    private final MultipartFormat format;
     private final List<ReqEntityPart> parts;
 
     public ReqEntityMultipartBean(List<ReqEntityPart> parts) {
+        this(parts, MultipartFormat.STRICT);
+    }
+    
+    public ReqEntityMultipartBean(List<ReqEntityPart> parts, MultipartFormat format) {
         this.parts = Collections.unmodifiableList(parts);
+        this.format = format;
+    }
+    
+    @Override
+    public MultipartFormat getFormat() {
+        return format;
     }
 
     @Override

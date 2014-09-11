@@ -15,6 +15,7 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.ui.RESTView;
+import org.wiztools.restclient.ui.UIUtil;
 
 /**
  *
@@ -33,6 +34,11 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     private final JButton jb_string = new JButton("String");
     private final JButton jb_file = new JButton("File");
+    private final JButton jb_config = new JButton(UIUtil.getIconFromClasspath("org/wiztools/restclient/cog.png"));
+    
+    private final JMenuItem rbBrowserCompatible = new JRadioButtonMenuItem("Browser Compatible");
+    private final JMenuItem rbRFC6532 = new JRadioButtonMenuItem("RFC 6532");
+    private final JMenuItem rbStrict = new JRadioButtonMenuItem("Strict");
     
     private final MultipartTableModel model = new MultipartTableModel();
     private final JTable jt = new JTable(model);
@@ -40,7 +46,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     private class MultipartTableModel extends AbstractTableModel {
         
         private final String[] columnNames = new String[]{"Type", "Content-type", "Name", "Part"};
-        private final LinkedList<ReqEntityPart> list = new LinkedList<ReqEntityPart>();
+        private final LinkedList<ReqEntityPart> list = new LinkedList<>();
 
         @Override
         public int getRowCount() {
@@ -160,12 +166,30 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
         menu.add(jmi_view);
         jt.setComponentPopupMenu(menu);
         
+        // Config Popup:
+        final JPopupMenu jpmConfig = new JPopupMenu();
+        {
+            ButtonGroup group = new ButtonGroup();
+            
+            rbBrowserCompatible.setSelected(true);
+            group.add(rbBrowserCompatible);
+            jpmConfig.add(rbBrowserCompatible);
+            
+            group.add(rbRFC6532);
+            jpmConfig.add(rbRFC6532);
+            
+            group.add(rbStrict);
+            jpmConfig.add(rbStrict);
+        }
+        
         // Layouts:
         setLayout(new BorderLayout());
         
         { // North:
-            JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            jp.add(new JLabel("Add Part: "));
+            JPanel jp_border = new JPanel(new BorderLayout(0, 0));
+            
+            JPanel jp_center = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            jp_center.add(new JLabel("Add Part: "));
             { // String button:
                 jb_string.addActionListener(new ActionListener() {
                     @Override
@@ -173,7 +197,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
                         jd_addStringDialog.setVisible(true);
                     }
                 });
-                jp.add(jb_string);
+                jp_center.add(jb_string);
             }
             { // file button:
                 jb_file.addActionListener(new ActionListener() {
@@ -182,10 +206,27 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
                         jd_addFileDialog.setVisible(true);
                     }
                 });
-                jp.add(jb_file);
+                jp_center.add(jb_file);
             }
-            add(jp, BorderLayout.NORTH);
+            jp_border.add(jp_center, BorderLayout.CENTER);
+            
+            JPanel jp_east = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            { // config button:
+                jb_config.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        jpmConfig.show(jb_config, jb_config.getBounds().x,
+                                jb_config.getBounds().y + jb_config.getBounds().height);
+                    }
+                });
+                jp_east.add(jb_config);
+            }
+            jp_border.add(jp_east, BorderLayout.EAST);
+            
+            add(jp_border, BorderLayout.NORTH);
         }
+        
+        
         
         // Center:
         JScrollPane jsp = new JScrollPane(jt);
@@ -223,6 +264,22 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     public void setEntity(ReqEntity entity) {
         if(entity instanceof ReqEntityMultipart) {
             ReqEntityMultipart e = (ReqEntityMultipart) entity;
+            
+            MultipartFormat format = e.getFormat();
+            switch(format) {
+                case BROWSER_COMPATIBLE:
+                    rbBrowserCompatible.setSelected(true);
+                    break;
+                case RFC_6532:
+                    rbRFC6532.setSelected(true);
+                    break;
+                case STRICT:
+                    rbStrict.setSelected(true);
+                    break;
+                default:
+                    rbStrict.setSelected(true);
+            }
+            
             List<ReqEntityPart> parts = e.getBody();
             for(ReqEntityPart part: parts) {
                 model.addPartLast(part);
@@ -232,7 +289,18 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     @Override
     public ReqEntity getEntity() {
-        ReqEntity entity = new ReqEntityMultipartBean((LinkedList<ReqEntityPart>)model.list.clone());
+        MultipartFormat format = null;
+        if(rbBrowserCompatible.isSelected()) {
+            format = MultipartFormat.BROWSER_COMPATIBLE;
+        }
+        else if(rbRFC6532.isSelected()) {
+            format = MultipartFormat.RFC_6532;
+        }
+        else if(rbStrict.isSelected()) {
+            format = MultipartFormat.STRICT;
+        }
+        ReqEntity entity = new ReqEntityMultipartBean(
+                (LinkedList<ReqEntityPart>)model.list.clone(), format);
         return entity;
     }
     
