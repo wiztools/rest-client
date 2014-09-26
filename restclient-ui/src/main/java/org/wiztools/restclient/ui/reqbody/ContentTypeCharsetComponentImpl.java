@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.nio.charset.Charset;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -27,13 +29,22 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
     private static final String DEFAULT_CONTENT_CHARSET = HttpUtil.getFormattedContentType(
             BodyContentTypeDialog.DEFAULT_CONTENT_TYPE, BodyContentTypeDialog.DEFAULT_CHARSET);
     
-    private JTextField jtf_content_type_charset = new JTextField(DEFAULT_CONTENT_CHARSET, TEXT_FIELD_LENGTH);
-    private JButton jb_body_content_type = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "edit.png"));
+    private final JTextField jtf_content_type_charset = new JTextField(DEFAULT_CONTENT_CHARSET, TEXT_FIELD_LENGTH);
+    private final JButton jb_body_content_type = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "edit.png"));
     
     
     @PostConstruct
     protected void init() {
         setLayout(new FlowLayout(FlowLayout.LEFT));
+        
+        jtf_content_type_charset.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() == 2) {
+                    jd.setVisible(true);
+                }
+            }
+        });
         
         jtf_content_type_charset.setEditable(false);
         add(jtf_content_type_charset);

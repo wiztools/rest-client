@@ -48,7 +48,7 @@ public class BodyContentTypeDialog extends EscapableDialog {
         String line = null;
         String[] arr = null;
         try{
-            List<String> ll = new ArrayList<String>();
+            List<String> ll = new ArrayList<>();
             while((line = br.readLine())!=null){
                 ll.add(line);
             }
@@ -85,8 +85,8 @@ public class BodyContentTypeDialog extends EscapableDialog {
     }
     
     
-    private final JComboBox<String> jcb_content_type = new JComboBox<String>(contentTypeArr);
-    private final JComboBox<String> jcb_charset = new JComboBox<String>(charSetArr);
+    private final JComboBox<String> jcb_content_type = new JComboBox<>(contentTypeArr);
+    private final JComboBox<String> jcb_charset = new JComboBox<>(charSetArr);
     
     private String contentType = DEFAULT_CONTENT_TYPE;
     private String charset = DEFAULT_CHARSET;
