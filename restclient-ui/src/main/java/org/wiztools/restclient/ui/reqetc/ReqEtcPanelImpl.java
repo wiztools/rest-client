@@ -67,6 +67,7 @@ public class ReqEtcPanelImpl extends JPanel implements ReqEtcPanel {
     @Override
     public void clear() {
         jcb_http_version.setSelectedItem(HTTPVersion.HTTP_1_1);
+        jcb_cookie_version.setSelectedItem(CookieVersion.V_1);
         jcb_followRedirects.setSelected(true);
         jcb_ignoreResponseBody.setSelected(false);
     }
