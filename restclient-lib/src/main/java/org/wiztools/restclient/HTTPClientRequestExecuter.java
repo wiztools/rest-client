@@ -148,10 +148,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
 
         // Set request timeout (default 1 minute--60000 milliseconds)
         IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
-        options.acquire();
         rcBuilder.setConnectionRequestTimeout(
                 Integer.parseInt(options.getProperty("request-timeout-in-millis")));
-        options.release();
 
         // Set proxy
         ProxyConfig proxy = ProxyConfig.getInstance();

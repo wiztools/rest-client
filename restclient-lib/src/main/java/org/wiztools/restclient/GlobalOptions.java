@@ -89,10 +89,8 @@ final public class GlobalOptions implements IGlobalOptions {
     
     @Override
     public void writeProperties(){
-        try{
-            final OutputStream os = new FileOutputStream(CONF_PROPERTY);
+        try (final OutputStream os = new FileOutputStream(CONF_PROPERTY);) {
             prop.store(os, "RESTClient Properties");
-            os.close();
         }
         catch(IOException ex){
             LOG.log(Level.WARNING, "Error writing to properties!", ex);
@@ -100,12 +98,20 @@ final public class GlobalOptions implements IGlobalOptions {
     }
     
     @Override
-    public void acquire(){
-        lock.lock();
+    public OptionsLockImpl acquire(){
+        return new OptionsLockImpl();
     }
     
-    @Override
-    public void release(){
-        lock.unlock();
+    public class OptionsLockImpl implements OptionsLock {
+        
+        public OptionsLockImpl() {
+            lock.lock();
+        }
+
+        @Override
+        public void close() throws IOException {
+            lock.unlock();
+        }
+        
     }
 }

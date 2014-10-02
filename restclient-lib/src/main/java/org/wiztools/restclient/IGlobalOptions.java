@@ -15,13 +15,11 @@ public interface IGlobalOptions {
             SystemConstants.userHome + SystemConstants.fileSeparator
                     + ".rest-client");
 
-    void acquire();
+    OptionsLock acquire();
 
     String getProperty(String key);
     
     boolean isPropertyTrue(String key);
-
-    void release();
 
     void removeProperty(String key);
 
