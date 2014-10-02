@@ -18,7 +18,7 @@ import org.wiztools.restclient.ServiceLocator;
 
 /**
  *
- * @author Subhash
+ * @author subwiz
  */
 public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
     private static final Logger LOG = Logger.getLogger(OptionsConnectionPanel.class.getName());
@@ -101,16 +101,19 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
 
     class ConvertListener implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (jrb_millisecs.isSelected()) {
                 if (lastSelected.equals(MILLISECONDS)) {
                     return;
-                } else if (lastSelected.equals(SECONDS)) {
+                }
+                else if (lastSelected.equals(SECONDS)) {
                     // Convert seconds to millis:
                     int valueInSecs = (Integer) jftf_timeout.getValue();
                     int valueInMillis = valueInSecs * 1000;
                     jftf_timeout.setValue(valueInMillis);
-                } else if (lastSelected.equals(MINUTES)) {
+                }
+                else if (lastSelected.equals(MINUTES)) {
                     // Convert mins to millis:
                     int valueInMins = (Integer) jftf_timeout.getValue();
                     int valueInMillis = valueInMins * 60 * 1000;
@@ -118,15 +121,18 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
                 }
                 // Update the lastSelected:
                 lastSelected = MILLISECONDS;
-            } else if (jrb_seconds.isSelected()) {
+            }
+            else if (jrb_seconds.isSelected()) {
                 if (lastSelected.equals(MILLISECONDS)) {
                     // Convert millis to seconds:
                     int valueInMillis = (Integer) jftf_timeout.getValue();
                     int valueInSecs = valueInMillis / 1000;
                     jftf_timeout.setValue(valueInSecs);
-                } else if (lastSelected.equals(SECONDS)) {
+                }
+                else if (lastSelected.equals(SECONDS)) {
                     return;
-                } else if (lastSelected.equals(MINUTES)) {
+                }
+                else if (lastSelected.equals(MINUTES)) {
                     // Convert mins to seconds:
                     int valueInMins = (Integer) jftf_timeout.getValue();
                     int valueInSecs = valueInMins * 60;
@@ -134,18 +140,21 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
                 }
                 // Update the lastSelected:
                 lastSelected = SECONDS;
-            } else if (jrb_minutes.isSelected()) {
+            }
+            else if (jrb_minutes.isSelected()) {
                 if (lastSelected.equals(MILLISECONDS)) {
                     // Convert millis to minutes
                     int valueInMillis = (Integer) jftf_timeout.getValue();
                     int valueInMins = valueInMillis / (1000 * 60);
                     jftf_timeout.setValue(valueInMins);
-                } else if (lastSelected.equals(SECONDS)) {
+                }
+                else if (lastSelected.equals(SECONDS)) {
                     // Convert seconds to minutes:
                     int valueInSecs = (Integer) jftf_timeout.getValue();
                     int valueInMins = valueInSecs / 60;
                     jftf_timeout.setValue(valueInMins);
-                } else if (lastSelected.equals(MINUTES)) {
+                }
+                else if (lastSelected.equals(MINUTES)) {
                     return;
                 }
                 // Update the lastSelected:
@@ -175,9 +184,7 @@ public class OptionsConnectionPanel extends JPanel implements IOptionsPanel {
         ok_value = reqTimeout;
         
         IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
-        options.acquire();
         options.setProperty("request-timeout-in-millis", String.valueOf(reqTimeout));
-        options.release();
         
         return true;
     }

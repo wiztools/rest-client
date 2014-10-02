@@ -485,7 +485,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
     
     private List<String> validateRequest(Request request){
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
 
         // Check URL
         if(request.getUrl() == null){
@@ -503,10 +503,8 @@ public class RESTViewImpl extends JPanel implements RESTView {
         if(jp_req_method.doesSelectedMethodSupportEntityBody()) {
             ReqEntity entity = jp_req_body.getEntity();
             if(entity instanceof ReqEntitySimple) {
-                if(entity != null) {
-                    if(((ReqEntitySimple)entity).getContentType() == null) {
-                        errors.add("Content type not set for body.");
-                    }
+                if(((ReqEntitySimple)entity).getContentType() == null) {
+                    errors.add("Content type not set for body.");
                 }
             }
         }
@@ -583,7 +581,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         
         // Cookies
         List<HttpCookie> cookies = request.getCookies();
-        MultiValueMap<String, String> cookiesMap = new MultiValueMapArrayList<String, String>();
+        MultiValueMap<String, String> cookiesMap = new MultiValueMapArrayList<>();
         
         int version = CookieVersion.DEFAULT_VERSION.getIntValue();
         for(HttpCookie cookie: cookies) {

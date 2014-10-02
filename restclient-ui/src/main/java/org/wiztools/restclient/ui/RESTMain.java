@@ -36,6 +36,7 @@ import org.wiztools.restclient.bean.Response;
 import org.wiztools.restclient.server.TraceServer;
 import org.wiztools.restclient.ui.history.HistoryManager;
 import org.wiztools.restclient.ui.option.OptionsDialog;
+import org.wiztools.restclient.ui.update.AppUpdateRunner;
 import org.wiztools.restclient.util.Util;
 import org.wiztools.restclient.util.XMLUtil;
 
@@ -652,6 +653,9 @@ class RESTMain implements RESTUserInterface {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
+        // Update check:
+        new Thread(new AppUpdateRunner()).start();
     }
     
     private void openUrl(String url) {
