@@ -30,6 +30,7 @@ import org.wiztools.restclient.FileType;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.RCConstants;
+import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
@@ -655,7 +656,7 @@ class RESTMain implements RESTUserInterface {
         frame.setVisible(true);
         
         // Update check:
-        new Thread(new AppUpdateRunner()).start();
+        new Thread(ServiceLocator.getInstance(AppUpdateRunner.class)).start();
     }
     
     private void openUrl(String url) {
