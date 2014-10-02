@@ -57,13 +57,18 @@
         </dependency>
         <dependency>
             <groupId>org.wiztools</groupId>
+            <artifactId>app-update</artifactId>
+            <version>0.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wiztools</groupId>
             <artifactId>filechooser-abstraction</artifactId>
             <version>0.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.jidesoft</groupId>
             <artifactId>jide-oss</artifactId>
-            <version>3.6.0</version>
+            <version>3.6.1</version>
         </dependency>
         <dependency>
             <groupId>org.swinglabs</groupId>
