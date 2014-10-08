@@ -2,4 +2,5 @@
 /restclient-lib/target/
 /restclient-ui/target/
 /restclient-cli/target/
+/restclient-jfx/target/
 /target/
