@@ -5,10 +5,95 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
 
-<AnchorPane id="AnchorPane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml" fx:controller="org.wiztools.restclient.jfx.FXMLController">
-    <children>
-        <Button layoutX="126" layoutY="90" text="Click Me!" onAction="#handleButtonAction" fx:id="button" />
-        <Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="label" />
-    </children>
-</AnchorPane>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" id="AnchorPane" prefHeight="500" prefWidth="450" fx:controller="org.wiztools.restclient.jfx.FXMLController">
+    <center>
+        <SplitPane dividerPositions="0.5" orientation="VERTICAL" BorderPane.alignment="CENTER">
+            <items>
+                <!-- Request Pane -->
+                <BorderPane>
+                    <top>
+                        <fx:include source="UrlPane.fxml"/>
+                    </top>
+                    <center>
+                        <TabPane>
+                            <tabs>
+                                <Tab text="Method" closable="false">
+                                    <TitledPane text="HTTP Methods">
+                                        <content>
+                                            <GridPane hgap="10" vgap="10">
+                                                <fx:define>
+                                                    <ToggleGroup fx:id="httpMethod"/>
+                                                </fx:define>
+                                                <RadioButton text="GET" selected="true" GridPane.rowIndex="0" GridPane.columnIndex="0" toggleGroup="$httpMethod"/> 
+                                                <RadioButton text="POST" GridPane.rowIndex="0" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
+                                                <RadioButton text="PUT" GridPane.rowIndex="1" GridPane.columnIndex="0" toggleGroup="$httpMethod"/>
+                                                <RadioButton text="PATCH" GridPane.rowIndex="1" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
+                                                <RadioButton text="DELETE" GridPane.rowIndex="2" GridPane.columnIndex="0" toggleGroup="$httpMethod"/>
+                                                <RadioButton text="HEAD" GridPane.rowIndex="2" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
+                                                <RadioButton text="OPTIONS" GridPane.rowIndex="3" GridPane.columnIndex="0" toggleGroup="$httpMethod"/>
+                                                <RadioButton text="TRACE" GridPane.rowIndex="3" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
+                                            </GridPane>
+                                        </content>
+                                    </TitledPane>
+                                </Tab>
+                                <Tab text="Header" closable="false"></Tab>
+                                <Tab text="Cookie" closable="false"></Tab>
+                                <Tab text="Body" closable="false"></Tab>
+                                <Tab text="Auth" closable="false"></Tab>
+                                <Tab text="SSL" closable="false">
+                                    <TabPane>
+                                        <tabs>
+                                            <Tab text="General"  closable="false"> 
+                                                <AnchorPane>
+                                                    <children>
+                                                        <VBox>
+                                                            <CheckBox text="Trust self-signed certificate?" />
+                                                            <HBox spacing="10" >
+                                                                <Label text="Hostname verifier: " />
+                                                                <ComboBox >
+                                                                    <items>
+                                                                        <FXCollections fx:factory="observableArrayList">
+                                                                            <String fx:value="Strict"/>
+                                                                            <String fx:value="Browser Compatible"/>
+                                                                            <String fx:value="Allow All"/>
+                                                                        </FXCollections>
+                                                                    </items>
+                                                                    <value>
+                                                                        <String fx:value="Strict"/>
+                                                                    </value>
+                                                                </ComboBox>
+                                                            </HBox>
+                                                        </VBox>
+                                                    </children>
+                                                </AnchorPane>
+                                            </Tab>
+                                            <Tab text="Truststore / Keystore" closable="false">
+                                                
+                                            </Tab> 
+                                        </tabs>
+                                    </TabPane>
+                                </Tab>
+                                <Tab text="Etc." closable="false"></Tab>
+                                <Tab text="Test" closable="false"></Tab>
+                            </tabs>
+                        </TabPane>
+                    </center>
+                </BorderPane>
+                <!-- Response Pane -->
+                <BorderPane>
+                    <center>
+                        <TabPane>
+                            <tabs>
+                                <Tab text="Headers" closable="false"></Tab>
+                                <Tab text="Body" closable="false"></Tab>
+                                <Tab text="Test Result" closable="false"></Tab>
+                            </tabs>
+                        </TabPane>
+                    </center>
+                </BorderPane>
+            </items>            
+        </SplitPane>
+    </center>
+</BorderPane>

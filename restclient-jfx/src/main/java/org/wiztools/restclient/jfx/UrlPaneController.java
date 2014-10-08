@@ -7,7 +7,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 
-public class FXMLController implements Initializable {
+/**
+ * FXML Controller class
+ *
+ * @author subhash
+ */
+public class UrlPaneController implements Initializable {
     
     @FXML
     private ComboBox urlCombo;
@@ -16,9 +21,13 @@ public class FXMLController implements Initializable {
     private void handleButtonAction(ActionEvent event) {
         urlCombo.setValue("http://www.wiztools.org/");
     }
-    
+
+    /**
+     * Initializes the controller class.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
+    
 }

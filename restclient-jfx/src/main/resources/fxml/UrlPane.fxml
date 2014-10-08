@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wiztools.restclient.jfx.UrlPaneController">
+    <stylesheets>
+        <URL value="@/styles/urlpane.css"/>
+    </stylesheets>
+    <center>
+        <StackPane scaleShape="true" snapToPixel="true">
+            <ComboBox fx:id="urlCombo" editable="true" maxWidth="Infinity"></ComboBox>
+        </StackPane>
+    </center>
+    <right>
+        <Button layoutX="126" layoutY="90" text="Go" onAction="#handleButtonAction" fx:id="button" />
+    </right>
+</BorderPane>
