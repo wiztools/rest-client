@@ -14,29 +14,13 @@
                 <!-- Request Pane -->
                 <BorderPane>
                     <top>
-                        <fx:include source="UrlPane.fxml"/>
+                        <fx:include source="req/UrlPane.fxml"/>
                     </top>
                     <center>
                         <TabPane>
                             <tabs>
                                 <Tab text="Method" closable="false">
-                                    <TitledPane text="HTTP Methods">
-                                        <content>
-                                            <GridPane hgap="10" vgap="10">
-                                                <fx:define>
-                                                    <ToggleGroup fx:id="httpMethod"/>
-                                                </fx:define>
-                                                <RadioButton text="GET" selected="true" GridPane.rowIndex="0" GridPane.columnIndex="0" toggleGroup="$httpMethod"/> 
-                                                <RadioButton text="POST" GridPane.rowIndex="0" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
-                                                <RadioButton text="PUT" GridPane.rowIndex="1" GridPane.columnIndex="0" toggleGroup="$httpMethod"/>
-                                                <RadioButton text="PATCH" GridPane.rowIndex="1" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
-                                                <RadioButton text="DELETE" GridPane.rowIndex="2" GridPane.columnIndex="0" toggleGroup="$httpMethod"/>
-                                                <RadioButton text="HEAD" GridPane.rowIndex="2" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
-                                                <RadioButton text="OPTIONS" GridPane.rowIndex="3" GridPane.columnIndex="0" toggleGroup="$httpMethod"/>
-                                                <RadioButton text="TRACE" GridPane.rowIndex="3" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
-                                            </GridPane>
-                                        </content>
-                                    </TitledPane>
+                                    <fx:include source="req/MethodPane.fxml"/>
                                 </Tab>
                                 <Tab text="Header" closable="false"></Tab>
                                 <Tab text="Cookie" closable="false"></Tab>

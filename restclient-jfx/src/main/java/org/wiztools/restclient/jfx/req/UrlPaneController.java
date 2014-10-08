@@ -1,4 +1,4 @@
-package org.wiztools.restclient.jfx;
+package org.wiztools.restclient.jfx.req;
 
 import java.net.URL;
 import java.util.ResourceBundle;

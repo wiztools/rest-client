@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TitledPane text="HTTP Methods" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wiztools.restclient.jfx.req.MethodPaneController">
+    <content>
+        <GridPane hgap="10" vgap="10">
+            <fx:define>
+                <ToggleGroup fx:id="httpMethod"/>
+            </fx:define>
+            <RadioButton text="GET" selected="true" GridPane.rowIndex="0" GridPane.columnIndex="0" toggleGroup="$httpMethod"/> 
+            <RadioButton text="POST" GridPane.rowIndex="0" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
+            <RadioButton text="PUT" GridPane.rowIndex="1" GridPane.columnIndex="0" toggleGroup="$httpMethod"/>
+            <RadioButton text="PATCH" GridPane.rowIndex="1" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
+            <RadioButton text="DELETE" GridPane.rowIndex="2" GridPane.columnIndex="0" toggleGroup="$httpMethod"/>
+            <RadioButton text="HEAD" GridPane.rowIndex="2" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
+            <RadioButton text="OPTIONS" GridPane.rowIndex="3" GridPane.columnIndex="0" toggleGroup="$httpMethod"/>
+            <RadioButton text="TRACE" GridPane.rowIndex="3" GridPane.columnIndex="1" toggleGroup="$httpMethod"/>
+        </GridPane>
+    </content>
+</TitledPane>
