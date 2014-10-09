@@ -38,7 +38,17 @@
                     </center>
                 </BorderPane>
                 <!-- Response Pane -->
-                <BorderPane>
+                <BorderPane style="-fx-padding: 10 10 10 10">
+                    <top>
+                        <BorderPane>
+                            <left>
+                                <Label text="Status: "></Label>
+                            </left>
+                            <center>
+                                <TextField maxWidth="Infinity" editable="false"/>
+                            </center>
+                        </BorderPane>
+                    </top>
                     <center>
                         <TabPane>
                             <tabs>

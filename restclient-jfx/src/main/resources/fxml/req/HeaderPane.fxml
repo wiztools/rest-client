@@ -17,7 +17,7 @@
         </HBox>
     </top>
     <center>
-        <TableView maxWidth="Infinity" >
+        <TableView maxWidth="Infinity" editable="true">
             <columns>
                 <TableColumn text="Header" ></TableColumn>
                 <TableColumn text="Value" ></TableColumn>
