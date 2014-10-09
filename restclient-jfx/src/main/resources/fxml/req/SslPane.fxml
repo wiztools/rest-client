@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+
+<TabPane xmlns:fx="http://javafx.com/fxml/1">
+    <tabs>
+        <Tab text="General"  closable="false"> 
+            <AnchorPane>
+                <children>
+                    <VBox>
+                        <CheckBox text="Trust self-signed certificate?" />
+                        <HBox spacing="10" >
+                            <Label text="Hostname verifier: " />
+                            <ComboBox >
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="Strict"/>
+                                        <String fx:value="Browser Compatible"/>
+                                        <String fx:value="Allow All"/>
+                                    </FXCollections>
+                                </items>
+                                <value>
+                                    <String fx:value="Strict"/>
+                                </value>
+                            </ComboBox>
+                        </HBox>
+                    </VBox>
+                </children>
+            </AnchorPane>
+        </Tab>
+        <Tab text="Truststore / Keystore" closable="false">
+
+        </Tab> 
+    </tabs>
+</TabPane>
