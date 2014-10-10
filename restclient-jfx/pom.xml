@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-    <artifactId>restclient</artifactId>
-    <groupId>org.wiztools.restclient</groupId>
-    <version>3.4.2-SNAPSHOT</version>
-  </parent>
+        <artifactId>restclient</artifactId>
+        <groupId>org.wiztools.restclient</groupId>
+        <version>3.4.2-SNAPSHOT</version>
+    </parent>
 
     <groupId>org.wiztools.restclient</groupId>
     <artifactId>restclient-jfx</artifactId>
@@ -130,6 +130,11 @@
             <groupId>org.wiztools</groupId>
             <artifactId>filechooser-abstraction</artifactId>
             <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>8.20.7</version>
         </dependency>
     </dependencies>
 
