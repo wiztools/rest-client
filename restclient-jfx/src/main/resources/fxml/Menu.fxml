@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<MenuBar xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wiztools.restclient.jfx.MenuController">
+    <useSystemMenuBar>true</useSystemMenuBar>
+    <menus>
+        <Menu text="File">
+            <items>
+                <MenuItem text="Open Request"/>
+                <MenuItem text="Open Response"/>
+                <MenuItem text="Open Req-Res Archive"/>
+                <Menu text="Open Recent">
+                    <items></items>
+                </Menu>
+                <SeparatorMenuItem  />
+                <MenuItem text="Save Request"/>
+                <MenuItem text="Save Response"/>
+                <MenuItem text="Save Response Body"/>
+                <MenuItem text="Save Req-Res Archive"/>
+            </items>
+        </Menu>
+    </menus>
+</MenuBar>

@@ -8,6 +8,9 @@
 <?import javafx.collections.FXCollections?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" id="AnchorPane" prefHeight="500" prefWidth="450" fx:controller="org.wiztools.restclient.jfx.FXMLController">
+    <top>
+        <fx:include source="Menu.fxml"/>
+    </top>
     <center>
         <SplitPane dividerPositions="0.5" orientation="VERTICAL" BorderPane.alignment="CENTER">
             <items>
@@ -38,7 +41,7 @@
                     </center>
                 </BorderPane>
                 <!-- Response Pane -->
-                <BorderPane style="-fx-padding: 10 10 10 10">
+                <BorderPane>
                     <top>
                         <BorderPane>
                             <left>
