@@ -162,7 +162,7 @@ public final class XMLUtil {
 
     private static Map<String, String> getHeadersFromHeaderNode(final Element node)
             throws XMLException {
-        Map<String, String> m = new LinkedHashMap<String, String>();
+        Map<String, String> m = new LinkedHashMap<>();
 
         for (int i = 0; i < node.getChildElements().size(); i++) {
             Element headerElement = node.getChildElements().get(i);
@@ -179,7 +179,7 @@ public final class XMLUtil {
     
     private static List<HttpCookie> getCookiesFromCookiesNode(final Element node) 
             throws XMLException {
-        List<HttpCookie> out = new ArrayList<HttpCookie>();
+        List<HttpCookie> out = new ArrayList<>();
         
         for (int i = 0; i < node.getChildElements().size(); i++) {
             Element e = node.getChildElements().get(i);
@@ -492,9 +492,8 @@ public final class XMLUtil {
             Builder parser = new Builder();
             Document doc = parser.build(f);
             return doc;
-        } catch (ParsingException ex) {
-            throw new XMLException(ex.getMessage(), ex);
-        } catch (IOException ex) {
+        }
+        catch (ParsingException | IOException ex) {
             throw new XMLException(ex.getMessage(), ex);
         }
 
