@@ -141,6 +141,6 @@
         <module>restclient-lib</module>
         <module>restclient-ui</module>
         <module>restclient-cli</module>
-        <module>restclient-jfx</module>
+        <!--module>restclient-jfx</module-->
   </modules>
 </project>
