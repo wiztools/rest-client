@@ -20,7 +20,7 @@
         </license>
     </licenses>
     <issueManagement>
-        <url>http://code.google.com/p/rest-client/issues/list</url>
+        <url>https://github.com/wiztools/rest-client/issues</url>
     </issueManagement>
     <scm>
         <connection>scm:git:https://github.com/wiztools/rest-client.git</connection>
@@ -141,6 +141,6 @@
         <module>restclient-lib</module>
         <module>restclient-ui</module>
         <module>restclient-cli</module>
-        <!--module>restclient-jfx</module-->
+        <module>restclient-jfx</module>
   </modules>
 </project>
