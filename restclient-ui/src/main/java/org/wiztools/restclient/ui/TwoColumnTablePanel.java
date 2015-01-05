@@ -10,9 +10,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.swing.*;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapLinkedHashSet;
@@ -37,13 +39,6 @@ public final class TwoColumnTablePanel extends JPanel {
         MultiEntryAdd callback = new MultiEntryAdd() {
             @Override
             public void add(Map<String, String> keyValuePair, List<String> invalidLines) {
-                Object[][] data = model.getData();
-                List<String> keys = new ArrayList<String>();
-                for(Object[] o: data){
-                    String key = (String)o[0];
-                    keys.add(key);
-                }
-
                 int successCount = 0;
                 for(String key: keyValuePair.keySet()){
                     String value = keyValuePair.get(key);
@@ -76,7 +71,7 @@ public final class TwoColumnTablePanel extends JPanel {
             return CollectionsUtil.EMPTY_MULTI_VALUE_MAP;
         }
         
-        MultiValueMap<String, String> out = new MultiValueMapLinkedHashSet<String, String>();
+        MultiValueMap<String, String> out = new MultiValueMapLinkedHashSet<>();
         for (Object[] d1 : d) {
             String key = (String) d1[0];
             String value = (String) d1[1];
@@ -89,8 +84,12 @@ public final class TwoColumnTablePanel extends JPanel {
     public void setData(MultiValueMap<String, String> data) {
         model.setData(data);
     }
-
+    
     public TwoColumnTablePanel(final String[] title, final RESTUserInterface ui) {
+        this(title, Collections.EMPTY_LIST, ui);
+    }
+
+    public TwoColumnTablePanel(final String[] title, List<String> keys, final RESTUserInterface ui) {
 
         this.rest_ui = ui;
         
@@ -171,6 +170,7 @@ public final class TwoColumnTablePanel extends JPanel {
         JLabel jl_value = new JLabel("Value: ");
         final int TEXT_FIELD_SIZE = 12;
         final JTextField jtf_key = new JTextField(TEXT_FIELD_SIZE);
+        if(!keys.isEmpty()) {AutoCompleteDecorator.decorate(jtf_key, keys, false);}
         final JTextField jtf_value = new JTextField(TEXT_FIELD_SIZE);
         jl_key.setDisplayedMnemonic('k');
         jl_key.setLabelFor(jtf_key);

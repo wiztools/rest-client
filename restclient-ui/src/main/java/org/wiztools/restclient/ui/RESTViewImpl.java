@@ -41,6 +41,7 @@ import org.wiztools.restclient.ui.resbody.ResBodyPanel;
 import org.wiztools.restclient.ui.resheader.ResHeaderPanel;
 import org.wiztools.restclient.ui.resstatus.ResStatusPanel;
 import org.wiztools.restclient.ui.restest.ResTestPanel;
+import org.wiztools.restclient.util.ContentTypesCommon;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.Util;
 
@@ -94,7 +95,8 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jtp.addTab("Method", jp_req_method.getComponent());
         
         // Headers Tab
-        jp_2col_req_headers = new TwoColumnTablePanel(new String[]{"Header", "Value"}, rest_ui);
+        jp_2col_req_headers = new TwoColumnTablePanel(
+                new String[]{"Header", "Value"}, ContentTypesCommon.getCommon(), rest_ui);
         jtp.addTab("Header", jp_2col_req_headers);
         
         // Cookies Tab

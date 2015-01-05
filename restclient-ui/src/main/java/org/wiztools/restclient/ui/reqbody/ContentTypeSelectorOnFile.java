@@ -47,10 +47,7 @@ final class ContentTypeSelectorOnFile {
                                 }
                             }
                         }
-                        catch(IOException ex) {
-                            // Do nothing!
-                        }
-                        catch(XMLException ex){
+                        catch(IOException | XMLException ex) {
                             // Do nothing!
                         }
                     }
