@@ -4,15 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.awt.event.*;
+import java.util.*;
 import javax.swing.*;
+
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapLinkedHashSet;
@@ -22,8 +18,10 @@ import org.wiztools.commons.StringUtil;
  *
  * @author schandran
  */
-public final class TwoColumnTablePanel extends JPanel {
+public class TwoColumnTablePanel extends JPanel {
 
+    protected final List<String> autocompleteStringsForKeys;
+    protected final Map<String, List<String>> autocompleteStringsForValues;
     private RESTUserInterface rest_ui;
     
     private TwoColumnTableModel model;
@@ -91,8 +89,19 @@ public final class TwoColumnTablePanel extends JPanel {
     }
 
     public TwoColumnTablePanel(final String[] title, final RESTUserInterface ui) {
+        this(title, ui, null, null);
+    }
+
+    public TwoColumnTablePanel(final String[] title, final RESTUserInterface ui, final List<String> autocompleteStringsForKeys, final Map<String, List<String>> autocompleteStringsForValues) {
 
         this.rest_ui = ui;
+
+        this.autocompleteStringsForKeys = autocompleteStringsForKeys;
+        this.autocompleteStringsForValues = autocompleteStringsForValues != null ? new HashMap<String, List<String>>() {{
+            for (final Map.Entry<String, List<String>> entry : autocompleteStringsForValues.entrySet()) {
+                put(entry.getKey().toUpperCase(), entry.getValue());
+            }
+        }} : null;
         
         // Create JTable
         final JTable jt = new JTable();
@@ -234,9 +243,25 @@ public final class TwoColumnTablePanel extends JPanel {
         JScrollPane jsp = new JScrollPane(jt);
         jp_center.add(jsp);
         jp.add(jp_center, BorderLayout.CENTER);
-        
+
+        if (autocompleteStringsForKeys != null) {
+            AutoCompleteDecorator.decorate(jtf_key, autocompleteStringsForKeys, false);
+        }
+
+        if (autocompleteStringsForValues != null) {
+            jtf_key.addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusLost(FocusEvent e) {
+                    final List<String> autocompleteStrings = TwoColumnTablePanel.this.autocompleteStringsForValues.get(jtf_key.getText().toUpperCase());
+
+                    if (autocompleteStrings != null) {
+                        AutoCompleteDecorator.decorate(jtf_value, autocompleteStrings, false);
+                    }
+                }
+            });
+        }
     }
-    
+
     public Dimension getTableDimension(){
         return tableDimension;
     }

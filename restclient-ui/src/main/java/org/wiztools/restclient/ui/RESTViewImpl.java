@@ -6,12 +6,16 @@ import java.awt.Font;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +47,8 @@ import org.wiztools.restclient.ui.resstatus.ResStatusPanel;
 import org.wiztools.restclient.ui.restest.ResTestPanel;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.Util;
+
+import static java.util.Collections.sort;
 
 /**
  *
@@ -94,7 +100,11 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jtp.addTab("Method", jp_req_method.getComponent());
         
         // Headers Tab
-        jp_2col_req_headers = new TwoColumnTablePanel(new String[]{"Header", "Value"}, rest_ui);
+        jp_2col_req_headers = new RequestHeaderTablePanel(new String[]{"Header", "Value"}, rest_ui,
+                getAutocompleteStrings("./known_request_headers.txt"),
+                new HashMap<String, List<String>>() {{
+                    put("Content-Type", getAutocompleteStrings("./known_content_types.txt"));
+                }});
         jtp.addTab("Header", jp_2col_req_headers);
         
         // Cookies Tab
@@ -119,7 +129,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         
         return jtp;
     }
-    
+
     private JTabbedPane initJTPResponse(){
         JTabbedPane jtp = new JTabbedPane();
         
@@ -680,5 +690,41 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Override
     public Container getContainer() {
         return this;
-    }   
+    }
+
+    protected List<String> getAutocompleteStrings(final String resourcePath) {
+        final List<String> autocompleteStrings = new ArrayList<>();
+        final URL resource = TwoColumnTablePanel.class.getResource(resourcePath);
+        BufferedReader reader = null;
+
+        try {
+            if (resource != null) {
+                reader = new BufferedReader(new InputStreamReader(resource.openStream()));
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    final String s = line.trim();
+
+                    if (!s.isEmpty()) {
+                        autocompleteStrings.add(line);
+                    }
+                }
+
+                sort(autocompleteStrings);
+            } else {
+                LOG.log(Level.WARNING, "The resource \"{0}\" with autocomplete strings is not found in classpath", resourcePath);
+            }
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Failed to read autocomplete strings from the resource \"{0}\" from classpath", resourcePath);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (Exception _ignore) {
+                }
+            }
+        }
+
+        return autocompleteStrings;
+    }
 }
