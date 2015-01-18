@@ -12,6 +12,7 @@ import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.ui.lifecycle.LifecycleManager;
 import org.wiztools.restclient.ui.lifecycle.Shutdown;
+import org.wiztools.restclient.ui.reqgo.ReqUrlGoPanel;
 import org.wiztools.restclient.util.XMLCollectionUtil;
 
 /**
@@ -28,6 +29,7 @@ public class HistoryManagerImpl implements HistoryManager {
     private final LinkedList<Request> data = new LinkedList<Request>();
     
     @Inject private LifecycleManager lifecycle;
+    @Inject private ReqUrlGoPanel goPanel;
 
     @PostConstruct
     protected void init() {
@@ -167,6 +169,9 @@ public class HistoryManagerImpl implements HistoryManager {
     public void clear() {
         data.clear();
         cursor = 0;
+        
+        // remove combo history too:
+        goPanel.clearHistory();
     }
     
     @Override
