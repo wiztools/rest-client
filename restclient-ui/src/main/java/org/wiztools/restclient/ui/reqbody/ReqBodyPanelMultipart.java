@@ -36,6 +36,9 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     private final JButton jb_file = new JButton("File");
     private final JButton jb_config = new JButton(UIUtil.getIconFromClasspath("org/wiztools/restclient/cog.png"));
     
+    private final JMenuItem rbSubTypeFormData = new JRadioButtonMenuItem("multipart/form-data");
+    private final JMenuItem rbSubTypeMixed = new JRadioButtonMenuItem("multipart/mixed");
+    
     private final JMenuItem rbBrowserCompatible = new JRadioButtonMenuItem("Browser Compatible");
     private final JMenuItem rbRFC6532 = new JRadioButtonMenuItem("RFC 6532");
     private final JMenuItem rbStrict = new JRadioButtonMenuItem("Strict");
@@ -171,6 +174,17 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
         {
             ButtonGroup group = new ButtonGroup();
             
+            rbSubTypeFormData.setSelected(true);
+            group.add(rbSubTypeFormData);
+            jpmConfig.add(rbSubTypeFormData);
+            
+            group.add(rbSubTypeMixed);
+            jpmConfig.add(rbSubTypeMixed);
+        }
+        jpmConfig.addSeparator();
+        {
+            ButtonGroup group = new ButtonGroup();
+            
             rbBrowserCompatible.setSelected(true);
             group.add(rbBrowserCompatible);
             jpmConfig.add(rbBrowserCompatible);
@@ -260,6 +274,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     @Override
     public void clear() {
+        rbSubTypeFormData.setSelected(true);
         rbBrowserCompatible.setSelected(true);
         model.clear();
     }
@@ -268,6 +283,16 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     public void setEntity(ReqEntity entity) {
         if(entity instanceof ReqEntityMultipart) {
             ReqEntityMultipart e = (ReqEntityMultipart) entity;
+            
+            MultipartSubtype type = e.getSubtype();
+            switch(type) {
+                case FORM_DATA:
+                    rbSubTypeFormData.setSelected(true);
+                    break;
+                case MIXED:
+                    rbSubTypeMixed.setSelected(true);
+                    break;
+            }
             
             MultipartMode format = e.getMode();
             switch(format) {
@@ -293,6 +318,9 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     @Override
     public ReqEntity getEntity() {
+        MultipartSubtype type = rbSubTypeFormData.isSelected()?
+                MultipartSubtype.FORM_DATA: MultipartSubtype.MIXED;
+        
         MultipartMode format = null;
         if(rbBrowserCompatible.isSelected()) {
             format = MultipartMode.BROWSER_COMPATIBLE;
@@ -304,7 +332,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
             format = MultipartMode.STRICT;
         }
         ReqEntity entity = new ReqEntityMultipartBean(
-                (LinkedList<ReqEntityPart>)model.list.clone(), format);
+                (LinkedList<ReqEntityPart>)model.list.clone(), format, type);
         return entity;
     }
     

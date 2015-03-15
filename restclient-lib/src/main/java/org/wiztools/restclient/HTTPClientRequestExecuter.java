@@ -290,6 +290,9 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                             
                             MultipartEntityBuilder meb = MultipartEntityBuilder.create();
                             
+                            // multipart/mixed / multipart/form-data:
+                            meb.setMimeSubtype(multipart.getSubtype().toString());
+                            
                             // Format:
                             MultipartMode mpMode = multipart.getMode();
                             switch(mpMode) {
