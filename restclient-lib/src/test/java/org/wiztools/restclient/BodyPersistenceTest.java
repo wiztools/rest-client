@@ -95,7 +95,7 @@ public class BodyPersistenceTest {
         ReqEntityStringPartBean partString = new ReqEntityStringPartBean("aarthi.txt", ct, "Hello Babes!");
         parts.add(partFile);
         parts.add(partString);
-        ReqEntityMultipartBean expResult = new ReqEntityMultipartBean(parts);
+        ReqEntityMultipartBean expResult = new ReqEntityMultipartBean(parts, null, MultipartSubtype.FORM_DATA);
         
         Request actual = XMLUtil.getRequestFromXMLFile(new File("src/test/resources/reqBodyMultipart.rcq"));
         assertEquals(expResult, actual.getBody());

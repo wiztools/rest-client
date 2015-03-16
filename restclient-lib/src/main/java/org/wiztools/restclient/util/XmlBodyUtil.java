@@ -61,10 +61,19 @@ class XmlBodyUtil {
     }
     
     private static ReqEntityMultipartBean getMultipart(Element e) {
+        final String subTypeStr = e.getAttributeValue("subtype");
+        final MultipartSubtype subType;
+        if(subTypeStr == null
+                || subTypeStr.equals(MultipartSubtype.FORM_DATA.toString())) {
+            subType = MultipartSubtype.FORM_DATA;
+        }
+        else {
+            subType = MultipartSubtype.MIXED;
+        }
         final String mode = e.getAttributeValue("mode");
         MultipartMode format = StringUtil.isNotEmpty(mode)? MultipartMode.valueOf(mode): null;
         List<ReqEntityPart> parts = getMultipartParts(e);
-        return new ReqEntityMultipartBean(parts, format);
+        return new ReqEntityMultipartBean(parts, format, subType);
     }
     
     private static List<ReqEntityPart> getMultipartParts(Element e) {
@@ -156,6 +165,9 @@ class XmlBodyUtil {
             ReqEntityMultipart entity = (ReqEntityMultipart) bean;
             
             Element eMultipart = new Element("multipart");
+            
+            eMultipart.addAttribute(
+                    new Attribute("subtype", entity.getSubtype().toString()));
             
             eMultipart.addAttribute(
                     new Attribute("mode", entity.getMode().name()));
