@@ -32,16 +32,19 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     @Inject
     private AddMultipartStringDialog jd_addStringDialog;
     
+    @Inject
+    private MultipartOptionsDialog jd_options;
+    
     private final JButton jb_string = new JButton("String");
     private final JButton jb_file = new JButton("File");
     private final JButton jb_config = new JButton(UIUtil.getIconFromClasspath("org/wiztools/restclient/cog.png"));
     
-    private final JMenuItem rbSubTypeFormData = new JRadioButtonMenuItem("multipart/form-data");
-    private final JMenuItem rbSubTypeMixed = new JRadioButtonMenuItem("multipart/mixed");
-    
-    private final JMenuItem rbBrowserCompatible = new JRadioButtonMenuItem("Browser Compatible");
-    private final JMenuItem rbRFC6532 = new JRadioButtonMenuItem("RFC 6532");
-    private final JMenuItem rbStrict = new JRadioButtonMenuItem("Strict");
+//    private final JMenuItem rbSubTypeFormData = new JRadioButtonMenuItem("multipart/form-data");
+//    private final JMenuItem rbSubTypeMixed = new JRadioButtonMenuItem("multipart/mixed");
+//    
+//    private final JMenuItem rbBrowserCompatible = new JRadioButtonMenuItem("Browser Compatible");
+//    private final JMenuItem rbRFC6532 = new JRadioButtonMenuItem("RFC 6532");
+//    private final JMenuItem rbStrict = new JRadioButtonMenuItem("Strict");
     
     private final MultipartTableModel model = new MultipartTableModel();
     private final JTable jt = new JTable(model);
@@ -169,33 +172,6 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
         menu.add(jmi_view);
         jt.setComponentPopupMenu(menu);
         
-        // Config Popup:
-        final JPopupMenu jpmConfig = new JPopupMenu();
-        {
-            ButtonGroup group = new ButtonGroup();
-            
-            rbSubTypeFormData.setSelected(true);
-            group.add(rbSubTypeFormData);
-            jpmConfig.add(rbSubTypeFormData);
-            
-            group.add(rbSubTypeMixed);
-            jpmConfig.add(rbSubTypeMixed);
-        }
-        jpmConfig.addSeparator();
-        {
-            ButtonGroup group = new ButtonGroup();
-            
-            rbBrowserCompatible.setSelected(true);
-            group.add(rbBrowserCompatible);
-            jpmConfig.add(rbBrowserCompatible);
-            
-            group.add(rbRFC6532);
-            jpmConfig.add(rbRFC6532);
-            
-            group.add(rbStrict);
-            jpmConfig.add(rbStrict);
-        }
-        
         // Layouts:
         setLayout(new BorderLayout());
         
@@ -230,8 +206,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
                 jb_config.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        jpmConfig.show(jb_config, jb_config.getBounds().x,
-                                jb_config.getBounds().y + jb_config.getBounds().height);
+                        jd_options.setVisible(true);
                     }
                 });
                 jp_east.add(jb_config);
@@ -274,8 +249,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     @Override
     public void clear() {
-        rbSubTypeFormData.setSelected(true);
-        rbBrowserCompatible.setSelected(true);
+        jd_options.clear();
         model.clear();
     }
 
@@ -285,29 +259,10 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
             ReqEntityMultipart e = (ReqEntityMultipart) entity;
             
             MultipartSubtype type = e.getSubtype();
-            switch(type) {
-                case FORM_DATA:
-                    rbSubTypeFormData.setSelected(true);
-                    break;
-                case MIXED:
-                    rbSubTypeMixed.setSelected(true);
-                    break;
-            }
+            jd_options.setSelectedSubtype(type);
             
-            MultipartMode format = e.getMode();
-            switch(format) {
-                case BROWSER_COMPATIBLE:
-                    rbBrowserCompatible.setSelected(true);
-                    break;
-                case RFC_6532:
-                    rbRFC6532.setSelected(true);
-                    break;
-                case STRICT:
-                    rbStrict.setSelected(true);
-                    break;
-                default:
-                    rbStrict.setSelected(true);
-            }
+            MultipartMode mode = e.getMode();
+            jd_options.setSelectedMode(mode);
             
             List<ReqEntityPart> parts = e.getBody();
             for(ReqEntityPart part: parts) {
@@ -318,21 +273,11 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     
     @Override
     public ReqEntity getEntity() {
-        MultipartSubtype type = rbSubTypeFormData.isSelected()?
-                MultipartSubtype.FORM_DATA: MultipartSubtype.MIXED;
+        MultipartSubtype type = jd_options.getSelectedSubtype();
+        MultipartMode mode = jd_options.getSelectedMode();
         
-        MultipartMode format = null;
-        if(rbBrowserCompatible.isSelected()) {
-            format = MultipartMode.BROWSER_COMPATIBLE;
-        }
-        else if(rbRFC6532.isSelected()) {
-            format = MultipartMode.RFC_6532;
-        }
-        else if(rbStrict.isSelected()) {
-            format = MultipartMode.STRICT;
-        }
         ReqEntity entity = new ReqEntityMultipartBean(
-                (LinkedList<ReqEntityPart>)model.list.clone(), format, type);
+                (LinkedList<ReqEntityPart>)model.list.clone(), mode, type);
         return entity;
     }
     
