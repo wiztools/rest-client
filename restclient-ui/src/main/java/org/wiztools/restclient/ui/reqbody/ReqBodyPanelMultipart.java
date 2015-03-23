@@ -228,6 +228,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
         jb_file.setEnabled(true);
         jb_config.setEnabled(true);
         jt.setEnabled(true);
+        jd_options.setEnabled(true);
     }
     
     @Override
@@ -236,6 +237,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
         jb_file.setEnabled(false);
         jb_config.setEnabled(false);
         jt.setEnabled(false);
+        jd_options.setEnabled(false);
     }
     
     @Override

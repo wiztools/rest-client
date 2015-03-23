@@ -138,6 +138,7 @@ public class MultipartOptionsDialog extends EscapableDialog {
 
     public void setSelectedSubtype(MultipartSubtype selectedSubtype) {
         this.selectedSubtype = selectedSubtype;
+        jcb_subtype.setSelectedItem(selectedSubtype);
     }
 
     public MultipartMode getSelectedMode() {
@@ -146,5 +147,6 @@ public class MultipartOptionsDialog extends EscapableDialog {
 
     public void setSelectedMode(MultipartMode selectedMode) {
         this.selectedMode = selectedMode;
+        jcb_mode.setSelectedItem(selectedMode);
     }
 }
