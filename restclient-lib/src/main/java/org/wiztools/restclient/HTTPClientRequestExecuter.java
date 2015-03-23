@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
@@ -26,11 +27,11 @@ import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -52,6 +53,7 @@ import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.*;
+import org.wiztools.restclient.http.AllowAllHostnameVerifier;
 import org.wiztools.restclient.http.RESTClientCookieStore;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.IDNUtil;
@@ -254,7 +256,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             // Cookies
             {
                 // Set cookie policy:
-                rcBuilder.setCookieSpec(CookieSpecs.BEST_MATCH);
+                rcBuilder.setCookieSpec(CookieSpecs.DEFAULT);
                 
                 // Add to CookieStore:
                 CookieStore store = new RESTClientCookieStore();
@@ -358,19 +360,21 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             final SSLReq sslReq = request.getSslReq();
             if(sslReq != null) {
                 SSLHostnameVerifier verifier = sslReq.getHostNameVerifier();
-                final X509HostnameVerifier hcVerifier;
+                final HostnameVerifier hcVerifier;
                 switch(verifier){
                     case STRICT:
-                        hcVerifier = SSLConnectionSocketFactory.STRICT_HOSTNAME_VERIFIER;
+                        // hcVerifier = SSLConnectionSocketFactory.STRICT_HOSTNAME_VERIFIER;
+                        hcVerifier = new DefaultHostnameVerifier();
                         break;
                     case BROWSER_COMPATIBLE:
-                        hcVerifier = SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
+                        // hcVerifier = SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
+                        hcVerifier = new DefaultHostnameVerifier();
                         break;
                     case ALLOW_ALL:
-                        hcVerifier = SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+                        hcVerifier = new AllowAllHostnameVerifier();
                         break;
                     default:
-                        hcVerifier = SSLConnectionSocketFactory.STRICT_HOSTNAME_VERIFIER;
+                        hcVerifier = new DefaultHostnameVerifier();
                         break;
                 }
 
@@ -389,7 +393,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                         .loadKeyMaterial(keyStore, sslReq.getKeyStore()!=null? sslReq.getKeyStore().getPassword(): null)
                         .loadTrustMaterial(trustStore, trustStrategy)
                         .setSecureRandom(null)
-                        .useTLS()
+                        .useProtocol("TLS")
                         .build();
                 SSLConnectionSocketFactory sf = new SSLConnectionSocketFactory(ctx, hcVerifier);
                 hcBuilder.setSSLSocketFactory(sf);
