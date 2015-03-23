@@ -39,13 +39,6 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
     private final JButton jb_file = new JButton("File");
     private final JButton jb_config = new JButton(UIUtil.getIconFromClasspath("org/wiztools/restclient/cog.png"));
     
-//    private final JMenuItem rbSubTypeFormData = new JRadioButtonMenuItem("multipart/form-data");
-//    private final JMenuItem rbSubTypeMixed = new JRadioButtonMenuItem("multipart/mixed");
-//    
-//    private final JMenuItem rbBrowserCompatible = new JRadioButtonMenuItem("Browser Compatible");
-//    private final JMenuItem rbRFC6532 = new JRadioButtonMenuItem("RFC 6532");
-//    private final JMenuItem rbStrict = new JRadioButtonMenuItem("Strict");
-    
     private final MultipartTableModel model = new MultipartTableModel();
     private final JTable jt = new JTable(model);
     
@@ -215,8 +208,6 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
             
             add(jp_border, BorderLayout.NORTH);
         }
-        
-        
         
         // Center:
         JScrollPane jsp = new JScrollPane(jt);
