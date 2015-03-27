@@ -5,9 +5,13 @@ package org.wiztools.restclient.bean;
  * @author subwiz
  */
 public enum SSLHostnameVerifier {
-    STRICT("Strict"), BROWSER_COMPATIBLE("Browser Compatible"), ALLOW_ALL("Allow All");
+    // Deprecation note: http://stackoverflow.com/questions/29207694/apache-httpclient-4-4-hostnameverifier-transition-from-4-3-x
+    
+    STRICT("Strict"),
+    @Deprecated BROWSER_COMPATIBLE("Browser Compatible"),
+    ALLOW_ALL("Allow All");
 
-    private String displayName;
+    private final String displayName;
     SSLHostnameVerifier(String displayName){
         this.displayName = displayName;
     }

@@ -361,14 +361,11 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             if(sslReq != null) {
                 SSLHostnameVerifier verifier = sslReq.getHostNameVerifier();
                 final HostnameVerifier hcVerifier;
-                // hcVerifier = SSLConnectionSocketFactory.STRICT_HOSTNAME_VERIFIER;
-                // hcVerifier = SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
                 switch(verifier) {
                     case ALLOW_ALL:
                         hcVerifier = new AllowAllHostnameVerifier();
                         break;
                     case STRICT:
-                    case BROWSER_COMPATIBLE:
                     default:
                         hcVerifier = new DefaultHostnameVerifier();
                         break;
