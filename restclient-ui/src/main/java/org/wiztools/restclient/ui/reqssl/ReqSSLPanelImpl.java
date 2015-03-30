@@ -81,11 +81,6 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
     
     @PostConstruct
     protected void init() {
-        jcb_ssl_trust_self_signed_cert.setHorizontalTextPosition(
-                SwingConstants.LEFT);
-        jcb_disable_hostname_verifier.setHorizontalTextPosition(
-                SwingConstants.LEFT);
-        
         setLayout(new BorderLayout(RESTView.BORDER_WIDTH, 2));
         
         JTabbedPane jtp_ssl = new JTabbedPane();
