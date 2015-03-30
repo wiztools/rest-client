@@ -33,6 +33,8 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.AbstractHttpEntity;
+import org.apache.http.entity.mime.FormBodyPart;
+import org.apache.http.entity.mime.FormBodyPartBuilder;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -322,7 +324,12 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                     else {
                                         sb = new StringBody(body, org.apache.http.entity.ContentType.DEFAULT_TEXT);
                                     }
-                                    meb.addPart(part.getName(), sb);
+                                    FormBodyPart bodyPart = FormBodyPartBuilder
+                                            .create()
+                                            .setName(p.getName())
+                                            .setBody(sb)
+                                            .build();
+                                    meb.addPart(bodyPart);
                                 }
                                 else if(part instanceof ReqEntityFilePart) {
                                     ReqEntityFilePart p = (ReqEntityFilePart)part;
@@ -335,7 +342,12 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                     else {
                                         fb = new FileBody(body, org.apache.http.entity.ContentType.DEFAULT_BINARY, p.getFilename());
                                     }
-                                    meb.addPart(p.getName(), fb);
+                                    FormBodyPart bodyPart = FormBodyPartBuilder
+                                            .create()
+                                            .setName(p.getName())
+                                            .setBody(fb)
+                                            .build();
+                                    meb.addPart(bodyPart);
                                 }
                             }
                             
