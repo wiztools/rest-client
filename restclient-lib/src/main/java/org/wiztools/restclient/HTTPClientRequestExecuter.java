@@ -33,10 +33,10 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.AbstractHttpEntity;
-import org.apache.http.entity.mime.FormBodyPart;
 import org.apache.http.entity.mime.FormBodyPartBuilder;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.auth.AuthSchemeBase;
@@ -313,42 +313,41 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                             
                             // Parts:
                             for(ReqEntityPart part: multipart.getBody()) {
+                                ContentBody cb = null;
                                 if(part instanceof ReqEntityStringPart) {
                                     ReqEntityStringPart p = (ReqEntityStringPart)part;
                                     String body = p.getPart();
                                     ContentType ct = p.getContentType();
-                                    final StringBody sb;
                                     if(ct != null) {
-                                        sb = new StringBody(body, HTTPClientUtil.getContentType(ct));
+                                        cb = new StringBody(body, HTTPClientUtil.getContentType(ct));
                                     }
                                     else {
-                                        sb = new StringBody(body, org.apache.http.entity.ContentType.DEFAULT_TEXT);
+                                        cb = new StringBody(body, org.apache.http.entity.ContentType.DEFAULT_TEXT);
                                     }
-                                    FormBodyPart bodyPart = FormBodyPartBuilder
-                                            .create()
-                                            .setName(p.getName())
-                                            .setBody(sb)
-                                            .build();
-                                    meb.addPart(bodyPart);
+                                
                                 }
                                 else if(part instanceof ReqEntityFilePart) {
                                     ReqEntityFilePart p = (ReqEntityFilePart)part;
                                     File body = p.getPart();
                                     ContentType ct = p.getContentType();
-                                    final FileBody fb;
                                     if(ct != null) {
-                                        fb = new FileBody(body, HTTPClientUtil.getContentType(ct), p.getFilename());
+                                        cb = new FileBody(body, HTTPClientUtil.getContentType(ct), p.getFilename());
                                     }
                                     else {
-                                        fb = new FileBody(body, org.apache.http.entity.ContentType.DEFAULT_BINARY, p.getFilename());
+                                        cb = new FileBody(body, org.apache.http.entity.ContentType.DEFAULT_BINARY, p.getFilename());
                                     }
-                                    FormBodyPart bodyPart = FormBodyPartBuilder
-                                            .create()
-                                            .setName(p.getName())
-                                            .setBody(fb)
-                                            .build();
-                                    meb.addPart(bodyPart);
                                 }
+                                FormBodyPartBuilder bodyPart = FormBodyPartBuilder
+                                        .create()
+                                        .setName(part.getName())
+                                        .setBody(cb);
+                                MultiValueMap<String, String> fields = part.getFields();
+                                for(String key: fields.keySet()) {
+                                    for(String value: fields.get(key)) {
+                                        bodyPart.addField(key, value);
+                                    }
+                                }
+                                meb.addPart(bodyPart.build());
                             }
                             
                             reqBuilder.setEntity(meb.build());

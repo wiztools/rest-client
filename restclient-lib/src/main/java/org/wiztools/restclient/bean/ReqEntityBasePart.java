@@ -1,5 +1,10 @@
 package org.wiztools.restclient.bean;
 
+import java.util.Objects;
+import org.wiztools.commons.CollectionsUtil;
+import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.MultiValueMapArrayList;
+
 /**
  *
  * @author subwiz
@@ -8,6 +13,7 @@ public abstract class ReqEntityBasePart implements ReqEntityPart {
     
     protected final String name;
     protected final ContentType contentType;
+    protected final MultiValueMap<String, String> fields = new MultiValueMapArrayList<>();
 
     public ReqEntityBasePart(String name, ContentType contentType) {
         this.name = name;
@@ -23,6 +29,24 @@ public abstract class ReqEntityBasePart implements ReqEntityPart {
     public ContentType getContentType() {
         return contentType;
     }
+    
+    public void addField(String key, String value) {
+        fields.put(key, value);
+    }
+
+    @Override
+    public MultiValueMap<String, String> getFields() {
+        return CollectionsUtil.unmodifiableMultiValueMap(fields);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.name);
+        hash = 79 * hash + Objects.hashCode(this.contentType);
+        hash = 79 * hash + Objects.hashCode(this.fields);
+        return hash;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -33,20 +57,15 @@ public abstract class ReqEntityBasePart implements ReqEntityPart {
             return false;
         }
         final ReqEntityBasePart other = (ReqEntityBasePart) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+        if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (this.contentType != other.contentType && (this.contentType == null || !this.contentType.equals(other.contentType))) {
+        if (!Objects.equals(this.contentType, other.contentType)) {
+            return false;
+        }
+        if (!Objects.equals(this.fields, other.fields)) {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 19 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash = 19 * hash + (this.contentType != null ? this.contentType.hashCode() : 0);
-        return hash;
     }
 }
