@@ -3,7 +3,7 @@ package org.wiztools.restclient.ui.resbody;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
-import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.persistence.XMLException;
 import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.ui.*;
 import org.wiztools.restclient.util.HTMLIndentUtil;

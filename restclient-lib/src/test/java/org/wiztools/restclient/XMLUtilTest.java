@@ -18,6 +18,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.wiztools.commons.Charsets;
 import org.wiztools.restclient.bean.*;
+import org.wiztools.restclient.persistence.Persistence;
+import org.wiztools.restclient.persistence.XMLPersistence;
 import org.wiztools.restclient.util.Util;
 
 /**
@@ -25,6 +27,8 @@ import org.wiztools.restclient.util.Util;
  * @author subwiz
  */
 public class XMLUtilTest {
+    
+    private Persistence p = new XMLPersistence();
 
     public XMLUtilTest() {
     }
@@ -121,8 +125,8 @@ public class XMLUtilTest {
         System.out.println("writeRequestXML");
         RequestBean bean = getDefaultRequestBean();
         File f = File.createTempFile("prefix", ".rcq");
-        XMLUtil.writeRequestXML(bean, f);
-        Request expResult = XMLUtil.getRequestFromXMLFile(f);
+        p.writeRequest(bean, f);
+        Request expResult = p.getRequestFromFile(f);
         assertEquals(expResult, bean);
     }
 
@@ -134,8 +138,8 @@ public class XMLUtilTest {
         System.out.println("writeResponseXML");
         ResponseBean bean = getDefaultResponseBean();
         File f = File.createTempFile("prefix", ".rcs");
-        XMLUtil.writeResponseXML(bean, f);
-        Response expResult = XMLUtil.getResponseFromXMLFile(f);
+        p.writeResponse(bean, f);
+        Response expResult = p.getResponseFromFile(f);
         assertEquals(expResult, bean);
     }
 
@@ -149,7 +153,7 @@ public class XMLUtilTest {
 
         RequestBean expResult = getDefaultRequestBean();
         
-        Request result = XMLUtil.getRequestFromXMLFile(f);
+        Request result = p.getRequestFromFile(f);
         assertEquals(expResult, result);
     }
 
@@ -163,7 +167,7 @@ public class XMLUtilTest {
 
         ResponseBean expResult = getDefaultResponseBean();
         
-        Response result = XMLUtil.getResponseFromXMLFile(f);
+        Response result = p.getResponseFromFile(f);
         assertEquals(expResult, result);
     }
 
@@ -175,10 +179,10 @@ public class XMLUtilTest {
     @Test
     public void testIntegrityOfTestScript() throws Exception{
         File f = new File("src/test/resources/resTestScriptIntegrity.rcq");
-        Request req = XMLUtil.getRequestFromXMLFile(f);
+        Request req = p.getRequestFromFile(f);
         File outFile = File.createTempFile("abc", "xyz");
-        XMLUtil.writeRequestXML(req, outFile);
-        Request req1 = XMLUtil.getRequestFromXMLFile(outFile);
+        p.writeRequest(req, outFile);
+        Request req1 = p.getRequestFromFile(outFile);
         assertEquals(req.getTestScript(), req1.getTestScript());
     }
 }

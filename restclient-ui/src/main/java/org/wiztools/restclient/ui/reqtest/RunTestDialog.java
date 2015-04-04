@@ -1,5 +1,6 @@
 package org.wiztools.restclient.ui.reqtest;
 
+import org.wiztools.restclient.persistence.XMLException;
 import org.wiztools.restclient.bean.ReqResBean;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;

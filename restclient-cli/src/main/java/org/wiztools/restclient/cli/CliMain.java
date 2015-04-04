@@ -12,7 +12,9 @@ import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.RequestExecuter;
 import org.wiztools.restclient.bean.Response;
 import org.wiztools.restclient.bean.TestResult;
-import org.wiztools.restclient.util.XMLUtil;
+import org.wiztools.restclient.persistence.Persistence;
+import org.wiztools.restclient.persistence.PersistenceException;
+import org.wiztools.restclient.persistence.XMLPersistence;
 
 /**
  *
@@ -77,13 +79,11 @@ public class CliMain {
                     FileUtil.writeBytes(resFile, response.getResponseBody());
                 }
                 else {
-                    XMLUtil.writeResponseXML(response, resFile);
+                    Persistence p = new XMLPersistence();
+                    p.writeResponse(response, resFile);
                 }
             }
-            catch(IOException ex){
-                ex.printStackTrace(System.err);
-            }
-            catch(XMLException ex){
+            catch(IOException | PersistenceException ex){
                 ex.printStackTrace(System.err);
             }
         }
@@ -122,7 +122,7 @@ public class CliMain {
             System.exit(1);
         }
         File outDir = command.outDir;
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
         if(!outDir.isDirectory()){
             errors.add("Out directory is not a directory: " + outDir.getAbsolutePath());
         }
@@ -133,17 +133,15 @@ public class CliMain {
             for(String param: params){
                 File f = new File(param);
                 if(f.canRead()){
-                    try{
-                        Request request = XMLUtil.getRequestFromXMLFile(f);
+                    try {
+                        Persistence p = new XMLPersistence();
+                        Request request = p.getRequestFromFile(f);
                         View view = new CliView(outDir, f, command.saveResponseBody);
                         // Execute:
                         RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
                         executer.execute(request, view);
                     }
-                    catch(IOException ex){
-                        ex.printStackTrace(System.err);
-                    }
-                    catch(XMLException ex){
+                    catch(IOException | PersistenceException ex){
                         ex.printStackTrace(System.err);
                     }
                 }

@@ -12,7 +12,7 @@ import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
-import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.persistence.XMLException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

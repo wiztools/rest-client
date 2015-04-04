@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.swing.*;
 import org.wiztools.restclient.MessageI18N;
 import org.wiztools.restclient.RCConstants;
+import org.wiztools.restclient.Versions;
 
 /**
  *
@@ -41,7 +42,7 @@ class AboutDialog extends EscapableDialog {
         jp_north.setLayout(new FlowLayout(FlowLayout.CENTER));
         JLabel jl_title = new JLabel(
                 "<html><h2>" +
-                RCConstants.TITLE + RCConstants.VERSION +
+                RCConstants.TITLE + Versions.CURRENT +
                 "</h2></html>");
         jp_north.add(jl_title);
         jp.add(jp_north, BorderLayout.NORTH);

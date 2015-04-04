@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import javax.swing.JOptionPane;
 import org.wiztools.commons.FileUtil;
-import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.persistence.PersistenceException;
 import org.wiztools.restclient.util.XMLUtil;
 
 /**
@@ -35,7 +35,7 @@ final class ContentTypeSelectorOnFile {
                     
                     // Check if XML content type:
                     if(XMLUtil.XML_MIME.equals(mime)){
-                        try{
+                        try {
                             String charset = XMLUtil.getDocumentCharset(file);
                             if(charset != null && !(charset.equals(jp_content_type_charset.getCharsetString()))) {
                                 final int charsetYesNo = JOptionPane.showConfirmDialog(parent,
@@ -47,8 +47,8 @@ final class ContentTypeSelectorOnFile {
                                 }
                             }
                         }
-                        catch(IOException | XMLException ex) {
-                            // Do nothing!
+                        catch(IOException | PersistenceException ex) {
+                            // do nothing!
                         }
                     }
                 }

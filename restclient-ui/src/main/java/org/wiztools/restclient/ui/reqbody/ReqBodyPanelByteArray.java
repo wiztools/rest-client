@@ -14,7 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.*;
 import org.wiztools.commons.FileUtil;
-import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.persistence.XMLException;
 import org.wiztools.restclient.bean.ReqEntity;
 import org.wiztools.restclient.bean.ReqEntityByteArray;
 import org.wiztools.restclient.bean.ReqEntityByteArrayBean;

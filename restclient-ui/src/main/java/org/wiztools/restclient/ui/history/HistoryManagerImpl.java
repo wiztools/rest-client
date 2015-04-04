@@ -8,12 +8,12 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.persistence.XMLException;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.ui.lifecycle.LifecycleManager;
 import org.wiztools.restclient.ui.lifecycle.Shutdown;
 import org.wiztools.restclient.ui.reqgo.ReqUrlGoPanel;
-import org.wiztools.restclient.util.XMLCollectionUtil;
+import org.wiztools.restclient.persistence.XMLCollectionUtil;
 
 /**
  *

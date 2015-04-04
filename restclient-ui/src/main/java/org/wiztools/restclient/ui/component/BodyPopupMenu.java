@@ -7,7 +7,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.persistence.XMLException;
 import org.wiztools.restclient.ui.ScriptEditor;
 import org.wiztools.restclient.ui.TextEditorSyntax;
 import org.wiztools.restclient.util.HTMLIndentUtil;

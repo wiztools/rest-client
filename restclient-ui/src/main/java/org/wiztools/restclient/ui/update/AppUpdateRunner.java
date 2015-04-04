@@ -14,7 +14,7 @@ import org.wiztools.appupdate.VersionImpl;
 import org.wiztools.appupdate.VersionUrl;
 import org.wiztools.appupdate.VersionWSUtil;
 import org.wiztools.restclient.IGlobalOptions;
-import org.wiztools.restclient.RCConstants;
+import org.wiztools.restclient.Versions;
 
 /**
  *
@@ -64,7 +64,7 @@ public class AppUpdateRunner implements Runnable {
         try {
             final VersionUrl data = VersionWSUtil.getLatestVersion(UPDATE_URL);
             Version latestVersion = data.getVersion();
-            Version currentVersion = new VersionImpl(RCConstants.VERSION);
+            Version currentVersion = new VersionImpl(Versions.CURRENT);
             
             // Newer version available:
             if(latestVersion.isGreaterThan(currentVersion)) {
