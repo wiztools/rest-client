@@ -1,10 +1,10 @@
-package org.wiztools.restclient.util;
+package org.wiztools.restclient.persistence;
 
 import nu.xom.Element;
 import nu.xom.Elements;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.XMLException;
 import org.wiztools.restclient.bean.*;
+import org.wiztools.restclient.util.Util;
 
 /**
  *

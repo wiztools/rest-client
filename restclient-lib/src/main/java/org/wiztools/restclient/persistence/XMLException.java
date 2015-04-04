@@ -1,10 +1,10 @@
-package org.wiztools.restclient;
+package org.wiztools.restclient.persistence;
 
 /**
  *
- * @author schandran
+ * @author subwiz
  */
-public class XMLException extends RuntimeException{
+public class XMLException extends PersistenceException {
     public XMLException(String msg){
         super(msg);
     }

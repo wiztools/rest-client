@@ -1,4 +1,4 @@
-package org.wiztools.restclient.util;
+package org.wiztools.restclient.persistence;
 
 import java.io.*;
 import java.net.HttpCookie;
@@ -6,58 +6,32 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.StartDocument;
-import javax.xml.stream.events.XMLEvent;
 import nu.xom.*;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
-import org.wiztools.restclient.RCConstants;
-import org.wiztools.restclient.XMLException;
+import org.wiztools.restclient.Versions;
 import org.wiztools.restclient.bean.*;
+import org.wiztools.restclient.util.Util;
+import org.wiztools.restclient.util.XMLUtil;
 
 /**
  *
  * @author rsubramanian
  */
-public final class XMLUtil {
+public class XMLPersistence implements Persistence {
 
-    private XMLUtil() {
+    public XMLPersistence() {
     }
-    private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
-    private static final String[] VERSIONS = new String[]{
-        "3.0", "3.1", "3.2", "3.2.1", "3.2.2", "3.2.3", "3.3", "3.3.1", "3.4",
-        "3.4.1", "3.4.2", RCConstants.VERSION
-    };
-
-    public static final String XML_MIME = "application/xml";
+    private static final Logger LOG = Logger.getLogger(XMLPersistence.class.getName());
     
-    static {
-        // Sort the version array for binary search
-        Arrays.sort(VERSIONS);
-    }
-
-    protected static void checkIfVersionValid(final String restVersion)
-            throws XMLException {
-        if (restVersion == null) {
-            throw new XMLException("Attribute `version' not available for root element");
-        }
-        int res = Arrays.binarySearch(VERSIONS, restVersion);
-        if (res == -1) {
-            throw new XMLException("Version not supported");
-        }
-    }
-    
-    private static Element getRootElement() {
+    private Element getRootElement() {
         Element eRoot = new Element("rest-client");
         // set version attributes to rest-client root tag
-        eRoot.addAttribute(new Attribute("version", RCConstants.VERSION));
+        eRoot.addAttribute(new Attribute("version", Versions.CURRENT));
         return eRoot;
     }
     
-    protected static Element getRequestElement(final Request bean) {
+    protected Element getRequestElement(final Request bean) {
         Element reqElement = new Element("request");
 
         { // HTTP Version
@@ -135,7 +109,8 @@ public final class XMLUtil {
         { // creating the body child element
             ReqEntity entityBean = bean.getBody();
             if(entityBean != null) {
-                Element e = XmlBodyUtil.getReqEntity(entityBean);
+                XmlBodyUtil bdUtl = new XmlBodyUtil();
+                Element e = bdUtl.getReqEntity(entityBean);
                 reqElement.appendChild(e);
             }
         }
@@ -151,7 +126,7 @@ public final class XMLUtil {
         return reqElement;
     }
 
-    protected static Document request2XML(final Request bean)
+    protected Document request2XML(final Request bean)
             throws XMLException {
         Element reqRootElement = getRootElement();
         reqRootElement.appendChild(getRequestElement(bean));
@@ -160,7 +135,7 @@ public final class XMLUtil {
         return xomDocument;
     }
 
-    private static Map<String, String> getHeadersFromHeaderNode(final Element node)
+    private Map<String, String> getHeadersFromHeaderNode(final Element node)
             throws XMLException {
         Map<String, String> m = new LinkedHashMap<>();
 
@@ -177,7 +152,7 @@ public final class XMLUtil {
         return m;
     }
     
-    private static List<HttpCookie> getCookiesFromCookiesNode(final Element node) 
+    private List<HttpCookie> getCookiesFromCookiesNode(final Element node) 
             throws XMLException {
         List<HttpCookie> out = new ArrayList<>();
         
@@ -202,7 +177,7 @@ public final class XMLUtil {
         return out;
     }
     
-    protected static Request getRequestBean(Element requestNode)
+    protected Request getRequestBean(Element requestNode)
             throws MalformedURLException, XMLException {
         RequestBean requestBean = new RequestBean();
         
@@ -246,7 +221,8 @@ public final class XMLUtil {
                 }
             }
             else if ("body".equals(nodeName)) {
-                ReqEntity body = XmlBodyUtil.getReqEntity(tNode);
+                XmlBodyUtil bdUtl = new XmlBodyUtil();
+                ReqEntity body = bdUtl.getReqEntity(tNode);
                 requestBean.setBody(body);
             }
             else if ("test-script".equals(nodeName)) {
@@ -259,7 +235,7 @@ public final class XMLUtil {
         return requestBean;
     }
 
-    protected static Request xml2Request(final Document doc)
+    protected Request xml2Request(final Document doc)
             throws MalformedURLException, XMLException {
         // get the rootNode
         Element rootNode = doc.getRootElement();
@@ -270,7 +246,7 @@ public final class XMLUtil {
 
         // checking correct rest version
         final String rcVersion = rootNode.getAttributeValue("version");
-        checkIfVersionValid(rcVersion);
+        Versions.checkIfVersionValid(rcVersion);
 
         
 
@@ -287,7 +263,7 @@ public final class XMLUtil {
         return getRequestBean(requestNode);
     }
     
-    protected static Element getResponseElement(final Response bean) {
+    protected Element getResponseElement(final Response bean) {
         Element respElement = new Element("response");
         Element respChildSubElement = null;
         Element respChildSubSubElement = null;
@@ -393,7 +369,7 @@ public final class XMLUtil {
         return respElement;
     }
 
-    protected static Document response2XML(final Response bean)
+    protected Document response2XML(final Response bean)
             throws XMLException {
         Element respRootElement = getRootElement();
         respRootElement.appendChild(getResponseElement(bean));
@@ -402,7 +378,7 @@ public final class XMLUtil {
         return xomDocument;
     }
 
-    protected static Response xml2Response(final Document doc)
+    protected Response xml2Response(final Document doc)
             throws XMLException {
         ResponseBean responseBean = new ResponseBean();
 
@@ -414,7 +390,7 @@ public final class XMLUtil {
         }
 
         // checking correct rest version
-        checkIfVersionValid(rootNode.getAttributeValue("version"));
+        Versions.checkIfVersionValid(rootNode.getAttributeValue("version"));
 
         // assign rootnode to current node and also finding 'response' node
         Element tNode = null;
@@ -471,14 +447,14 @@ public final class XMLUtil {
         return responseBean;
     }
 
-    protected static void writeXML(final Document doc, final File f)
+    protected void writeXML(final Document doc, final File f)
             throws IOException, XMLException {
 
         try {
             OutputStream out = new FileOutputStream(f);
             out = new BufferedOutputStream(out);
             // getDocumentCharset(f) - to retrieve the charset encoding attribute
-            Serializer serializer = new Serializer(out, getDocumentCharset(f));
+            Serializer serializer = new Serializer(out, XMLUtil.getDocumentCharset(f));
             serializer.write(doc);
             out.close();
         } catch (IOException ex) {
@@ -486,7 +462,7 @@ public final class XMLUtil {
         }
     }
 
-    protected static Document getDocumentFromFile(final File f)
+    protected Document getDocumentFromFile(final File f)
             throws IOException, XMLException {
         try {
             Builder parser = new Builder();
@@ -499,75 +475,31 @@ public final class XMLUtil {
 
     }
 
-    public static String getDocumentCharset(final File f)
-            throws IOException, XMLException {
-        XMLEventReader reader = null;
-        try {
-            // using stax to get xml factory objects and read the input file
-            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            reader = inputFactory.createXMLEventReader(new FileInputStream(f));
-            XMLEvent event = reader.nextEvent();
-            // Always the first element is StartDocument
-            // even if the XML does not have explicit declaration:
-            StartDocument document = (StartDocument) event;
-            return document.getCharacterEncodingScheme();
-        }
-        catch (XMLStreamException ex) {
-            throw new XMLException(ex.getMessage(), ex);
-        }
-        finally{
-            if(reader != null){
-                try{
-                    reader.close();
-                }
-                catch(XMLStreamException ex){
-                    LOG.warning(ex.getMessage());
-                }
-            }
-        }
-    }
-
-    public static void writeRequestXML(final Request bean, final File f)
+    @Override
+    public void writeRequest(final Request bean, final File f)
             throws IOException, XMLException {
         Document doc = request2XML(bean);
         writeXML(doc, f);
     }
 
-    public static void writeResponseXML(final Response bean, final File f)
+    @Override
+    public void writeResponse(final Response bean, final File f)
             throws IOException, XMLException {
         Document doc = response2XML(bean);
         writeXML(doc, f);
     }
 
-    public static Request getRequestFromXMLFile(final File f)
-            throws IOException, XMLException {
+    @Override
+    public Request getRequestFromFile(final File f)
+            throws IOException, PersistenceException {
         Document doc = getDocumentFromFile(f);
         return xml2Request(doc);
     }
 
-    public static Response getResponseFromXMLFile(final File f)
-            throws IOException, XMLException {
+    @Override
+    public Response getResponseFromFile(final File f)
+            throws IOException, PersistenceException {
         Document doc = getDocumentFromFile(f);
         return xml2Response(doc);
-    }
-
-    // Deprecation reason:
-    // http://code.google.com/p/rest-client/issues/detail?id=158
-    @Deprecated
-    public static String indentXML(final String in)
-            throws XMLException, IOException {
-        try {
-            Builder parser = new Builder();
-            Document doc = parser.build(in, null);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Serializer serializer = new Serializer(baos);
-            serializer.setIndent(4);
-            serializer.setMaxLength(69);
-            serializer.write(doc);
-            return new String(baos.toByteArray());
-        } catch (ParsingException ex) {
-            // LOG.log(Level.SEVERE, null, ex);
-            throw new XMLException("XML indentation failed.", ex);
-        }
     }
 }

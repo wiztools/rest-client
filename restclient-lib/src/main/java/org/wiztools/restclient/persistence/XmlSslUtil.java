@@ -1,4 +1,4 @@
-package org.wiztools.restclient.util;
+package org.wiztools.restclient.persistence;
 
 import java.io.File;
 import nu.xom.Attribute;
@@ -10,6 +10,7 @@ import org.wiztools.restclient.bean.SSLHostnameVerifier;
 import org.wiztools.restclient.bean.SSLKeyStoreBean;
 import org.wiztools.restclient.bean.SSLReq;
 import org.wiztools.restclient.bean.SSLReqBean;
+import org.wiztools.restclient.util.Util;
 
 /**
  *
