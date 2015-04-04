@@ -16,6 +16,7 @@ import org.wiztools.restclient.bean.ContentTypeBean;
 import org.wiztools.restclient.bean.MultipartMode;
 import org.wiztools.restclient.bean.MultipartSubtype;
 import org.wiztools.restclient.bean.ReqEntity;
+import org.wiztools.restclient.bean.ReqEntityBasePart;
 import org.wiztools.restclient.bean.ReqEntityByteArrayBean;
 import org.wiztools.restclient.bean.ReqEntityFileBean;
 import org.wiztools.restclient.bean.ReqEntityFilePartBean;
@@ -31,7 +32,7 @@ import org.wiztools.restclient.util.Util;
  * @author subwiz
  */
 public class XmlBodyRead {
-    private Version readVersion;
+    private final Version readVersion;
     
     private static final Version VERSION_SINCE_PART_CONTENT = new VersionImpl("3.5");
     
@@ -116,9 +117,13 @@ public class XmlBodyRead {
         final String partName = e.getAttributeValue("name");
         final ContentType ct = getContentType(e);
         
+        Elements eFields = e.getChildElements("fields").get(0).getChildElements("field");
+        
         if("string".equals(name)) {
             String partBody = getPartValue(e);
-            return new ReqEntityStringPartBean(partName, ct, partBody);
+            ReqEntityStringPartBean out = new ReqEntityStringPartBean(partName, ct, partBody);
+            addFields(eFields, out);
+            return out;
         }
         else if("file".equals(name)) {
             File file = new File(getPartValue(e));
@@ -131,6 +136,17 @@ public class XmlBodyRead {
         }
         else {
             throw new XMLException("Unsupported element encountered inside <multipart>: " + name);
+        }
+    }
+    
+    private void addFields(Elements eFields, ReqEntityBasePart part) {
+        for(int i=0; i<eFields.size(); i++) {
+            Element eField = eFields.get(i);
+            
+            String name = eField.getChildElements("name").get(0).getValue();
+            String value = eField.getChildElements("value").get(0).getValue();
+            
+            part.addField(name, value);
         }
     }
     

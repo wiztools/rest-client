@@ -3,6 +3,7 @@ package org.wiztools.restclient.persistence;
 import java.util.List;
 import nu.xom.Attribute;
 import nu.xom.Element;
+import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.util.Util;
@@ -74,8 +75,25 @@ class XmlBodyWrite {
                     
                     Element eContent = new Element("content");
                     eContent.appendChild(p.getPart());
-                    
                     ePart.appendChild(eContent);
+                    
+                    Element eFields = new Element("fields");
+                    MultiValueMap<String, String> fields = p.getFields();
+                    for(String k: fields.keySet()) {
+                        for(String value: fields.get(k)) {
+                            Element eField = new Element("field");
+
+                            Element eName = new Element("name");
+                            eName.appendChild(k);
+                            eField.appendChild(eName);
+                            
+                            Element eValue = new Element("value");
+                            eValue.appendChild(value);
+                            eField.appendChild(eValue);
+
+                            eFields.appendChild(eField);
+                        }
+                    }
                     
                     eMultipart.appendChild(ePart);
                 }
