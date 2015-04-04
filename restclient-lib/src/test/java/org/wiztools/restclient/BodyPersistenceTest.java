@@ -10,9 +10,8 @@ import static org.junit.Assert.*;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.bean.*;
-import org.wiztools.restclient.persistence.Persistence;
-import org.wiztools.restclient.persistence.XMLPersistence;
-import org.wiztools.restclient.util.XMLUtil;
+import org.wiztools.restclient.persistence.PersistenceRead;
+import org.wiztools.restclient.persistence.XmlPersistenceRead;
 
 /**
  *
@@ -20,7 +19,7 @@ import org.wiztools.restclient.util.XMLUtil;
  */
 public class BodyPersistenceTest {
     
-    private Persistence p = new XMLPersistence();
+    private PersistenceRead p = new XmlPersistenceRead();
     
     public BodyPersistenceTest() {
     }

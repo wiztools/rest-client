@@ -12,9 +12,11 @@ import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.RequestExecuter;
 import org.wiztools.restclient.bean.Response;
 import org.wiztools.restclient.bean.TestResult;
-import org.wiztools.restclient.persistence.Persistence;
 import org.wiztools.restclient.persistence.PersistenceException;
-import org.wiztools.restclient.persistence.XMLPersistence;
+import org.wiztools.restclient.persistence.PersistenceRead;
+import org.wiztools.restclient.persistence.PersistenceWrite;
+import org.wiztools.restclient.persistence.XmlPersistenceRead;
+import org.wiztools.restclient.persistence.XmlPersistenceWrite;
 
 /**
  *
@@ -79,7 +81,7 @@ public class CliMain {
                     FileUtil.writeBytes(resFile, response.getResponseBody());
                 }
                 else {
-                    Persistence p = new XMLPersistence();
+                    PersistenceWrite p = new XmlPersistenceWrite();
                     p.writeResponse(response, resFile);
                 }
             }
@@ -134,7 +136,7 @@ public class CliMain {
                 File f = new File(param);
                 if(f.canRead()){
                     try {
-                        Persistence p = new XMLPersistence();
+                        PersistenceRead p = new XmlPersistenceRead();
                         Request request = p.getRequestFromFile(f);
                         View view = new CliView(outDir, f, command.saveResponseBody);
                         // Execute:

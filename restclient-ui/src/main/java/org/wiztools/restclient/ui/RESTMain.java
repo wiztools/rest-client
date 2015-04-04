@@ -35,9 +35,9 @@ import org.wiztools.restclient.Versions;
 import org.wiztools.restclient.persistence.XMLException;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
-import org.wiztools.restclient.persistence.Persistence;
 import org.wiztools.restclient.persistence.PersistenceException;
-import org.wiztools.restclient.persistence.XMLPersistence;
+import org.wiztools.restclient.persistence.PersistenceWrite;
+import org.wiztools.restclient.persistence.XmlPersistenceWrite;
 import org.wiztools.restclient.server.TraceServer;
 import org.wiztools.restclient.ui.history.HistoryManager;
 import org.wiztools.restclient.ui.option.OptionsDialog;
@@ -893,7 +893,7 @@ class RESTMain implements RESTUserInterface {
     }
     
     private void actionSave(final FileChooserType type){
-        Persistence p = new XMLPersistence();
+        PersistenceWrite p = new XmlPersistenceWrite();
         if(type == FileChooserType.SAVE_REQUEST){
             Request request = view.getLastRequest();
 

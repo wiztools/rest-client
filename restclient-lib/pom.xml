@@ -77,6 +77,11 @@
             <artifactId>jericho-html</artifactId>
             <version>3.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.wiztools</groupId>
+            <artifactId>app-update</artifactId>
+            <version>0.2.0</version>
+        </dependency>
         
         <dependency>
             <groupId>org.wiztools.restclient</groupId>
@@ -90,6 +95,5 @@
             <version>2.3.1</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 </project>

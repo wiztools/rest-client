@@ -20,14 +20,22 @@ public final class Versions {
         Arrays.sort(VERSIONS);
     }
     
-    public static void checkIfVersionValid(final String restVersion)
-            throws XMLException {
+    public static void versionValidCheck(final String restVersion)
+            throws VersionValidationException {
         if (restVersion == null) {
-            throw new XMLException("Attribute `version' not available for root element");
+            throw new VersionValidationException("Attribute `version' not available for root element");
         }
         int res = Arrays.binarySearch(VERSIONS, restVersion);
         if (res == -1) {
-            throw new XMLException("Version not supported");
+            throw new VersionValidationException("Version not supported");
         }
+    }
+    
+    public static class VersionValidationException extends Exception {
+
+        public VersionValidationException(String message) {
+            super(message);
+        }
+        
     }
 }

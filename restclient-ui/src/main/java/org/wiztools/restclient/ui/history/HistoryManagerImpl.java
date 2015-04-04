@@ -26,7 +26,7 @@ public class HistoryManagerImpl implements HistoryManager {
     private int maxSize = DEFAULT_HISTORY_SIZE;
     private int cursor;
     
-    private final LinkedList<Request> data = new LinkedList<Request>();
+    private final LinkedList<Request> data = new LinkedList<>();
     
     @Inject private LifecycleManager lifecycle;
     @Inject private ReqUrlGoPanel goPanel;
@@ -38,10 +38,7 @@ public class HistoryManagerImpl implements HistoryManager {
             try {
                 load(DEFAULT_FILE);
             }
-            catch(IOException ex) {
-                ex.printStackTrace(System.err);
-            }
-            catch(XMLException ex) {
+            catch(IOException | XMLException ex) {
                 ex.printStackTrace(System.err);
             }
         }

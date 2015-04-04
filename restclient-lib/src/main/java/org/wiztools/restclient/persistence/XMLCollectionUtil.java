@@ -21,7 +21,7 @@ public final class XMLCollectionUtil {
     
     public static void writeRequestCollectionXML(final List<Request> requests, final File f)
             throws IOException, XMLException {
-        XMLPersistence xUtl = new XMLPersistence();
+        XmlPersistenceWrite xUtl = new XmlPersistenceWrite();
         
         Element eRoot = new Element("request-collection");
         eRoot.addAttribute(new Attribute("version", Versions.CURRENT));
@@ -35,21 +35,26 @@ public final class XMLCollectionUtil {
     
     public static List<Request> getRequestCollectionFromXMLFile(final File f)
             throws IOException, XMLException {
-        XMLPersistence xUtl = new XMLPersistence();
+        XmlPersistenceRead xUtlRead = new XmlPersistenceRead();
         
         List<Request> out = new ArrayList<>();
-        Document doc = xUtl.getDocumentFromFile(f);
+        Document doc = xUtlRead.getDocumentFromFile(f);
         Element eRoot = doc.getRootElement();
         if(!"request-collection".equals(eRoot.getLocalName())) {
             throw new XMLException("Expecting root element <request-collection>, but found: "
                     + eRoot.getLocalName());
         }
         final String version = eRoot.getAttributeValue("version");
-        Versions.checkIfVersionValid(version);
+        try {
+            Versions.versionValidCheck(version);
+        }
+        catch(Versions.VersionValidationException ex) {
+            throw new XMLException(ex);
+        }
         Elements eRequests = doc.getRootElement().getChildElements();
         for(int i=0; i<eRequests.size(); i++) {
             Element eRequest = eRequests.get(i);
-            Request req = xUtl.getRequestBean(eRequest);
+            Request req = xUtlRead.getRequestBean(eRequest);
             out.add(req);
         }
         return out;

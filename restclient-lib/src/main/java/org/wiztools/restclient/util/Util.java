@@ -20,7 +20,8 @@ import org.wiztools.restclient.persistence.XMLException;
 import org.wiztools.restclient.bean.ReqResBean;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
-import org.wiztools.restclient.persistence.XMLPersistence;
+import org.wiztools.restclient.persistence.XmlPersistenceRead;
+import org.wiztools.restclient.persistence.XmlPersistenceWrite;
 
 /**
  *
@@ -110,7 +111,7 @@ public final class Util {
 
     public static void createReqResArchive(Request request, Response response, File zipFile)
             throws IOException, XMLException {
-        XMLPersistence xWriter = new XMLPersistence();
+        XmlPersistenceWrite xWriter = new XmlPersistenceWrite();
         
         File requestFile = File.createTempFile("req-", ".xml");
         File responseFile = File.createTempFile("res-", ".xml");
@@ -184,7 +185,7 @@ public final class Util {
                     dest.flush();
                     dest.close();
 
-                    XMLPersistence xUtl = new XMLPersistence();
+                    XmlPersistenceRead xUtl = new XmlPersistenceRead();
                     if (entry.getName().equals("request.rcq")) {
                         Request reqBean = xUtl.getRequestFromFile(tmpFile);
                         encpBean.setRequestBean(reqBean);

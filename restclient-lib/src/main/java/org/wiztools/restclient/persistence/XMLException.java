@@ -12,4 +12,8 @@ public class XMLException extends PersistenceException {
     public XMLException(String msg, Throwable t){
         super(msg, t);
     }
+
+    public XMLException(Throwable cause) {
+        super(cause);
+    }
 }

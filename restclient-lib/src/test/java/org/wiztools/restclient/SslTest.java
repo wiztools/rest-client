@@ -10,8 +10,8 @@ import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.RequestBean;
 import org.wiztools.restclient.bean.SSLHostnameVerifier;
 import org.wiztools.restclient.bean.SSLReqBean;
-import org.wiztools.restclient.persistence.Persistence;
-import org.wiztools.restclient.persistence.XMLPersistence;
+import org.wiztools.restclient.persistence.PersistenceRead;
+import org.wiztools.restclient.persistence.XmlPersistenceRead;
 
 /**
  *
@@ -19,7 +19,7 @@ import org.wiztools.restclient.persistence.XMLPersistence;
  */
 public class SslTest {
     
-    private Persistence p = new XMLPersistence();
+    private PersistenceRead p = new XmlPersistenceRead();
     
     public SslTest() {
     }

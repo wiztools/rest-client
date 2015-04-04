@@ -18,8 +18,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.wiztools.commons.Charsets;
 import org.wiztools.restclient.bean.*;
-import org.wiztools.restclient.persistence.Persistence;
-import org.wiztools.restclient.persistence.XMLPersistence;
+import org.wiztools.restclient.persistence.PersistenceRead;
+import org.wiztools.restclient.persistence.PersistenceWrite;
+import org.wiztools.restclient.persistence.XmlPersistenceRead;
+import org.wiztools.restclient.persistence.XmlPersistenceWrite;
 import org.wiztools.restclient.util.Util;
 
 /**
@@ -28,7 +30,8 @@ import org.wiztools.restclient.util.Util;
  */
 public class XMLUtilTest {
     
-    private Persistence p = new XMLPersistence();
+    private PersistenceRead pRead = new XmlPersistenceRead();
+    private PersistenceWrite pWrite = new XmlPersistenceWrite();
 
     public XMLUtilTest() {
     }
@@ -125,8 +128,8 @@ public class XMLUtilTest {
         System.out.println("writeRequestXML");
         RequestBean bean = getDefaultRequestBean();
         File f = File.createTempFile("prefix", ".rcq");
-        p.writeRequest(bean, f);
-        Request expResult = p.getRequestFromFile(f);
+        pWrite.writeRequest(bean, f);
+        Request expResult = pRead.getRequestFromFile(f);
         assertEquals(expResult, bean);
     }
 
@@ -138,8 +141,8 @@ public class XMLUtilTest {
         System.out.println("writeResponseXML");
         ResponseBean bean = getDefaultResponseBean();
         File f = File.createTempFile("prefix", ".rcs");
-        p.writeResponse(bean, f);
-        Response expResult = p.getResponseFromFile(f);
+        pWrite.writeResponse(bean, f);
+        Response expResult = pRead.getResponseFromFile(f);
         assertEquals(expResult, bean);
     }
 
@@ -153,7 +156,7 @@ public class XMLUtilTest {
 
         RequestBean expResult = getDefaultRequestBean();
         
-        Request result = p.getRequestFromFile(f);
+        Request result = pRead.getRequestFromFile(f);
         assertEquals(expResult, result);
     }
 
@@ -167,7 +170,7 @@ public class XMLUtilTest {
 
         ResponseBean expResult = getDefaultResponseBean();
         
-        Response result = p.getResponseFromFile(f);
+        Response result = pRead.getResponseFromFile(f);
         assertEquals(expResult, result);
     }
 
@@ -179,10 +182,10 @@ public class XMLUtilTest {
     @Test
     public void testIntegrityOfTestScript() throws Exception{
         File f = new File("src/test/resources/resTestScriptIntegrity.rcq");
-        Request req = p.getRequestFromFile(f);
+        Request req = pRead.getRequestFromFile(f);
         File outFile = File.createTempFile("abc", "xyz");
-        p.writeRequest(req, outFile);
-        Request req1 = p.getRequestFromFile(outFile);
+        pWrite.writeRequest(req, outFile);
+        Request req1 = pRead.getRequestFromFile(outFile);
         assertEquals(req.getTestScript(), req1.getTestScript());
     }
 }

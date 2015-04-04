@@ -58,11 +58,6 @@
         </dependency>
         <dependency>
             <groupId>org.wiztools</groupId>
-            <artifactId>app-update</artifactId>
-            <version>0.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wiztools</groupId>
             <artifactId>filechooser-abstraction</artifactId>
             <version>0.1.0</version>
         </dependency>

@@ -8,9 +8,8 @@ import org.wiztools.restclient.util.Util;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JOptionPane;
-import org.wiztools.restclient.*;
-import org.wiztools.restclient.persistence.Persistence;
-import org.wiztools.restclient.persistence.XMLPersistence;
+import org.wiztools.restclient.persistence.PersistenceRead;
+import org.wiztools.restclient.persistence.XmlPersistenceRead;
 
 /**
  *
@@ -22,7 +21,7 @@ public class FileOpenUtil {
     public static void openRequest(RESTView view, File f) {
         Exception e = null;
         try {
-            Persistence p = new XMLPersistence();
+            PersistenceRead p = new XmlPersistenceRead();
             Request request = p.getRequestFromFile(f);
             view.setUIFromRequest(request);
         }
@@ -37,7 +36,7 @@ public class FileOpenUtil {
     public static void openResponse(final RESTView view, final File f) {
         Exception e = null;
         try {
-            Persistence p = new XMLPersistence();
+            PersistenceRead p = new XmlPersistenceRead();
             Response response = p.getResponseFromFile(f);
             view.setUIFromResponse(response);
         }
