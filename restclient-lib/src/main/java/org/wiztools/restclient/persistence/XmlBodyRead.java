@@ -117,7 +117,10 @@ public class XmlBodyRead {
         final String partName = e.getAttributeValue("name");
         final ContentType ct = getContentType(e);
         
-        Elements eFields = e.getChildElements("fields").get(0).getChildElements("field");
+        Elements eFields = null;
+        if(e.getChildElements("fields").size() > 0) {
+            eFields = e.getChildElements("fields").get(0).getChildElements("field");
+        }
         
         if("string".equals(name)) {
             String partBody = getPartValue(e);
@@ -140,6 +143,10 @@ public class XmlBodyRead {
     }
     
     private void addFields(Elements eFields, ReqEntityBasePart part) {
+        if(eFields == null) {
+            return;
+        }
+        
         for(int i=0; i<eFields.size(); i++) {
             Element eField = eFields.get(i);
             
