@@ -3,7 +3,6 @@ package org.wiztools.restclient.persistence;
 import java.io.*;
 import java.net.HttpCookie;
 import java.util.*;
-import java.util.logging.Logger;
 import nu.xom.*;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.restclient.Versions;
@@ -16,12 +15,6 @@ import org.wiztools.restclient.util.XMLUtil;
  * @author rsubramanian
  */
 public class XmlPersistenceWrite implements PersistenceWrite {
-    
-    private String readVersion;
-
-    public XmlPersistenceWrite() {
-    }
-    private static final Logger LOG = Logger.getLogger(XmlPersistenceWrite.class.getName());
     
     private Element getRootElement() {
         Element eRoot = new Element("rest-client");
