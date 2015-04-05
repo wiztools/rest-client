@@ -33,6 +33,10 @@ import org.wiztools.restclient.util.Util;
 public class XmlPersistenceRead implements PersistenceRead {
     private String readVersion;
     
+    public void setReadVersion(String version) {
+        readVersion = version;
+    }
+    
     private Map<String, String> getHeadersFromHeaderNode(final Element node)
             throws XMLException {
         Map<String, String> m = new LinkedHashMap<>();

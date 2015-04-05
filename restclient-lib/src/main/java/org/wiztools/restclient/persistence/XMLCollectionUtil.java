@@ -51,6 +51,8 @@ public final class XMLCollectionUtil {
         catch(Versions.VersionValidationException ex) {
             throw new XMLException(ex);
         }
+        xUtlRead.setReadVersion(version);
+        
         Elements eRequests = doc.getRootElement().getChildElements();
         for(int i=0; i<eRequests.size(); i++) {
             Element eRequest = eRequests.get(i);
