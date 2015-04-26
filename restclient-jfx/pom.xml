@@ -4,12 +4,12 @@
     <parent>
         <artifactId>restclient</artifactId>
         <groupId>org.wiztools.restclient</groupId>
-        <version>3.4.3-SNAPSHOT</version>
+        <version>3.5</version>
     </parent>
 
     <groupId>org.wiztools.restclient</groupId>
     <artifactId>restclient-jfx</artifactId>
-    <version>3.4.3-SNAPSHOT</version>
+    <version>3.5</version>
     <packaging>jar</packaging>
 
     <name>restclient-jfx</name>
@@ -114,12 +114,12 @@
         <dependency>
             <groupId>org.wiztools.restclient</groupId>
             <artifactId>restclient-server</artifactId>
-            <version>3.4.3-SNAPSHOT</version>
+            <version>3.5</version>
         </dependency>
         <dependency>
             <groupId>org.wiztools.restclient</groupId>
             <artifactId>restclient-lib</artifactId>
-            <version>3.4.3-SNAPSHOT</version>
+            <version>3.5</version>
         </dependency>
         <dependency>
             <groupId>org.wiztools</groupId>
