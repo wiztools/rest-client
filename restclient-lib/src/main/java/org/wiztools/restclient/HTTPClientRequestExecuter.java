@@ -28,6 +28,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
@@ -55,7 +56,6 @@ import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.*;
-import org.wiztools.restclient.http.AllowAllHostnameVerifier;
 import org.wiztools.restclient.http.RESTClientCookieStore;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.IDNUtil;
@@ -374,7 +374,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 final HostnameVerifier hcVerifier;
                 switch(verifier) {
                     case ALLOW_ALL:
-                        hcVerifier = new AllowAllHostnameVerifier();
+                        hcVerifier = new NoopHostnameVerifier();
                         break;
                     case STRICT:
                     default:
