@@ -13,6 +13,8 @@ import org.wiztools.restclient.util.ConfigUtil;
 @ImplementedBy(HistoryManagerImpl.class)
 public interface HistoryManager {
     
+    String HISTORY_SIZE_CONFIG_KEY = "ui.history.size";
+    
     int DEFAULT_HISTORY_SIZE = 15;
     File DEFAULT_FILE = ConfigUtil.getConfigFile("history.xml");
     

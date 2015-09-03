@@ -3,7 +3,6 @@ package org.wiztools.restclient.ui.history;
 import java.net.URL;
 import org.junit.*;
 import static org.junit.Assert.*;
-import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.RequestBean;
 
 /**
@@ -37,7 +36,10 @@ public class HistoryManagerImplTest {
     @Test
     public void testAll() throws Exception {
         System.out.println("all");
+        
         HistoryManagerImpl instance = new HistoryManagerImpl();
+        instance.setHistorySize(HistoryManager.DEFAULT_HISTORY_SIZE);
+        
         for(int i=0; i<10; i++) {
             RequestBean request = new RequestBean();
             request.setUrl(new URL("http://localhost/" + i));
@@ -69,7 +71,10 @@ public class HistoryManagerImplTest {
     @Test
     public void testSetHistorySize() throws Exception {
         System.out.println("setHistorySize");
+        
         HistoryManagerImpl instance = new HistoryManagerImpl();
+        instance.setHistorySize(HistoryManager.DEFAULT_HISTORY_SIZE);
+        
         for(int i=0; i<10; i++) {
             RequestBean request = new RequestBean();
             request.setUrl(new URL("http://localhost/" + i));
@@ -82,7 +87,10 @@ public class HistoryManagerImplTest {
     @Test
     public void testMaxElements() throws Exception {
         System.out.println("maxElements");
+        
         HistoryManagerImpl instance = new HistoryManagerImpl();
+        instance.setHistorySize(HistoryManager.DEFAULT_HISTORY_SIZE);
+        
         instance.setHistorySize(9);
         for(int i=0; i<10; i++) {
             RequestBean request = new RequestBean();
