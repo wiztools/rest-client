@@ -25,7 +25,7 @@ import org.wiztools.restclient.persistence.XMLCollectionUtil;
 public class HistoryManagerImpl implements HistoryManager {
     private static final Logger LOG = Logger.getLogger(HistoryManagerImpl.class.getName());
     
-    private int maxSize = -1; // initialized in @PostConstruct
+    private int maxSize = DEFAULT_HISTORY_SIZE; // initialized in @PostConstruct
     private int cursor;
     
     private final LinkedList<Request> data = new LinkedList<>();
@@ -58,9 +58,11 @@ public class HistoryManagerImpl implements HistoryManager {
                 }
             }
         });
+        
+        initMaxSize();
     }
     
-    @PostConstruct
+    // @PostConstruct -- sequence important, so called from init()
     protected void initMaxSize() {
         String tSize = options.getProperty(HISTORY_SIZE_CONFIG_KEY);
         if(tSize != null) {
@@ -70,7 +72,7 @@ public class HistoryManagerImpl implements HistoryManager {
                     if(size > 50) {
                         LOG.info("History size is configured to greater than 50! Ensure you have enough memory!!");
                     }
-                    maxSize = size;
+                    setHistorySize(size);
                     return;
                 }
                 else {
@@ -82,7 +84,7 @@ public class HistoryManagerImpl implements HistoryManager {
             }
         }
         LOG.log(Level.INFO, "Reverting to default value: {0}", DEFAULT_HISTORY_SIZE);
-        maxSize = DEFAULT_HISTORY_SIZE;
+        setHistorySize(DEFAULT_HISTORY_SIZE);
         
         updateOptions();
     }
@@ -104,9 +106,15 @@ public class HistoryManagerImpl implements HistoryManager {
         if(size < 1) {
             throw new IllegalArgumentException("History max size value invalid: " + size);
         }
+        
+        if(size > 50) { // warning log
+            LOG.info("History size is configured to greater than 50! Ensure you have enough memory!!");
+        }
+        
         if(maxSize == size) {
             return;
         }
+        
         if(maxSize > size) { // new size is smaller than existing
             // reset cursor:
             if(cursor >= size) {
