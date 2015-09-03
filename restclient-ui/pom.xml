@@ -17,7 +17,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4.1</version>
+                <version>2.5.5</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>com.jidesoft</groupId>
             <artifactId>jide-oss</artifactId>
-            <version>3.6.2</version>
+            <version>3.6.10</version>
         </dependency>
         <dependency>
             <groupId>org.swinglabs.swingx</groupId>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>com.fifesoft</groupId>
             <artifactId>rsyntaxtextarea</artifactId>
-            <version>2.5.3</version>
+            <version>2.5.7</version>
         </dependency>
         <dependency>
             <groupId>org.simplericity.macify</groupId>

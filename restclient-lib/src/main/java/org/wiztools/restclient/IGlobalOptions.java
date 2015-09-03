@@ -2,7 +2,7 @@ package org.wiztools.restclient;
 
 import com.google.inject.ImplementedBy;
 import java.io.File;
-import org.wiztools.commons.SystemConstants;
+import org.wiztools.commons.SystemProperty;
 
 /**
  *
@@ -12,7 +12,7 @@ import org.wiztools.commons.SystemConstants;
 public interface IGlobalOptions {
     
     File CONF_DIR = new File(
-            SystemConstants.userHome + SystemConstants.fileSeparator
+            SystemProperty.userHome + SystemProperty.fileSeparator
                     + ".rest-client");
 
     OptionsLock acquire();
