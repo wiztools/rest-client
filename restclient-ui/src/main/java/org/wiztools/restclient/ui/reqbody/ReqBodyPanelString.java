@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -24,7 +23,6 @@ import org.wiztools.restclient.bean.ReqEntityStringBean;
 import org.wiztools.restclient.ui.*;
 import org.wiztools.restclient.ui.component.BodyPopupMenu;
 import org.wiztools.restclient.ui.component.BodyPopupMenuListener;
-import org.wiztools.restclient.ui.dnd.DndAction;
 import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 
 /**
@@ -47,11 +45,8 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     @PostConstruct
     protected void init() {
         // Parameter dialog initialization
-        jd_req_paramDialog.addParameterGenerationListener(new ParameterGenerationListener() {
-            @Override
-            public void onParameterGeneration(String params) {
-                se_req_body.setText(params);
-            }
+        jd_req_paramDialog.addParameterGenerationListener((String params) -> {
+            se_req_body.setText(params);
         });
         
         // Layout
@@ -61,23 +56,17 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         JPanel jp_north = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jp_north.add(jp_content_type_charset.getComponent());
         jb_body_file.setToolTipText("Load from file");
-        jb_body_file.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                loadFile();
-            }
+        jb_body_file.addActionListener((ActionEvent ae) -> {
+            loadFile();
         });
         jp_north.add(jb_body_file);
         
         jb_body_params.setToolTipText("Insert parameters");
-        jb_body_params.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if(canSetReqBodyText()) {
-                    checkAndSetParameterContentType();
-                    jd_req_paramDialog.setLocationRelativeTo(rest_ui.getFrame());
-                    jd_req_paramDialog.setVisible(true);
-                }
+        jb_body_params.addActionListener((ActionEvent ae) -> {
+            if(canSetReqBodyText()) {
+                checkAndSetParameterContentType();
+                jd_req_paramDialog.setLocationRelativeTo(rest_ui.getFrame());
+                jd_req_paramDialog.setVisible(true);
             }
         });
         jp_north.add(jb_body_params);
@@ -134,11 +123,8 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         
         // DnD:
         FileDropTargetListener l = new FileDropTargetListener();
-        l.addDndAction(new DndAction() {
-            @Override
-            public void onDrop(List<File> files) {
-                loadFile(files.get(0));
-            }
+        l.addDndAction((List<File> files) -> {
+            loadFile(files.get(0));
         });
         new DropTarget(jb_body_file, l);
         new DropTarget(se_req_body.getEditorView(), l);

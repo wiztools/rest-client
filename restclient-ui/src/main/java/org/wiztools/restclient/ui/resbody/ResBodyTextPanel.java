@@ -105,21 +105,9 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
         bodyPopupMenu.cancelRunningJob();
         
         // JSON or XML?
-        boolean isXml = false;
-        boolean isJson = false;
-        boolean isHTML = false;
-
-        if(type != null) {
-            if(HttpUtil.isXmlContentType(type.getContentType())){
-                isXml = true;
-            }
-            else if(HttpUtil.isJsonContentType(type.getContentType())){
-                isJson = true;
-            }
-            else if(HttpUtil.isHTMLContentType(type.getContentType())){
-                isHTML = true;
-            }
-        }
+        final boolean isXml = HttpUtil.isXmlContentType(type.getContentType());
+        final boolean isJson = HttpUtil.isJsonContentType(type.getContentType());
+        final boolean isHTML = HttpUtil.isHTMLContentType(type.getContentType());
         
         // Get the options:
         IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
@@ -148,12 +136,7 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
                     String indentedResponseBody = XMLIndentUtil.getIndented(responseBody);
                     se_response.setText(indentedResponseBody);
                 }
-                catch(IOException ex){
-                    view.setStatusMessage("XML indentation failed.");
-                    // LOG.warning(ex.getMessage());
-                    se_response.setText(responseBody);
-                }
-                catch(XMLException ex){
+                catch(IOException | XMLException ex){
                     view.setStatusMessage("XML indentation failed.");
                     // LOG.warning(ex.getMessage());
                     se_response.setText(responseBody);
