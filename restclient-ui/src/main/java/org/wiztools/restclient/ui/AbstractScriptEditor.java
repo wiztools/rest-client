@@ -13,6 +13,14 @@ public abstract class AbstractScriptEditor implements ScriptEditor {
         setViewText(text);
     }
     
-    public abstract void setViewText(String text);
+    @Override
+    public final void setSourceText(String text) {
+        source = text;
+    }
+    
+    @Override
+    public final String getSourceText() {
+        return source;
+    }
     
 }

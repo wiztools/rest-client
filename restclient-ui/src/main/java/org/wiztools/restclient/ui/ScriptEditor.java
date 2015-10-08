@@ -36,6 +36,14 @@ public interface ScriptEditor {
      * @param text script code
      */
     public void setText(String text);
+    
+    public String getSourceText();
+    
+    public void setSourceText(String text);
+    
+    public String getViewText();
+    
+    public void setViewText(String text);
 
     /**
      * set caret position

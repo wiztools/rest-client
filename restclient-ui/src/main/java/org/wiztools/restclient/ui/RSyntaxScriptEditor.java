@@ -10,7 +10,7 @@ import javax.swing.text.JTextComponent;
  *
  * @author subwiz
  */
-public class RSyntaxScriptEditor implements ScriptEditor {
+public class RSyntaxScriptEditor extends AbstractScriptEditor {
     
     private final RSyntaxTextArea textArea = new RSyntaxTextArea();
 
@@ -62,8 +62,13 @@ public class RSyntaxScriptEditor implements ScriptEditor {
     }
 
     @Override
-    public void setText(String text) {
+    public void setViewText(String text) {
         textArea.setText(text);
+    }
+    
+    @Override
+    public String getViewText() {
+        return textArea.getText();
     }
 
     @Override
