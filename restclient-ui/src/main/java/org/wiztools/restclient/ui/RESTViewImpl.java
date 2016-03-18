@@ -104,7 +104,6 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jtp.addTab("Cookie", jp_2col_req_cookies);
         
         // Body Tab
-        jp_req_body.disableBody(); // disable control by default
         jtp.addTab("Body", jp_req_body.getComponent());
         
         // Auth

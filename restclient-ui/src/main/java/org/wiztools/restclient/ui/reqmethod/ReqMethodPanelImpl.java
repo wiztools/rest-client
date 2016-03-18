@@ -32,7 +32,8 @@ public class ReqMethodPanelImpl extends JPanel implements ReqMethodPanel {
     
     @Override
     public boolean doesSelectedMethodSupportEntityBody() {
-        return jrb_req_post.isSelected()
+        return jrb_req_get.isSelected()
+            || jrb_req_post.isSelected()
             || jrb_req_put.isSelected()
             || jrb_req_patch.isSelected()
             || jrb_req_delete.isSelected();
