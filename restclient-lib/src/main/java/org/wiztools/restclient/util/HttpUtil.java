@@ -164,7 +164,7 @@ public final class HttpUtil {
     
     private static final List<String> entityEnclosingMethods = 
             Collections.unmodifiableList(
-                    Arrays.asList(new String[]{"POST", "PUT", "PATCH", "DELETE"}));
+                    Arrays.asList(new String[]{"GET", "POST", "PUT", "PATCH", "DELETE"}));
     public static boolean isEntityEnclosingMethod(final String method) {
         return entityEnclosingMethods.contains(method);
     }

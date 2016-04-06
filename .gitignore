@@ -4,3 +4,5 @@
 /restclient-cli/target/
 /restclient-jfx/target/
 /target/
+.idea
+*.iml
