@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+// Application plugin config:
+mainClassName = 'org.wiztools.restclient.cli.CliMain'
+applicationName = 'frsh'
+applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
+
+allprojects {
+  tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
+  }
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven { url "https://jitpack.io" }
+}
+
+dependencies {
+  compile project(':restclient-lib'),
+    'com.google.code.cli-parser:cli:7'
+  testCompile 'junit:junit:4.+'
+}

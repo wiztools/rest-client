@@ -1,0 +1,34 @@
+apply plugin: 'java'
+
+allprojects {
+  tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
+  }
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven { url "https://jitpack.io" }
+}
+
+dependencies {
+  compile project(':restclient-server'),
+    'com.google.inject:guice:4.0',
+    'com.mycila.guice.extensions:mycila-guice-jsr250:3.6.ga',
+    'junit:junit:4.+',
+    'org.codehaus.jackson:jackson-mapper-asl:1.9.13',
+    'org.apache.httpcomponents:httpclient:4.5',
+    'org.apache.httpcomponents:httpmime:4.5',
+    'org.codehaus.groovy:groovy-all:2.4.4',
+    'net.htmlparser.jericho:jericho-html:3.3',
+    'org.wiztools:app-update:0.2.0'
+  compile('xom:xom:1.2.5') {
+    exclude group: 'xerces', module: 'xmlParserAPIs'
+    exclude group: 'xerces', module: 'xercesImpl'
+    exclude group: 'xalan', module: 'xalan'
+    exclude group: 'jaxen', module: 'jaxen'
+  }
+  testCompile 'junit:junit:4.+',
+    'com.google.code.gson:gson:2.3.1'
+}

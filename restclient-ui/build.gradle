@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+// Application plugin config:
+mainClassName = 'org.wiztools.restclient.ui.Main'
+applicationName = 'frsh'
+applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
+
+allprojects {
+  tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
+  }
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven { url "https://jitpack.io" }
+}
+
+dependencies {
+  compile project(':restclient-lib'),
+    'org.wiztools:filechooser-abstraction:0.1.0',
+    'com.jidesoft:jide-oss:3.6.10',
+    'org.swinglabs.swingx:swingx-autocomplete:1.6.5-1',
+    'com.fifesoft:rsyntaxtextarea:2.5.7',
+    'org.simplericity.macify:macify:1.6'
+  testCompile 'junit:junit:4.+'
+}

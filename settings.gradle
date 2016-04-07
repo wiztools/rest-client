@@ -1,0 +1,5 @@
+include 'restclient-server'
+include 'restclient-lib'
+include 'restclient-ui'
+include 'restclient-cli'
+// include 'restclient-jfx'

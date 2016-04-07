@@ -1,0 +1,10 @@
+plugins {
+  id 'net.researchgate.release' version '2.3.0'
+}
+
+apply plugin: 'java'
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}

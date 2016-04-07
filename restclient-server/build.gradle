@@ -1,0 +1,19 @@
+apply plugin: 'java'
+
+allprojects {
+  tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
+  }
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven { url "https://jitpack.io" }
+}
+
+dependencies {
+  compile 'org.wiztools:commons-lib:0.4.2',
+    'org.eclipse.jetty:jetty-servlet:9.3.2.v20150730'
+  testCompile 'junit:junit:4.+'
+}

@@ -4,5 +4,8 @@
 /restclient-cli/target/
 /restclient-jfx/target/
 /target/
+/build/
+**/build/
 .idea
 *.iml
+.gradle
