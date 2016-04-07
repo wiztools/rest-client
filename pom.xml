@@ -27,7 +27,7 @@
         <developerConnection>scm:git:git@github.com:wiztools/rest-client.git</developerConnection>
         <url>https://github.com/wiztools/rest-client</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
     <developers>
         <developer>
             <id>subwiz</id>
@@ -127,7 +127,7 @@
             </plugin>
         </plugins>
     </reporting>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.wiztools.commons</groupId>
@@ -135,12 +135,12 @@
             <version>0.4.1</version>
         </dependency>
     </dependencies>
-    
+
     <modules>
         <module>restclient-server</module>
         <module>restclient-lib</module>
         <module>restclient-ui</module>
         <module>restclient-cli</module>
         <module>restclient-jfx</module>
-  </modules>
+    </modules>
 </project>
