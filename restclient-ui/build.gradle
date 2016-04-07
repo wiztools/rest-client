@@ -3,7 +3,7 @@ apply plugin: 'application'
 
 // Application plugin config:
 mainClassName = 'org.wiztools.restclient.ui.Main'
-applicationName = 'frsh'
+applicationName = 'restclient'
 applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
 
 allprojects {
