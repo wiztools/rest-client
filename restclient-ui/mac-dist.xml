@@ -37,7 +37,7 @@
             applicationCategory="public.app-category.developer-tools">
             <runtime dir="${env.JAVA_HOME}"/>
             <arch name="x86_64"/>
-            <classpath file="build/libs/restclient-ui-${version}.jar" />
+            <classpath file="${target.dir}/libs/restclient-ui-fat-${version}.jar" />
             <option value="-Dapple.laf.useScreenMenuBar=true"/>
             <option value="-Dcom.apple.macos.use-file-dialog-packages=true"/>
             <option value="-Dapple.awt.application.name=RESTClient"/>
