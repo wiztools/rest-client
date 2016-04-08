@@ -8,3 +8,9 @@ repositories {
   mavenLocal()
   mavenCentral()
 }
+
+allprojects {
+  tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
+  }
+}

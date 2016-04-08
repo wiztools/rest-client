@@ -1,15 +1,8 @@
 apply plugin: 'java'
 
-allprojects {
-  tasks.withType(JavaCompile) {
-    options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
-  }
-}
-
 repositories {
   mavenLocal()
   mavenCentral()
-  maven { url "https://jitpack.io" }
 }
 
 dependencies {

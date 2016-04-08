@@ -6,16 +6,20 @@ mainClassName = 'org.wiztools.restclient.cli.CliMain'
 applicationName = 'restclient-cli'
 applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
 
-allprojects {
-  tasks.withType(JavaCompile) {
-    options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
-  }
-}
-
 repositories {
   mavenLocal()
   mavenCentral()
-  maven { url "https://jitpack.io" }
+}
+
+jar {
+  manifest {
+    attributes "Main-Class": "$mainClassName"
+  }
+  from {
+    configurations.compile.collect {
+      it.isDirectory() ? it : zipTree(it)
+    }
+  }
 }
 
 dependencies {
