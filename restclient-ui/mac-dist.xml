@@ -3,32 +3,29 @@
 
     <property environment="env" />
     <property name="app.name" value="RESTClient"/>
-    <property name="target.dir" value="target"/>
+    <property name="target.dir" value="build"/>
     <property name="dmg.dir" value="${target.dir}/${app.name}"/>
+    <!-- Get Product Version: -->
+    <property file="../gradle.properties"/>
 
+    <!-- appbundler from: https://bitbucket.org/infinitekind/appbundler -->
     <taskdef name="bundleapp"
-             classname="com.oracle.appbundler.AppBundlerTask"   
+             classname="com.oracle.appbundler.AppBundlerTask"
              classpath="ant-lib/appbundler-1.0ea.jar" />
-    <taskdef name="xpath" classname="org.wiztools.ant.xpath.XPathTask"
-             classpath="ant-lib/ant-xpath-task-1.0-SNAPSHOT.jar"/>
-             
+
     <target name="init">
         <mkdir dir="${dmg.dir}"/>
     </target>
 
     <target name="bundle" depends="init">
-        <!-- Get Product Version -->
-        <xpath document="pom.xml"
-               xpath="/project/version"
-               outputproperty="prjVersion"/>
-        <echo>Project version: ${prjVersion}</echo>
-        
+        <echo>Project version: ${version}</echo>
+
         <!-- DMG name -->
-        <property name="dmg.bin" value="${target.dir}/${app.name}-${prjVersion}.dmg"/>
-        
+        <property name="dmg.bin" value="${target.dir}/${app.name}-${version}.dmg"/>
+
         <!-- Delete already existing file -->
         <delete file="${dmg.bin}"/>
-        
+
         <!-- Create bundle -->
         <bundleapp outputdirectory="${dmg.dir}"
             name="${app.name}"
@@ -36,9 +33,11 @@
             identifier="org.wiztools.restclient.ui"
             mainclassname="org.wiztools.restclient.ui.Main"
             icon="src/main/app-resources/rest-client_30.icns"
-            shortversion="${prjVersion}">
-            <runtime dir="${env.JAVA_HOME}" />
-            <classpath file="target/restclient-ui-${prjVersion}-jar-with-dependencies.jar" />
+            shortversion="${version}"
+            applicationCategory="public.app-category.developer-tools">
+            <runtime dir="${env.JAVA_HOME}"/>
+            <arch name="x86_64"/>
+            <classpath file="build/libs/restclient-ui-${version}.jar" />
             <option value="-Dapple.laf.useScreenMenuBar=true"/>
             <option value="-Dcom.apple.macos.use-file-dialog-packages=true"/>
             <option value="-Dapple.awt.application.name=RESTClient"/>
@@ -47,7 +46,7 @@
             <option value="-Dfile.encoding=UTF-8"/>
             <option value="-Xmx1024M" name="Xmx"/>
         </bundleapp>
-        
+
         <!-- Create DMG -->
         <exec executable="hdiutil">
             <arg value="create"/>
@@ -61,7 +60,7 @@
             <arg value="${dmg.bin}"/>
         </exec>
     </target>
-    
+
     <target name="clean">
         <delete dir="${dmg.dir}"/>
         <delete file="${dmg.bin}"/>
