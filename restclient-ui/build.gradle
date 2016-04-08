@@ -11,15 +11,17 @@ repositories {
   mavenCentral()
 }
 
-jar {
+task fatJar(type: Jar) {
+  baseName = project.name + '-fat'
+
   manifest {
     attributes "Main-Class": "$mainClassName"
   }
+
   from {
-    configurations.compile.collect {
-      it.isDirectory() ? it : zipTree(it)
-    }
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
   }
+  with jar
 }
 
 dependencies {
