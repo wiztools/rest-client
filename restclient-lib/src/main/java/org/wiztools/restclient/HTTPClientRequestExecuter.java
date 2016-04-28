@@ -31,7 +31,6 @@ import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.mime.FormBodyPartBuilder;
@@ -57,6 +56,7 @@ import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.http.RESTClientCookieStore;
+import org.wiztools.restclient.http.TrustAllTrustStrategy;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.IDNUtil;
 import org.wiztools.restclient.util.Util;
@@ -391,7 +391,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                         sslReq.getKeyStore().getKeyStore();
 
                 final TrustStrategy trustStrategy = sslReq.isTrustSelfSignedCert()
-                        ? new TrustSelfSignedStrategy(): null;
+                        ? new TrustAllTrustStrategy(): null;
                 
                 SSLContext ctx = new SSLContextBuilder()
                         .loadKeyMaterial(keyStore, sslReq.getKeyStore()!=null? sslReq.getKeyStore().getPassword(): null)
