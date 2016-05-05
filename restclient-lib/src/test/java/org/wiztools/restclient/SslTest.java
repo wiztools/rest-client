@@ -48,7 +48,7 @@ public class SslTest {
         expResult.setHttpVersion(HTTPVersion.HTTP_1_1);
         expResult.setFollowRedirect(true);
         SSLReqBean ssl = new SSLReqBean();
-        ssl.setTrustSelfSignedCert(true);
+        ssl.setTrustAllCerts(true);
         ssl.setHostNameVerifier(SSLHostnameVerifier.ALLOW_ALL);
         expResult.setSslReq(ssl);
         

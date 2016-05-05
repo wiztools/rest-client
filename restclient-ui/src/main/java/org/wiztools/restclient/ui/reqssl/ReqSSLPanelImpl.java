@@ -23,7 +23,7 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
     
     // SSL - general
     private final JCheckBox jcb_disable_hostname_verifier = new JCheckBox("Disable hostname verification? ");
-    private final JCheckBox jcb_ssl_trust_self_signed_cert = new JCheckBox("Trust self-signed certificate? ");
+    private final JCheckBox jcb_ssl_trust_self_signed_cert = new JCheckBox("Ignore cert errors (self-signed, expired, etc.)? ");
     
     // SSL - trust store
     @Inject private KeyStorePanel jp_truststore;
@@ -41,7 +41,7 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
         SSLReqBean out = new SSLReqBean();
         
         out.setHostNameVerifier(getSelectedHostnameVerifier());
-        out.setTrustSelfSignedCert(jcb_ssl_trust_self_signed_cert.isSelected());
+        out.setTrustAllCerts(jcb_ssl_trust_self_signed_cert.isSelected());
         
         SSLKeyStore trustStore = jp_truststore.getKeyStore();    
         out.setTrustStore(trustStore);
@@ -63,7 +63,7 @@ public class ReqSSLPanelImpl extends JPanel implements ReqSSLPanel {
                 jcb_disable_hostname_verifier.setSelected(false);
                 break;
         }
-        jcb_ssl_trust_self_signed_cert.setSelected(sslReq.isTrustSelfSignedCert());
+        jcb_ssl_trust_self_signed_cert.setSelected(sslReq.isTrustAllCerts());
         
         // truststore / keystore tab:
         jp_truststore.setKeyStore(sslReq.getTrustStore());

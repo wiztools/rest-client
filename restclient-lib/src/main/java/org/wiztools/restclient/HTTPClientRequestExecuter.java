@@ -390,7 +390,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                         null:
                         sslReq.getKeyStore().getKeyStore();
 
-                final TrustStrategy trustStrategy = sslReq.isTrustSelfSignedCert()
+                final TrustStrategy trustStrategy = sslReq.isTrustAllCerts()
                         ? new TrustAllTrustStrategy(): null;
                 
                 SSLContext ctx = new SSLContextBuilder()

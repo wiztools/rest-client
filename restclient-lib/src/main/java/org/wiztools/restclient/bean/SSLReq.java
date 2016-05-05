@@ -9,7 +9,7 @@ import java.io.Serializable;
 public interface SSLReq extends Serializable {
 
     SSLHostnameVerifier getHostNameVerifier();
-    boolean isTrustSelfSignedCert();
+    boolean isTrustAllCerts();
 
     SSLKeyStore getKeyStore();
 

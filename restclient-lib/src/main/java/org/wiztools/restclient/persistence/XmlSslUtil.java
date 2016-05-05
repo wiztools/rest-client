@@ -22,8 +22,8 @@ class XmlSslUtil {
     static Element getSslReq(SSLReq req) {
         Element eSsl = new Element("ssl");
         
-        if(req.isTrustSelfSignedCert()) {
-            Element e = new Element("trust-self-signed-cert");
+        if(req.isTrustAllCerts()) {
+            Element e = new Element("ignore-cert-errs");
             eSsl.appendChild(e);
         }
         
@@ -62,8 +62,9 @@ class XmlSslUtil {
             Element e = eChildren.get(i);
             final String name = e.getLocalName();
             if(null != name) switch (name) {
-                case "trust-self-signed-cert":
-                    out.setTrustSelfSignedCert(true);
+                case "trust-self-signed-cert": // backward-compatibility...
+                case "ignore-cert-errs":
+                    out.setTrustAllCerts(true);
                     break;
                 case "hostname-verifier":
                     out.setHostNameVerifier(SSLHostnameVerifier.valueOf(e.getValue()));

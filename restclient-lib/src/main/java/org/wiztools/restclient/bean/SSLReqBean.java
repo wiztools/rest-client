@@ -14,14 +14,14 @@ public class SSLReqBean implements SSLReq {
     // Default to strict!
     private SSLHostnameVerifier hostNameVerifier = SSLHostnameVerifier.STRICT;
     
-    private boolean trustSelfSignedCert = false;
+    private boolean trustAllCerts = false;
 
     public void setHostNameVerifier(SSLHostnameVerifier sslHostNameVerifier) {
         this.hostNameVerifier = sslHostNameVerifier;
     }
     
-    public void setTrustSelfSignedCert(boolean sslTrustSelfSignedCert) {
-        this.trustSelfSignedCert = sslTrustSelfSignedCert;
+    public void setTrustAllCerts(boolean sslTrustSelfSignedCert) {
+        this.trustAllCerts = sslTrustSelfSignedCert;
     }
 
     public void setKeyStore(SSLKeyStore sslKeyStore) {
@@ -48,8 +48,8 @@ public class SSLReqBean implements SSLReq {
     }
 
     @Override
-    public boolean isTrustSelfSignedCert() {
-        return trustSelfSignedCert;
+    public boolean isTrustAllCerts() {
+        return trustAllCerts;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SSLReqBean implements SSLReq {
         hash = 29 * hash + Objects.hashCode(this.trustStore);
         hash = 29 * hash + Objects.hashCode(this.keyStore);
         hash = 29 * hash + Objects.hashCode(this.hostNameVerifier);
-        hash = 29 * hash + (this.trustSelfSignedCert ? 1 : 0);
+        hash = 29 * hash + (this.trustAllCerts ? 1 : 0);
         return hash;
     }
 
@@ -80,7 +80,7 @@ public class SSLReqBean implements SSLReq {
         if (this.hostNameVerifier != other.hostNameVerifier) {
             return false;
         }
-        if (this.trustSelfSignedCert != other.trustSelfSignedCert) {
+        if (this.trustAllCerts != other.trustAllCerts) {
             return false;
         }
         return true;
@@ -90,7 +90,7 @@ public class SSLReqBean implements SSLReq {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("@SSL[");
-        sb.append("trustSelfSignedCert=").append(trustSelfSignedCert).append(", ");
+        sb.append("trustSelfSignedCert=").append(trustAllCerts).append(", ");
         sb.append("hostNameVerifier=").append(hostNameVerifier).append(", ");
         sb.append("trustStore=").append(trustStore).append(", ");
         sb.append("keyStore=").append(keyStore).append(", ");
