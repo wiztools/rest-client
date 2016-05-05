@@ -9,3 +9,4 @@
 .idea
 *.iml
 .gradle
+/.nb-gradle/

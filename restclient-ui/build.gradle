@@ -1,3 +1,7 @@
+plugins {
+  id "edu.sc.seis.macAppBundle" version "2.1.6"
+}
+
 apply plugin: 'java'
 apply plugin: 'application'
 
@@ -5,6 +9,16 @@ apply plugin: 'application'
 mainClassName = 'org.wiztools.restclient.ui.Main'
 applicationName = 'restclient'
 applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
+
+macAppBundle {
+  mainClassName = 'org.wiztools.restclient.ui.Main'
+  icon = "src/main/app-resources/rest-client_30.icns"
+  bundleJRE = true
+  javaProperties.put("apple.laf.useScreenMenuBar", "true")
+  bundleIdentifier = 'org.wiztools.restclient.ui'
+  appName = 'WizTools.org RESTClient'
+  // backgroundImage = "doc/macbackground.png"
+}
 
 repositories {
   mavenLocal()
