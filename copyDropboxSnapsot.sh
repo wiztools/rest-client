@@ -1,12 +1,13 @@
 #!/bin/sh
 
-VERSION=`head pom.xml | grep 'version.*version' | sed -E 's/.*version.(.*)..version.*/\1/g'`
+source ./gradle.properties
 
-cp restclient-cli/target/restclient-cli-${VERSION}-jar-with-dependencies.jar \
-  restclient-ui/target/restclient-ui-${VERSION}-jar-with-dependencies.jar \
-  ~/Dropbox/Public/
+CLI=restclient-cli/build/libs/restclient-cli-fat-${version}.jar
+UI=restclient-ui/build/libs/restclient-ui-fat-${version}.jar
+DMG=restclient-ui/build/distributions/restclient-ui-${version}.dmg
 
-if [ -e restclient-ui/target/RESTClient-${VERSION}.dmg ]; then
-  cp restclient-ui/target/RESTClient-${VERSION}.dmg ~/Dropbox/Public/
+cp $CLI $UI ~/Dropbox/Public/
+
+if [ -e $DMG ]; then
+  cp $DMG ~/Dropbox/Public/
 fi
-
