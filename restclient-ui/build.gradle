@@ -41,9 +41,9 @@ task fatJar(type: Jar) {
 dependencies {
   compile project(':restclient-lib'),
     'org.wiztools:filechooser-abstraction:0.1.0',
-    'com.jidesoft:jide-oss:3.6.10',
+    'com.jidesoft:jide-oss:3.6.14',
     'org.swinglabs.swingx:swingx-autocomplete:1.6.5-1',
-    'com.fifesoft:rsyntaxtextarea:2.5.7',
+    'com.fifesoft:rsyntaxtextarea:2.5.8',
     'org.simplericity.macify:macify:1.6'
   testCompile 'junit:junit:4.+'
 }
