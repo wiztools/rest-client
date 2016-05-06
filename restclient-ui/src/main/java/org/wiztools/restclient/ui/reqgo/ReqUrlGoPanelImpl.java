@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.*;
+import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;
 import org.wiztools.restclient.ui.UIUtil;
@@ -97,7 +98,9 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     }
     
     private void jb_requestActionPerformed() {
-        jcb_url.push();
+        if(StringUtil.isNotEmpty((String)jcb_url.getSelectedItem())) {
+            jcb_url.push();
+        }
         
         for(ActionListener listener: listeners) {
             listener.actionPerformed(null);

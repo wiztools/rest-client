@@ -510,7 +510,7 @@ class RESTMain implements RESTUserInterface {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 String url = view.getUrl();
-                if(url != null){
+                if(StringUtil.isNotEmpty(url)){
                     int ret = JOptionPane.showConfirmDialog(frame,
                             "URL field not empty. Overwrite?",
                             "Request URL not empty",

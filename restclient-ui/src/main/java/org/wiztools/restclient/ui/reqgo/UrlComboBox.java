@@ -84,9 +84,7 @@ public class UrlComboBox extends JComboBox<String> {
     
     public void push() {
         final String item = (String) getSelectedItem();
-        if(StringUtil.isEmpty(item)) {
-            return;
-        }
+
         final int count = getItemCount();
         final LinkedList<String> l = new LinkedList<>();
         for(int i=0; i<count; i++){
