@@ -7,7 +7,7 @@ import java.util.Arrays;
  * @author subwiz
  */
 public final class Versions {
-    public static final String CURRENT = "3.5.1";
+    public static final String CURRENT = "3.6";
     
     private static final String[] VERSIONS = new String[]{
         "3.0", "3.1", "3.2", "3.2.1", "3.2.2", "3.2.3", "3.3", "3.3.1", "3.4",
