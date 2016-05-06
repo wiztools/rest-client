@@ -72,29 +72,29 @@ public class ReqMethodPanelImpl extends JPanel implements ReqMethodPanel {
     
     @Override
     public void setSelectedMethod(HTTPMethod method) {
-        switch(method) {
-            case GET:
+        switch(method.name()) {
+            case "GET":
                 jrb_req_get.setSelected(true);
                 break;
-            case HEAD:
+            case "HEAD":
                 jrb_req_head.setSelected(true);
                 break;
-            case POST:
+            case "POST":
                 jrb_req_post.setSelected(true);
                 break;
-            case PUT:
+            case "PUT":
                 jrb_req_put.setSelected(true);
                 break;
-            case PATCH:
+            case "PATCH":
                 jrb_req_patch.setSelected(true);
                 break;
-            case DELETE:
+            case "DELETE":
                 jrb_req_delete.setSelected(true);
                 break;
-            case OPTIONS:
+            case "OPTIONS":
                 jrb_req_options.setSelected(true);
                 break;
-            case TRACE:
+            case "TRACE":
                 jrb_req_trace.setSelected(true);
                 break;
         }

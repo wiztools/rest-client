@@ -102,35 +102,8 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         // Create all the builder objects:
         final HttpClientBuilder hcBuilder = HttpClientBuilder.create();
         final RequestConfig.Builder rcBuilder = RequestConfig.custom();
-        final RequestBuilder reqBuilder;
-        switch(request.getMethod()){
-            case GET:
-                reqBuilder = RequestBuilder.get();
-                break;
-            case POST:
-                reqBuilder = RequestBuilder.post();
-                break;
-            case PUT:
-                reqBuilder = RequestBuilder.put();
-                break;
-            case PATCH:
-                reqBuilder = RequestBuilder.create("PATCH");
-                break;
-            case DELETE:
-                reqBuilder = RequestBuilder.delete();
-                break;
-            case HEAD:
-                reqBuilder = RequestBuilder.head();
-                break;
-            case OPTIONS:
-                reqBuilder = RequestBuilder.options();
-                break;
-            case TRACE:
-                reqBuilder = RequestBuilder.trace();
-                break;
-            default:
-                throw new IllegalStateException("Method not defined!");
-        }
+        final RequestBuilder reqBuilder = RequestBuilder.create(
+                request.getMethod().name());
         
         // Retry handler (no-retries):
         hcBuilder.setRetryHandler(new DefaultHttpRequestRetryHandler(0, false));

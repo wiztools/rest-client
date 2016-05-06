@@ -1,15 +1,27 @@
 package org.wiztools.restclient.bean;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
  *
  * @author subwiz
  */
-public enum HTTPMethod {
-    GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS, TRACE;
+public class HTTPMethod {
+    public static final HTTPMethod GET = new HTTPMethod("GET");
+    public static final HTTPMethod POST = new HTTPMethod("POST");
+    public static final HTTPMethod PUT = new HTTPMethod("PUT");
+    public static final HTTPMethod PATCH = new HTTPMethod("PATCH");
+    public static final HTTPMethod DELETE = new HTTPMethod("DELETE");
+    public static final HTTPMethod HEAD = new HTTPMethod("HEAD");
+    public static final HTTPMethod OPTIONS = new HTTPMethod("OPTIONS");
+    public static final HTTPMethod TRACE = new HTTPMethod("TRACE");
 
-    private static final Logger LOG = Logger.getLogger(HTTPMethod.class.getName());
+    private final String method;
+    
+    public HTTPMethod(String method) {
+        this.method = method;
+    }
 
     public static HTTPMethod get(final String method){
         if("GET".equals(method)){
@@ -37,9 +49,42 @@ public enum HTTPMethod {
             return TRACE;
         }
         else{
-            LOG.warning("Unknown HTTP method encountered: " + method);
-            LOG.warning("Setting default HTTP method: GET");
-            return GET;
+            return new HTTPMethod(method);
         }
     }
+    
+    public String name() {
+        return method;
+    }
+
+    @Override
+    public String toString() {
+        return name();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.method);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final HTTPMethod other = (HTTPMethod) obj;
+        if (!Objects.equals(this.method, other.method)) {
+            return false;
+        }
+        return true;
+    }
+    
 }
