@@ -265,6 +265,9 @@ public class RESTViewImpl extends JPanel implements RESTView {
         
         // Method
         HTTPMethod method = jp_req_method.getSelectedMethod();
+        if(StringUtil.isEmpty(method.name())) {
+            throw new IllegalStateException("HTTP method name is empty.");
+        }
         request.setMethod(method);
         
         { // Get request headers
