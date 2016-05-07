@@ -84,4 +84,15 @@ public final class UIUtil {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(new StringSelection(str), null);
     }
+    
+    public static boolean hasRetinaDisplay() {
+        Object obj = Toolkit.getDefaultToolkit()
+                .getDesktopProperty("apple.awt.contentScaleFactor");
+        if (obj instanceof Float) {
+            Float f = (Float) obj;
+            int scale = f.intValue();
+            return (scale == 2);
+        }
+        return false;
+    }
 }
