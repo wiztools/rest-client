@@ -29,7 +29,10 @@ task fatJar(type: Jar) {
   baseName = project.name + '-fat'
 
   manifest {
-    attributes "Main-Class": "$mainClassName"
+    attributes(
+      "Main-Class": "$mainClassName",
+      "SplashScreen-Image": 'org/wiztools/restclient/Splash.png'
+    )
   }
 
   from {
