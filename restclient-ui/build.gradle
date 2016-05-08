@@ -1,5 +1,5 @@
 plugins {
-  id "edu.sc.seis.macAppBundle" version "2.1.6"
+  id "com.github.cr0.macappbundle" version "3.0.1"
 }
 
 apply plugin: 'java'
@@ -17,6 +17,14 @@ macAppBundle {
   javaProperties.put('apple.laf.useScreenMenuBar', 'true')
   bundleIdentifier = 'org.wiztools.restclient.ui'
   appName = 'WizTools.org RESTClient'
+  appCategory = 'public.app-category.developer-tools'
+  version = "$version"
+  shortVersion = "$version"
+  bundleIdentifier = 'org.wiztools.restclient.ui'
+  bundleCopyright = 'Copyright 2016 WizTools.org'
+  bundleExtras.put("NSHighResolutionCapable", "true")
+  javaProperties.put("file.encoding", "utf-8")
+  javaXProperties.add("mx1024M")
   // backgroundImage = "doc/macbackground.png"
 }
 
