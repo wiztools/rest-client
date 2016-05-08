@@ -12,9 +12,9 @@ applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
 
 macAppBundle {
   mainClassName = 'org.wiztools.restclient.ui.Main'
-  icon = "src/main/app-resources/rest-client_30.icns"
+  icon = 'src/main/app-resources/rest-client_30.icns'
   bundleJRE = false
-  javaProperties.put("apple.laf.useScreenMenuBar", "true")
+  javaProperties.put('apple.laf.useScreenMenuBar', 'true')
   bundleIdentifier = 'org.wiztools.restclient.ui'
   appName = 'WizTools.org RESTClient'
   // backgroundImage = "doc/macbackground.png"
