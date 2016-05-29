@@ -16,7 +16,7 @@ macAppBundle {
   bundleJRE = false
   javaProperties.put('apple.laf.useScreenMenuBar', 'true')
   bundleIdentifier = 'org.wiztools.restclient.ui'
-  appName = 'WizTools.org RESTClient'
+  appName = 'RESTClient'
   appCategory = 'public.app-category.developer-tools'
   version = "$version"
   shortVersion = "$version"
