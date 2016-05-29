@@ -13,7 +13,7 @@ The first version of RESTClient was released late 2007. Since then the tool has 
 
 ### Download
 
-Preferred binary download host: [FossHub](http://code.fosshub.com/WizToolsorg-RESTClient/downloads). Archives of releases made at Google Code available at [WizTools.org Download](http://download.wiztools.org/rest-client/archive/index.html).
+Get from [releases](https://github.com/wiztools/rest-client/releases). Archives of earlier releases made are at [FossHub](http://code.fosshub.com/WizToolsorg-RESTClient/downloads) and [WizTools.org Download](http://download.wiztools.org/rest-client/archive/index.html).
 
 ### Support
 
@@ -27,9 +27,9 @@ One source of revenue for this project is from sale of this book. Show your supp
 
 ### Screenshot
 
-3.4 release:
+3.6 release:
 
-[![](https://farm4.staticflickr.com/3873/14642040167_92b91796e1_b.jpg)](https://www.flickr.com/photos/subwiz/14642040167)
+[![](https://c2.staticflickr.com/8/7274/26722005544_e0e7067636_o.png)](https://www.flickr.com/photos/subwiz/26722005544/)
 
 More screenshots here: http://flickr.com/photos/subwiz/tags/restclient/
 
