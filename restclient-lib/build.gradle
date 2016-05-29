@@ -15,7 +15,7 @@ dependencies {
     'org.apache.httpcomponents:httpmime:4.5.2',
     'org.codehaus.groovy:groovy-all:2.4.4',
     'net.htmlparser.jericho:jericho-html:3.4',
-    'org.wiztools:app-update:0.2.0'
+    'com.github.wiztools:app-update-framework:app-update-0.2.1'
   compile('com.io7m.xom:xom:1.2.10') {
     exclude group: 'xerces', module: 'xmlParserAPIs'
     exclude group: 'xerces', module: 'xercesImpl'

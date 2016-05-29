@@ -13,4 +13,7 @@ allprojects {
   tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
   }
+  repositories {
+    maven { url "https://jitpack.io" }
+  }
 }
