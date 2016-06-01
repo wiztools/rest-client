@@ -108,6 +108,7 @@ public class ReqMethodPanelImpl extends JPanel implements ReqMethodPanel {
             default:
                 jrb_req_custom.setSelected(true);
                 jtf_custom.setText(method.name());
+                jtf_custom.setEnabled(true);
         }
     }
     
