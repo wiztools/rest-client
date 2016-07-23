@@ -6,6 +6,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  *
@@ -16,6 +17,9 @@ public interface SSLKeyStore {
     KeyStoreType getType();
     char[] getPassword();
     
-    KeyStore getKeyStore() throws KeyStoreException, IOException,
-            NoSuchAlgorithmException, CertificateException;
+    KeyStore getKeyStore() throws KeyStoreException,
+            IOException,
+            InvalidKeySpecException,
+            NoSuchAlgorithmException,
+            CertificateException;
 }

@@ -6,6 +6,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
 import org.wiztools.restclient.util.SSLUtil;
 
 /**
@@ -42,12 +43,15 @@ public class SSLKeyStoreBean implements SSLKeyStore {
 
     @Override
     public char[] getPassword() {
+        if(type == KeyStoreType.PEM) {
+            return SSLUtil.PEM_PWD.toCharArray();
+        }
         return password;
     }
     
     @Override
     public KeyStore getKeyStore()
-            throws KeyStoreException, IOException,
+            throws KeyStoreException, IOException, InvalidKeySpecException,
             NoSuchAlgorithmException, CertificateException {
         return SSLUtil.getKeyStore(file, type, password);
     }

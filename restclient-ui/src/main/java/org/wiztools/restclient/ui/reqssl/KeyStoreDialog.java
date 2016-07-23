@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -65,6 +67,19 @@ public class KeyStoreDialog extends EscapableDialog {
     
     @PostConstruct
     protected void init() {
+        // Init:
+        jp_type.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED) {
+                    jpf_pwd.setEnabled(false);
+                }
+                else {
+                    jpf_pwd.setEnabled(true);
+                }
+            }
+        }, KeyStoreType.PEM);
+        
         // DnD:
         FileDropTargetListener dndListener = new FileDropTargetListener();
         dndListener.addDndAction(new DndAction() {
@@ -184,7 +199,10 @@ public class KeyStoreDialog extends EscapableDialog {
         if(store != null) {
             jp_type.setSelectedKeyStoreType(store.getType());
             jtf_file.setText(store.getFile().getAbsolutePath());
-            jpf_pwd.setText(new String(store.getPassword()));
+            if(store.getType() != KeyStoreType.PEM)
+                jpf_pwd.setText(new String(store.getPassword()));
+            else
+                jpf_pwd.setText("");
         }
         else {
             clear();

@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.wiztools.restclient.bean.KeyStoreType;
 import org.wiztools.restclient.bean.SSLKeyStore;
 import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.UIUtil;
@@ -86,7 +87,8 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
 
     @Override
     public void onOk(SSLKeyStore store) {
-        String pwdAvailable = (store.getPassword()!=null && store.getPassword().length > 0)? "Yes": "No";
+        String pwdAvailable = store.getType() == KeyStoreType.PEM? "NA":
+                (store.getPassword()!=null && store.getPassword().length > 0)? "Yes": "No";
         String txt = MessageFormat.format(tmpl,
                 store.getType(), store.getFile().getName(), pwdAvailable);
         jtf.setText(txt);

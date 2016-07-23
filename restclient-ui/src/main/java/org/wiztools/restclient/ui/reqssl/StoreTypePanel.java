@@ -1,6 +1,7 @@
 package org.wiztools.restclient.ui.reqssl;
 
 import java.awt.FlowLayout;
+import java.awt.event.ItemListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -58,6 +59,24 @@ public class StoreTypePanel extends JPanel {
                 break;
             default:
                 throw new IllegalArgumentException("Unknown keystore-type: " + type);
+        }
+    }
+    
+    public void addItemListener(ItemListener listener, KeyStoreType ... types) {
+        for(KeyStoreType type: types) {
+            switch(type) {
+                case JKS:
+                    jrb_jks.addItemListener(listener);
+                    break;
+                case PKCS12:
+                    jrb_pkcs12.addItemListener(listener);
+                    break;
+                case PEM:
+                    jrb_pem.addItemListener(listener);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown keystore-type: " + type);
+            }
         }
     }
 }
