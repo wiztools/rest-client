@@ -24,7 +24,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.KeyStoreType;
-import static org.wiztools.restclient.bean.KeyStoreType.*;
 import org.wiztools.restclient.bean.SSLKeyStore;
 import org.wiztools.restclient.bean.SSLKeyStoreBean;
 import org.wiztools.restclient.ui.EscapableDialog;
