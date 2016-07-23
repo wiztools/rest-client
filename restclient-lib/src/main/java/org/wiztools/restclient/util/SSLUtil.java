@@ -61,12 +61,15 @@ public final class SSLUtil {
             byte[] certAndKey = Files.readAllBytes(file.toPath());
             byte[] certBytes = parseDERFromPEM(certAndKey, "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
             byte[] keyBytes = parseDERFromPEM(certAndKey, "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----");
-            X509Certificate cert = generateCertificateFromDER(certBytes);
-            RSAPrivateKey key  = generatePrivateKeyFromDER(keyBytes);
             
+            X509Certificate cert = generateCertificateFromDER(certBytes);
             String alias = cert.getSubjectX500Principal().getName();
             store.setCertificateEntry(alias, cert);
-            store.setKeyEntry("key-alias", key, PEM_PWD.toCharArray(), new Certificate[] {cert});
+            
+            if(keyBytes != null) {
+                RSAPrivateKey key  = generatePrivateKeyFromDER(keyBytes);
+                store.setKeyEntry("key-alias", key, PEM_PWD.toCharArray(), new Certificate[] {cert});
+            }
         }
         return store;
     }
@@ -74,7 +77,13 @@ public final class SSLUtil {
     protected static byte[] parseDERFromPEM(byte[] pem, String beginDelimiter, String endDelimiter) {
         String data = new String(pem);
         String[] tokens = data.split(beginDelimiter);
+        if(tokens.length < 2) { // no results found!
+            return null;
+        }
         tokens = tokens[1].split(endDelimiter);
+        if(tokens.length < 2) { // no results found!
+            return null;
+        }
         return DatatypeConverter.parseBase64Binary(tokens[0]);
     }
 
