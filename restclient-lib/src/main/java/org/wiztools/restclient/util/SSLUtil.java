@@ -59,16 +59,25 @@ public final class SSLUtil {
         
         if(file != null) {
             byte[] certAndKey = Files.readAllBytes(file.toPath());
-            byte[] certBytes = parseDERFromPEM(certAndKey, "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
-            byte[] keyBytes = parseDERFromPEM(certAndKey, "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----");
             
+            byte[] certBytes = parseDERFromPEM(certAndKey,
+                    "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
+            byte[] keyBytes = parseDERFromPEM(certAndKey,
+                    "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----");
+            
+            if(certBytes == null) {
+                throw new CertificateException(
+                        String.format("PEM (%s) has NO certificates!",
+                                file.getName()));
+            }
             X509Certificate cert = generateCertificateFromDER(certBytes);
             String alias = cert.getSubjectX500Principal().getName();
             store.setCertificateEntry(alias, cert);
             
             if(keyBytes != null) {
                 RSAPrivateKey key  = generatePrivateKeyFromDER(keyBytes);
-                store.setKeyEntry("key-alias", key, PEM_PWD.toCharArray(), new Certificate[] {cert});
+                store.setKeyEntry("key-alias", key, PEM_PWD.toCharArray(),
+                        new Certificate[] {cert});
             }
         }
         return store;
