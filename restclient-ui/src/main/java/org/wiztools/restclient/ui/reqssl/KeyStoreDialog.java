@@ -146,33 +146,32 @@ public class KeyStoreDialog extends EscapableDialog {
     private static final String fmtChangeMsg = "Keystore seems to be in {0} format.\nWant to update the format to {0}?";
     private static final String fmtChangeDialogTitle = "Change `Format' to {0}?";
     
+    private void storeTypeUsingDetectedExtn(KeyStoreType detectedType) {
+        if(jp_type.getSelectedKeyStoreType() != detectedType) {
+            final int result = JOptionPane.showConfirmDialog(this,
+                    MessageFormat.format(fmtChangeMsg, detectedType),
+                    MessageFormat.format(fmtChangeDialogTitle, detectedType),
+                    JOptionPane.YES_NO_OPTION);
+            if(result == JOptionPane.YES_OPTION) {
+                jp_type.setSelectedKeyStoreType(detectedType);
+            }
+        }
+    }
+    
     private void loadFile(File f) {
         if(f == null) {
             // do nothing--cancel pressed
         }
         else if(f.canRead()) {
-            final String fileName = f.getName();
+            final String fileName = f.getName().toLowerCase();
             if(fileName.endsWith(".p12") || fileName.endsWith(".pfx")) {
-                if(jp_type.getSelectedKeyStoreType() == JKS) {
-                    final int result = JOptionPane.showConfirmDialog(this,
-                            MessageFormat.format(fmtChangeMsg, PKCS12),
-                            MessageFormat.format(fmtChangeDialogTitle, PKCS12),
-                            JOptionPane.YES_NO_OPTION);
-                    if(result == JOptionPane.YES_OPTION) {
-                        jp_type.setSelectedKeyStoreType(PKCS12);
-                    }
-                }
+                storeTypeUsingDetectedExtn(PKCS12);
             }
             else if(fileName.endsWith(".jks")) {
-                if(jp_type.getSelectedKeyStoreType() == PKCS12) {
-                    final int result = JOptionPane.showConfirmDialog(this,
-                            MessageFormat.format(fmtChangeMsg, JKS),
-                            MessageFormat.format(fmtChangeDialogTitle, JKS),
-                            JOptionPane.YES_NO_OPTION);
-                    if(result == JOptionPane.YES_OPTION) {
-                        jp_type.setSelectedKeyStoreType(JKS);
-                    }
-                }
+                storeTypeUsingDetectedExtn(JKS);
+            }
+            else if(fileName.endsWith(".pem")) {
+                storeTypeUsingDetectedExtn(PEM);
             }
             jtf_file.setText(f.getAbsolutePath());
         }
