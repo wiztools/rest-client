@@ -178,15 +178,10 @@ public class KeyStoreDialog extends EscapableDialog {
             // do nothing--cancel pressed
         }
         else if(f.canRead()) {
-            final String fileName = f.getName().toLowerCase();
-            if(fileName.endsWith(".p12") || fileName.endsWith(".pfx")) {
-                storeTypeUsingDetectedExtn(PKCS12);
-            }
-            else if(fileName.endsWith(".jks")) {
-                storeTypeUsingDetectedExtn(JKS);
-            }
-            else if(fileName.endsWith(".pem")) {
-                storeTypeUsingDetectedExtn(PEM);
+            final String fileName = f.getName();
+            final KeyStoreType detectedStoreType = KeyStoreType.detectByExtn(fileName);
+            if(detectedStoreType != null) {
+                storeTypeUsingDetectedExtn(detectedStoreType);
             }
             jtf_file.setText(f.getAbsolutePath());
         }
