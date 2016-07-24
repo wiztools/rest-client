@@ -76,7 +76,8 @@ public final class SSLUtil {
                 store.setCertificateEntry(alias, cert);
             }
             
-            Certificate[] chain = cert==null? new Certificate[]{}: new Certificate[] {cert};
+            Certificate[] chain = cert==null?
+                    new Certificate[]{}: new Certificate[] {cert};
             
             if(pvtKeyBytes != null) {
                 RSAPrivateKey key  = generatePvtKeyFromDER(pvtKeyBytes);
@@ -87,7 +88,7 @@ public final class SSLUtil {
             if(pubKeyBytes != null) {
                 RSAPublicKey key = generatePubKeyFromDER(pubKeyBytes);
                 store.setKeyEntry("pubkey-alias", key, PEM_PWD.toCharArray(),
-                        chain);
+                        null);
             }
         }
         return store;
