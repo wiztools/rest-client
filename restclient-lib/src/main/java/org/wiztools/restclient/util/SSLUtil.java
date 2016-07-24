@@ -14,8 +14,10 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import org.wiztools.restclient.bean.KeyStoreType;
 
@@ -61,23 +63,31 @@ public final class SSLUtil {
             byte[] certAndKey = Files.readAllBytes(file.toPath());
             
             byte[] certBytes = parseDERFromPEM(certAndKey,
-                    "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
-            byte[] keyBytes = parseDERFromPEM(certAndKey,
-                    "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----");
+                    "-----BEGIN .*CERTIFICATE-----", "-----END .*CERTIFICATE-----");
+            byte[] pvtKeyBytes = parseDERFromPEM(certAndKey,
+                    "-----BEGIN .*PRIVATE KEY-----", "-----END .*PRIVATE KEY-----");
+            byte[] pubKeyBytes = parseDERFromPEM(certAndKey,
+                    "-----BEGIN .*PUBLIC KEY-----", "-----END .*PUBLIC KEY-----");
             
-            if(certBytes == null) {
-                throw new CertificateException(
-                        String.format("PEM (%s) has NO certificates!",
-                                file.getName()));
+            X509Certificate cert = null;
+            if(certBytes != null) {
+                cert = generateCertFromDER(certBytes);
+                String alias = cert.getSubjectX500Principal().getName();
+                store.setCertificateEntry(alias, cert);
             }
-            X509Certificate cert = generateCertificateFromDER(certBytes);
-            String alias = cert.getSubjectX500Principal().getName();
-            store.setCertificateEntry(alias, cert);
             
-            if(keyBytes != null) {
-                RSAPrivateKey key  = generatePrivateKeyFromDER(keyBytes);
+            Certificate[] chain = cert==null? new Certificate[]{}: new Certificate[] {cert};
+            
+            if(pvtKeyBytes != null) {
+                RSAPrivateKey key  = generatePvtKeyFromDER(pvtKeyBytes);
                 store.setKeyEntry("key-alias", key, PEM_PWD.toCharArray(),
-                        new Certificate[] {cert});
+                        chain);
+            }
+            
+            if(pubKeyBytes != null) {
+                RSAPublicKey key = generatePubKeyFromDER(pubKeyBytes);
+                store.setKeyEntry("pubkey-alias", key, PEM_PWD.toCharArray(),
+                        chain);
             }
         }
         return store;
@@ -96,13 +106,19 @@ public final class SSLUtil {
         return DatatypeConverter.parseBase64Binary(tokens[0]);
     }
 
-    protected static RSAPrivateKey generatePrivateKeyFromDER(byte[] keyBytes) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    protected static RSAPrivateKey generatePvtKeyFromDER(byte[] keyBytes) throws InvalidKeySpecException, NoSuchAlgorithmException {
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory factory = KeyFactory.getInstance("RSA");
-        return (RSAPrivateKey)factory.generatePrivate(spec);        
+        return (RSAPrivateKey)factory.generatePrivate(spec);
+    }
+    
+    protected static RSAPublicKey generatePubKeyFromDER(byte[] keyBytes) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
+        KeyFactory factory = KeyFactory.getInstance("RSA");
+        return (RSAPublicKey)factory.generatePublic(spec);
     }
 
-    protected static X509Certificate generateCertificateFromDER(byte[] certBytes) throws CertificateException {
+    protected static X509Certificate generateCertFromDER(byte[] certBytes) throws CertificateException {
         CertificateFactory factory = CertificateFactory.getInstance("X.509");
         return (X509Certificate)factory.generateCertificate(new ByteArrayInputStream(certBytes));
     }
