@@ -107,7 +107,6 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
         // JSON or XML?
         final boolean isXml = HttpUtil.isXmlContentType(type.getContentType());
         final boolean isJson = HttpUtil.isJsonContentType(type.getContentType());
-        final boolean isJs = HttpUtil.isJsContentType(type.getContentType());
         final boolean isHTML = HttpUtil.isHTMLContentType(type.getContentType());
         
         // Get the options:
@@ -121,8 +120,11 @@ public class ResBodyTextPanel extends AbstractResBody implements FontableEditor 
             if(isJson) {
                 se_response.setSyntax(TextEditorSyntax.JSON);
             }
-            if(isJs) {
+            if(HttpUtil.isJsContentType(type.getContentType())) {
                 se_response.setSyntax(TextEditorSyntax.JS);
+            }
+            if(HttpUtil.isCssContentType(type.getContentType())) {
+                se_response.setSyntax(TextEditorSyntax.CSS);
             }
             if(isHTML) {
                 se_response.setSyntax(TextEditorSyntax.HTML);

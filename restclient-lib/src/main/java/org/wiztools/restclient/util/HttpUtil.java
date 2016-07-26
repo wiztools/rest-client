@@ -162,6 +162,11 @@ public final class HttpUtil {
         return ct.startsWith("application/javascript")
                 || ct.startsWith("application/x-javascript");
     }
+    
+    public static boolean isCssContentType(final String contentType) {
+        final String ct = getContentTypeBeforeSemiColon(contentType);
+        return ct.startsWith("text/css");
+    }
 
     public static boolean isHTMLContentType(final String contentType) {
         final String ct = getContentTypeBeforeSemiColon(contentType);
