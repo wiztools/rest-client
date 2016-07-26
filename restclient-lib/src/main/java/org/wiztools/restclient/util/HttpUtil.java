@@ -130,11 +130,18 @@ public final class HttpUtil {
                 || ct.equals("image/gif");
     }
     
+    // All text content that needs to be rendered as text except those
+    // starting with `text/`:
+    private static List<String> TEXT_CT = Arrays.asList(new String[]{
+        "application/x-javascript", "application/javascript"
+    });
+    
     public static boolean isTextContentType(final String contentType) {
         final String ct = getContentTypeBeforeSemiColon(contentType);
         return ct.startsWith("text/")
                 || isXmlContentType(ct)
-                || isJsonContentType(ct);
+                || isJsonContentType(ct)
+                || TEXT_CT.contains(ct);
     }
     
     public static boolean isXmlContentType(final String contentType) {
@@ -148,6 +155,12 @@ public final class HttpUtil {
         final String ct = getContentTypeBeforeSemiColon(contentType);
         return ct.startsWith("application/json")
                 || ct.endsWith("+json");
+    }
+    
+    public static boolean isJsContentType(final String contentType) {
+        final String ct = getContentTypeBeforeSemiColon(contentType);
+        return ct.startsWith("application/javascript")
+                || ct.startsWith("application/x-javascript");
     }
 
     public static boolean isHTMLContentType(final String contentType) {

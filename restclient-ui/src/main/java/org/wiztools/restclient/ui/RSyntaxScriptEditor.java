@@ -29,20 +29,25 @@ public class RSyntaxScriptEditor extends AbstractScriptEditor {
     
     @Override
     public final void setSyntax(TextEditorSyntax syntax) {
-        if(syntax == TextEditorSyntax.GROOVY){
-            textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_GROOVY);
-        }
-        else if(syntax == TextEditorSyntax.XML){
-            textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
-        }
-        else if(syntax == TextEditorSyntax.JSON){
-            textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
-        }
-        else if (syntax == TextEditorSyntax.HTML){
-            textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
-        }
-        else {
-            textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
+        switch(syntax) {
+            case GROOVY:
+                textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_GROOVY);
+                break;
+            case XML:
+                textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
+                break;
+            case JSON:
+            case JS:
+                textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
+                break;
+            case HTML:
+                textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
+                break;
+            case CSS:
+                textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CSS);
+                break;
+            default:
+                textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
         }
     }
 
