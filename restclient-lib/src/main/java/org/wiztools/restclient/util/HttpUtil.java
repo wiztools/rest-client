@@ -160,7 +160,8 @@ public final class HttpUtil {
     public static boolean isJsContentType(final String contentType) {
         final String ct = getContentTypeBeforeSemiColon(contentType);
         return ct.startsWith("application/javascript")
-                || ct.startsWith("application/x-javascript");
+                || ct.startsWith("application/x-javascript")
+                || ct.startsWith("text/javascript");
     }
     
     public static boolean isCssContentType(final String contentType) {
