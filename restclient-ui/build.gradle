@@ -7,7 +7,7 @@ apply plugin: 'application'
 
 // Application plugin config:
 mainClassName = 'org.wiztools.restclient.ui.Main'
-applicationName = 'restclient'
+applicationName = 'restclient-ui'
 applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
 
 macAppBundle {
