@@ -30,7 +30,7 @@ public class AppUpdateRunner implements Runnable {
     
     private static final String PROP_UPDATE_CHECK_LAST = "update.check.last";
     private static final String PROP_UPDATE_CHECK_ENABLED = "update.check.enabled";
-    private static final long TIME_GAP = 604800000l; // 1 week in millis
+    static final long TIME_GAP = 604800000l; // 1 week in millis
     
     private void openUrl(String url) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
@@ -42,6 +42,31 @@ public class AppUpdateRunner implements Runnable {
                 LOG.log(Level.INFO, "Error when opening browser", ex);
             }
         }
+    }
+    
+    boolean doUpdateCheck(long lastUpdateCheck) {
+        if((lastUpdateCheck + TIME_GAP) < System.currentTimeMillis()) {
+            return true;
+        }
+        return false;
+    }
+    
+    boolean requiresUpdate(Version latestVersion) {
+        if(latestVersion.isGreaterThan(new VersionImpl(Versions.CURRENT))) {
+            return true;
+        }
+        return false;
+    }
+    
+    private VersionUrl data;
+    
+    boolean requiresUpdate() throws IOException {
+        data = VersionWSUtil.getLatestVersion(UPDATE_URL);
+        final Version latestVersion = data.getVersion();
+        if(requiresUpdate(latestVersion)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -55,19 +80,14 @@ public class AppUpdateRunner implements Runnable {
         final String strLastRun = options.getProperty(PROP_UPDATE_CHECK_LAST);
         if(strLastRun != null) {
             final long lastRun = Long.parseLong(strLastRun);
-            if((lastRun+TIME_GAP) > System.currentTimeMillis()) {
+            if(!doUpdateCheck(lastRun)) {
                 return;
             }
         }
         
         // Verify version:
         try {
-            final VersionUrl data = VersionWSUtil.getLatestVersion(UPDATE_URL);
-            Version latestVersion = data.getVersion();
-            Version currentVersion = new VersionImpl(Versions.CURRENT);
-            
-            // Newer version available:
-            if(latestVersion.isGreaterThan(currentVersion)) {
+            if(requiresUpdate()) {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
