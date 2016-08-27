@@ -37,8 +37,6 @@ class ResTestPanelImpl extends JPanel implements ResTestPanel {
     private final Icon ICON_SUCCESS = UIUtil.getIconFromClasspath("org/wiztools/restclient/test/accept.png");
     private final Icon ICON_FAILURE = UIUtil.getIconFromClasspath("org/wiztools/restclient/test/cross.png");
     
-    private static final Font BOLD_FONT = new Font(Font.DIALOG, Font.PLAIN, 18);
-    
     @PostConstruct
     protected void init() {
         JPanel jp = this;
@@ -64,15 +62,15 @@ class ResTestPanelImpl extends JPanel implements ResTestPanel {
             JLabel jl_t;
             
             // Set the font
-            jl_runCount.setFont(BOLD_FONT);
-            jl_failureCount.setFont(BOLD_FONT);
-            jl_errorCount.setFont(BOLD_FONT);
+            jl_runCount.setFont(UIUtil.FONT_BIG);
+            jl_failureCount.setFont(UIUtil.FONT_BIG);
+            jl_errorCount.setFont(UIUtil.FONT_BIG);
             
             // Tests Run
             jp_t = new JPanel();
             jp_t.setLayout(new BorderLayout());
             jl_t = new JLabel("Tests Run: ");
-            jl_t.setFont(BOLD_FONT);
+            jl_t.setFont(UIUtil.FONT_BIG);
             jp_t.add(jl_t, BorderLayout.CENTER);
             jp_t.add(jl_runCount, BorderLayout.EAST);
             jp_summary.add(jp_t);
@@ -81,7 +79,7 @@ class ResTestPanelImpl extends JPanel implements ResTestPanel {
             jp_t = new JPanel();
             jp_t.setLayout(new BorderLayout());
             jl_t = new JLabel("Tests Failures: ");
-            jl_t.setFont(BOLD_FONT);
+            jl_t.setFont(UIUtil.FONT_BIG);
             jp_t.add(jl_t, BorderLayout.CENTER);
             jp_t.add(jl_failureCount, BorderLayout.EAST);
             jp_summary.add(jp_t);
@@ -90,7 +88,7 @@ class ResTestPanelImpl extends JPanel implements ResTestPanel {
             jp_t = new JPanel();
             jp_t.setLayout(new BorderLayout());
             jl_t = new JLabel("Tests Errors: ");
-            jl_t.setFont(BOLD_FONT);
+            jl_t.setFont(UIUtil.FONT_BIG);
             jp_t.add(jl_t, BorderLayout.CENTER);
             jp_t.add(jl_errorCount, BorderLayout.EAST);
             jp_summary.add(jp_t);

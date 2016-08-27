@@ -1,14 +1,13 @@
 package org.wiztools.restclient.ui.resstats;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
 import javax.annotation.PostConstruct;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.wiztools.restclient.ui.UIUtil;
 
 /**
  *
@@ -21,8 +20,6 @@ public class ResStatsPanelImpl extends JPanel implements ResStatsPanel {
     
     private static final String UNKNOWN_NUM = "[x]";
     
-    private static final Font BOLD_FONT = new Font(Font.DIALOG, Font.PLAIN, 18);
-    
     private final JTextField jtf_execTime = new JTextField(UNKNOWN_NUM);
     private final JTextField jtf_bodySize = new JTextField(UNKNOWN_NUM);
     
@@ -31,8 +28,8 @@ public class ResStatsPanelImpl extends JPanel implements ResStatsPanel {
         setLayout(new FlowLayout(FlowLayout.LEFT));
         
         // Set big fonts:
-        jtf_execTime.setFont(BOLD_FONT);
-        jtf_bodySize.setFont(BOLD_FONT);
+        jtf_execTime.setFont(UIUtil.FONT_BIG);
+        jtf_bodySize.setFont(UIUtil.FONT_BIG);
         jtf_execTime.setEditable(false);
         jtf_bodySize.setEditable(false);
         
@@ -40,7 +37,7 @@ public class ResStatsPanelImpl extends JPanel implements ResStatsPanel {
         // Response time:
         {
             JLabel jl = new JLabel("Response time: ");
-            jl.setFont(BOLD_FONT);
+            jl.setFont(UIUtil.FONT_BIG);
             jp.add(jl);
         }
         jp.add(jtf_execTime);
@@ -49,7 +46,7 @@ public class ResStatsPanelImpl extends JPanel implements ResStatsPanel {
         // Body size:
         {
             JLabel jl = new JLabel("Body size: ");
-            jl.setFont(BOLD_FONT);
+            jl.setFont(UIUtil.FONT_BIG);
             jp.add(jl);
         }
         jp.add(jtf_bodySize);
