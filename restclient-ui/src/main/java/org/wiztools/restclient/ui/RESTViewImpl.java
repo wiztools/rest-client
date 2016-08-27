@@ -39,6 +39,7 @@ import org.wiztools.restclient.ui.reqmethod.ReqMethodPanel;
 import org.wiztools.restclient.ui.reqtest.ReqTestPanel;
 import org.wiztools.restclient.ui.resbody.ResBodyPanel;
 import org.wiztools.restclient.ui.resheader.ResHeaderPanel;
+import org.wiztools.restclient.ui.resstats.ResStatsPanel;
 import org.wiztools.restclient.ui.resstatus.ResStatusPanel;
 import org.wiztools.restclient.ui.restest.ResTestPanel;
 import org.wiztools.restclient.util.ContentTypesCommon;
@@ -72,6 +73,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Inject private ResHeaderPanel jp_res_headers;
     @Inject private ResBodyPanel jp_res_body;
     @Inject private ResTestPanel jp_res_test;
+    @Inject private ResStatsPanel jp_res_stats;
 
     @Inject private MessageDialog messageDialog;
     @Inject private RESTUserInterface rest_ui;
@@ -132,6 +134,9 @@ public class RESTViewImpl extends JPanel implements RESTView {
         
         // Test result
         jtp.addTab("Test Result", jp_res_test.getComponent());
+        
+        // Stats
+        jtp.addTab("Stats", jp_res_stats.getComponent());
         
         return jtp;
     }
@@ -242,6 +247,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
             }
         }
         response.setTestResult(jp_res_test.getTestResult());
+        response.setExecutionTime(jp_res_stats.getExecutionTime());
         return response;
     }
     
@@ -457,6 +463,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp_res_body.clear();
         jp_res_headers.clear();
         jp_res_test.clear();
+        jp_res_stats.clear();
     }
     
     @Override
@@ -565,6 +572,10 @@ public class RESTViewImpl extends JPanel implements RESTView {
 
         // Response test result
         jp_res_test.setTestResult(response.getTestResult());
+        
+        // Stats:
+        jp_res_stats.setBodySize(response.getResponseBody().length);
+        jp_res_stats.setExecutionTime(response.getExecutionTime());
     }
     
     @Override
