@@ -7,12 +7,12 @@ repositories {
 
 dependencies {
   compile project(':restclient-server'),
-    'com.google.inject:guice:4.0',
+    'com.google.inject:guice:4.1.0',
     'com.mycila.guice.extensions:mycila-guice-jsr250:3.6.ga',
     'junit:junit:4.12',
     'org.codehaus.jackson:jackson-mapper-asl:1.9.13',
-    'org.apache.httpcomponents:httpclient:4.5.2',
-    'org.apache.httpcomponents:httpmime:4.5.2',
+    'org.apache.httpcomponents:httpclient:4.5.3',
+    'org.apache.httpcomponents:httpmime:4.5.3',
     'org.codehaus.groovy:groovy-all:2.4.4',
     'net.htmlparser.jericho:jericho-html:3.4',
     'com.github.wiztools:app-update-framework:app-update-0.2.1'
@@ -23,5 +23,5 @@ dependencies {
     exclude group: 'jaxen', module: 'jaxen'
   }
   testCompile 'junit:junit:4.+',
-    'com.google.code.gson:gson:2.3.1'
+    'com.google.code.gson:gson:2.8.0'
 }
