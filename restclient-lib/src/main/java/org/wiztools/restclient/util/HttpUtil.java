@@ -141,6 +141,7 @@ public final class HttpUtil {
         return ct.startsWith("text/")
                 || isXmlContentType(ct)
                 || isJsonContentType(ct)
+                || isFormUrlEncodedContentType(ct)
                 || TEXT_CT.contains(ct);
     }
     
@@ -173,6 +174,11 @@ public final class HttpUtil {
         final String ct = getContentTypeBeforeSemiColon(contentType);
         return ct.startsWith("text/html")
                 || ct.endsWith("+html");
+    }
+
+    public static boolean isFormUrlEncodedContentType(final String contentType) {
+        final String ct = getContentTypeBeforeSemiColon(contentType);
+        return ct.startsWith("application/x-www-form-urlencoded");
     }
 
     public static Charset getCharsetDefault(final ContentType type) {
