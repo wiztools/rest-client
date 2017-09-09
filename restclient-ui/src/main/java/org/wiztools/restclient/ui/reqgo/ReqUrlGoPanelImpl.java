@@ -99,6 +99,8 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
                         if (e.getStateChange() == ItemEvent.DESELECTED) {
                             rest_ui.getView().setUIFromRequest(matchRequest, false);
                         }
+                    } else {
+                        rest_ui.getView().clearUIRequest(false);
                     }
                 }
 
