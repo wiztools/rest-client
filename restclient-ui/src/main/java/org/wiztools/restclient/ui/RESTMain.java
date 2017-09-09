@@ -259,7 +259,7 @@ class RESTMain implements RESTUserInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 view.clearUIResponse();
-                view.clearUIRequest();
+                view.clearUIRequest(true);
             }
         });
         jm_edit.add(jmi_reset_all);
@@ -297,13 +297,13 @@ class RESTMain implements RESTUserInterface {
                     try {
                         Request reqFromUi = view.getRequestFromUI();
                         if(!reqFromUi.equals(historyManager.current())) {
-                            view.setUIFromRequest(historyManager.current());
+                            view.setUIFromRequest(historyManager.current(), true);
                             return;
                         }
                     }
                     catch(IllegalStateException ex) {
                         if(historyManager.current() != null) {
-                            view.setUIFromRequest(historyManager.current());
+                            view.setUIFromRequest(historyManager.current(), true);
                             return;
                         }
                     }
@@ -313,7 +313,7 @@ class RESTMain implements RESTUserInterface {
                 if(!historyManager.isOldest()) {
                     Request request = historyManager.back();
                     if(request != null) {
-                        view.setUIFromRequest(request);
+                        view.setUIFromRequest(request, true);
                     }
                 }
                 else {
@@ -332,7 +332,7 @@ class RESTMain implements RESTUserInterface {
                 if(!historyManager.isMostRecent()) {
                     Request request = historyManager.forward();
                     if(request != null) {
-                        view.setUIFromRequest(request);
+                        view.setUIFromRequest(request, true);
                     }
                 }
                 else {

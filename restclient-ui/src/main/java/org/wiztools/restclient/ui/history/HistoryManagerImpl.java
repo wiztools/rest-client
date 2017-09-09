@@ -95,6 +95,11 @@ public class HistoryManagerImpl implements HistoryManager {
             options.setProperty(HISTORY_SIZE_CONFIG_KEY, String.valueOf(maxSize));
         }
     }
+
+    @Override
+    public void setCursor(int sCurtor) {
+        cursor = sCurtor;
+    }
     
     @Override
     public int getHistorySize() {
@@ -220,7 +225,8 @@ public class HistoryManagerImpl implements HistoryManager {
     public int size() {
         return data.size();
     }
-    
+
+    @Override
     public int cursor() {
         return cursor;
     }

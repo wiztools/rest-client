@@ -23,7 +23,7 @@ public class FileOpenUtil {
         try {
             PersistenceRead p = new XmlPersistenceRead();
             Request request = p.getRequestFromFile(f);
-            view.setUIFromRequest(request);
+            view.setUIFromRequest(request, true);
         }
         catch(IOException | XMLException ex){
             e = ex;
@@ -55,7 +55,7 @@ public class FileOpenUtil {
             Request request = encp.getRequestBean();
             Response response = encp.getResponseBean();
             if(request != null && response != null){
-                view.setUIFromRequest(request);
+                view.setUIFromRequest(request,true);
                 view.setUIFromResponse(response);
             }
             else{

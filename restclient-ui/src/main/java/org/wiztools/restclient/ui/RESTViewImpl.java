@@ -220,9 +220,14 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Override
     public void setUIToLastRequestResponse(){
         if(historyManager.lastRequest() != null && lastResponse != null){
-            setUIFromRequest(historyManager.lastRequest());
+            setUIFromRequest(historyManager.lastRequest(), true);
             setUIFromResponse(lastResponse);
         }
+    }
+
+    @Override
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
     
     @Override
@@ -498,9 +503,11 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
     
     @Override
-    public void clearUIRequest() {
+    public void clearUIRequest(Boolean isNeedClearUrl) {
         // URL
-        jp_url_go.clear();
+        if (isNeedClearUrl) {
+            jp_url_go.clear();
+        }
         
         // Method
         jp_req_method.clear();
@@ -553,12 +560,14 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
     
     @Override
-    public void setUIFromRequest(final Request request){
+    public void setUIFromRequest(final Request request, Boolean isNeedSetUrl){
         // Clear first
-        clearUIRequest();
+        clearUIRequest(isNeedSetUrl);
 
         // URL
-        jp_url_go.setUrlString(request.getUrl().toString());
+        if (isNeedSetUrl) {
+            jp_url_go.setUrlString(request.getUrl().toString());
+        }
 
         // Method
         final HTTPMethod reqMethod = request.getMethod();
