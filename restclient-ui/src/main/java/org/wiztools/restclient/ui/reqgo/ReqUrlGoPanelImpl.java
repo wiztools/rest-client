@@ -14,9 +14,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.*;
 import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;
 import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.ui.history.HistoryManager;
 
 /**
  *
@@ -39,7 +41,33 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     private final JButton jb_request = new JButton(icon_go);
     
     private final List<ActionListener> listeners = new ArrayList<>();
-    
+
+    private Request findMatchUrl(HistoryManager historyManger, String matchingUrl){
+        int currentCursor = historyManger.cursor();
+        Request backRequest;
+        Request forwardRequest;
+        Request currentRequest = historyManger.current();
+        if (null != currentRequest && currentRequest.getUrl().toString().equals(matchingUrl)) {
+            return currentRequest;
+        }
+        backRequest = historyManger.back();
+        while (null != backRequest) {
+            if (backRequest.getUrl().toString().equals(matchingUrl)) {
+                return backRequest;
+            }
+            backRequest = historyManger.back();
+        }
+        historyManger.setCursor(currentCursor);
+        forwardRequest = historyManger.forward();
+        while ( null != forwardRequest) {
+            if (forwardRequest.getUrl().toString().equals(matchingUrl)) {
+                return forwardRequest;
+            }
+            forwardRequest = historyManger.forward();
+        }
+        return null;
+    }
+
     @PostConstruct
     protected void init() {
         { // Keystroke for focusing on the address bar:
@@ -55,6 +83,29 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
                 }
             });
         }
+
+        // when url is selected, search the history and set method,body etc.
+        jcb_url.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                String url = "";
+                HistoryManager historyManager = rest_ui.getView().getHistoryManager();
+                Object urlObject = jcb_url.getSelectedItem();
+                if (null != urlObject) {
+                    url = urlObject.toString();
+                    Request matchRequest = findMatchUrl(historyManager, url);
+                    if (null != matchRequest) {
+                        // set method,body etc.
+                        if (e.getStateChange() == ItemEvent.DESELECTED) {
+                            rest_ui.getView().setUIFromRequest(matchRequest, false);
+                        }
+                    } else {
+                        rest_ui.getView().clearUIRequest(false);
+                    }
+                }
+
+            }
+        });
         
         // Layout follows:
         

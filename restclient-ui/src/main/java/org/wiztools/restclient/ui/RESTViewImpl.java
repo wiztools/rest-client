@@ -9,6 +9,7 @@ import java.io.File;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.bean.*;
+import org.wiztools.restclient.ui.customrest.CustomDebugView;
 import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 import org.wiztools.restclient.ui.history.HistoryManager;
 import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
@@ -65,6 +67,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Inject private ReqSSLPanel jp_req_ssl;
     @Inject private ReqEtcPanel jp_req_etc;
     @Inject private ReqTestPanel jp_req_test;
+    @Inject private CustomDebugView customrest;
     
     // Response panels:
     @Inject private ResStatusPanel jp_res_status;
@@ -117,6 +120,9 @@ public class RESTViewImpl extends JPanel implements RESTView {
         
         // Test script panel
         jtp.addTab("Test", jp_req_test.getComponent());
+
+        // Custom panel
+        jtp.addTab("Custom", customrest.getComponent());
         
         return jtp;
     }
@@ -220,9 +226,14 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Override
     public void setUIToLastRequestResponse(){
         if(historyManager.lastRequest() != null && lastResponse != null){
-            setUIFromRequest(historyManager.lastRequest());
+            setUIFromRequest(historyManager.lastRequest(), true);
             setUIFromResponse(lastResponse);
         }
+    }
+
+    @Override
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
     
     @Override
@@ -332,6 +343,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
                 if(errors.isEmpty()){
                     clearUIResponse();
                     final RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
+                    customrest.setHostIp();//发送命令时，将IP信息写入数据库保存起来
                     // Execute the request:
                     requestThread = new Thread(){
                         @Override
@@ -498,9 +510,11 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
     
     @Override
-    public void clearUIRequest() {
+    public void clearUIRequest(Boolean isNeedClearUrl) {
         // URL
-        jp_url_go.clear();
+        if (isNeedClearUrl) {
+            jp_url_go.clear();
+        }
         
         // Method
         jp_req_method.clear();
@@ -513,7 +527,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         
         // Body
         jp_req_body.clear();
-        jp_req_body.disableBody();
+//        jp_req_body.disableBody();
         
         // Auth
         jp_req_auth.clear();
@@ -526,6 +540,11 @@ public class RESTViewImpl extends JPanel implements RESTView {
         
         // Script
         jp_req_test.clear();
+
+        // Adma
+        if (isNeedClearUrl) {
+            customrest.clear();
+        }
     }
     
     @Override
@@ -551,14 +570,53 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp_res_stats.setBodySize(response.getResponseBody().length);
         jp_res_stats.setExecutionTime(response.getExecutionTime());
     }
+
+    @Override
+    public Boolean isNeedEntity() {
+        return jp_req_method.doesSelectedMethodSupportEntityBody();
+    }
+
+    @Override
+    public void setResBody(String postData, String contentType) {
+        String[] splitContent = contentType.split(";");
+        ContentType content = new ContentType() {
+            @Override
+            public String getContentType() {
+                return splitContent[0];
+            }
+
+            @Override
+            public Charset getCharset() {
+//                LOG.log(Level.INFO, " charset is " + splitContent[1]);
+                return Charset.forName(splitContent[1]);
+            }
+        };
+        ReqEntity admaEntity = null;
+        if (HttpUtil.isTextContentType(content.getContentType())) {
+            admaEntity = new ReqEntityStringBean(postData, content);
+            jp_req_body.setEntity(admaEntity);
+        }
+
+        //jp_res_body.setBody(postData.getBytes(), content);
+
+
+    }
+
+    @Override
+    public void setMethod(String methodName) {
+        HTTPMethod method = new HTTPMethod(methodName.toUpperCase());
+        jp_req_method.setSelectedMethod(method);
+    }
     
     @Override
-    public void setUIFromRequest(final Request request){
+    public void setUIFromRequest(final Request request, Boolean isNeedSetUrl){
         // Clear first
-        clearUIRequest();
+        clearUIRequest(isNeedSetUrl);
 
         // URL
-        jp_url_go.setUrlString(request.getUrl().toString());
+        if (isNeedSetUrl) {
+            jp_url_go.setUrlString(request.getUrl().toString());
+        }
 
         // Method
         final HTTPMethod reqMethod = request.getMethod();

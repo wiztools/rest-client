@@ -6,6 +6,7 @@ import java.awt.Font;
 import org.wiztools.restclient.View;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
+import org.wiztools.restclient.ui.history.HistoryManager;
 
 /**
  *
@@ -29,6 +30,10 @@ public interface RESTView extends View {
     Font getTextAreaFont();
 
     String getUrl();
+	
+    HistoryManager getHistoryManager();
+	
+    Boolean isNeedEntity();
 
     void runClonedRequestTest(Request request, Response response);
 
@@ -40,19 +45,23 @@ public interface RESTView extends View {
 
     void setUrl(String url);
 
+    void setMethod(String methodName);
+
     void showError(final String error);
     void showError(final Throwable ex);
 
     void showMessage(final String title, final String message);
     
-    void setUIFromRequest(Request request);
+    void setUIFromRequest(Request request, Boolean isNeedSetUrl);
     void setUIFromResponse(Response response);
     
     void clearUIResponse();
     
-    void clearUIRequest();
+    void clearUIRequest(Boolean isNeedClearUrl);
     
     void setUIToLastRequestResponse();
     
     Container getContainer();
+
+    void setResBody(String postData, String contentType);
 }

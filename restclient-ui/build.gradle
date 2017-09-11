@@ -24,6 +24,7 @@ macAppBundle {
   bundleCopyright = 'Copyright 2016 WizTools.org'
   bundleExtras.put("NSHighResolutionCapable", "true")
   javaProperties.put("file.encoding", "utf-8")
+  javaProperties.put("Dfile.encoding", "gbk")
   javaXProperties.add("mx1024M")
   // backgroundImage = "doc/macbackground.png"
 }
@@ -55,6 +56,8 @@ dependencies {
     'com.jidesoft:jide-oss:3.6.14',
     'org.swinglabs.swingx:swingx-autocomplete:1.6.5-1',
     'com.fifesoft:rsyntaxtextarea:2.5.8',
-    'org.simplericity.macify:macify:1.6'
+    'org.simplericity.macify:macify:1.6',
+    'dom4j:dom4j:1.6.1',
+    'org.xerial:sqlite-jdbc:3.8.11.2'
   testCompile 'junit:junit:4.+'
 }
