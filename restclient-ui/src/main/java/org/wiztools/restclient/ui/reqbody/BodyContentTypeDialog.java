@@ -32,7 +32,7 @@ import org.wiztools.restclient.ui.RESTUserInterface;
 public class BodyContentTypeDialog extends EscapableDialog {
     
     private static final String[] contentTypeArr;
-    public static final String DEFAULT_CONTENT_TYPE = "text/plain";
+    public static final String DEFAULT_CONTENT_TYPE = "application/json";
     
     private static final String[] charSetArr;
     public static final String DEFAULT_CHARSET = "UTF-8";

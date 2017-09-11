@@ -7,7 +7,7 @@ repositories {
 
 dependencies {
   compile project(':restclient-server'),
-    'com.google.inject:guice:4.1.0',
+    'com.google.inject:guice:3.0',
     'com.mycila.guice.extensions:mycila-guice-jsr250:3.6.ga',
     'junit:junit:4.12',
     'org.codehaus.jackson:jackson-mapper-asl:1.9.13',

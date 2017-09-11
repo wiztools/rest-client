@@ -30,8 +30,10 @@ public interface RESTView extends View {
     Font getTextAreaFont();
 
     String getUrl();
-
+	
     HistoryManager getHistoryManager();
+	
+    Boolean isNeedEntity();
 
     void runClonedRequestTest(Request request, Response response);
 
@@ -42,6 +44,8 @@ public interface RESTView extends View {
     void setTextAreaScrollSpeed(final int scrollSpeed);
 
     void setUrl(String url);
+
+    void setMethod(String methodName);
 
     void showError(final String error);
     void showError(final Throwable ex);
@@ -58,4 +62,6 @@ public interface RESTView extends View {
     void setUIToLastRequestResponse();
     
     Container getContainer();
+
+    void setResBody(String postData, String contentType);
 }

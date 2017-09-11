@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cunstomcomand>
+<!-- bodytype ©иртн╙ string, file, bytearray, urlstream, mutilpart -->
+	
+    <filed method="get" serviceport="8888">
+        <commandname>group_subcmd</commandname>
+        <command>test1/test2?param1=$##$&amp;param2=$##$</command>
+        <tips>some tips</tips>
+        <params>param1$##$param2</params>
+        <postdata> </postdata>
+	<bodytype>string</bodytype>
+	<contenttype>application/json;utf-8</contenttype>
+    </filed>
+
+    <filed method="post" serviceport="8888">
+        <commandname>group_subcmd</commandname>
+        <command>test1/test2</command>
+        <tips>some tips</tips>
+        <params></params>
+        <postdata>postData</postdata>
+	<bodytype>string</bodytype>
+	<contenttype>application/json;utf-8</contenttype>
+    </filed>
+</customcomand>
