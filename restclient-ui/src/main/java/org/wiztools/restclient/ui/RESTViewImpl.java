@@ -504,35 +504,37 @@ public class RESTViewImpl extends JPanel implements RESTView {
     
     @Override
     public void clearUIRequest(Boolean isNeedClearUrl) {
-        // URL
-        if (isNeedClearUrl) {
-            jp_url_go.clear();
-        }
-        
         // Method
         jp_req_method.clear();
-        
-        // Headers
-        jp_2col_req_headers.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
-        
-        // Cookies
-        jp_2col_req_cookies.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
-        
+
         // Body
         jp_req_body.clear();
-        jp_req_body.disableBody();
-        
-        // Auth
-        jp_req_auth.clear();
-        
-        // SSL
-        jp_req_ssl.clear();
-        
-        // Etc panel
-        jp_req_etc.clear();
-        
-        // Script
-        jp_req_test.clear();
+
+        if (isNeedClearUrl) {
+            // URL
+            jp_url_go.clear();
+            
+            // Headers
+            jp_2col_req_headers.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
+
+            // Cookies
+            jp_2col_req_cookies.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
+
+            // Auth
+            jp_req_auth.clear();
+
+            // SSL
+            jp_req_ssl.clear();
+
+            // Etc panel
+            jp_req_etc.clear();
+
+            // Script
+            jp_req_test.clear();
+			
+            // disable body
+            jp_req_body.disableBody();
+        }
     }
     
     @Override
