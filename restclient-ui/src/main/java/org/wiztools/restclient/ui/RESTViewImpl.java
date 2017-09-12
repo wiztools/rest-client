@@ -220,9 +220,14 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Override
     public void setUIToLastRequestResponse(){
         if(historyManager.lastRequest() != null && lastResponse != null){
-            setUIFromRequest(historyManager.lastRequest());
+            setUIFromRequest(historyManager.lastRequest(), true);
             setUIFromResponse(lastResponse);
         }
+    }
+
+    @Override
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
     
     @Override
@@ -498,34 +503,38 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
     
     @Override
-    public void clearUIRequest() {
-        // URL
-        jp_url_go.clear();
-        
+    public void clearUIRequest(Boolean isNeedClearUrl) {
         // Method
         jp_req_method.clear();
-        
-        // Headers
-        jp_2col_req_headers.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
-        
-        // Cookies
-        jp_2col_req_cookies.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
-        
+
         // Body
         jp_req_body.clear();
-        jp_req_body.disableBody();
-        
-        // Auth
-        jp_req_auth.clear();
-        
-        // SSL
-        jp_req_ssl.clear();
-        
-        // Etc panel
-        jp_req_etc.clear();
-        
-        // Script
-        jp_req_test.clear();
+
+        if (isNeedClearUrl) {
+            // URL
+            jp_url_go.clear();
+            
+            // Headers
+            jp_2col_req_headers.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
+
+            // Cookies
+            jp_2col_req_cookies.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);
+
+            // Auth
+            jp_req_auth.clear();
+
+            // SSL
+            jp_req_ssl.clear();
+
+            // Etc panel
+            jp_req_etc.clear();
+
+            // Script
+            jp_req_test.clear();
+			
+            // disable body
+            jp_req_body.disableBody();
+        }
     }
     
     @Override
@@ -553,12 +562,14 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
     
     @Override
-    public void setUIFromRequest(final Request request){
+    public void setUIFromRequest(final Request request, Boolean isNeedSetUrl){
         // Clear first
-        clearUIRequest();
+        clearUIRequest(isNeedSetUrl);
 
         // URL
-        jp_url_go.setUrlString(request.getUrl().toString());
+        if (isNeedSetUrl) {
+            jp_url_go.setUrlString(request.getUrl().toString());
+        }
 
         // Method
         final HTTPMethod reqMethod = request.getMethod();

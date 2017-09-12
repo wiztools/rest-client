@@ -14,6 +14,8 @@ public interface ReqUrlGoPanel extends ViewPanel {
     
     void setAsRunning();
     void setAsIdle();
+
+    void setTrimFlag(Boolean flag);
     
     void clearHistory();
     

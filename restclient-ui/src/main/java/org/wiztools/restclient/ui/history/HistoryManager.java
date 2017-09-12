@@ -34,6 +34,10 @@ public interface HistoryManager {
     boolean isEmpty();
 
     void clear();
+
+    void setCursor(int sCurtor);
+
+    int cursor();
     
     void save(File file) throws IOException;
     void load(File file) throws IOException;
