@@ -52,19 +52,7 @@ public final class XMLIndentUtil {
 
             return stringWriter.toString();
         }
-        catch (ParserConfigurationException ex) {
-            throw new XMLException(null, ex);
-        }
-        catch (SAXException ex) {
-            throw new XMLException(null, ex);
-        }
-        catch (ClassNotFoundException ex) {
-            throw new XMLException(null, ex);
-        }
-        catch (InstantiationException ex) {
-            throw new XMLException(null, ex);
-        }
-        catch (IllegalAccessException ex) {
+        catch (ParserConfigurationException | SAXException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             throw new XMLException(null, ex);
         }
     }
