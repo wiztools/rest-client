@@ -1,3 +1,4 @@
 #!/bin/sh
 
-./gradlew clean build fatJar createApp createDmg
+./gradlew clean build fatJar createApp createAppZip createDmg
+
