@@ -1,9 +1,0 @@
-<?xml version="1.0"?><zp:webspace xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zp="http://zp.mnet.de/types" xsi:schemaLocation="http://zp.mnet.de/types http://zp-rest-test.m-online.net/types/staticwebspace.xsd">
-    <quota unit="MB">10</quota>
-    <owner>71714</owner>
-    <ftpuser>someuser</ftpuser>
-    <ftppassword>somepassword</ftppassword>
-    <createdate>2012-04-19T11:15:43</createdate>
-    <url>someurl.com</url>
-    <webid>12892</webid>
-</zp:webspace>

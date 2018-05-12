@@ -12,6 +12,7 @@ import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
+import org.wiztools.jxmlfmt.XMLFmt;
 import org.wiztools.restclient.persistence.XMLException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -25,36 +26,7 @@ public final class XMLIndentUtil {
     }
 
     public static String getIndented(String inXml) throws IOException {
-        try {
-            final InputSource src = new InputSource(new StringReader(inXml));
-            final Document domDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(src);
-            String encoding = domDoc.getXmlEncoding();
-            if (encoding == null) {
-                // defaults to UTF-8
-                encoding = "UTF-8";
-            }
-            final Node document = domDoc.getDocumentElement();
-            final boolean keepDeclaration = inXml.startsWith("<?xml");
-
-            final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
-            final DOMImplementationLS impl = (DOMImplementationLS) registry.getDOMImplementation("LS");
-            final LSSerializer writer = impl.createLSSerializer();
-
-            writer.setNewLine("\n");
-            writer.getDomConfig().setParameter("format-pretty-print", true); // Set this to true if the output needs to be beautified.
-            writer.getDomConfig().setParameter("xml-declaration", keepDeclaration); // Set this to true if the declaration is needed to be outputted.
-
-            LSOutput lsOutput = impl.createLSOutput();
-            lsOutput.setEncoding(encoding);
-            Writer stringWriter = new StringWriter();
-            lsOutput.setCharacterStream(stringWriter);
-            writer.write(document, lsOutput);
-
-            return stringWriter.toString();
-        }
-        catch (ParserConfigurationException | SAXException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            throw new XMLException(null, ex);
-        }
+        return XMLFmt.fmt(inXml, 4);
     }
 
 }
