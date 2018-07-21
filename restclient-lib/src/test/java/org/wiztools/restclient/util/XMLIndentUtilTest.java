@@ -21,7 +21,6 @@ public class XMLIndentUtilTest {
         String expectedResult = FileUtil.getContentAsString(
                 new File("src/test/resources/output_ISO.xml"), Charsets.ISO_8859_1);
         String result = XMLIndentUtil.getIndented(inXml);
-        FileUtil.writeString(new File("op.xml"), result, Charsets.ISO_8859_1);
         System.out.println("Expected:\n" + expectedResult);
         System.out.println("Is:\n" + result);
         assertEquals(expectedResult, result);
