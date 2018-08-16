@@ -151,9 +151,6 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
             if(StringUtil.isEmpty(jtf_username.getText())){
                 errors.add("Username is empty.");
             }
-            if(StringUtil.isEmpty(new String(jpf_password.getPassword()))){
-                errors.add("Password is empty.");
-            }
         }
         else if(AuthHelper.isNtlm(method)) {
             if(StringUtil.isEmpty(jtf_domain.getText())){
@@ -188,7 +185,7 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         jp_form_label.add(new JLabel("<html>Host: </html>"));
         jp_form_label.add(new JLabel("<html>Realm: </html>"));
         jp_form_label.add(new JLabel("<html>Username: <font color=red>*</font></html>"));
-        jp_form_label.add(new JLabel("<html>Password: <font color=red>*</font></html>"));
+        jp_form_label.add(new JLabel("<html>Password: </html>"));
         JLabel jl_premptive = new JLabel("Preemptive?");
         String toolTipText = "Send authentication credentials before challenge";
         jl_premptive.setToolTipText(toolTipText);

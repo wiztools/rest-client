@@ -26,6 +26,9 @@ public class UsernamePasswordAuthBaseBean implements UsernamePasswordAuth {
 
     @Override
     public final char[] getPassword() {
+        if(password == null) {
+            return new char[]{};
+        }
         return Arrays.copyOf(password, password.length);
     }
 
