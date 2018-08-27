@@ -19,6 +19,7 @@ import org.wiztools.commons.CollectionsUtil;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.MultiValueMapLinkedHashSet;
 import org.wiztools.commons.StringUtil;
+import org.wiztools.restclient.util.MultiEntryRes;
 
 /**
  *
@@ -38,7 +39,9 @@ public final class TwoColumnTablePanel extends JPanel {
         // Initialize the Multi-entry dialog:
         MultiEntryAdd callback = new MultiEntryAdd() {
             @Override
-            public void add(Map<String, String> keyValuePair, List<String> invalidLines) {
+            public void add(MultiEntryRes res) {
+                Map<String, String> keyValuePair = res.getEntries();
+                List<String> invalidLines = res.getInvalidLines();
                 int successCount = 0;
                 for(String key: keyValuePair.keySet()){
                     String value = keyValuePair.get(key);
@@ -218,6 +221,7 @@ public final class TwoColumnTablePanel extends JPanel {
                 if(jd_multi == null){
                     initMultiEntryDialog();
                 }
+                jd_multi.load(getData());
                 jd_multi.setVisible(true);
             }
         });
