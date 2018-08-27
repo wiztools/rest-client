@@ -221,7 +221,6 @@ public final class TwoColumnTablePanel extends JPanel {
                 if(jd_multi == null){
                     initMultiEntryDialog();
                 }
-                jd_multi.load(getData());
                 jd_multi.setVisible(true);
             }
         });
