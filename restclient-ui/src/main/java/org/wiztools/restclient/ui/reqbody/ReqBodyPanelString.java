@@ -185,14 +185,14 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         }
         else{
             int response = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
-                    "Body text exists. Erase?\n1. Yes - erase!\n2. No - load existing body for editing (silent on failures).\n3. Cancel - to cancel.",
-                    "Erase?",
+                    "Body text exists. Load for editing?\n1. Yes - load, but silent on failures.\n2. No - start empty, existing boby will be erased.\n3. Cancel - cancel.",
+                    "Load for editing?",
                     JOptionPane.YES_NO_CANCEL_OPTION);
             if(response == JOptionPane.YES_OPTION){
-                return FormEnc.ERASE;
+                return FormEnc.LOAD;
             }
             if(response == JOptionPane.NO_OPTION){
-                return FormEnc.LOAD;
+                return FormEnc.ERASE;
             }
         }
         return FormEnc.CANCEL;
