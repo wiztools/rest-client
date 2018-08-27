@@ -64,12 +64,23 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         
         jb_body_params.setToolTipText("Insert parameters");
         jb_body_params.addActionListener((ActionEvent ae) -> {
-            if(canSetReqBodyText()) {
-                checkAndSetParameterContentType();
-                jd_req_paramDialog.setData(HttpUtil.getXWwwFormUrlEncoded2Map(se_req_body.getText()));
-                jd_req_paramDialog.setLocationRelativeTo(rest_ui.getFrame());
-                jd_req_paramDialog.setVisible(true);
+            FormEnc openFrmEncDialg = openFrmEncDialg();
+            switch(openFrmEncDialg) {
+                case OPEN_EMPTY:
+                case ERASE:
+                case LOAD:
+                    checkAndSetParameterContentType();
+                    break;
+                case CANCEL:
+                    return;
             }
+            switch(openFrmEncDialg) {
+                case LOAD:
+                    jd_req_paramDialog.setData(HttpUtil.getXWwwFormUrlEncoded2Map(se_req_body.getText()));
+                    break;
+            }
+            jd_req_paramDialog.setLocationRelativeTo(rest_ui.getFrame());
+            jd_req_paramDialog.setVisible(true);
         });
         jp_north.add(jb_body_params);
         
@@ -165,20 +176,26 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         }
     }
     
-    private boolean canSetReqBodyText(){
+    private enum FormEnc {
+        ERASE, LOAD, OPEN_EMPTY, CANCEL
+    }
+    private FormEnc openFrmEncDialg() {
         if(StringUtil.isEmpty(se_req_body.getText())){
-            return true;
+            return FormEnc.OPEN_EMPTY;
         }
         else{
             int response = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
-                    "Body text exists. Erase?",
+                    "Body text exists. Erase?\n1. Yes - erase!\n2. No - load existing body for editing (silent on failures).\n3. Cancel - to cancel.",
                     "Erase?",
-                    JOptionPane.YES_NO_OPTION);
+                    JOptionPane.YES_NO_CANCEL_OPTION);
             if(response == JOptionPane.YES_OPTION){
-                return true;
+                return FormEnc.ERASE;
+            }
+            if(response == JOptionPane.NO_OPTION){
+                return FormEnc.LOAD;
             }
         }
-        return false;
+        return FormEnc.CANCEL;
     }
     
     private void checkAndSetParameterContentType(){
