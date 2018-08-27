@@ -1,5 +1,6 @@
 package org.wiztools.restclient.util;
 
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.MultiValueMap;
+import org.wiztools.commons.MultiValueMapLinkedHashSet;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.bean.ContentTypeBean;
@@ -196,5 +198,20 @@ public final class HttpUtil {
     
     public static boolean isEntityEnclosingMethod(final HTTPMethod method) {
         return isEntityEnclosingMethod(method.name());
+    }
+
+    public static MultiValueMap<String, String> getXWwwFormUrlEncoded2Map(String str) {
+        MultiValueMap<String, String> out = new MultiValueMapLinkedHashSet<>();
+        String[] pairs = str.split("\\&");
+        for(String pair: pairs) {
+            String[] fields = pair.split("=");
+            if(fields.length != 2) {
+                continue;
+            }
+            String key = URLDecoder.decode(fields[0], Charsets.UTF_8);
+            String value = URLDecoder.decode(fields[1], Charsets.UTF_8);
+            out.put(key, value);
+        }
+        return out;
     }
 }

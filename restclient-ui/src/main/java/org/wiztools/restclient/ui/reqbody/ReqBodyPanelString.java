@@ -24,6 +24,7 @@ import org.wiztools.restclient.ui.*;
 import org.wiztools.restclient.ui.component.BodyPopupMenu;
 import org.wiztools.restclient.ui.component.BodyPopupMenuListener;
 import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
+import org.wiztools.restclient.util.HttpUtil;
 
 /**
  *
@@ -65,6 +66,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         jb_body_params.addActionListener((ActionEvent ae) -> {
             if(canSetReqBodyText()) {
                 checkAndSetParameterContentType();
+                jd_req_paramDialog.setData(HttpUtil.getXWwwFormUrlEncoded2Map(se_req_body.getText()));
                 jd_req_paramDialog.setLocationRelativeTo(rest_ui.getFrame());
                 jd_req_paramDialog.setVisible(true);
             }

@@ -89,6 +89,10 @@ public class ParameterDialog extends EscapableDialog {
         this.setContentPane(jp);
         pack();
     }
+
+    public void setData(MultiValueMap<String, String> data) {
+        jp_2col_center.setData(data);
+    }
     
     @Override
     public void doEscape(AWTEvent event){
