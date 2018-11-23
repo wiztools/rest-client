@@ -8,7 +8,7 @@ import org.wiztools.appupdate.VersionImpl;
  * @author subwiz
  */
 public final class Versions {
-    public static final String CURRENT = "3.7.0";
+    public static final String CURRENT = "3.7.1";
     
     private static final Version MIN = new VersionImpl("3.0");
     private static final Version MAX = new VersionImpl(CURRENT);
