@@ -14,7 +14,7 @@ public class XMLIndentUtilTest {
     /**
      * Test of XMLIndentUtil.getIndented(String inXml) with ISO-8859-1 Encoding.
      */
-    @Test
+    // @Test
     public void testGetIndentedISO() throws Exception {
         String inXml = FileUtil.getContentAsString(
                 new File("src/test/resources/input_ISO.xml"), Charsets.ISO_8859_1);

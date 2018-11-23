@@ -2,6 +2,7 @@ package org.wiztools.restclient.util;
 
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -208,9 +209,13 @@ public final class HttpUtil {
             if(fields.length != 2) {
                 continue;
             }
-            String key = URLDecoder.decode(fields[0], Charsets.UTF_8);
-            String value = URLDecoder.decode(fields[1], Charsets.UTF_8);
-            out.put(key, value);
+            try {
+                String key = URLDecoder.decode(fields[0], Charsets.UTF_8.name());
+                String value = URLDecoder.decode(fields[1], Charsets.UTF_8.name());
+                out.put(key, value);
+            } catch(UnsupportedEncodingException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return out;
     }
