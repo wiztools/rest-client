@@ -19,7 +19,9 @@ Mac users can use [homebrew](https://brew.sh) to install:
 brew cask install wiztools/repo/restclient
 ```
 
-Get from [releases](https://github.com/wiztools/rest-client/releases). Archives of pre-GitHub era releases are available at [WizTools.org Download](http://download.wiztools.org/rest-client/archive/index.html).
+Release binaries are available from [GitHub releases](https://github.com/wiztools/rest-client/releases).
+
+Archives of pre-GitHub era release-builds are available at [WizTools.org Download](http://download.wiztools.org/rest-client/archive/index.html).
 
 ### Support
 
