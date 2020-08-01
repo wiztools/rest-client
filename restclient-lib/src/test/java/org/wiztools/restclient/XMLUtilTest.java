@@ -1,5 +1,6 @@
 package org.wiztools.restclient;
 
+import org.junit.*;
 import org.wiztools.restclient.util.XMLUtil;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.ReqEntityStringBean;
@@ -10,11 +11,7 @@ import org.wiztools.restclient.bean.ResponseBean;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 import static org.junit.Assert.*;
 import org.wiztools.commons.Charsets;
 import org.wiztools.restclient.bean.*;
@@ -92,6 +89,7 @@ public class XMLUtilTest {
         // When document complies to standard:
         {
             File f = new File("src/test/resources/org/wiztools/restclient/xml/charset1.xml");
+            Assume.assumeTrue(f.exists());
             String expResult = "UTF-8";
             String result = XMLUtil.getDocumentCharset(f);
             System.out.println("encoding attribute: " + result ) ;
@@ -101,6 +99,7 @@ public class XMLUtilTest {
         // When document does not have encoding attribute:
         {
             File f = new File("src/test/resources/org/wiztools/restclient/xml/charset2.xml");
+            Assume.assumeTrue(f.exists());
             String expResult = Charsets.UTF_8.name();
             System.out.println("expResult: " + expResult);
             String result = XMLUtil.getDocumentCharset(f);
@@ -111,6 +110,7 @@ public class XMLUtilTest {
         // When document does not have XML declaration:
         {
             File f = new File("src/test/resources/org/wiztools/restclient/xml/charset3.xml");
+            Assume.assumeTrue(f.exists());
             String expResult = Charsets.UTF_8.name();
             System.out.println("expResult: " + expResult);
             String result = XMLUtil.getDocumentCharset(f);
@@ -128,6 +128,7 @@ public class XMLUtilTest {
         System.out.println("writeRequestXML");
         RequestBean bean = getDefaultRequestBean();
         File f = File.createTempFile("prefix", ".rcq");
+        Assume.assumeTrue(f.exists());
         pWrite.writeRequest(bean, f);
         Request expResult = pRead.getRequestFromFile(f);
         assertEquals(expResult, bean);
@@ -141,6 +142,7 @@ public class XMLUtilTest {
         System.out.println("writeResponseXML");
         ResponseBean bean = getDefaultResponseBean();
         File f = File.createTempFile("prefix", ".rcs");
+        Assume.assumeTrue(f.exists());
         pWrite.writeResponse(bean, f);
         Response expResult = pRead.getResponseFromFile(f);
         assertEquals(expResult, bean);
@@ -153,6 +155,7 @@ public class XMLUtilTest {
     public void testGetRequestFromXMLFile() throws Exception {
         System.out.println("getRequestFromXMLFile");
         File f = new File("src/test/resources/reqFromXml.rcq");
+        Assume.assumeTrue(f.exists());
 
         RequestBean expResult = getDefaultRequestBean();
         
@@ -167,6 +170,7 @@ public class XMLUtilTest {
     public void testGetResponseFromXMLFile() throws Exception {
         System.out.println("getResponseFromXMLFile");
         File f = new File("src/test/resources/resFromXml.rcs");
+        Assume.assumeTrue(f.exists());
 
         ResponseBean expResult = getDefaultResponseBean();
         
@@ -182,6 +186,7 @@ public class XMLUtilTest {
     @Test
     public void testIntegrityOfTestScript() throws Exception{
         File f = new File("src/test/resources/resTestScriptIntegrity.rcq");
+        Assume.assumeTrue(f.exists());
         Request req = pRead.getRequestFromFile(f);
         File outFile = File.createTempFile("abc", "xyz");
         pWrite.writeRequest(req, outFile);
