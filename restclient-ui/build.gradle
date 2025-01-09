@@ -1,63 +1,57 @@
-// plugins {
-//   id "com.github.cr0.macappbundle" version "3.0.1"
-// }
 plugins {
-  id "edu.sc.seis.macAppBundle" version "2.2.1"
+  id 'java'
+  id 'application'
+  // id "edu.sc.seis.macAppBundle" version "2.3.1"
+  id 'com.gradleup.shadow' version '9.0.0-beta4'
 }
-
-apply plugin: 'java'
-apply plugin: 'application'
 
 // Application plugin config:
-mainClassName = 'org.wiztools.restclient.ui.Main'
-applicationName = 'restclient-ui'
-applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
-
-macAppBundle {
-  mainClassName = 'org.wiztools.restclient.ui.Main'
-  icon = 'src/main/app-resources/rest-client_30.icns'
-  bundleJRE = false
-  javaProperties.put('apple.laf.useScreenMenuBar', 'true')
-  bundleIdentifier = 'org.wiztools.restclient.ui'
-  appName = 'RESTClient'
-  // appCategory = 'public.app-category.developer-tools'
-  version = "$version"
-  // shortVersion = "$version"
-  bundleIdentifier = 'org.wiztools.restclient.ui'
-  // bundleCopyright = 'Copyright 2016 WizTools.org'
-  bundleExtras.put("NSHighResolutionCapable", "true")
-  javaProperties.put("file.encoding", "utf-8")
-  // javaXProperties.add("mx1024M")
-  // backgroundImage = "doc/macbackground.png"
+application{
+  mainClass = 'org.wiztools.restclient.ui.Main'
+  applicationName = 'restclient-ui'
+  applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
 }
 
-repositories {
-  mavenLocal()
-  mavenCentral()
+// macAppBundle {
+//   mainClassName = 'org.wiztools.restclient.ui.Main'
+//   icon = 'src/main/app-resources/rest-client_30.icns'
+//   bundleJRE = false
+//   javaProperties.put('apple.laf.useScreenMenuBar', 'true')
+//   bundleIdentifier = 'org.wiztools.restclient.ui'
+//   appName = 'RESTClient'
+//   version = "$version"
+//   bundleIdentifier = 'org.wiztools.restclient.ui'
+//   bundleExtras.put("NSHighResolutionCapable", "true")
+//   javaProperties.put("file.encoding", "utf-8")
+// }
+
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+  archiveClassifier = 'fat'
 }
 
-task fatJar(type: Jar) {
-  baseName = project.name + '-fat'
+// task fatJar(type: Jar) {
+//   baseName = project.name + '-fat'
 
-  manifest {
-    attributes(
-      "Main-Class": "$mainClassName",
-      "SplashScreen-Image": 'org/wiztools/restclient/Splash.png'
-    )
-  }
+//   manifest {
+//     attributes(
+//       "Main-Class": "$mainClassName",
+//       "SplashScreen-Image": 'org/wiztools/restclient/Splash.png'
+//     )
+//   }
 
-  from {
-    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-  }
-  with jar
-}
+//   from {
+//     configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+//   }
+//   with jar
+// }
 
 dependencies {
-  compile project(':restclient-lib'),
+  implementation project(':restclient-lib'),
+    // 'edu.sc.seis.macAppBundle:edu.sc.seis.macAppBundle.gradle.plugin:2.3.1',
     'org.wiztools:filechooser-abstraction:0.1.0',
     'com.jidesoft:jide-oss:3.6.14',
     'org.swinglabs.swingx:swingx-autocomplete:1.6.5-1',
     'com.fifesoft:rsyntaxtextarea:2.5.8',
     'org.simplericity.macify:macify:1.6'
-  testCompile 'junit:junit:4.+'
+  testImplementation 'junit:junit:4.+'
 }

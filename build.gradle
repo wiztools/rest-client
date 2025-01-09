@@ -1,19 +1,24 @@
-plugins {
-  id 'net.researchgate.release' version '2.6.0'
-}
+// plugins {
+//   id 'java'
+//   // id 'net.researchgate.release' version '3.1.0'
+// }
 
-apply plugin: 'java'
-
-repositories {
-  mavenLocal()
-  mavenCentral()
-}
+// java {
+//   sourceCompatibility = JavaVersion.VERSION_21
+// 	targetCompatibility = JavaVersion.VERSION_21
+// }
 
 allprojects {
-  tasks.withType(JavaCompile) {
-    options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
-  }
   repositories {
-    maven { url "https://jitpack.io" }
+    mavenLocal()
+    mavenCentral()
+    maven {
+      url = "https://jitpack.io"
+    }
+  }
+  gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+      options.compilerArgs << "-Xlint:all"
+    }
   }
 }

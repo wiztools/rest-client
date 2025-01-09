@@ -1,31 +1,27 @@
-apply plugin: 'java'
-apply plugin: 'application'
+plugins{
+  id 'java'
+  id 'application'
+  id 'com.gradleup.shadow' version '9.0.0-beta4'
+}
 
 // Application plugin config:
-mainClassName = 'org.wiztools.restclient.cli.CliMain'
-applicationName = 'restclient-cli'
-applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
+application{
+  mainClass = 'org.wiztools.restclient.cli.CliMain'
+  applicationName = 'restclient-cli'
+  applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
+}
 
 repositories {
   mavenLocal()
   mavenCentral()
 }
 
-task fatJar(type: Jar) {
-  baseName = project.name + '-fat'
-
-  manifest {
-    attributes "Main-Class": "$mainClassName"
-  }
-
-  from {
-    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-  }
-  with jar
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+  archiveClassifier = 'fat'
 }
 
 dependencies {
-  compile project(':restclient-lib'),
+  implementation project(':restclient-lib'),
     'com.google.code.cli-parser:cli:7'
-  testCompile 'junit:junit:4.+'
+  testImplementation 'junit:junit:4.+'
 }
