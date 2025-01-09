@@ -1,6 +1,6 @@
 package org.wiztools.restclient.ui.resstats;
 
-import com.google.inject.ImplementedBy;
+import org.wiztools.restclient.ImplementedBy;
 import org.wiztools.restclient.ui.ViewPanel;
 
 /**
@@ -11,7 +11,7 @@ import org.wiztools.restclient.ui.ViewPanel;
 public interface ResStatsPanel extends ViewPanel {
     long getExecutionTime();
     long getBodySize();
-    
+
     void setExecutionTime(long time);
     void setBodySize(long size);
 }

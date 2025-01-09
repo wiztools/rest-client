@@ -1,6 +1,6 @@
 package org.wiztools.restclient.ui.resstatus;
 
-import com.google.inject.ImplementedBy;
+import org.wiztools.restclient.ImplementedBy;
 import org.wiztools.restclient.ui.ViewPanel;
 
 /**

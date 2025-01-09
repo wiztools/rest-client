@@ -1,6 +1,6 @@
 package org.wiztools.restclient.ui;
 
-import com.google.inject.ImplementedBy;
+import org.wiztools.restclient.ImplementedBy;
 
 /**
  *
@@ -9,7 +9,7 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(StatusBarPanelImpl.class)
 public interface StatusBarPanel extends ViewPanel {
     void setStatus(String status);
-    
+
     void showProgressBar();
     void hideProgressBar();
 }

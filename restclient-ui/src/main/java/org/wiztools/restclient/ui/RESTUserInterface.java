@@ -1,6 +1,6 @@
 package org.wiztools.restclient.ui;
 
-import com.google.inject.ImplementedBy;
+import org.wiztools.restclient.ImplementedBy;
 import java.awt.Component;
 import java.io.File;
 import javax.swing.JFrame;

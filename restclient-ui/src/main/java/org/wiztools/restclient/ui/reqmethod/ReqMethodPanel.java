@@ -1,6 +1,6 @@
 package org.wiztools.restclient.ui.reqmethod;
 
-import com.google.inject.ImplementedBy;
+import org.wiztools.restclient.ImplementedBy;
 import org.wiztools.restclient.bean.HTTPMethod;
 import org.wiztools.restclient.ui.ViewPanel;
 
@@ -16,5 +16,5 @@ public interface ReqMethodPanel extends ViewPanel {
     HTTPMethod getSelectedMethod();
 
     void setSelectedMethod(HTTPMethod method);
-    
+
 }

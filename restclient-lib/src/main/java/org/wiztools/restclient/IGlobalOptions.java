@@ -1,6 +1,5 @@
 package org.wiztools.restclient;
 
-import com.google.inject.ImplementedBy;
 import java.io.File;
 import org.wiztools.commons.SystemProperty;
 
@@ -10,7 +9,7 @@ import org.wiztools.commons.SystemProperty;
  */
 @ImplementedBy(GlobalOptions.class)
 public interface IGlobalOptions {
-    
+
     File CONF_DIR = new File(
             SystemProperty.userHome + SystemProperty.fileSeparator
                     + ".rest-client");
@@ -18,7 +17,7 @@ public interface IGlobalOptions {
     OptionsLock acquire();
 
     String getProperty(String key);
-    
+
     boolean isPropertyTrue(String key);
 
     void removeProperty(String key);

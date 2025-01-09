@@ -1,6 +1,6 @@
 package org.wiztools.restclient.ui.reqtest;
 
-import com.google.inject.ImplementedBy;
+import org.wiztools.restclient.ImplementedBy;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.Response;
 import org.wiztools.restclient.ui.ViewPanel;

@@ -1,6 +1,6 @@
 package org.wiztools.restclient.bean;
 
-import com.google.inject.ImplementedBy;
+import org.wiztools.restclient.ImplementedBy;
 import org.wiztools.restclient.HTTPClientRequestExecuter;
 import org.wiztools.restclient.View;
 
@@ -37,7 +37,7 @@ public interface RequestExecuter {
      * import org.wiztools.restclient.ServiceLocator;
      *
      * ...
-     * 
+     *
      * final Request request = ...;
      * final View view = ...;
      * final RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
@@ -56,7 +56,7 @@ public interface RequestExecuter {
      *
      * // to interrupt in later stage:
      * t.interrupt();
-     * 
+     *
      * </pre>
      */
     void abortExecution();

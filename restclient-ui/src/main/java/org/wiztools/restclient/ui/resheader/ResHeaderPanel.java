@@ -1,6 +1,6 @@
 package org.wiztools.restclient.ui.resheader;
 
-import com.google.inject.ImplementedBy;
+import org.wiztools.restclient.ImplementedBy;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.restclient.ui.ViewPanel;
 

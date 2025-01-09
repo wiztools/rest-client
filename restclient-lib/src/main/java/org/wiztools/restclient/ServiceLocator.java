@@ -1,22 +1,53 @@
 package org.wiztools.restclient;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Stage;
-import com.mycila.guice.ext.closeable.CloseableModule;
-import com.mycila.guice.ext.jsr250.Jsr250Module;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.inject.Singleton;
 
 /**
  *
  * @author subwiz
  */
 public class ServiceLocator {
-    private static final Injector injector =  Guice.createInjector(
-            Stage.PRODUCTION, new CloseableModule(), new Jsr250Module());
-
     private ServiceLocator() {}
-    
+
+    private static Map<String, Object> singletonObjs = new HashMap<>();
+    private static synchronized <T> Object getSingletonInst(Class<T> c) {
+        String cName = c.getCanonicalName();
+        Object inst = singletonObjs.get(cName);
+        if(inst != null) {
+            System.out.println("inst-available:"+cName);
+            return inst;
+        } else {
+            inst = getInst(c);
+            singletonObjs.put(cName, inst);
+            return inst;
+        }
+    }
+
+    private static <T> Object getInst(Class<T> c) {
+        try {
+            return c.getConstructors()[0].newInstance();
+        } catch(IllegalAccessException ex) {
+            throw new RuntimeException(ex);
+        } catch(IllegalArgumentException ex) {
+            throw new RuntimeException(ex);
+        } catch(InstantiationException ex) {
+            throw new RuntimeException(ex);
+        } catch(InvocationTargetException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     public static <T> T getInstance(Class<T> c) {
-        return injector.getInstance(c);
+        if (c.isAnnotationPresent(Singleton.class)) {
+            return (T)getSingletonInst(c);
+        } else if(c.isInterface() && c.isAnnotationPresent(ImplementedBy.class)) {
+            ImplementedBy ann = c.getAnnotation(ImplementedBy.class);
+            return (T)getInst(ann.value());
+        } else {
+            throw new RuntimeException("[ServiceLocator-404]:"+c.getCanonicalName());
+        }
     }
 }

@@ -1,6 +1,6 @@
 package org.wiztools.restclient.ui.lifecycle;
 
-import com.google.inject.ImplementedBy;
+import org.wiztools.restclient.ImplementedBy;
 
 /**
  *

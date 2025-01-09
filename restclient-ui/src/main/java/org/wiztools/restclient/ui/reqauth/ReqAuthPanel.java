@@ -1,6 +1,6 @@
 package org.wiztools.restclient.ui.reqauth;
 
-import com.google.inject.ImplementedBy;
+import org.wiztools.restclient.ImplementedBy;
 import java.util.List;
 import org.wiztools.restclient.bean.Auth;
 import org.wiztools.restclient.ui.ViewPanel;
@@ -11,7 +11,7 @@ import org.wiztools.restclient.ui.ViewPanel;
  */
 @ImplementedBy(ReqAuthPanelImpl.class)
 public interface ReqAuthPanel extends ViewPanel {
-    
+
     void setAuth(Auth auth);
     Auth getAuth();
     List<String> validateIfFilled();
