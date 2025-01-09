@@ -1,7 +1,6 @@
 plugins {
   id 'java'
   id 'application'
-  // id "edu.sc.seis.macAppBundle" version "2.3.1"
   id 'com.gradleup.shadow' version '9.0.0-beta4'
 }
 
@@ -12,46 +11,15 @@ application{
   applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
 }
 
-// macAppBundle {
-//   mainClassName = 'org.wiztools.restclient.ui.Main'
-//   icon = 'src/main/app-resources/rest-client_30.icns'
-//   bundleJRE = false
-//   javaProperties.put('apple.laf.useScreenMenuBar', 'true')
-//   bundleIdentifier = 'org.wiztools.restclient.ui'
-//   appName = 'RESTClient'
-//   version = "$version"
-//   bundleIdentifier = 'org.wiztools.restclient.ui'
-//   bundleExtras.put("NSHighResolutionCapable", "true")
-//   javaProperties.put("file.encoding", "utf-8")
-// }
-
 tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
   archiveClassifier = 'fat'
 }
 
-// task fatJar(type: Jar) {
-//   baseName = project.name + '-fat'
-
-//   manifest {
-//     attributes(
-//       "Main-Class": "$mainClassName",
-//       "SplashScreen-Image": 'org/wiztools/restclient/Splash.png'
-//     )
-//   }
-
-//   from {
-//     configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-//   }
-//   with jar
-// }
-
 dependencies {
   implementation project(':restclient-lib'),
-    // 'edu.sc.seis.macAppBundle:edu.sc.seis.macAppBundle.gradle.plugin:2.3.1',
     'org.wiztools:filechooser-abstraction:0.1.0',
     'com.jidesoft:jide-oss:3.6.14',
     'org.swinglabs.swingx:swingx-autocomplete:1.6.5-1',
-    'com.fifesoft:rsyntaxtextarea:2.5.8',
-    'org.simplericity.macify:macify:1.6'
+    'com.fifesoft:rsyntaxtextarea:2.5.8'
   testImplementation 'junit:junit:4.+'
 }

@@ -17,10 +17,10 @@ import javax.inject.Singleton;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import org.simplericity.macify.eawt.Application;
-import org.simplericity.macify.eawt.ApplicationEvent;
-import org.simplericity.macify.eawt.ApplicationListener;
-import org.simplericity.macify.eawt.DefaultApplication;
+// import org.simplericity.macify.eawt.Application;
+// import org.simplericity.macify.eawt.ApplicationEvent;
+// import org.simplericity.macify.eawt.ApplicationListener;
+// import org.simplericity.macify.eawt.DefaultApplication;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.filechooser.FileChooser;
@@ -49,62 +49,62 @@ import org.wiztools.restclient.util.Util;
  * @author subwiz
  */
 @Singleton
-class RESTMain implements RESTUserInterface {
-    
+public class RESTMain implements RESTUserInterface {
+
     private static final Logger LOG = Logger.getLogger(RESTMain.class.getName());
-    
-    private final Application application = new DefaultApplication();
-    
+
+    // private final Application application = new DefaultApplication();
+
     @Inject private RESTViewImpl view;
     @Inject private AboutDialog aboutDialog;
     @Inject private OptionsDialog optionsDialog;
     @Inject private PasswordGenDialog passwordGenDialog;
     @Inject private IGlobalOptions options;
-    
+
     @Inject private HistoryManager historyManager;
-    
+
     private URLEncodeDecodeDialog urlEncodeDecodeDialog;
-    
+
     // Requests and responses are generally saved in different dirs
     private final FileChooser jfc_request = UIUtil.getNewFileChooser();
     private final FileChooser jfc_response = UIUtil.getNewFileChooser();
     private final FileChooser jfc_generic = UIUtil.getNewFileChooser();
     private final FileChooser jfc_archive = UIUtil.getNewFileChooser();
     private final FileChooser jfc_history = UIUtil.getNewFileChooser();
-    
+
     @Inject private RecentFilesHelper recentFilesHelper;
-    
+
     private static final String URL_BOOK = "http://www.amazon.com/dp/B00KEADQF2";
     private static final String URL_FB = "http://www.facebook.com/wiztools.org";
     private static final String URL_ISSUE = "https://github.com/wiztools/rest-client/issues";
-    
+
     private final JFrame frame;
-    
+
     public RESTMain(){
         // Macify:
-        application.addAboutMenuItem();
-        application.addApplicationListener(new RCApplicationListener());
-        application.addPreferencesMenuItem();
-        
+        // application.addAboutMenuItem();
+        // application.addApplicationListener(new RCApplicationListener());
+        // application.addPreferencesMenuItem();
+
         // Application logic:
         frame = new JFrame(RCConstants.TITLE + Versions.CURRENT);
     }
-    
+
     @Override
     public RESTViewImpl getView(){
         return view;
     }
-    
+
     @Override
     public JFrame getFrame(){
         return this.frame;
     }
-    
+
     private void createMenu(){
         // File menu
         JMenu jm_file = new JMenu("File");
         jm_file.setMnemonic(KeyEvent.VK_F);
-        
+
         JMenuItem jmi_open_req = new JMenuItem("Open Request", RCFileView.REQUEST_ICON);
         jmi_open_req.setMnemonic(KeyEvent.VK_O);
         jmi_open_req.setAccelerator(KeyStroke.getKeyStroke(
@@ -116,7 +116,7 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_file.add(jmi_open_req);
-        
+
         JMenuItem jmi_open_res = new JMenuItem("Open Response", RCFileView.RESPONSE_ICON);
         jmi_open_res.addActionListener(new ActionListener() {
             @Override
@@ -125,7 +125,7 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_file.add(jmi_open_res);
-        
+
         JMenuItem jmi_open_archive = new JMenuItem("Open Req-Res Archive", RCFileView.ARCHIVE_ICON);
         jmi_open_archive.addActionListener(new ActionListener() {
             @Override
@@ -134,7 +134,7 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_file.add(jmi_open_archive);
-        
+
         final JMenu jm_open_recent = new JMenu("Open recent");
         jm_open_recent.addMenuListener(new MenuListener() {
 
@@ -180,9 +180,9 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_file.add(jm_open_recent);
-        
+
         jm_file.addSeparator();
-        
+
         JMenuItem jmi_save_req = new JMenuItem("Save Request", RCFileView.REQUEST_ICON);
         jmi_save_req.setMnemonic(KeyEvent.VK_Q);
         jmi_save_req.setAccelerator(KeyStroke.getKeyStroke(
@@ -194,7 +194,7 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_file.add(jmi_save_req);
-        
+
         JMenuItem jmi_save_res = new JMenuItem("Save Response", RCFileView.RESPONSE_ICON);
         jmi_save_res.setMnemonic(KeyEvent.VK_S);
         jmi_save_res.addActionListener(new ActionListener() {
@@ -204,7 +204,7 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_file.add(jmi_save_res);
-        
+
         JMenuItem jmi_save_res_body = new JMenuItem("Save Response Body", RCFileView.FILE_ICON);
         // jmi_save_res_body.setMnemonic(' ');
         jmi_save_res_body.addActionListener(new ActionListener() {
@@ -214,7 +214,7 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_file.add(jmi_save_res_body);
-        
+
         JMenuItem jmi_save_archive = new JMenuItem("Save Req-Res Archive", RCFileView.ARCHIVE_ICON);
         jmi_save_archive.addActionListener(new ActionListener() {
             @Override
@@ -223,8 +223,8 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_file.add(jmi_save_archive);
-        
-        if(!application.isMac()) { // Shown only for non-Mac platform!
+
+        // if(!application.isMac()) { // Shown only for non-Mac platform!
             jm_file.addSeparator();
 
             JMenuItem jmi_exit = new JMenuItem("Exit", UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "fv_exit.png"));
@@ -238,12 +238,12 @@ class RESTMain implements RESTUserInterface {
                 }
             });
             jm_file.add(jmi_exit);
-        }
-        
+        // }
+
         // Edit menu
         JMenu jm_edit = new JMenu("Edit");
         jm_edit.setMnemonic(KeyEvent.VK_E);
-        
+
         JMenuItem jmi_clear_res = new JMenuItem("Clear Response");
         jmi_clear_res.setMnemonic(KeyEvent.VK_C);
         jmi_clear_res.addActionListener(new ActionListener() {
@@ -263,9 +263,9 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_edit.add(jmi_reset_all);
-        
+
         jm_edit.addSeparator();
-        
+
         JMenuItem jmi_reset_to_last = new JMenuItem("Reset to Last Request-Response");
         jmi_reset_to_last.addActionListener(new ActionListener() {
             @Override
@@ -282,10 +282,10 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_edit.add(jmi_reset_to_last);
-        
+
         // History Menu
         JMenu jm_history = new JMenu("History");
-        
+
         final JMenuItem jmi_back = new JMenuItem("Back");
         jmi_back.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_LEFT, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -308,7 +308,7 @@ class RESTMain implements RESTUserInterface {
                         }
                     }
                 }
-                
+
                 // Normal logic, cursor-1 history:
                 if(!historyManager.isOldest()) {
                     Request request = historyManager.back();
@@ -322,7 +322,7 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_history.add(jmi_back);
-        
+
         final JMenuItem jmi_forward = new JMenuItem("Forward");
         jmi_forward.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_RIGHT, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -341,9 +341,9 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_history.add(jmi_forward);
-        
+
         jm_history.addSeparator();
-        
+
         JMenuItem jmi_clear_history = new JMenuItem("Clear History");
         jmi_clear_history.addActionListener(new ActionListener() {
             @Override
@@ -353,9 +353,9 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_history.add(jmi_clear_history);
-        
+
         jm_history.addSeparator();
-        
+
         JMenuItem jmi_save_history = new JMenuItem("Save History");
         jmi_save_history.addActionListener(new ActionListener() {
             @Override
@@ -379,7 +379,7 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_history.add(jmi_save_history);
-        
+
         JMenuItem jmi_load_history = new JMenuItem("Load History");
         jmi_load_history.addActionListener(new ActionListener() {
             @Override
@@ -408,7 +408,7 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_history.add(jmi_load_history);
-        
+
         // Enable disable history controls based on cursor positions:
         jm_history.addMenuListener(new MenuListener() {
 
@@ -420,7 +420,7 @@ class RESTMain implements RESTUserInterface {
                 else {
                     jmi_back.setEnabled(true);
                 }
-                
+
                 if(historyManager.isMostRecent()) {
                     jmi_forward.setEnabled(false);
                 }
@@ -436,14 +436,14 @@ class RESTMain implements RESTUserInterface {
 
             @Override
             public void menuCanceled(MenuEvent e) {
-                // 
+                //
             }
         });
-        
+
         // Tools menu
         JMenu jm_tools = new JMenu("Tools");
         jm_tools.setMnemonic('o');
-        
+
         { // URL Encode Decoder:
             JMenuItem jmi_url_encode = new JMenuItem("URL Encoder/Decoder");
             jmi_url_encode.addActionListener(new ActionListener() {
@@ -457,7 +457,7 @@ class RESTMain implements RESTUserInterface {
             });
             jm_tools.add(jmi_url_encode);
         }
-        
+
         { // Password Encoder Decoder:
             JMenuItem jmi_pwd_gen = new JMenuItem("Password Encoder/Decoder");
             jmi_pwd_gen.setMnemonic('p');
@@ -469,9 +469,9 @@ class RESTMain implements RESTUserInterface {
             });
             jm_tools.add(jmi_pwd_gen);
         }
-        
+
         jm_tools.addSeparator();
-        
+
         // Trace Server
         JMenuItem jmi_server_start = new JMenuItem("Start Trace Server @ port " + TraceServer.PORT);
         jmi_server_start.addActionListener(new ActionListener() {
@@ -487,7 +487,7 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_tools.add(jmi_server_start);
-        
+
         JMenuItem jmi_server_stop = new JMenuItem("Stop Trace Server");
         jmi_server_stop.addActionListener(new ActionListener() {
             @Override
@@ -504,7 +504,7 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_tools.add(jmi_server_stop);
-        
+
         JMenuItem jmi_server_fill_url = new JMenuItem("Insert Trace Server URL");
         jmi_server_fill_url.addActionListener(new ActionListener() {
             @Override
@@ -523,8 +523,8 @@ class RESTMain implements RESTUserInterface {
             }
         });
         jm_tools.add(jmi_server_fill_url);
-        
-        if(!application.isMac()) { // Add Options menu only for non-Mac platform!
+
+        // if(!application.isMac()) { // Add Options menu only for non-Mac platform!
             jm_tools.addSeparator();
 
             JMenuItem jmi_options = new JMenuItem("Options");
@@ -536,20 +536,20 @@ class RESTMain implements RESTUserInterface {
                 }
             });
             jm_tools.add(jmi_options);
-        }
-        
+        // }
+
         // Menu-bar
         JMenuBar jmb = new JMenuBar();
-        
+
         jmb.add(jm_file);
         jmb.add(jm_edit);
         jmb.add(jm_history);
         jmb.add(jm_tools);
-        
+
         // Help menu
         JMenu jm_help = new JMenu("Help");
         jm_help.setMnemonic(KeyEvent.VK_H);
-        
+
         { // RESTClient Book
             JMenuItem jmi_url = new JMenuItem("RESTClient Book (Kindle)");
             jmi_url.addActionListener(new ActionListener() {
@@ -560,7 +560,7 @@ class RESTMain implements RESTUserInterface {
             });
             jm_help.add(jmi_url);
         }
-        
+
         { // FB
             JMenuItem jmi_url = new JMenuItem("Follow in Facebook");
             jmi_url.addActionListener(new ActionListener() {
@@ -571,7 +571,7 @@ class RESTMain implements RESTUserInterface {
             });
             jm_help.add(jmi_url);
         }
-        
+
         { // Issue
             JMenuItem jmi_url = new JMenuItem("Report Issue / Request Enhancement");
             jmi_url.addActionListener(new ActionListener() {
@@ -582,12 +582,12 @@ class RESTMain implements RESTUserInterface {
             });
             jm_help.add(jmi_url);
         }
-        
+
         // Help > About:
-        if(!application.isMac()) { // show About for only non-Mac platform!
+        // if(!application.isMac()) { // show About for only non-Mac platform!
             // Add separator before the About menu-item:
             jm_help.addSeparator();
-            
+
             // About menu:
             JMenuItem jmi_about = new JMenuItem("About");
             jmi_about.setMnemonic('a');
@@ -597,20 +597,20 @@ class RESTMain implements RESTUserInterface {
                     showAboutDialog();
                 }
             });
-            jm_help.add(jmi_about);    
-        }
+            jm_help.add(jmi_about);
+        // }
         // Add Help menu to Menubar:
         jmb.add(jm_help);
-        
+
         frame.setJMenuBar(jmb);
     }
-    
+
     private void initJFC() {
         // JFileChooser: Initialize
         jfc_request.addChoosableFileFilter(new RCFileFilter(FileType.REQUEST_EXT));
         jfc_response.addChoosableFileFilter(new RCFileFilter(FileType.RESPONSE_EXT));
         jfc_archive.addChoosableFileFilter(new RCFileFilter(FileType.ARCHIVE_EXT));
-        
+
         // init last dir:
         { // request jfc:
             final String lastDir = options.getProperty(UIUtil.LAST_CWD_REQ);
@@ -637,11 +637,11 @@ class RESTMain implements RESTUserInterface {
             }
         }
     }
-    
+
     @PostConstruct
     public void show() {
         initJFC();
-        
+
         frame.setContentPane(view.getContainer());
         createMenu();
         ImageIcon icon =
@@ -657,11 +657,11 @@ class RESTMain implements RESTUserInterface {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        
+
         // Update check:
         new Thread(ServiceLocator.getInstance(AppUpdateRunner.class)).start();
     }
-    
+
     private void openUrl(String url) {
         Desktop dt = Desktop.isDesktopSupported()? Desktop.getDesktop(): null;
         if(dt != null && dt.isSupported(Desktop.Action.BROWSE)) {
@@ -680,18 +680,18 @@ class RESTMain implements RESTUserInterface {
             showUrlDialog(url);
         }
     }
-    
+
     private void showUrlDialog(final String url) {
         JOptionPane.showMessageDialog(frame,
                 "Visit this URL: " + url,  // Message
                 "Visit URL",               // Title
                 JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     private void showOptionsDialog(){
         optionsDialog.setVisible(true);
     }
-    
+
     private void saveLastDir(final FileChooserType type, final File dir) {
         switch(type) {
             case OPEN_REQUEST:
@@ -712,12 +712,12 @@ class RESTMain implements RESTUserInterface {
                 break;
         }
     }
-    
+
     @Override
     public File getOpenFile(final FileChooserType type){
         return getOpenFile(type, frame);
     }
-    
+
     @Override
     public File getOpenFile(final FileChooserType type, final Component parent){
         String title = null;
@@ -759,8 +759,8 @@ class RESTMain implements RESTUserInterface {
         }
         return null;
     }
-    
-    
+
+
     private void jmi_open_reqAction(){
         File f = getOpenFile(FileChooserType.OPEN_REQUEST);
         if(f != null){
@@ -768,7 +768,7 @@ class RESTMain implements RESTUserInterface {
             recentFilesHelper.openedFile(f);
         }
     }
-    
+
     private void jmi_open_resAction(){
         File f = getOpenFile(FileChooserType.OPEN_RESPONSE);
         if(f != null){
@@ -776,7 +776,7 @@ class RESTMain implements RESTUserInterface {
             recentFilesHelper.openedFile(f);
         }
     }
-    
+
     private void jmi_open_archiveAction(){
         File f = getOpenFile(FileChooserType.OPEN_ARCHIVE);
         if(f != null){
@@ -784,7 +784,7 @@ class RESTMain implements RESTUserInterface {
             recentFilesHelper.openedFile(f);
         }
     }
-    
+
     // This method is invoked from SU.invokeLater
     @Override
     public File getSaveFile(final FileChooserType type){
@@ -814,14 +814,14 @@ class RESTMain implements RESTUserInterface {
         FileChooserResponse status = jfc.showSaveDialog(frame);
         if(status == FileChooserResponse.APPROVE_OPTION){
             File f = jfc.getSelectedFile();
-            
+
             if(f == null){
                 return null;
             }
-            
+
             String ext = null;
             switch(type){
-                case SAVE_REQUEST: 
+                case SAVE_REQUEST:
                     ext = FileType.REQUEST_EXT;
                     break;
                 case SAVE_RESPONSE:
@@ -873,11 +873,11 @@ class RESTMain implements RESTUserInterface {
         }
         return null;
     }
-    
+
     private static final String[] DO_SAVE_UI_REQUEST = new String[]{"Request", "completed Request"};
     private static final String[] DO_SAVE_UI_RESPONSE = new String[]{"Response", "received Response"};
     private static final String[] DO_SAVE_UI_ARCHIVE = new String[]{"Request/Response", "completed Request-Response"};
-    
+
     private boolean doSaveEvenIfUIChanged(final String[] parameters){
         final String message = MessageI18N.getMessage(
                 "yes-no.cant.save.req-res", parameters);
@@ -891,7 +891,7 @@ class RESTMain implements RESTUserInterface {
         }
         return true;
     }
-    
+
     private void actionSave(final FileChooserType type){
         PersistenceWrite p = new XmlPersistenceWrite();
         if(type == FileChooserType.SAVE_REQUEST){
@@ -1022,7 +1022,7 @@ class RESTMain implements RESTUserInterface {
             }
         }
     }
-    
+
     private void shutdownCall() {
         recentFilesHelper.store();
         System.out.println("Exiting...");
@@ -1035,48 +1035,48 @@ class RESTMain implements RESTUserInterface {
     public void showAboutDialog() {
         aboutDialog.setVisible(true);
     }
-    
-    public class RCApplicationListener implements ApplicationListener {
 
-        @Override
-        public void handleAbout(ApplicationEvent ae) {
-            showAboutDialog();
-            ae.setHandled(true);
-        }
+    // public class RCApplicationListener implements ApplicationListener {
 
-        @Override
-        public void handleOpenApplication(ApplicationEvent ae) {
-            // do nothing!
-        }
+    //     @Override
+    //     public void handleAbout(ApplicationEvent ae) {
+    //         showAboutDialog();
+    //         ae.setHandled(true);
+    //     }
 
-        @Override
-        public void handleOpenFile(ApplicationEvent ae) {
-            final String fileName = ae.getFilename();
-            final File f = new File(fileName);
-            FileOpenUtil.open(view, f);
-            ae.setHandled(true);
-        }
+    //     @Override
+    //     public void handleOpenApplication(ApplicationEvent ae) {
+    //         // do nothing!
+    //     }
 
-        @Override
-        public void handlePreferences(ApplicationEvent ae) {
-            showOptionsDialog();
-            ae.setHandled(true);
-        }
+    //     @Override
+    //     public void handleOpenFile(ApplicationEvent ae) {
+    //         final String fileName = ae.getFilename();
+    //         final File f = new File(fileName);
+    //         FileOpenUtil.open(view, f);
+    //         ae.setHandled(true);
+    //     }
 
-        @Override
-        public void handlePrintFile(ApplicationEvent ae) {
-            JOptionPane.showMessageDialog(frame, "Sorry, printing not implemented");
-        }
+    //     @Override
+    //     public void handlePreferences(ApplicationEvent ae) {
+    //         showOptionsDialog();
+    //         ae.setHandled(true);
+    //     }
 
-        @Override
-        public void handleQuit(ApplicationEvent ae) {
-            shutdownCall();
-        }
+    //     @Override
+    //     public void handlePrintFile(ApplicationEvent ae) {
+    //         JOptionPane.showMessageDialog(frame, "Sorry, printing not implemented");
+    //     }
 
-        @Override
-        public void handleReOpenApplication(ApplicationEvent ae) {
-            frame.setVisible(true);
-            ae.setHandled(true);
-        }
-    }
+    //     @Override
+    //     public void handleQuit(ApplicationEvent ae) {
+    //         shutdownCall();
+    //     }
+
+    //     @Override
+    //     public void handleReOpenApplication(ApplicationEvent ae) {
+    //         frame.setVisible(true);
+    //         ae.setHandled(true);
+    //     }
+    // }
 }

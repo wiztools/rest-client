@@ -41,6 +41,7 @@ public class ServiceLocator {
     }
 
     public static <T> T getInstance(Class<T> c) {
+        System.out.println(c.getCanonicalName());
         if (c.isAnnotationPresent(Singleton.class)) {
             return (T)getSingletonInst(c);
         } else if(c.isInterface() && c.isAnnotationPresent(ImplementedBy.class)) {
