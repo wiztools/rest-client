@@ -8,7 +8,7 @@ import org.wiztools.restclient.bean.ReqEntity;
  *
  * @author subwiz
  */
-class ReqBodyPanelNone extends JPanel implements ReqBodyPanel {
+public class ReqBodyPanelNone extends JPanel implements ReqBodyPanel {
 
     @Override
     public void enableBody() {
@@ -34,7 +34,7 @@ class ReqBodyPanelNone extends JPanel implements ReqBodyPanel {
     public ReqEntity getEntity() {
         return null;
     }
-    
+
     @Override
     public Component getComponent() {
         return this;

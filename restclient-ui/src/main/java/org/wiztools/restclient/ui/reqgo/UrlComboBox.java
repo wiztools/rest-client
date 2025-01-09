@@ -13,16 +13,15 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-import org.wiztools.commons.StringUtil;
 
 /**
  *
  * @author subwiz
  */
 public class UrlComboBox extends JComboBox<String> {
-    
+
     private static final Logger LOG = Logger.getLogger(UrlComboBox.class.getName());
-    
+
     private final int URL_COUNT_SIZE = 20;
 
     public UrlComboBox() {
@@ -35,12 +34,12 @@ public class UrlComboBox extends JComboBox<String> {
                 editorComponent.selectAll();
             }
         });
-        
+
         AutoCompletion ac = new AutoCompletion(this);
         ac.setStrict(false);
         ac.setStrictCompletion(false);
     }
-    
+
     @PostConstruct
     protected void loadComboHistory() {
         try {
@@ -48,11 +47,11 @@ public class UrlComboBox extends JComboBox<String> {
             if(!urls.isEmpty()) {
                 // We need dimension for Issue 196:
                 final Dimension d = this.getPreferredSize();
-                
+
                 for(String url: urls) {
                     this.addItem(url);
                 }
-                
+
                 // Set the dimension for Issue 196:
                 this.setPreferredSize(d);
             }
@@ -61,7 +60,7 @@ public class UrlComboBox extends JComboBox<String> {
             LOG.log(Level.WARNING, null, ex);
         }
     }
-    
+
     @PostConstruct
     protected void registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(){
@@ -81,7 +80,7 @@ public class UrlComboBox extends JComboBox<String> {
             }
         });
     }
-    
+
     public void push() {
         final String item = (String) getSelectedItem();
 

@@ -13,9 +13,9 @@ import org.wiztools.restclient.ServiceLocator;
  * @author Subhash
  */
 public class Main {
-    
+
     private static final Logger LOG = Logger.getLogger(Main.class.getName());
-    
+
     private static void setGlobalUIFontSize(final int fontSize){
         Font f = new Font(Font.DIALOG, Font.PLAIN, fontSize);
         //UIManager.put("Label.font", f);
@@ -29,8 +29,8 @@ public class Main {
         //excludes.add("Menu.font");
         //excludes.add("TabbedPane.font");
         excludes.add("");
-        
-        Enumeration itr = UIManager.getDefaults().keys();
+
+        Enumeration<Object> itr = UIManager.getDefaults().keys();
         while(itr.hasMoreElements()){
             Object o = itr.nextElement();
             if(o instanceof String) {
@@ -44,7 +44,7 @@ public class Main {
             }
         }
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -54,16 +54,15 @@ public class Main {
         if(fontSize != -1) {
             setGlobalUIFontSize(fontSize);
         }
-        
+
         // Work on the UI:
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                RESTUserInterface ui = ServiceLocator.getInstance(
-                        RESTUserInterface.class);
+                ServiceLocator.getInstance(RESTUserInterface.class);
             }
         });
-        
+
     }
 
 }
