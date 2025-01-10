@@ -4,8 +4,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -29,25 +30,62 @@ public class ServiceLocator {
         } else {
             inst = getInst(c);
             singletonObjs.put(cName, inst);
+            final Object o = inst;
+            new Thread() { // start a thread to fill the object!
+                public void run() {
+                    fillInst(o);
+                }
+            }.start();
             return inst;
         }
     }
 
     private static <T> Object getInst(Class<T> c) {
-        System.out.println("getInst():"+c.getCanonicalName());
+        String cName = c.getCanonicalName();
+        System.out.println("getInst():"+cName);
         try {
-            Constructor<?> cnst = c.getDeclaredConstructor();
-            cnst.setAccessible(true);
-            Object inst = cnst.newInstance();
-            System.out.println("inst-created");
+            try {
+                Constructor<?> cnst = c.getDeclaredConstructor();
+                cnst.setAccessible(true);
+                Object inst = cnst.newInstance();
+                System.out.println("inst-created");
+                return inst;
+            } catch(NoSuchMethodException ex) {
+                System.out.println("[no-no-param-declared-cnstrtr]:"+cName);
+                for(Constructor<?> dc: c.getDeclaredConstructors()) {
+                    if(dc.isAnnotationPresent(Inject.class)) {
+                        List<Object> cnstParams = new ArrayList<>();
+                        for(Parameter p: dc.getParameters()) {
+                            cnstParams.add(getInstance(p.getType()));
+                        }
+                        dc.setAccessible(true);
+                        return dc.newInstance(cnstParams.toArray(Object[]::new));
+                    }
+                }
+            }
+            throw new RuntimeException("[no-declared-cnstrtr]:"+c.getCanonicalName());
+        } catch(IllegalAccessException ex) {
+            throw new RuntimeException("[srvc-loc-get]:"+cName, ex);
+        } catch(IllegalArgumentException ex) {
+            throw new RuntimeException("[srvc-loc-get]:"+cName, ex);
+        } catch(InstantiationException ex) {
+            throw new RuntimeException("[srvc-loc-get]:"+cName, ex);
+        } catch(InvocationTargetException ex) {
+            throw new RuntimeException("[srvc-loc-get]:"+cName, ex);
+        }
+    }
 
+    private static <T> void fillInst(Object inst) {
+        Class<?> c = inst.getClass();
+        final String cName = c.getCanonicalName();
+        System.out.println("getInst():"+cName);
+        try {
             // @Inject annotation processing:
             Map<Field, Object> fieldVals = new HashMap<>();
-            System.out.println("Fields:"+ c.getDeclaredFields().length);
             for(Field f: c.getDeclaredFields()) {
-                System.out.println(c.getCanonicalName()+":"+f.getName());
+                System.out.println(cName+":"+f.getName());
                 if(f.isAnnotationPresent(Inject.class)) {
-                    System.out.println("inject-present:"+c.getCanonicalName()+":"+f.getName()+":"+f.getType());
+                    System.out.println("inject-present:"+cName+":"+f.getName()+":"+f.getType());
                     fieldVals.put(f, getInstance(f.getType()));
                 }
             }
@@ -64,49 +102,31 @@ public class ServiceLocator {
                     m.invoke(inst);
                 }
             }
-
-            // Return the created instance:
-            return inst;
-        } catch(NoSuchMethodException ex) {
-            throw new RuntimeException(ex);
         } catch(IllegalAccessException ex) {
-            throw new RuntimeException(ex);
+            throw new RuntimeException("[srvc-loc-fill]:"+cName, ex);
         } catch(IllegalArgumentException ex) {
-            throw new RuntimeException(ex);
-        } catch(InstantiationException ex) {
-            throw new RuntimeException(ex);
+            throw new RuntimeException("[srvc-loc-fill]:"+cName, ex);
         } catch(InvocationTargetException ex) {
-            throw new RuntimeException(ex);
+            throw new RuntimeException("[srvc-loc-fill]:"+cName, ex);
         }
     }
 
-    private static List<String> cyclicalClass = new LinkedList<>();
     public static <T> T getInstance(Class<T> c) {
         String cName = c.getCanonicalName();
         System.out.println("getInstance():"+cName);
-        if (cyclicalClass.contains(cName)) {
-            // cyclical, return:
-            System.out.println("cyclical:"+cName);
-            return null;
-        }
-        cyclicalClass.addLast(c.getCanonicalName());
 
-        try {
-            if (c.isAnnotationPresent(Singleton.class)) {
-                return (T)getSingletonInst(c);
-            } else if(c.isInterface() && c.isAnnotationPresent(ImplementedBy.class)) {
-                ImplementedBy ann = c.getAnnotation(ImplementedBy.class);
-                Class<?> implClass = ann.value();
-                if(implClass.isAnnotationPresent(Singleton.class)) {
-                    return (T)getSingletonInst(implClass);
-                } else {
-                    return (T)getInst(implClass);
-                }
+        if (c.isAnnotationPresent(Singleton.class)) {
+            return (T)getSingletonInst(c);
+        } else if(c.isInterface() && c.isAnnotationPresent(ImplementedBy.class)) {
+            ImplementedBy ann = c.getAnnotation(ImplementedBy.class);
+            Class<?> implClass = ann.value();
+            if(implClass.isAnnotationPresent(Singleton.class)) {
+                return (T)getSingletonInst(implClass);
             } else {
-                return (T)getInst(c);
+                return (T)getInst(implClass);
             }
-        } finally {
-            cyclicalClass.removeLast();
+        } else {
+            return (T)getInst(c);
         }
     }
 }

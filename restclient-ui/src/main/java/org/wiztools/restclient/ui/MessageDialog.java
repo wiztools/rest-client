@@ -15,11 +15,11 @@ import javax.swing.JTextArea;
  *
  * @author  schandran
  */
-class MessageDialog extends EscapableDialog {
-    
+public class MessageDialog extends EscapableDialog {
+
     private final MessageDialog messageDialog;
     private RESTUserInterface ui;
-    
+
     /** Creates new form ErrorDialog */
     @Inject
     public MessageDialog(RESTUserInterface ui) {
@@ -29,7 +29,7 @@ class MessageDialog extends EscapableDialog {
         initComponents();
         this.messageDialog = this;
     }
-    
+
     private void initComponents() {
 
         JPanel jp = new JPanel();
@@ -38,10 +38,10 @@ class MessageDialog extends EscapableDialog {
         jta_error.setEditable(false);
         JScrollPane jsp = new JScrollPane(jta_error);
         jp.add(jsp, BorderLayout.CENTER);
-        
+
         JPanel jp_south = new JPanel();
         jp_south.setLayout(new FlowLayout(FlowLayout.CENTER));
-        
+
         jb_ok = new JButton("Ok");
         jb_ok.setMnemonic('o');
         getRootPane().setDefaultButton(jb_ok);
@@ -51,14 +51,14 @@ class MessageDialog extends EscapableDialog {
             }
         });
         jp_south.add(jb_ok);
-        
+
         jp.add(jp_south, BorderLayout.SOUTH);
 
         this.setContentPane(jp);
 
         pack();
     }
-    
+
     @Override
     public void doEscape(AWTEvent event){
         hideDialog();
@@ -67,15 +67,15 @@ class MessageDialog extends EscapableDialog {
     private void jb_okActionPerformed(java.awt.event.ActionEvent evt) {
         hideDialog();
     }
-    
+
     private void hideDialog(){
         messageDialog.setVisible(false);
     }
-    
+
     void showError(final String error){
         showMessage("Error", error);
     }
-    
+
     void showMessage(final String title, final String message){
         messageDialog.setTitle(title);
         jta_error.setText(message);
@@ -84,7 +84,7 @@ class MessageDialog extends EscapableDialog {
         jb_ok.requestFocus();
         messageDialog.setVisible(true);
     }
-    
+
     private javax.swing.JTextArea jta_error;
     private JButton jb_ok;
 }

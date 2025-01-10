@@ -23,23 +23,24 @@ class RecentFilesHelper {
     private static final String KEY_RECENT_FILES = "recent.files";
     private static final String KEY_RECENT_FILES_COUNT = "recent.files.count";
     private static final String SPLIT_KEY = ";";
-    
+
     private static final int DEFAULT_RECENT_FILES_COUNT = 10;
     private int recentFilesCount = DEFAULT_RECENT_FILES_COUNT;
-    
+
     private final LinkedList<File> recentFiles = new LinkedList<File>();
-    
-    private final IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
-    
+
+    private IGlobalOptions options;
+
     private static final Logger LOG = Logger.getLogger(RecentFilesHelper.class.getName());
 
     RecentFilesHelper() {
+        options = ServiceLocator.getInstance(IGlobalOptions.class);
         final String recentOpenedFilesStr = options.getProperty(KEY_RECENT_FILES);
         if(StringUtil.isNotEmpty(recentOpenedFilesStr)) {
             List<File> l = getListRepresentation(recentOpenedFilesStr);
             recentFiles.addAll(l);
         }
-        
+
         // Load recent files count:
         try {
             recentFilesCount = Integer.parseInt(options.getProperty(KEY_RECENT_FILES_COUNT));
@@ -51,7 +52,7 @@ class RecentFilesHelper {
             LOG.warning("Property contains non-numeric value: " + KEY_RECENT_FILES_COUNT);
         }
     }
-    
+
     protected final String getStringRepresentation(LinkedList<File> recentFiles) {
         StringBuilder sb = new StringBuilder();
         for(File file: recentFiles) {
@@ -67,7 +68,7 @@ class RecentFilesHelper {
         if(sb.length() > 0) sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
-    
+
     protected final List<File> getListRepresentation(String recentFilesStr) {
         if(StringUtil.isEmpty(recentFilesStr)) {
             return Collections.<File>emptyList();
@@ -84,32 +85,32 @@ class RecentFilesHelper {
         }
         return out;
     }
-    
+
     void openedFile(File f) {
         // Verify and remove if the same file is already in the list:
         recentFiles.remove(f);
-        
+
         // Now, add:
         recentFiles.addFirst(f);
-        
+
         // Remove the least recently used file from list:
         if(recentFiles.size() == 11) { // store only 10 recent files!
             recentFiles.removeLast();
         }
     }
-    
+
     List<File> getRecentFiles() {
         return Collections.unmodifiableList(recentFiles);
     }
-    
+
     boolean isEmpty() {
         return recentFiles.isEmpty();
     }
-    
+
     void clear() {
         recentFiles.clear();
     }
-    
+
     void store() {
         if(recentFiles.isEmpty()) {
             options.removeProperty(KEY_RECENT_FILES);
