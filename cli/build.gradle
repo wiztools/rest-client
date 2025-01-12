@@ -17,6 +17,7 @@ repositories {
 }
 
 tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+  archiveBaseName = 'restclient-cli'
   archiveClassifier = 'fat'
 }
 
