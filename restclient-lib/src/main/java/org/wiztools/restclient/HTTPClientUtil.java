@@ -1,5 +1,12 @@
 package org.wiztools.restclient;
 
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.core5.http.*;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.io.entity.*;
 import org.wiztools.restclient.bean.ReqEntityByteArray;
 import org.wiztools.restclient.bean.ReqEntitySimple;
 import org.wiztools.restclient.bean.ReqEntityFile;
@@ -12,12 +19,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.logging.Logger;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.entity.*;
 
 /**
  *
@@ -30,7 +31,7 @@ class HTTPClientUtil {
     private static void appendHttpEntity(StringBuilder sb, HttpEntity e) {
         try {
             InputStream is = e.getContent();
-            String encoding = e.getContentEncoding().getValue();
+            String encoding = e.getContentEncoding();
             System.out.println(encoding);
             BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName(encoding)));
             String str = null;
@@ -43,30 +44,31 @@ class HTTPClientUtil {
         }
     }
 
-    static String getHTTPRequestTrace(HttpRequest request) {
+    static String getHTTPRequestTrace(HttpUriRequest request) {
         StringBuilder sb = new StringBuilder();
-        sb.append(request.getRequestLine());
+        // Construct the request line:
+        sb.append(request.getMethod())
+                .append(" ").append(request.getPath())
+                .append(" ").append(request.getScheme())
+                .append(" ").append(request.getVersion());
         sb.append('\n');
-        for (Header h : request.getAllHeaders()) {
+        for (Header h : request.getHeaders()) {
             sb.append(h.getName()).append(": ").append(h.getValue()).append('\n');
         }
         sb.append('\n');
 
-        // Check if the request is POST or PUT
-        if (request instanceof HttpEntityEnclosingRequest) {
-            HttpEntityEnclosingRequest r = (HttpEntityEnclosingRequest) request;
-            HttpEntity e = r.getEntity();
-            if (e != null) {
-                appendHttpEntity(sb, e);
-            }
+        // Request has entity:
+        HttpEntity e = request.getEntity();
+        if (e != null) {
+            appendHttpEntity(sb, e);
         }
         return sb.toString();
     }
 
-    static String getHTTPResponseTrace(HttpResponse response) {
+    static String getHTTPResponseTrace(ClassicHttpResponse response) {
         StringBuilder sb = new StringBuilder();
-        sb.append(response.getStatusLine()).append('\n');
-        for (Header h : response.getAllHeaders()) {
+        sb.append(response.getCode() + " " + response.getReasonPhrase()).append('\n');
+        for (Header h : response.getHeaders()) {
             sb.append(h.getName()).append(": ").append(h.getValue()).append('\n');
         }
         sb.append('\n');
@@ -101,7 +103,7 @@ class HTTPClientUtil {
         return entity;
     }
     
-    public static org.apache.http.entity.ContentType getContentType(
+    public static ContentType getContentType(
             org.wiztools.restclient.bean.ContentType ct) {
         return ContentType.create(ct.getContentType(), ct.getCharset());
     }

@@ -16,48 +16,37 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import org.apache.http.*;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.NTCredentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.AuthSchemes;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.*;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.entity.AbstractHttpEntity;
-import org.apache.http.entity.mime.FormBodyPartBuilder;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.auth.AuthSchemeBase;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.auth.DigestScheme;
-import org.apache.http.impl.client.BasicAuthCache;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.auth.*;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.cookie.CookieStore;
+import org.apache.hc.client5.http.entity.mime.*;
+import org.apache.hc.client5.http.impl.DefaultHttpRequestRetryStrategy;
+import org.apache.hc.client5.http.impl.auth.*;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.client5.http.ssl.*;
+import org.apache.hc.core5.http.*;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.apache.hc.core5.http.io.entity.AbstractHttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
+import org.apache.hc.core5.http.message.BasicHeader;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
+import org.apache.hc.core5.ssl.TrustStrategy;
+import org.apache.hc.core5.util.TimeValue;
+import org.apache.hc.core5.util.Timeout;
 import org.wiztools.commons.MultiValueMap;
 import org.wiztools.commons.StreamUtil;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.*;
+import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.http.RESTClientCookieStore;
-import org.wiztools.restclient.http.TrustAllTrustStrategy;
 import org.wiztools.restclient.util.HttpUtil;
 import org.wiztools.restclient.util.IDNUtil;
 import org.wiztools.restclient.util.Util;
@@ -99,16 +88,16 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
 
         // Needed for specifying HTTP pre-emptive authentication:
         HttpContext httpContext = null;
-        
+
         // Create all the builder objects:
         final HttpClientBuilder hcBuilder = HttpClientBuilder.create();
         final RequestConfig.Builder rcBuilder = RequestConfig.custom();
-        final RequestBuilder reqBuilder = RequestBuilder.create(
+        final ClassicRequestBuilder reqBuilder = ClassicRequestBuilder.create(
                 request.getMethod().name());
-        
+
         // Retry handler (no-retries):
-        hcBuilder.setRetryHandler(new DefaultHttpRequestRetryHandler(0, false));
-        
+        hcBuilder.setRetryStrategy(new DefaultHttpRequestRetryStrategy(0, TimeValue.ZERO_MILLISECONDS));
+
         // Url:
         final URL url = IDNUtil.getIDNizedURL(request.getUrl());
         final String urlHost = url.getHost();
@@ -126,19 +115,18 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
 
         // Set request timeout (default 1 minute--60000 milliseconds)
         IGlobalOptions options = ServiceLocator.getInstance(IGlobalOptions.class);
-        rcBuilder.setConnectionRequestTimeout(
-                Integer.parseInt(options.getProperty("request-timeout-in-millis")));
+        rcBuilder.setConnectionRequestTimeout(Timeout.ofMilliseconds(
+                Long.parseLong(options.getProperty("request-timeout-in-millis"))));
 
         // Set proxy
         ProxyConfig proxy = ProxyConfig.getInstance();
         proxy.acquire();
         if (proxy.isEnabled()) {
-            final HttpHost proxyHost = new HttpHost(proxy.getHost(), proxy.getPort(), "http");
+            final HttpHost proxyHost = new HttpHost("http", proxy.getHost(), proxy.getPort());
             if (proxy.isAuthEnabled()) {
-                CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                credsProvider.setCredentials(
+                CredentialsProvider credsProvider = new CredentialsProviderBuilder().add(
                         new AuthScope(proxy.getHost(), proxy.getPort()),
-                        new UsernamePasswordCredentials(proxy.getUsername(), new String(proxy.getPassword())));
+                        new UsernamePasswordCredentials(proxy.getUsername(), proxy.getPassword())).build();
                 hcBuilder.setDefaultCredentialsProvider(credsProvider);
             }
             hcBuilder.setProxy(proxyHost);
@@ -151,65 +139,64 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             Auth auth = request.getAuth();
             List<String> authPrefs = new ArrayList<>();
             if(auth instanceof BasicAuth) {
-                authPrefs.add(AuthSchemes.BASIC);
+                authPrefs.add("BASIC");
             }
             else if(auth instanceof DigestAuth) {
-                authPrefs.add(AuthSchemes.DIGEST);
+                authPrefs.add("DIGEST");
             }
             else if(auth instanceof NtlmAuth) {
-                authPrefs.add(AuthSchemes.NTLM);
+                authPrefs.add("NTLM");
             }
             rcBuilder.setTargetPreferredAuthSchemes(authPrefs);
-            
+
             // BASIC & DIGEST:
             if(auth instanceof BasicAuth || auth instanceof DigestAuth) {
                 BasicDigestAuth a = (BasicDigestAuth) auth;
                 String uid = a.getUsername();
                 String pwd = new String(a.getPassword());
                 String host = StringUtil.isEmpty(a.getHost()) ? urlHost : a.getHost();
-                String realm = StringUtil.isEmpty(a.getRealm()) ? AuthScope.ANY_REALM : a.getRealm();
-                
-                CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                credsProvider.setCredentials(
-                        new AuthScope(host, urlPort, realm),
-                        new UsernamePasswordCredentials(uid, pwd));
+                String realm = StringUtil.isEmpty(a.getRealm()) ? null : a.getRealm();
+
+                CredentialsProvider credsProvider = new CredentialsProviderBuilder()
+                        // realm needs to be added to AuthScope!
+                        .add(new AuthScope(host, urlPort), new UsernamePasswordCredentials(uid, pwd.toCharArray()))
+                        .build();
                 hcBuilder.setDefaultCredentialsProvider(credsProvider);
-                
+
                 // preemptive mode:
                 if (a.isPreemptive()) {
                     AuthCache authCache = new BasicAuthCache();
-                    AuthSchemeBase authScheme = a instanceof BasicAuth?
+                    AuthScheme authScheme = a instanceof BasicAuth?
                             new BasicScheme(): new DigestScheme();
-                    authCache.put(new HttpHost(urlHost, urlPort, urlProtocol), authScheme);
+                    authCache.put(new HttpHost(urlProtocol, urlHost, urlPort), authScheme);
                     HttpClientContext localContext = HttpClientContext.create();
                     localContext.setAuthCache(authCache);
                     httpContext = localContext;
                 }
             }
-            
+
             // NTLM:
             if(auth instanceof NtlmAuth) {
                 NtlmAuth a = (NtlmAuth) auth;
                 String uid = a.getUsername();
                 String pwd = new String(a.getPassword());
-                
-                CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                credsProvider.setCredentials(
-                        AuthScope.ANY,
-                        new NTCredentials(
-                                uid, pwd, a.getWorkstation(), a.getDomain()));
+                CredentialsProvider credsProvider = new CredentialsProviderBuilder()
+                        .add(
+                                (AuthScope) null,
+                                new NTCredentials(uid, pwd.toCharArray(), a.getWorkstation(), a.getDomain())
+                        ).build();
                 hcBuilder.setDefaultCredentialsProvider(credsProvider);
             }
-            
+
             // Authorization header
             // Logic written in same place where Header is processed--a little down!
         }
 
         try {
-            
+
             { // Authorization Header Authentication:
                 Auth auth = request.getAuth();
-                if(auth != null && auth instanceof AuthorizationHeaderAuth) {
+                if(auth instanceof AuthorizationHeaderAuth) {
                     AuthorizationHeaderAuth a = (AuthorizationHeaderAuth) auth;
                     final String authHeader = a.getAuthorizationHeaderValue();
                     if(StringUtil.isNotEmpty(authHeader)) {
@@ -224,32 +211,32 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             for (String key : header_data.keySet()) {
                 for(String value: header_data.get(key)) {
                     Header header = new BasicHeader(key, value);
-                    
+
                     reqBuilder.addHeader(header);
                 }
             }
-            
+
             // Cookies
             {
                 // Set cookie policy:
-                rcBuilder.setCookieSpec(CookieSpecs.DEFAULT);
-                
+                rcBuilder.setCookieSpec(null); // null is default!
+
                 // Add to CookieStore:
                 CookieStore store = new RESTClientCookieStore();
                 List<HttpCookie> cookies = request.getCookies();
                 for(HttpCookie cookie: cookies) {
                     BasicClientCookie c = new BasicClientCookie(
                             cookie.getName(), cookie.getValue());
-                    c.setVersion(cookie.getVersion());
+                    // c.setVersion(cookie.getVersion());
                     c.setDomain(urlHost);
                     c.setPath("/");
-                    
+
                     store.addCookie(c);
                 }
-                
+
                 // Attach store to client:
                 hcBuilder.setDefaultCookieStore(store);
-            }    
+            }
 
             // POST/PUT/PATCH/DELETE method specific logic
             if (HttpUtil.isEntityEnclosingMethod(reqBuilder.getMethod())) {
@@ -260,31 +247,31 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                     try {
                         if(bean instanceof ReqEntitySimple) {
                             AbstractHttpEntity e = HTTPClientUtil.getEntity((ReqEntitySimple)bean);
-                            
+
                             reqBuilder.setEntity(e);
                         }
                         else if(bean instanceof ReqEntityMultipart) {
                             ReqEntityMultipart multipart = (ReqEntityMultipart)bean;
-                            
+
                             MultipartEntityBuilder meb = MultipartEntityBuilder.create();
-                            
+
                             // multipart/mixed / multipart/form-data:
                             meb.setMimeSubtype(multipart.getSubtype().toString());
-                            
+
                             // Format:
                             MultipartMode mpMode = multipart.getMode();
                             switch(mpMode) {
                                 case BROWSER_COMPATIBLE:
-                                    meb.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+                                    meb.setMode(HttpMultipartMode.LEGACY);
                                     break;
                                 case RFC_6532:
-                                    meb.setMode(HttpMultipartMode.RFC6532);
+                                    meb.setMode(HttpMultipartMode.EXTENDED);
                                     break;
                                 case STRICT:
                                     meb.setMode(HttpMultipartMode.STRICT);
                                     break;
                             }
-                            
+
                             // Parts:
                             for(ReqEntityPart part: multipart.getBody()) {
                                 ContentBody cb = null;
@@ -296,9 +283,9 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                         cb = new StringBody(body, HTTPClientUtil.getContentType(ct));
                                     }
                                     else {
-                                        cb = new StringBody(body, org.apache.http.entity.ContentType.DEFAULT_TEXT);
+                                        cb = new StringBody(body, org.apache.hc.core5.http.ContentType.DEFAULT_TEXT);
                                     }
-                                
+
                                 }
                                 else if(part instanceof ReqEntityFilePart) {
                                     ReqEntityFilePart p = (ReqEntityFilePart)part;
@@ -308,7 +295,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                         cb = new FileBody(body, HTTPClientUtil.getContentType(ct), p.getFilename());
                                     }
                                     else {
-                                        cb = new FileBody(body, org.apache.http.entity.ContentType.DEFAULT_BINARY, p.getFilename());
+                                        cb = new FileBody(body, org.apache.hc.core5.http.ContentType.DEFAULT_BINARY, p.getFilename());
                                     }
                                 }
                                 FormBodyPartBuilder bodyPart = FormBodyPartBuilder
@@ -323,11 +310,10 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                                 }
                                 meb.addPart(bodyPart.build());
                             }
-                            
+
                             reqBuilder.setEntity(meb.build());
                         }
-                        
-                        
+
                     }
                     catch (UnsupportedEncodingException ex) {
                         for(View view: views){
@@ -365,85 +351,92 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                         sslReq.getKeyStore().getKeyStore();
 
                 final TrustStrategy trustStrategy = sslReq.isTrustAllCerts()
-                        ? new TrustAllTrustStrategy(): null;
-                
+                        ? new TrustAllStrategy(): null;
+
                 SSLContext ctx = new SSLContextBuilder()
                         .loadKeyMaterial(keyStore, sslReq.getKeyStore()!=null? sslReq.getKeyStore().getPassword(): null)
                         .loadTrustMaterial(trustStore, trustStrategy)
                         .setSecureRandom(null)
-                        .useProtocol("TLS")
+                        .setProtocol("TLS")
                         .build();
-                SSLConnectionSocketFactory sf = new SSLConnectionSocketFactory(ctx, hcVerifier);
-                hcBuilder.setSSLSocketFactory(sf);
+                final HttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create()
+                        .setTlsSocketStrategy(new DefaultClientTlsStrategy(ctx, hcVerifier))
+                        .build();
+                hcBuilder.setConnectionManager(cm);
             }
 
             // How to handle redirects:
             rcBuilder.setRedirectsEnabled(request.isFollowRedirect());
 
             // Now Execute:
-            long startTime = System.currentTimeMillis();
-            
+            final long startTime = System.currentTimeMillis();
+
             RequestConfig rc = rcBuilder.build();
-            reqBuilder.setConfig(rc);
-            HttpUriRequest req = reqBuilder.build();
+            hcBuilder.setDefaultRequestConfig(rc);
             httpClient = hcBuilder.build();
-            
-            HttpResponse http_res = httpClient.execute(req, httpContext);
-            
-            long endTime = System.currentTimeMillis();
-            
-            // Create response:
-            ResponseBean response = new ResponseBean();
 
-            response.setExecutionTime(endTime - startTime);
+            ClassicHttpRequest req = reqBuilder.build();
+            httpClient.execute(req, httpContext, new HttpClientResponseHandler<HttpResponse>() {
+                @Override
+                public HttpResponse handleResponse(ClassicHttpResponse http_res) throws HttpException, IOException {
+                    // Create response:
+                    ResponseBean response = new ResponseBean();
 
-            response.setStatusCode(http_res.getStatusLine().getStatusCode());
-            response.setStatusLine(http_res.getStatusLine().toString());
+                    response.setStatusCode(http_res.getCode());
+                    response.setStatusLine(http_res.getCode() + " " + http_res.getReasonPhrase());
 
-            final Header[] responseHeaders = http_res.getAllHeaders();
-            for (Header header : responseHeaders) {
-                response.addHeader(header.getName(), header.getValue());
-            }
-            
-            // Response body:
-            final HttpEntity entity = http_res.getEntity();
-            if(entity != null) {
-                if(request.isIgnoreResponseBody()) {
-                    EntityUtils.consumeQuietly(entity);
-                }
-                else {
-                    InputStream is = entity.getContent();
-                    try{
-                        byte[] responseBody = StreamUtil.inputStream2Bytes(is);
-                        if (responseBody != null) {
-                            response.setResponseBody(responseBody);
+                    final Header[] responseHeaders = http_res.getHeaders();
+                    for (Header header : responseHeaders) {
+                        response.addHeader(header.getName(), header.getValue());
+                    }
+
+                    // Response body:
+                    final HttpEntity entity = http_res.getEntity();
+                    if(entity != null) {
+                        if(request.isIgnoreResponseBody()) {
+                            EntityUtils.consumeQuietly(entity);
+                        }
+                        else {
+                            InputStream is = entity.getContent();
+                            try{
+                                byte[] responseBody = StreamUtil.inputStream2Bytes(is);
+                                if (responseBody != null) {
+                                    response.setResponseBody(responseBody);
+                                }
+                            }
+                            catch(IOException ex) {
+                                for(View view: views) {
+                                    view.doError("Byte array conversion from response body stream failed.");
+                                }
+                                LOG.log(Level.WARNING, ex.getMessage(), ex);
+                            }
                         }
                     }
-                    catch(IOException ex) {
-                        for(View view: views) {
-                            view.doError("Byte array conversion from response body stream failed.");
+
+                    // Execution time:
+                    final long endTime = System.currentTimeMillis();
+                    response.setExecutionTime(endTime - startTime);
+
+                    // Now execute tests:
+                    try {
+                        junit.framework.TestSuite suite = TestUtil.getTestSuite(request, response);
+                        if (suite != null) { // suite will be null if there is no associated script
+                            TestResult testResult = TestUtil.execute(suite);
+                            response.setTestResult(testResult);
                         }
-                        LOG.log(Level.WARNING, ex.getMessage(), ex);
+                    } catch (TestException ex) {
+                        for(View view: views){
+                            view.doError(Util.getStackTrace(ex));
+                        }
                     }
-                }
-            }
 
-            // Now execute tests:
-            try {
-                junit.framework.TestSuite suite = TestUtil.getTestSuite(request, response);
-                if (suite != null) { // suite will be null if there is no associated script
-                    TestResult testResult = TestUtil.execute(suite);
-                    response.setTestResult(testResult);
-                }
-            } catch (TestException ex) {
-                for(View view: views){
-                    view.doError(Util.getStackTrace(ex));
-                }
-            }
+                    for(View view: views){
+                        view.doResponse(response);
+                    }
 
-            for(View view: views){
-                view.doResponse(response);
-            }
+                    return http_res;
+                }
+            });
         }
         catch (IOException | KeyStoreException | InvalidKeySpecException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | KeyManagementException | IllegalStateException ex) {
             if(!interruptedShutdown){
@@ -493,5 +486,5 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
         else{
             LOG.info("Request already completed. Doing nothing.");
         }
-    }    
+    }
 }

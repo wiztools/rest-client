@@ -108,7 +108,7 @@ public class RESTMain implements RESTUserInterface {
         JMenuItem jmi_open_req = new JMenuItem("Open Request", RCFileView.REQUEST_ICON);
         jmi_open_req.setMnemonic(KeyEvent.VK_O);
         jmi_open_req.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         jmi_open_req.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -186,7 +186,7 @@ public class RESTMain implements RESTUserInterface {
         JMenuItem jmi_save_req = new JMenuItem("Save Request", RCFileView.REQUEST_ICON);
         jmi_save_req.setMnemonic(KeyEvent.VK_Q);
         jmi_save_req.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         jmi_save_req.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -230,7 +230,7 @@ public class RESTMain implements RESTUserInterface {
             JMenuItem jmi_exit = new JMenuItem("Exit", UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "fv_exit.png"));
             jmi_exit.setMnemonic(KeyEvent.VK_X);
             jmi_exit.setAccelerator(KeyStroke.getKeyStroke(
-                    KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                    KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
             jmi_exit.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
@@ -288,7 +288,7 @@ public class RESTMain implements RESTUserInterface {
 
         final JMenuItem jmi_back = new JMenuItem("Back");
         jmi_back.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_LEFT, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                KeyEvent.VK_LEFT, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         jmi_back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -325,7 +325,7 @@ public class RESTMain implements RESTUserInterface {
 
         final JMenuItem jmi_forward = new JMenuItem("Forward");
         jmi_forward.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_RIGHT, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                KeyEvent.VK_RIGHT, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         jmi_forward.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

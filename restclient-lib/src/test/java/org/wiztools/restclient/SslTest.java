@@ -18,9 +18,9 @@ import org.wiztools.restclient.persistence.XmlPersistenceRead;
  * @author subwiz
  */
 public class SslTest {
-    
+
     private PersistenceRead p = new XmlPersistenceRead();
-    
+
     public SslTest() {
     }
 
@@ -31,11 +31,11 @@ public class SslTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -43,7 +43,7 @@ public class SslTest {
     @Test
     public void testSsl()  throws Exception {
         RequestBean expResult = new RequestBean();
-        expResult.setUrl(new URL("https://www.webshop.co.uk/"));
+        expResult.setUrl(org.wiztools.restclient.util.Url.get("https://www.webshop.co.uk/"));
         expResult.setMethod(HTTPMethod.GET);
         expResult.setHttpVersion(HTTPVersion.HTTP_1_1);
         expResult.setFollowRedirect(true);
@@ -51,9 +51,9 @@ public class SslTest {
         ssl.setTrustAllCerts(true);
         ssl.setHostNameVerifier(SSLHostnameVerifier.ALLOW_ALL);
         expResult.setSslReq(ssl);
-        
+
         Request actual = p.getRequestFromFile(new File("src/test/resources/reqSsl.rcq"));
-        
+
         assertEquals(expResult, actual);
     }
 }

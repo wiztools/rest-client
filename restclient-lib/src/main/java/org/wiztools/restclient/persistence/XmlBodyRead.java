@@ -25,6 +25,7 @@ import org.wiztools.restclient.bean.ReqEntityPart;
 import org.wiztools.restclient.bean.ReqEntityStringBean;
 import org.wiztools.restclient.bean.ReqEntityStringPartBean;
 import org.wiztools.restclient.bean.ReqEntityUrlStreamBean;
+import org.wiztools.restclient.util.Url;
 import org.wiztools.restclient.util.Util;
 
 /**
@@ -33,13 +34,13 @@ import org.wiztools.restclient.util.Util;
  */
 public class XmlBodyRead {
     private final Version readVersion;
-    
+
     private static final Version VERSION_SINCE_PART_CONTENT = new VersionImpl("3.5");
-    
+
     XmlBodyRead(String version) {
         readVersion = new VersionImpl(version);
     }
-    
+
     ReqEntity getReqEntity(Element eEntity) {
         Elements eChildren = eEntity.getChildElements();
         for(int i=0; i<eChildren.size(); i++) {
@@ -63,7 +64,7 @@ public class XmlBodyRead {
             else if("url-stream".equals(name)) {
                 try {
                     ContentType ct = getContentType(e);
-                    URL url = new URL(e.getValue());
+                    URL url = Url.get(e.getValue());
                     return new ReqEntityUrlStreamBean(ct, url);
                 }
                 catch(MalformedURLException ex) {
@@ -79,7 +80,7 @@ public class XmlBodyRead {
         }
         return null;
     }
-    
+
     private ReqEntityMultipartBean getMultipart(Element e) {
         final String subTypeStr = e.getAttributeValue("subtype");
         final MultipartSubtype subType = subTypeStr!=null?
@@ -90,7 +91,7 @@ public class XmlBodyRead {
         List<ReqEntityPart> parts = getMultipartParts(e);
         return new ReqEntityMultipartBean(parts, format, subType);
     }
-    
+
     private List<ReqEntityPart> getMultipartParts(Element e) {
         List<ReqEntityPart> parts = new ArrayList<>();
         Elements children = e.getChildElements();
@@ -100,7 +101,7 @@ public class XmlBodyRead {
         }
         return parts;
     }
-    
+
     private String getPartValue(Element e) {
         if(readVersion.isLessThan(VERSION_SINCE_PART_CONTENT)) {
             return e.getValue();
@@ -110,18 +111,18 @@ public class XmlBodyRead {
             return eContent.getValue();
         }
     }
-    
+
     private ReqEntityPart getMultipartPart(Element e) {
         final String name = e.getLocalName();
-        
+
         final String partName = e.getAttributeValue("name");
         final ContentType ct = getContentType(e);
-        
+
         Elements eFields = null;
         if(e.getChildElements("fields").size() > 0) {
             eFields = e.getChildElements("fields").get(0).getChildElements("field");
         }
-        
+
         if("string".equals(name)) {
             String partBody = getPartValue(e);
             ReqEntityStringPartBean out = new ReqEntityStringPartBean(partName, ct, partBody);
@@ -131,32 +132,32 @@ public class XmlBodyRead {
         else if("file".equals(name)) {
             File file = new File(getPartValue(e));
             String fileName = e.getAttributeValue("filename");
-            
+
             // filename: backward-compatibility:
             fileName = StringUtil.isEmpty(fileName)? file.getName(): fileName;
-            
+
             return new ReqEntityFilePartBean(partName, fileName, ct, file);
         }
         else {
             throw new XMLException("Unsupported element encountered inside <multipart>: " + name);
         }
     }
-    
+
     private void addFields(Elements eFields, ReqEntityBasePart part) {
         if(eFields == null) {
             return;
         }
-        
+
         for(int i=0; i<eFields.size(); i++) {
             Element eField = eFields.get(i);
-            
+
             String name = eField.getChildElements("name").get(0).getValue();
             String value = eField.getChildElements("value").get(0).getValue();
-            
+
             part.addField(name, value);
         }
     }
-    
+
     private static ContentType getContentType(Element e) {
         String contentType = e.getAttributeValue("content-type");
         String charsetStr = e.getAttributeValue("charset");

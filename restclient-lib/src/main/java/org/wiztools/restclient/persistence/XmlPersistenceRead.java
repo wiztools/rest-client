@@ -32,11 +32,11 @@ import org.wiztools.restclient.util.Util;
  */
 public class XmlPersistenceRead implements PersistenceRead {
     private String readVersion;
-    
+
     public void setReadVersion(String version) {
         readVersion = version;
     }
-    
+
     private Map<String, String> getHeadersFromHeaderNode(final Element node)
             throws XMLException {
         Map<String, String> m = new LinkedHashMap<>();
@@ -53,17 +53,17 @@ public class XmlPersistenceRead implements PersistenceRead {
         }
         return m;
     }
-    
-    private List<HttpCookie> getCookiesFromCookiesNode(final Element node) 
+
+    private List<HttpCookie> getCookiesFromCookiesNode(final Element node)
             throws XMLException {
         List<HttpCookie> out = new ArrayList<>();
-        
+
         for (int i = 0; i < node.getChildElements().size(); i++) {
             Element e = node.getChildElements().get(i);
             if(!"cookie".equals(e.getQualifiedName())) {
                 throw new XMLException("<cookies> element should contain only <cookie> elements");
             }
-            
+
             HttpCookie cookie = new HttpCookie(e.getAttributeValue("name"),
                     e.getAttributeValue("value"));
             final String cookieVerStr = e.getAttributeValue("version");
@@ -75,14 +75,14 @@ public class XmlPersistenceRead implements PersistenceRead {
             }
             out.add(cookie);
         }
-        
+
         return out;
     }
-    
+
     protected Request getRequestBean(Element requestNode)
             throws MalformedURLException, XMLException {
         RequestBean requestBean = new RequestBean();
-        
+
         for (int i = 0; i < requestNode.getChildElements().size(); i++) {
             Element tNode = requestNode.getChildElements().get(i);
             String nodeName = tNode.getQualifiedName();
@@ -99,7 +99,7 @@ public class XmlPersistenceRead implements PersistenceRead {
                 requestBean.setIgnoreResponseBody(true);
             }
             else if ("URL".equals(nodeName)) {
-                URL url = new URL(tNode.getValue());
+                URL url = org.wiztools.restclient.util.Url.get(tNode.getValue());
                 requestBean.setUrl(url);
             }
             else if ("method".equals(nodeName)) {
@@ -155,22 +155,22 @@ public class XmlPersistenceRead implements PersistenceRead {
         catch(Versions.VersionValidationException ex) {
             throw new XMLException(ex);
         }
-        
+
         readVersion = rcVersion;
 
-        // if more than two request element is present then throw the exception 
+        // if more than two request element is present then throw the exception
         if (rootNode.getChildElements().size() != 1) {
             throw new XMLException("There can be only one child node for root node: <request>");
         }
-        // minimum one request element is present in xml 
+        // minimum one request element is present in xml
         if (rootNode.getFirstChildElement("request") == null) {
             throw new XMLException("The child node of <rest-client> should be <request>");
         }
         Element requestNode = rootNode.getFirstChildElement("request");
-        
+
         return getRequestBean(requestNode);
     }
-    
+
     protected Response xml2Response(final Document doc)
             throws XMLException {
         ResponseBean responseBean = new ResponseBean();
@@ -244,7 +244,7 @@ public class XmlPersistenceRead implements PersistenceRead {
         }
         return responseBean;
     }
-    
+
     protected Document getDocumentFromFile(final File f)
             throws IOException, XMLException {
         try {
@@ -256,7 +256,7 @@ public class XmlPersistenceRead implements PersistenceRead {
             throw new XMLException(ex.getMessage(), ex);
         }
     }
-    
+
     @Override
     public Request getRequestFromFile(final File f)
             throws IOException, PersistenceException {

@@ -1,8 +1,5 @@
 package org.wiztools.restclient.ui;
 
-import java.util.List;
-import java.util.Map;
-
 import org.wiztools.restclient.util.MultiEntryRes;
 
 /**

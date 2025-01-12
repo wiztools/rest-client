@@ -29,7 +29,7 @@ import org.wiztools.restclient.util.Util;
  * @author subwiz
  */
 public class XMLUtilTest {
-    
+
     private PersistenceRead pRead = new XmlPersistenceRead();
     private PersistenceWrite pWrite = new XmlPersistenceWrite();
 
@@ -54,19 +54,19 @@ public class XMLUtilTest {
 
     private RequestBean getDefaultRequestBean() throws MalformedURLException{
         RequestBean expResult = new RequestBean();
-        expResult.setUrl(new URL("http://localhost:10101/"));
+        expResult.setUrl(org.wiztools.restclient.util.Url.get("http://localhost:10101/"));
         expResult.setMethod(HTTPMethod.POST);
         expResult.addHeader("key1", "value1");
         ContentType contentType = new ContentTypeBean("text/plain", Charsets.UTF_8);
         expResult.setBody(new ReqEntityStringBean("Body Text", contentType));
-        
+
         BasicAuthBean auth = new BasicAuthBean();
         auth.setPreemptive(true);
         auth.setRealm("realm");
         auth.setUsername("username");
         auth.setPassword("password".toCharArray());
         expResult.setAuth(auth);
-        
+
         expResult.setFollowRedirect(true);
         return expResult;
     }
@@ -155,7 +155,7 @@ public class XMLUtilTest {
         File f = new File("src/test/resources/reqFromXml.rcq");
 
         RequestBean expResult = getDefaultRequestBean();
-        
+
         Request result = pRead.getRequestFromFile(f);
         assertEquals(expResult, result);
     }
@@ -169,7 +169,7 @@ public class XMLUtilTest {
         File f = new File("src/test/resources/resFromXml.rcs");
 
         ResponseBean expResult = getDefaultResponseBean();
-        
+
         Response result = pRead.getResponseFromFile(f);
         assertEquals(expResult, result);
     }

@@ -16,10 +16,10 @@ public class HTTPClientRequestExecuterTest {
 
     public HTTPClientRequestExecuterTest() {
     }
-    
+
     private RequestBean getRequestBean() throws MalformedURLException{
         RequestBean request = new RequestBean();
-        request.setUrl(new URL("http://localhost:"+TraceServer.DEFAULT_PORT+"/"));
+        request.setUrl(org.wiztools.restclient.util.Url.get("http://localhost:"+TraceServer.DEFAULT_PORT+"/"));
         return request;
     }
 
@@ -30,7 +30,7 @@ public class HTTPClientRequestExecuterTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
-    
+
     @Before
     public void setUp() throws Exception {
         TraceServer.start();
@@ -40,7 +40,7 @@ public class HTTPClientRequestExecuterTest {
     public void tearDown() throws Exception {
         TraceServer.stop();
     }
-    
+
     @Test
     public void testPremptiveAuth() throws Exception{
         System.out.println("testPreemptiveAuth");
@@ -62,6 +62,7 @@ public class HTTPClientRequestExecuterTest {
                 System.out.println("in doResponse()...");
                 byte[] bodyByte = response.getResponseBody();
                 String body = new String(bodyByte, Charsets.UTF_8);
+                System.out.println(body);
                 if(!body.contains("Authorization: Basic c3ViaGFzaDpzdWJoYXNo")){
                     fail("Pre-emptive Authorization does not happen");
                 }
@@ -69,7 +70,7 @@ public class HTTPClientRequestExecuterTest {
 
             @Override
             public void doEnd() {
-                
+
             }
 
             @Override
@@ -79,7 +80,7 @@ public class HTTPClientRequestExecuterTest {
 
             @Override
             public void doCancelled() {
-                
+
             }
         };
 
@@ -94,13 +95,13 @@ public class HTTPClientRequestExecuterTest {
     @Test
     public void testRun() throws Exception {
         System.out.println("run");
-        
+
         final ContentType contentType = new ContentTypeBean("test/text", Charsets.UTF_8);
         RequestBean request = getRequestBean();
         request.setMethod(HTTPMethod.POST);
         ReqEntityStringBean rBean = new ReqEntityStringBean("", contentType);
         request.setBody(rBean);
-        
+
         View view = new View() {
 
             public void doStart(Request request) {
@@ -121,10 +122,10 @@ public class HTTPClientRequestExecuterTest {
             }
 
             public void doCancelled() {
-                
+
             }
         };
-        
+
         // Execute:
         RequestExecuter executer = ServiceLocator.getInstance(RequestExecuter.class);
         executer.execute(request, view);

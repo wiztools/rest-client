@@ -24,27 +24,27 @@ import org.wiztools.restclient.ui.UIUtil;
  */
 @Singleton
 public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
-    
+
     private static final Logger LOG = Logger.getLogger(ReqUrlGoPanelImpl.class.getName());
-    
+
     @Inject private RESTUserInterface rest_ui;
     @Inject private UrlComboBox jcb_url;
-    
+
     private final ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
     private final ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
-    
+
     private static final String TEXT_GO = "Go!";
     private static final String TEXT_STOP = "Stop!";
-    
+
     private final JButton jb_request = new JButton(icon_go);
-    
+
     private final List<ActionListener> listeners = new ArrayList<>();
-    
+
     @PostConstruct
     protected void init() {
         { // Keystroke for focusing on the address bar:
             final KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_L,
-                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
             final String actionName = "org.wiztools.restclient:ADDRESS_FOCUS";
             jcb_url.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                     .put(ks, actionName);
@@ -55,22 +55,22 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
                 }
             });
         }
-        
+
         // Layout follows:
-        
+
         // West:
         JLabel jl_url = new JLabel("URL: ");
         jl_url.setLabelFor(jcb_url);
         jl_url.setDisplayedMnemonic('u');
         rest_ui.getFrame().getRootPane().setDefaultButton(jb_request);
-        
+
         setLayout(new BorderLayout(RESTView.BORDER_WIDTH, 0));
-        
+
         add(jl_url, BorderLayout.WEST);
-        
+
         // Center:
         add(jcb_url, BorderLayout.CENTER);
-        
+
         // East:
         jb_request.setToolTipText(TEXT_GO);
         rest_ui.getFrame().getRootPane().setDefaultButton(jb_request);
@@ -87,7 +87,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     public void addActionListener(ActionListener listener) {
         listeners.add(listener);
     }
-    
+
     public ACTION_TYPE getActionType() {
         if(jb_request.getIcon() == icon_go){
             return ACTION_TYPE.GO;
@@ -96,17 +96,17 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
             return ACTION_TYPE.CANCEL;
         }
     }
-    
+
     private void jb_requestActionPerformed() {
         if(StringUtil.isNotEmpty((String)jcb_url.getSelectedItem())) {
             jcb_url.push();
         }
-        
+
         for(ActionListener listener: listeners) {
             listener.actionPerformed(null);
         }
     }
-    
+
     @Override
     public String getUrlString() {
         return (String) jcb_url.getSelectedItem();
@@ -120,7 +120,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     @Override
     public boolean isSslUrl() {
         try {
-            URL url = new URL((String) jcb_url.getSelectedItem());
+            URL url = org.wiztools.restclient.util.Url.get((String) jcb_url.getSelectedItem());
             if(url.getProtocol().equalsIgnoreCase("https")) {
                 return true;
             }
@@ -130,7 +130,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
         }
         return false;
     }
-    
+
     @Override
     public void clearHistory() {
         jcb_url.removeAllItems();
@@ -139,7 +139,7 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
     @Override
     public void requestFocus() {
         super.requestFocus();
-        
+
         jcb_url.requestFocus();
     }
 
