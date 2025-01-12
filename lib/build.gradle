@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  api project(':restclient-server'),
+  api project(':server'),
     'javax.inject:javax.inject:1',
     'junit:junit:4.+',
     'commons-codec:commons-codec:1.17.2',
