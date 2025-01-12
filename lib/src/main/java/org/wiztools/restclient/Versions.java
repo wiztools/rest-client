@@ -8,11 +8,11 @@ import org.wiztools.appupdate.VersionImpl;
  * @author subwiz
  */
 public final class Versions {
-    public static final String CURRENT = "3.7.1";
-    
+    public static final String CURRENT = "4.0";
+
     private static final Version MIN = new VersionImpl("3.0");
     private static final Version MAX = new VersionImpl(CURRENT);
-    
+
     public static void versionValidCheck(final String restVersion)
             throws VersionValidationException {
         if (restVersion == null) {
@@ -23,7 +23,7 @@ public final class Versions {
             throw new VersionValidationException("Version not supported");
         }
     }
-    
+
     public static class VersionValidationException extends Exception {
         public VersionValidationException(String message) {
             super(message);
