@@ -20,12 +20,14 @@ import javax.inject.Singleton;
 public class ServiceLocator {
     private ServiceLocator() {}
 
+    public static boolean traceLog = true;
+
     private static Map<String, Object> singletonObjs = new HashMap<>();
     private static synchronized <T> Object getSingletonInst(Class<T> c) {
         String cName = c.getCanonicalName();
         Object inst = singletonObjs.get(cName);
         if(inst != null) {
-            System.out.println("inst-available:"+cName);
+            if(traceLog) System.out.println("[singleton-inst-available]"+cName);
             return inst;
         } else {
             inst = getInst(c);
@@ -42,16 +44,15 @@ public class ServiceLocator {
 
     private static <T> Object getInst(Class<T> c) {
         String cName = c.getCanonicalName();
-        System.out.println("getInst():"+cName);
         try {
             try {
                 Constructor<?> cnst = c.getDeclaredConstructor();
                 cnst.setAccessible(true);
                 Object inst = cnst.newInstance();
-                System.out.println("inst-created");
+                if(traceLog) System.out.println("[inst-created]"+cName);
                 return inst;
             } catch(NoSuchMethodException ex) {
-                System.out.println("[no-no-param-declared-cnstrtr]:"+cName);
+                if(traceLog) System.out.println("[no-no-param-declared-cnstrtr]:"+cName);
                 for(Constructor<?> dc: c.getDeclaredConstructors()) {
                     if(dc.isAnnotationPresent(Inject.class)) {
                         List<Object> cnstParams = new ArrayList<>();
@@ -64,28 +65,20 @@ public class ServiceLocator {
                 }
             }
             throw new RuntimeException("[no-declared-cnstrtr]:"+c.getCanonicalName());
-        } catch(IllegalAccessException ex) {
-            throw new RuntimeException("[srvc-loc-get]:"+cName, ex);
-        } catch(IllegalArgumentException ex) {
-            throw new RuntimeException("[srvc-loc-get]:"+cName, ex);
-        } catch(InstantiationException ex) {
-            throw new RuntimeException("[srvc-loc-get]:"+cName, ex);
-        } catch(InvocationTargetException ex) {
-            throw new RuntimeException("[srvc-loc-get]:"+cName, ex);
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException ex) {
+            throw new RuntimeException("[srvc-loc-get]"+cName, ex);
         }
     }
 
     private static <T> void fillInst(Object inst) {
         Class<?> c = inst.getClass();
         final String cName = c.getCanonicalName();
-        System.out.println("getInst():"+cName);
         try {
             // @Inject annotation processing:
             Map<Field, Object> fieldVals = new HashMap<>();
             for(Field f: c.getDeclaredFields()) {
-                System.out.println(cName+":"+f.getName());
                 if(f.isAnnotationPresent(Inject.class)) {
-                    System.out.println("inject-present:"+cName+":"+f.getName()+":"+f.getType());
+                    if(traceLog) System.out.println("[inject-present]"+cName+":"+f.getName()+":"+f.getType());
                     fieldVals.put(f, getInstance(f.getType()));
                 }
             }
@@ -96,24 +89,21 @@ public class ServiceLocator {
             }
 
             // @PostConstruct annotation processing:
-            for(Method m: c.getMethods()) {
+            for(Method m: c.getDeclaredMethods()) {
                 if(m.isAnnotationPresent(PostConstruct.class)) {
+                    if(traceLog) System.out.println("[post-construct-invoke]"+cName+":"+m.getName());
                     m.setAccessible(true);
                     m.invoke(inst);
                 }
             }
-        } catch(IllegalAccessException ex) {
-            throw new RuntimeException("[srvc-loc-fill]:"+cName, ex);
-        } catch(IllegalArgumentException ex) {
-            throw new RuntimeException("[srvc-loc-fill]:"+cName, ex);
-        } catch(InvocationTargetException ex) {
+        } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             throw new RuntimeException("[srvc-loc-fill]:"+cName, ex);
         }
     }
 
     public static <T> T getInstance(Class<T> c) {
         String cName = c.getCanonicalName();
-        System.out.println("getInstance():"+cName);
+        if(traceLog) System.out.println("[getInstance()]"+cName);
 
         if (c.isAnnotationPresent(Singleton.class)) {
             return (T)getSingletonInst(c);
