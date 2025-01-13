@@ -11,13 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.wiztools.restclient.IGlobalOptions;
@@ -116,7 +110,7 @@ public class OptionsFontPanel extends JPanel implements IOptionsPanel {
         }
         jl_font.setSelectedValue(f.getFamily(), true);
         jl_fontSize.setSelectedValue(String.valueOf(f.getSize()), true);
-        
+
         ServiceLocator.getInstance(RESTViewImpl.class).setTextAreaFont(f);
     }
 

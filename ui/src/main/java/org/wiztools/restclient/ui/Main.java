@@ -62,7 +62,6 @@ public class Main {
                 ServiceLocator.getInstance(RESTUserInterface.class);
             }
         });
-
     }
 
 }

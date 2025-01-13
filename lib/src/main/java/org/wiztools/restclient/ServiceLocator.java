@@ -22,7 +22,7 @@ public class ServiceLocator {
 
     public static boolean traceLog = true;
 
-    private static Map<String, Object> singletonObjs = new HashMap<>();
+    private final static Map<String, Object> singletonObjs = new HashMap<>();
     private static synchronized <T> Object getSingletonInst(Class<T> c) {
         String cName = c.getCanonicalName();
         Object inst = singletonObjs.get(cName);
@@ -30,26 +30,28 @@ public class ServiceLocator {
             if(traceLog) System.out.println("[singleton-inst-available]"+cName);
             return inst;
         } else {
-            inst = getInst(c);
+            inst = getInst(c, true);
             singletonObjs.put(cName, inst);
-            final Object o = inst;
-            new Thread() { // start a thread to fill the object!
-                public void run() {
-                    fillInst(o);
-                }
-            }.start();
             return inst;
         }
     }
 
     private static <T> Object getInst(Class<T> c) {
+        return getInst(c, false);
+    }
+
+    private static <T> Object getInst(Class<T> c, boolean isSingleton) {
         String cName = c.getCanonicalName();
         try {
             try {
                 Constructor<?> cnst = c.getDeclaredConstructor();
                 cnst.setAccessible(true);
-                Object inst = cnst.newInstance();
+                final Object inst = cnst.newInstance();
                 if(traceLog) System.out.println("[inst-created]"+cName);
+                if(isSingleton) {
+                    singletonObjs.put(cName, inst);
+                }
+                fillInst(inst);
                 return inst;
             } catch(NoSuchMethodException ex) {
                 if(traceLog) System.out.println("[no-no-param-declared-cnstrtr]:"+cName);
@@ -60,7 +62,12 @@ public class ServiceLocator {
                             cnstParams.add(getInstance(p.getType()));
                         }
                         dc.setAccessible(true);
-                        return dc.newInstance(cnstParams.toArray(Object[]::new));
+                        final Object inst = dc.newInstance(cnstParams.toArray(Object[]::new));
+                        if(isSingleton) {
+                            singletonObjs.put(cName, inst);
+                        }
+                        fillInst(inst);
+                        return inst;
                     }
                 }
             }
@@ -75,17 +82,12 @@ public class ServiceLocator {
         final String cName = c.getCanonicalName();
         try {
             // @Inject annotation processing:
-            Map<Field, Object> fieldVals = new HashMap<>();
             for(Field f: c.getDeclaredFields()) {
                 if(f.isAnnotationPresent(Inject.class)) {
                     if(traceLog) System.out.println("[inject-present]"+cName+":"+f.getName()+":"+f.getType());
-                    fieldVals.put(f, getInstance(f.getType()));
+                    f.setAccessible(true);
+                    f.set(inst, getInstance(f.getType()));
                 }
-            }
-            for(Map.Entry<Field, Object> e: fieldVals.entrySet()) {
-                Field f = e.getKey();
-                f.setAccessible(true);
-                f.set(inst, e.getValue());
             }
 
             // @PostConstruct annotation processing:
