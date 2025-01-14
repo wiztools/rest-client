@@ -14,13 +14,11 @@ public final class IDNUtil {
     public static URL getIDNizedURL(URL inUrl) throws IllegalArgumentException {
         try {
             return new URI(inUrl.getProtocol(),
-                "",
+                null,
                 IDN.toASCII(inUrl.getHost()),
                 inUrl.getPort(),
-                inUrl.getFile(), "", "").toURL();
-        } catch(MalformedURLException ex) {
-            throw new IllegalArgumentException(ex);
-        } catch(URISyntaxException ex) {
+                inUrl.getFile(), inUrl.getQuery(), null).toURL();
+        } catch(MalformedURLException | URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
         }
     }
