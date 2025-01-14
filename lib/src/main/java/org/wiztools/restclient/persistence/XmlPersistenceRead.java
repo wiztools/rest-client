@@ -13,9 +13,7 @@ import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.ParsingException;
-import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.Versions;
-import org.wiztools.restclient.bean.CookieVersion;
 import org.wiztools.restclient.bean.HTTPMethod;
 import org.wiztools.restclient.bean.HTTPVersion;
 import org.wiztools.restclient.bean.ReqEntity;
@@ -66,13 +64,6 @@ public class XmlPersistenceRead implements PersistenceRead {
 
             HttpCookie cookie = new HttpCookie(e.getAttributeValue("name"),
                     e.getAttributeValue("value"));
-            final String cookieVerStr = e.getAttributeValue("version");
-            if(StringUtil.isNotEmpty(cookieVerStr)) {
-                cookie.setVersion(Integer.parseInt(cookieVerStr));
-            }
-            else {
-                cookie.setVersion(CookieVersion.DEFAULT_VERSION.getIntValue());
-            }
             out.add(cookie);
         }
 

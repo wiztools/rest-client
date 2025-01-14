@@ -224,7 +224,7 @@ public class RESTMain implements RESTUserInterface {
         });
         jm_file.add(jmi_save_archive);
 
-        // if(!application.isMac()) { // Shown only for non-Mac platform!
+        if(!Native.isMac) { // Shown only for non-Mac platform!
             jm_file.addSeparator();
 
             JMenuItem jmi_exit = new JMenuItem("Exit", UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "fv_exit.png"));
@@ -238,7 +238,7 @@ public class RESTMain implements RESTUserInterface {
                 }
             });
             jm_file.add(jmi_exit);
-        // }
+        }
 
         // Edit menu
         JMenu jm_edit = new JMenu("Edit");

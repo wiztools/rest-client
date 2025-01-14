@@ -285,7 +285,6 @@ public class RESTViewImpl extends JPanel implements RESTView {
                 for(final String value: values) {
                     try {
                         HttpCookie cookie = new HttpCookie(key, value);
-                        cookie.setVersion(jp_req_etc.getCookieVersion().getIntValue());
                         request.addCookie(cookie);
                     }
                     catch(IllegalArgumentException ex) {
@@ -572,15 +571,10 @@ public class RESTViewImpl extends JPanel implements RESTView {
         List<HttpCookie> cookies = request.getCookies();
         MultiValueMap<String, String> cookiesMap = new MultiValueMapArrayList<>();
 
-        int version = CookieVersion.DEFAULT_VERSION.getIntValue();
         for(HttpCookie cookie: cookies) {
             cookiesMap.put(cookie.getName(), cookie.getValue());
-            version = cookie.getVersion();
         }
         jp_2col_req_cookies.setData(cookiesMap);
-
-        // Cookie version
-        jp_req_etc.setCookieVersion(CookieVersion.getValue(version));
 
         // Body
         ReqEntity body = request.getBody();
