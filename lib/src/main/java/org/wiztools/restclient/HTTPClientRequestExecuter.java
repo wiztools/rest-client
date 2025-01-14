@@ -252,9 +252,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
 
                             reqBuilder.setEntity(e);
                         }
-                        else if(bean instanceof ReqEntityMultipart) {
-                            ReqEntityMultipart multipart = (ReqEntityMultipart)bean;
-
+                        else if(bean instanceof ReqEntityMultipart multipart) {
                             MultipartEntityBuilder meb = MultipartEntityBuilder.create();
 
                             // multipart/mixed / multipart/form-data:
@@ -263,10 +261,10 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                             // Format:
                             MultipartMode mpMode = multipart.getMode();
                             switch(mpMode) {
-                                case BROWSER_COMPATIBLE:
+                                case LEGACY:
                                     meb.setMode(HttpMultipartMode.LEGACY);
                                     break;
-                                case RFC_6532:
+                                case EXTENDED:
                                     meb.setMode(HttpMultipartMode.EXTENDED);
                                     break;
                                 case STRICT:

@@ -25,7 +25,7 @@ public class MultipartOptionsDialog extends EscapableDialog {
     
     protected final RESTUserInterface rest_ui;
     
-    private static final MultipartMode DEFAULT_MODE = MultipartMode.BROWSER_COMPATIBLE;
+    private static final MultipartMode DEFAULT_MODE = MultipartMode.EXTENDED;
     private static final MultipartSubtype DEFAULT_SUBTYPE = MultipartSubtype.FORM_DATA;
     
     private final JComboBox<MultipartSubtype> jcb_subtype = new JComboBox<>(MultipartSubtype.values());
