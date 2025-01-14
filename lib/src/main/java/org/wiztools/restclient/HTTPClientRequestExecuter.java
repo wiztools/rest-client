@@ -16,6 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+
+import org.apache.hc.client5.http.ContextBuilder;
 import org.apache.hc.client5.http.auth.*;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.cookie.CookieStore;
@@ -58,6 +60,8 @@ import org.wiztools.restclient.util.Util;
 public class HTTPClientRequestExecuter implements RequestExecuter {
 
     private static final Logger LOG = Logger.getLogger(HTTPClientRequestExecuter.class.getName());
+
+    public static boolean traceLog = false;
 
     private CloseableHttpClient httpClient;
 
@@ -165,13 +169,11 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
 
                 // preemptive mode:
                 if (a.isPreemptive()) {
-                    AuthCache authCache = new BasicAuthCache();
-                    AuthScheme authScheme = a instanceof BasicAuth?
-                            new BasicScheme(): new DigestScheme();
-                    authCache.put(new HttpHost(urlProtocol, urlHost, urlPort), authScheme);
-                    HttpClientContext localContext = HttpClientContext.create();
-                    localContext.setAuthCache(authCache);
-                    httpContext = localContext;
+                    httpContext = ContextBuilder.create()
+                            .preemptiveBasicAuth(
+                                    new HttpHost(urlProtocol, urlHost, urlPort),
+                                    new UsernamePasswordCredentials(uid, pwd.toCharArray())
+                            ).build();
                 }
             }
 

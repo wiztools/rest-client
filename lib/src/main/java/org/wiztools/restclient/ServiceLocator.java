@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 public class ServiceLocator {
     private ServiceLocator() {}
 
-    public static boolean traceLog = true;
+    public static boolean traceLog = false;
 
     private final static Map<String, Object> singletonObjs = new HashMap<>();
     private static synchronized <T> Object getSingletonInst(Class<T> c) {
