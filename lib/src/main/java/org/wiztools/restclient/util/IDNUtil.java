@@ -17,7 +17,7 @@ public final class IDNUtil {
                 null,
                 IDN.toASCII(inUrl.getHost()),
                 inUrl.getPort(),
-                inUrl.getFile(), inUrl.getQuery(), null).toURL();
+                inUrl.getFile(), inUrl.getQuery(), inUrl.getRef()).toURL();
         } catch(MalformedURLException | URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
         }
