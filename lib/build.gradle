@@ -1,0 +1,25 @@
+plugins {
+  id 'java-library'
+}
+
+dependencies {
+  api project(':server'),
+    'javax.inject:javax.inject:1',
+    'junit:junit:4.+',
+    'commons-codec:commons-codec:1.17.2',
+    'javax.xml.bind:jaxb-api:2.3.0',
+    'javax.annotation:javax.annotation-api:1.3.2',
+    'org.codehaus.jackson:jackson-mapper-asl:1.9.13',
+    'org.apache.httpcomponents.client5:httpclient5:5.4.1',
+    'org.codehaus.groovy:groovy-all:3.0.21',
+    'net.htmlparser.jericho:jericho-html:3.4',
+    'com.github.wiztools:app-update-framework:app-update-0.2.1'
+  api('xom:xom:1.3.9') {
+    exclude group: 'xerces', module: 'xmlParserAPIs'
+    exclude group: 'xerces', module: 'xercesImpl'
+    exclude group: 'xalan', module: 'xalan'
+    exclude group: 'jaxen', module: 'jaxen'
+  }
+  testImplementation 'junit:junit:4.+',
+    'com.google.code.gson:gson:2.11.0'
+}

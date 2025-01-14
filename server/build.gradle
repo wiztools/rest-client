@@ -1,0 +1,9 @@
+plugins {
+  id 'java-library'
+}
+
+dependencies {
+  api 'com.github.wiztools:commons-lib:0.4.3',
+    'org.eclipse.jetty:jetty-servlet:9.3.2.v20150730'
+  testImplementation 'junit:junit:4.+'
+}

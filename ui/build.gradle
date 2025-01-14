@@ -1,0 +1,27 @@
+plugins {
+  id 'java'
+  id 'application'
+  id 'com.gradleup.shadow' version '9.0.0-beta4'
+}
+
+// Application plugin config:
+application{
+  mainClass = 'org.wiztools.restclient.ui.Main'
+  applicationName = 'restclient-ui'
+  applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
+}
+
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+  archiveBaseName = 'restclient-ui'
+  archiveClassifier = 'fat'
+}
+
+dependencies {
+  implementation project(':lib'),
+    'org.wiztools:filechooser-abstraction:0.1.0',
+    'com.jidesoft:jide-oss:3.6.18',
+    'org.swinglabs.swingx:swingx-autocomplete:1.6.5-1',
+    'com.fifesoft:rsyntaxtextarea:3.5.3',
+    'com.github.pcj:google-options:1.0.0'
+  testImplementation 'junit:junit:4.+'
+}
