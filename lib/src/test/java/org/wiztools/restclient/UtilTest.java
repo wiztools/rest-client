@@ -47,35 +47,6 @@ public class UtilTest {
     }
 
     /**
-     * Test of getStatusCodeFromStatusLine method, of class Util.
-     */
-    /*@Test
-    public void testGetStatusCodeFromStatusLine() {
-        System.out.println("getStatusCodeFromStatusLine");
-        String statusLine = "";
-        int expResult = 0;
-        int result = Util.getStatusCodeFromStatusLine(statusLine);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }*/
-
-    /**
-     * Test of getFormattedContentType method, of class Util.
-     */
-    /*@Test
-    public void testGetFormattedContentType() {
-        System.out.println("getFormattedContentType");
-        String contentType = "";
-        String charset = "";
-        String expResult = "";
-        String result = Util.getFormattedContentType(contentType, charset);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }*/
-
-    /**
      * Test of getCharsetFromContentType method, of class Util.
      */
     @Test

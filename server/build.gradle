@@ -4,6 +4,8 @@ plugins {
 
 dependencies {
   api 'com.github.wiztools:commons-lib:0.4.3',
-    'org.eclipse.jetty:jetty-servlet:9.3.2.v20150730'
+    'org.eclipse.jetty:jetty-server:11.0.22',
+    'org.eclipse.jetty:jetty-servlet:11.0.22',
+    'jakarta.servlet:jakarta.servlet-api:6.1.0'
   testImplementation 'junit:junit:4.+'
 }

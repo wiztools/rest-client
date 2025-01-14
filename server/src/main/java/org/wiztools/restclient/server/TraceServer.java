@@ -18,7 +18,7 @@ public class TraceServer {
 
     public static final int PORT;
     private static final Server server;
-    
+
     static{
         // Set the port
         int port = 0;
@@ -55,22 +55,22 @@ public class TraceServer {
         ServletContextHandler ctx = new ServletContextHandler();
         ctx.setContextPath("/");
         server.setHandler(ctx);
-        
+
         ctx.addServlet(new ServletHolder(new TraceServlet()), "/*");
-        
+
         server.setStopAtShutdown(true);
     }
-    
+
     public static synchronized void start() throws Exception{
         if(!(server.isStarted() || server.isRunning())){
             server.start();
         }
     }
-    
+
     public static boolean isRunning(){
         return server.isRunning() || server.isStarted();
     }
-    
+
     public static synchronized void stop() throws Exception{
         server.stop();
     }
