@@ -1,19 +1,13 @@
 package org.wiztools.restclient.ui;
 
-import java.awt.Font;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 import com.google.devtools.common.options.OptionsParser;
 import org.wiztools.restclient.HTTPClientRequestExecuter;
 import org.wiztools.restclient.ServiceLocator;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionsBase;
@@ -73,5 +67,4 @@ public class Main {
             }
         });
     }
-
 }
