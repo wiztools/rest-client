@@ -513,7 +513,14 @@ public class RESTMain implements RESTUserInterface {
         });
         jm_tools.add(jmi_server_fill_url);
 
-        // if(!application.isMac()) { // Add Options menu only for non-Mac platform!
+        if(Native.isMac) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
+                desktop.setPreferencesHandler(e -> {
+                    showOptionsDialog();
+                });
+            }
+        } else { // Add Options menu only for non-Mac platform!
             jm_tools.addSeparator();
 
             JMenuItem jmi_options = new JMenuItem("Options");
@@ -525,7 +532,7 @@ public class RESTMain implements RESTUserInterface {
                 }
             });
             jm_tools.add(jmi_options);
-        // }
+        }
 
         // Menu-bar
         JMenuBar jmb = new JMenuBar();
