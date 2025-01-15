@@ -23,6 +23,7 @@ tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.Shadow
 
 dependencies {
   implementation project(':lib'),
-    'com.google.code.cli-parser:cli:7'
+    'com.google.code.cli-parser:cli:7',
+    'org.slf4j:slf4j-nop:2.0.16' // to suppress warning: https://www.slf4j.org/codes.html#noProviders
   testImplementation 'junit:junit:4.+'
 }

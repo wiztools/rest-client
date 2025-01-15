@@ -2,6 +2,7 @@ plugins {
   id 'java'
   id 'application'
   id 'com.gradleup.shadow' version '9.0.0-beta4'
+  id 'project-report'
 }
 
 // Application plugin config:
@@ -23,6 +24,7 @@ dependencies {
     'org.swinglabs.swingx:swingx-autocomplete:1.6.5-1',
     'com.fifesoft:rsyntaxtextarea:3.5.3',
     'com.formdev:flatlaf:3.5.4',
-    'com.github.pcj:google-options:1.0.0'
+    'com.github.pcj:google-options:1.0.0',
+    'org.slf4j:slf4j-nop:2.0.16' // to suppress warning: https://www.slf4j.org/codes.html#noProviders
   testImplementation 'junit:junit:4.+'
 }
