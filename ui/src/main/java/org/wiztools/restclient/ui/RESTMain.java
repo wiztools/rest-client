@@ -17,10 +17,6 @@ import javax.inject.Singleton;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-// import org.simplericity.macify.eawt.Application;
-// import org.simplericity.macify.eawt.ApplicationEvent;
-// import org.simplericity.macify.eawt.ApplicationListener;
-// import org.simplericity.macify.eawt.DefaultApplication;
 import org.wiztools.commons.FileUtil;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.filechooser.FileChooser;
@@ -53,8 +49,6 @@ public class RESTMain implements RESTUserInterface {
 
     private static final Logger LOG = Logger.getLogger(RESTMain.class.getName());
 
-    // private final Application application = new DefaultApplication();
-
     @Inject private RESTViewImpl view;
     @Inject private AboutDialog aboutDialog;
     @Inject private OptionsDialog optionsDialog;
@@ -75,17 +69,12 @@ public class RESTMain implements RESTUserInterface {
     @Inject private RecentFilesHelper recentFilesHelper;
 
     private static final String URL_BOOK = "http://www.amazon.com/dp/B00KEADQF2";
-    private static final String URL_FB = "http://www.facebook.com/wiztools.org";
+    private static final String URL_MEDIUM = "https://medium.com/wiztools";
     private static final String URL_ISSUE = "https://github.com/wiztools/rest-client/issues";
 
     private final JFrame frame;
 
     public RESTMain(){
-        // Macify:
-        // application.addAboutMenuItem();
-        // application.addApplicationListener(new RCApplicationListener());
-        // application.addPreferencesMenuItem();
-
         // Application logic:
         frame = new JFrame(RCConstants.TITLE + Versions.CURRENT);
     }
@@ -562,11 +551,11 @@ public class RESTMain implements RESTUserInterface {
         }
 
         { // FB
-            JMenuItem jmi_url = new JMenuItem("Follow in Facebook");
+            JMenuItem jmi_url = new JMenuItem("Follow in Medium");
             jmi_url.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    openUrl(URL_FB);
+                    openUrl(URL_MEDIUM);
                 }
             });
             jm_help.add(jmi_url);
@@ -584,7 +573,14 @@ public class RESTMain implements RESTUserInterface {
         }
 
         // Help > About:
-        // if(!application.isMac()) { // show About for only non-Mac platform!
+        if(Native.isMac) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
+                desktop.setAboutHandler(e -> {
+                    showAboutDialog();
+                });
+            }
+        } else { // show About for only non-Mac platform in menu!
             // Add separator before the About menu-item:
             jm_help.addSeparator();
 
@@ -598,7 +594,7 @@ public class RESTMain implements RESTUserInterface {
                 }
             });
             jm_help.add(jmi_about);
-        // }
+        }
         // Add Help menu to Menubar:
         jmb.add(jm_help);
 

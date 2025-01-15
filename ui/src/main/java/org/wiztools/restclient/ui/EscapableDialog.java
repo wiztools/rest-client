@@ -17,7 +17,7 @@ import javax.swing.JDialog;
  * @author subwiz
  */
 public abstract class EscapableDialog extends JDialog implements KeyListener, ContainerListener {
-    
+
     private final Frame _frame;
 
     public EscapableDialog(Frame f, boolean modal) {
@@ -37,10 +37,7 @@ public abstract class EscapableDialog extends JDialog implements KeyListener, Co
     //KeyListener interface
     @Override
     public void keyPressed(KeyEvent e) {
-
-
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-
             doEscape(e);
         }
     }
@@ -80,7 +77,7 @@ public abstract class EscapableDialog extends JDialog implements KeyListener, Co
             }
         }
     }
-    
+
     /**
      * Center the dialog relative to parent before displaying.
      */
@@ -91,5 +88,4 @@ public abstract class EscapableDialog extends JDialog implements KeyListener, Co
         }
         super.setVisible(boo);
     }
-    
 }
