@@ -22,6 +22,7 @@ dependencies {
     'com.jidesoft:jide-oss:3.6.18',
     'org.swinglabs.swingx:swingx-autocomplete:1.6.5-1',
     'com.fifesoft:rsyntaxtextarea:3.5.3',
+    'com.formdev:flatlaf:3.5.4',
     'com.github.pcj:google-options:1.0.0'
   testImplementation 'junit:junit:4.+'
 }
