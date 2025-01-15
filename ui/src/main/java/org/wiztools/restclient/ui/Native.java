@@ -11,6 +11,7 @@ public final class Native {
     static {
         if(isMac) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("apple.awt.application.name", "RESTClient");
         }
     }
 }
