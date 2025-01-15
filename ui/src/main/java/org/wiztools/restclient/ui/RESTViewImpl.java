@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +25,7 @@ import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.IGlobalOptions;
 import org.wiztools.restclient.ServiceLocator;
 import org.wiztools.restclient.bean.*;
+import org.wiztools.restclient.util.Url;
 import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 import org.wiztools.restclient.ui.history.HistoryManager;
 import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
@@ -254,8 +254,11 @@ public class RESTViewImpl extends JPanel implements RESTView {
         request.setAuth(auth);
 
         String url = jp_url_go.getUrlString();
+        if(url == null || url.isEmpty()) {
+            throw new IllegalStateException("URL is empty");
+        }
         try{
-            request.setUrl(org.wiztools.restclient.util.Url.get(url));
+            request.setUrl(Url.get(url));
         }
         catch(MalformedURLException ex){
             throw new IllegalStateException("URL is malformed", ex);
