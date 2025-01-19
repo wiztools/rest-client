@@ -531,47 +531,47 @@ public class RESTViewImpl extends JPanel implements RESTView {
     }
 
     @Override
-    public void setUIFromResponse(final Response response){
+    public void setUIFromResponse(final Response res){
         // Clear first
         clearUIResponse();
 
         // Response status line
-        jp_res_status.setStatus(response.getStatusLine());
+        jp_res_status.setStatus(res.getStatusLine());
 
         // Response header
-        jp_res_headers.setHeaders(response.getHeaders());
+        jp_res_headers.setHeaders(res.getHeaders());
 
         // Response body
-        if(response.getResponseBody() != null) {
-            jp_res_body.setBody(response.getResponseBody(), response.getContentType());
+        if(res.getResponseBody() != null) {
+            jp_res_body.setBody(res.getResponseBody(), res.getContentType());
         }
 
         // Response test result
-        jp_res_test.setTestResult(response.getTestResult());
+        jp_res_test.setTestResult(res.getTestResult());
 
         // Stats:
-        jp_res_stats.setBodySize(response.getResponseBody().length);
-        jp_res_stats.setExecutionTime(response.getExecutionTime());
+        jp_res_stats.setBodySize(res.getResponseBody()==null?0:res.getResponseBody().length);
+        jp_res_stats.setExecutionTime(res.getExecutionTime());
     }
 
     @Override
-    public void setUIFromRequest(final Request request){
+    public void setUIFromRequest(final Request req){
         // Clear first
         clearUIRequest();
 
         // URL
-        jp_url_go.setUrlString(request.getUrl().toString());
+        jp_url_go.setUrlString(req.getUrl().toString());
 
         // Method
-        final HTTPMethod reqMethod = request.getMethod();
+        final HTTPMethod reqMethod = req.getMethod();
         jp_req_method.setSelectedMethod(reqMethod);
 
         // Headers
-        MultiValueMap<String, String> headers = request.getHeaders();
+        MultiValueMap<String, String> headers = req.getHeaders();
         jp_2col_req_headers.setData(headers);
 
         // Cookies
-        List<HttpCookie> cookies = request.getCookies();
+        List<HttpCookie> cookies = req.getCookies();
         MultiValueMap<String, String> cookiesMap = new MultiValueMapArrayList<>();
 
         for(HttpCookie cookie: cookies) {
@@ -580,7 +580,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jp_2col_req_cookies.setData(cookiesMap);
 
         // Body
-        ReqEntity body = request.getBody();
+        ReqEntity body = req.getBody();
         if(body != null){
             if(jp_req_method.doesSelectedMethodSupportEntityBody()){
                 jp_req_body.enableBody();
@@ -589,31 +589,31 @@ public class RESTViewImpl extends JPanel implements RESTView {
         }
 
         // Authentication
-        if(request.getAuth() != null) {
-            jp_req_auth.setAuth(request.getAuth());
+        if(req.getAuth() != null) {
+            jp_req_auth.setAuth(req.getAuth());
         }
 
         // SSL
-        if(request.getSslReq() != null) {
-            jp_req_ssl.setSslReq(request.getSslReq());
+        if(req.getSslReq() != null) {
+            jp_req_ssl.setSslReq(req.getSslReq());
         }
 
         // HTTP Version
-        if(request.getHttpVersion() == HTTPVersion.HTTP_1_1){
+        if(req.getHttpVersion() == HTTPVersion.HTTP_1_1){
             jp_req_etc.setHttpVersion(HTTPVersion.HTTP_1_1);
         }
-        else if(request.getHttpVersion() == HTTPVersion.HTTP_1_0){
+        else if(req.getHttpVersion() == HTTPVersion.HTTP_1_0){
             jp_req_etc.setHttpVersion(HTTPVersion.HTTP_1_0);
         }
 
         // Follow redirect
-        jp_req_etc.setFollowRedirects(request.isFollowRedirect());
+        jp_req_etc.setFollowRedirects(req.isFollowRedirect());
 
         // Ignore response body
-        jp_req_etc.setIgnoreResponseBody(request.isIgnoreResponseBody());
+        jp_req_etc.setIgnoreResponseBody(req.isIgnoreResponseBody());
 
         // Test script
-        jp_req_test.setTestScript(request.getTestScript()==null?"":request.getTestScript());
+        jp_req_test.setTestScript(req.getTestScript()==null?"":req.getTestScript());
     }
 
     @Override
