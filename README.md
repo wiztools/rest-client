@@ -29,7 +29,7 @@ Post your queries in [Google Group mailing list](https://groups.google.com/forum
 
 4.0 release:
 
-[![](https://live.staticflickr.com/65535/54274308984_8b89c838fc_o_d.png)](https://www.flickr.com/photos/subwiz/54274308984/)
+[![](https://live.staticflickr.com/65535/54274308984_5307e9a09c_o_d.png)](https://www.flickr.com/photos/subwiz/54274308984/)
 
 More screenshots here: http://flickr.com/photos/subwiz/tags/restclient/
 
