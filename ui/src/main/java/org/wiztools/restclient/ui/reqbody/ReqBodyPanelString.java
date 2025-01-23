@@ -41,7 +41,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     private final ScriptEditor se_req_body = ScriptEditorFactory.getXMLScriptEditor();
 
     private final JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private final JButton jb_body_params = new JButton(SVGLoad.loadScaledSVG(RCFileView.iconBasePath + "s_insert_parameters.svg", 8, 8));
+    private final JButton jb_body_params = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "s_insert_parameters.svg"));
 
     @PostConstruct
     protected void init() {

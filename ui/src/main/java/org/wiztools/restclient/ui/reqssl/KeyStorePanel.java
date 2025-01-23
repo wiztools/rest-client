@@ -30,7 +30,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     private final JLabel jl = new JLabel();
     private final JTextField jtf = new JTextField(23);
     private final JButton jb_addEdit = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "pencil_add.png"));
-    private final JButton jb_clear = new JButton(SVGLoad.loadScaledSVG(RCFileView.iconBasePath + "s_delete.svg", 8,8));
+    private final JButton jb_clear = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "s_delete.svg"));
 
     private SSLKeyStore keyStore = null;
 

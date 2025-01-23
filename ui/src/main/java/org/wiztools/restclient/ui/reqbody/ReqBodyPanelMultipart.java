@@ -38,7 +38,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
 
     private final JButton jb_string = new JButton("String");
     private final JButton jb_file = new JButton("File");
-    private final JButton jb_config = new JButton(SVGLoad.loadScaledSVG("org/wiztools/restclient/s_cog.svg", 8, 8));
+    private final JButton jb_config = new JButton(SVGLoad.scaledIcon("org/wiztools/restclient/s_cog.svg"));
 
     private final MultipartTableModel model = new MultipartTableModel();
     private final JTable jt = new JTable(model);

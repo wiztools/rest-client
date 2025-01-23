@@ -16,7 +16,7 @@ import javax.swing.*;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;
-import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.ui.SVGLoad;
 
 /**
  *
@@ -25,13 +25,11 @@ import org.wiztools.restclient.ui.UIUtil;
 @Singleton
 public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
 
-    private static final Logger LOG = Logger.getLogger(ReqUrlGoPanelImpl.class.getName());
-
     @Inject private RESTUserInterface rest_ui;
     @Inject private UrlComboBox jcb_url;
 
-    private final ImageIcon icon_go = UIUtil.getIconFromClasspath("org/wiztools/restclient/go.png");
-    private final ImageIcon icon_stop = UIUtil.getIconFromClasspath("org/wiztools/restclient/stop.png");
+    private final ImageIcon icon_go = SVGLoad.scaledIcon("org/wiztools/restclient/go.svg");
+    private final ImageIcon icon_stop = SVGLoad.scaledIcon("org/wiztools/restclient/s_cancel.svg");
 
     private static final String TEXT_GO = "Go!";
     private static final String TEXT_STOP = "Stop!";

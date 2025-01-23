@@ -16,11 +16,11 @@ public class RCFileView extends FileView {
     }
 
     public static final String iconBasePath = "org/wiztools/restclient/";
-    public static final Icon FOLDER_ICON = SVGLoad.loadScaledSVG(iconBasePath + "s_folder.svg", 8, 8);
-    public static final Icon FILE_ICON = SVGLoad.loadScaledSVG(iconBasePath + "s_file.svg", 8, 8);
-    public static final Icon REQUEST_ICON = SVGLoad.loadScaledSVG(iconBasePath + "s_request.svg", 8, 8);
-    public static final Icon RESPONSE_ICON = SVGLoad.loadScaledSVG(iconBasePath + "s_response.svg", 8, 8);
-    public static final Icon ARCHIVE_ICON = SVGLoad.loadScaledSVG(iconBasePath + "s_archive.svg", 8, 8);
+    public static final Icon FOLDER_ICON = SVGLoad.scaledIcon(iconBasePath + "s_folder.svg");
+    public static final Icon FILE_ICON = SVGLoad.scaledIcon(iconBasePath + "s_file.svg");
+    public static final Icon REQUEST_ICON = SVGLoad.scaledIcon(iconBasePath + "s_request.svg");
+    public static final Icon RESPONSE_ICON = SVGLoad.scaledIcon(iconBasePath + "s_response.svg");
+    public static final Icon ARCHIVE_ICON = SVGLoad.scaledIcon(iconBasePath + "s_archive.svg");
 
     @Override
     public Icon getIcon(final File f){

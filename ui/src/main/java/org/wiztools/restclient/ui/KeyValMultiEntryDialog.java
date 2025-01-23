@@ -29,7 +29,7 @@ import org.wiztools.restclient.util.Util;
 class KeyValMultiEntryDialog extends EscapableDialog {
 
     private final JButton jb_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private final JButton jb_help = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "question.png"));
+    private final JButton jb_help = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "s_help.svg"));
     private final JButton jb_add = new JButton("Add");
     private final JButton jb_cancel = new JButton("Cancel");
     private JScrollPane jsp_in;
@@ -48,7 +48,7 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         init();
         dnd();
     }
-    
+
     private void dnd() {
         FileDropTargetListener l = new FileDropTargetListener();
         l.addDndAction(new DndAction() {
@@ -116,16 +116,16 @@ class KeyValMultiEntryDialog extends EscapableDialog {
                 RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH, RESTViewImpl.BORDER_WIDTH));
         setContentPane(jp);
         pack();
-        
+
         // By default have the focus on the text area:
         jta_in.requestFocus();
     }
-    
+
     private void loadFromFile() {
         File f = ui.getOpenFile(FileChooserType.OPEN_TEST_SCRIPT, me);
         loadFromFile(f);
     }
-    
+
     private void loadFromFile(File f) {
         if(f != null){
             try{
@@ -147,7 +147,7 @@ class KeyValMultiEntryDialog extends EscapableDialog {
             JOptionPane.showMessageDialog(me, "Please enter input text!", "No Input", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         MultiEntryRes res = MultiEntryUtil.parse(str);
 
         me.setVisible(false);
@@ -158,7 +158,7 @@ class KeyValMultiEntryDialog extends EscapableDialog {
         String str = MultiEntryUtil.join(map);
         jta_in.setText(str);
     }
-    
+
     @Override
     public void setVisible(boolean boo){
         super.setVisible(boo);

@@ -36,8 +36,8 @@ public class ReqTestPanelImpl extends JPanel implements ReqTestPanel {
     private final ScriptEditor se_test_script = ScriptEditorFactory.getGroovyScriptEditor();
     private final JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
     private final JButton jb_req_test_open = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private final JButton jb_req_test_run = new JButton(SVGLoad.loadScaledSVG(RCFileView.iconBasePath + "s_wand.svg", 8, 8));
-    private final JButton jb_req_test_quick = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "quick_test.png"));
+    private final JButton jb_req_test_run = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "s_wand.svg"));
+    private final JButton jb_req_test_quick = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "s_lightning.svg"));
 
     // Load templateTestScript:
     private static final String templateTestScript;

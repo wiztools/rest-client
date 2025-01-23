@@ -30,7 +30,7 @@ public final class SVGLoad {
      * @param baseHeight
      * @return
      */
-    public static ImageIcon loadScaledSVG(String path, int baseWidth, int baseHeight) {
+    public static ImageIcon scaledIcon(String path, int baseWidth, int baseHeight) {
         try {
             // Calculate scaled dimensions
             int scaledWidth = (int) (baseWidth * SCALE_FACTOR);
@@ -56,5 +56,11 @@ public final class SVGLoad {
         } catch (TranscoderException | IOException ex) {
             throw new RuntimeException("[loadSVG]", ex);
         }
+    }
+
+    private static final int ICON_DEF_WIDTH = 8, ICON_DEF_HEIGHT = 8;
+
+    public static ImageIcon scaledIcon(String path) {
+        return scaledIcon(path, ICON_DEF_WIDTH, ICON_DEF_HEIGHT);
     }
 }

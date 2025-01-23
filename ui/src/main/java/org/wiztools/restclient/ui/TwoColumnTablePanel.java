@@ -177,7 +177,7 @@ public final class TwoColumnTablePanel extends JPanel {
         final JTextField jtf_value = new JTextField(TEXT_FIELD_SIZE);
         jl_key.setDisplayedMnemonic('k');
         jl_key.setLabelFor(jtf_key);
-        JButton jb_add = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "add.png"));
+        JButton jb_add = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "add.svg"));
         jb_add.setToolTipText("Add");
         jb_add.addActionListener(new ActionListener() {
             @Override
@@ -213,7 +213,7 @@ public final class TwoColumnTablePanel extends JPanel {
                 jtf_key.requestFocus();
             }
         });
-        JButton jb_multi_insert = new JButton(SVGLoad.loadScaledSVG(RCFileView.iconBasePath + "s_insert_parameters.svg", 8, 8));
+        JButton jb_multi_insert = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "s_insert_parameters.svg"));
         jb_multi_insert.setToolTipText("Multi-insert");
         jb_multi_insert.addActionListener(new ActionListener(){
             @Override

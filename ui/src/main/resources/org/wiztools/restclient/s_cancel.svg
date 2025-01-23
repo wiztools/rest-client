@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="64" height="64" viewBox="0 0 64 64" version="1.1" id="svg8" sodipodi:docname="cancel.svg" inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)">
+  <defs id="defs2">
+    <linearGradient inkscape:collect="always" id="linearGradient981">
+      <stop style="stop-color:#f50b0b;stop-opacity:1" offset="0" id="stop977"/>
+      <stop style="stop-color:#fe3434;stop-opacity:1" offset="1" id="stop979"/>
+    </linearGradient>
+    <linearGradient inkscape:collect="always" id="linearGradient961">
+      <stop style="stop-color:#ff6a5d;stop-opacity:1" offset="0" id="stop957"/>
+      <stop style="stop-color:#f74434;stop-opacity:1" offset="1" id="stop959"/>
+    </linearGradient>
+    <linearGradient inkscape:collect="always" id="linearGradient953">
+      <stop style="stop-color:#f10000;stop-opacity:0.99215686" offset="0" id="stop949"/>
+      <stop style="stop-color:#ff0000;stop-opacity:0.92156863" offset="1" id="stop951"/>
+    </linearGradient>
+    <linearGradient inkscape:collect="always" id="linearGradient1228">
+      <stop style="stop-color:#faecce;stop-opacity:1" offset="0" id="stop1224"/>
+      <stop style="stop-color:#fed678;stop-opacity:1" offset="1" id="stop1226"/>
+    </linearGradient>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient1228" id="linearGradient1230" x1="32" y1="22" x2="44" y2="32" gradientUnits="userSpaceOnUse"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient953" id="linearGradient955" x1="56" y1="52" x2="12" y2="8" gradientUnits="userSpaceOnUse"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient961" id="linearGradient963" x1="12" y1="16" x2="48" y2="52" gradientUnits="userSpaceOnUse"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient981" id="linearGradient860" x1="51" y1="41" x2="23" y2="13" gradientUnits="userSpaceOnUse"/>
+  </defs>
+  <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="4.0570903" inkscape:cx="9.3145133" inkscape:cy="37.016413" inkscape:document-units="px" inkscape:current-layer="layer1" inkscape:document-rotation="0" showgrid="true" units="px" inkscape:snap-object-midpoints="true" inkscape:window-width="1920" inkscape:window-height="1011" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="1" inkscape:snap-grids="true">
+    <inkscape:grid type="xygrid" id="grid833" empspacing="4"/>
+  </sodipodi:namedview>
+  <metadata id="metadata5">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g inkscape:label="Ebene 1" inkscape:groupmode="layer" id="layer1">
+    <path style="fill:url(#linearGradient963);fill-opacity:1;stroke:url(#linearGradient955);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" d="M 6,44 20,58 H 44 L 58,44 V 20 L 44,6 H 20 L 6,20 Z" id="path947"/>
+    <path style="fill:url(#linearGradient860);stroke:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;paint-order:markers fill stroke;fill-opacity:1" d="M 12,23 23,12 H 41 L 52,23 V 41 L 41,52 H 23 L 12,41 Z" id="path852"/>
+    <path style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" d="m 18,40 6,6 8,-8 8,8 6,-6 -8,-8 8,-8 -6,-6 -8,8 -8,-8 -6,6 8,8 z" id="path985" sodipodi:nodetypes="ccccccccccccc"/>
+  </g>
+</svg>
