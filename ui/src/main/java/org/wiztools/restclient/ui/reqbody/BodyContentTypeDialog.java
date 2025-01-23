@@ -30,13 +30,13 @@ import org.wiztools.restclient.ui.RESTUserInterface;
  * @author schandran
  */
 public class BodyContentTypeDialog extends EscapableDialog {
-    
+
     private static final String[] contentTypeArr;
-    public static final String DEFAULT_CONTENT_TYPE = "text/plain";
-    
+    public static final String DEFAULT_CONTENT_TYPE = "application/json";
+
     private static final String[] charSetArr;
     public static final String DEFAULT_CHARSET = "UTF-8";
-    
+
     public static final String PARAM_CONTENT_TYPE_STR = "application/x-www-form-urlencoded";
     public static final Charset PARAM_CHARSET = Charsets.UTF_8;
     public static final ContentType PARAM_CONTENT_TYPE = new ContentTypeBean(PARAM_CONTENT_TYPE_STR, PARAM_CHARSET);
@@ -56,7 +56,7 @@ public class BodyContentTypeDialog extends EscapableDialog {
             arr = ll.toArray(arr);
         }
         catch(IOException ex){
-            arr = 
+            arr =
                 new String[]{"text/plain",
                 "application/xml",
                 "application/json",
@@ -71,7 +71,7 @@ public class BodyContentTypeDialog extends EscapableDialog {
         }
         contentTypeArr = arr;
     }
-    
+
     // Charset
     static{
         Map<String, Charset> charsets = Charset.availableCharsets();
@@ -83,14 +83,14 @@ public class BodyContentTypeDialog extends EscapableDialog {
             i++;
         }
     }
-    
-    
+
+
     private final JComboBox<String> jcb_content_type = new JComboBox<>(contentTypeArr);
     private final JComboBox<String> jcb_charset = new JComboBox<>(charSetArr);
-    
+
     private String contentType = DEFAULT_CONTENT_TYPE;
     private String charset = DEFAULT_CHARSET;
-    
+
     @Inject
     public BodyContentTypeDialog(RESTUserInterface rest_ui){
         // true means Modal:
@@ -100,16 +100,16 @@ public class BodyContentTypeDialog extends EscapableDialog {
         jcb_content_type.setSelectedItem(DEFAULT_CONTENT_TYPE);
         jcb_charset.setSelectedItem(DEFAULT_CHARSET);
     }
-    
+
     @PostConstruct
     protected void init(){
         // [Issue: 49]: Making editable:
         jcb_content_type.setEditable(true);
         jcb_charset.setEditable(true);
-        
+
         JPanel jp = new JPanel();
         jp.setLayout(new BorderLayout());
-        
+
         JPanel jp_center = new JPanel();
         jp_center.setLayout(new BorderLayout());
         JPanel jp_center_west = new JPanel();
@@ -127,7 +127,7 @@ public class BodyContentTypeDialog extends EscapableDialog {
         jp_center_center.add(jcb_charset);
         jp_center.add(jp_center_center, BorderLayout.CENTER);
         jp.add(jp_center, BorderLayout.CENTER);
-        
+
         JPanel jp_south = new JPanel();
         jp_south.setLayout(new FlowLayout(FlowLayout.CENTER));
         JButton jb_ok = new JButton("Ok");
@@ -150,7 +150,7 @@ public class BodyContentTypeDialog extends EscapableDialog {
         jp_south.add(jb_ok);
         jp_south.add(jb_cancel);
         jp.add(jp_south, BorderLayout.SOUTH);
-        
+
         JPanel jp_encp = new JPanel();
         jp_encp.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jp_encp.add(jp);
@@ -158,17 +158,17 @@ public class BodyContentTypeDialog extends EscapableDialog {
         // Auto-completion decoration
         AutoCompleteDecorator.decorate(jcb_charset);
         AutoCompleteDecorator.decorate(jcb_content_type);
-        
+
         this.setContentPane(jp_encp);
         this.pack();
     }
-    
+
     @Override
     public void doEscape(AWTEvent event){
         hideMe(false);
     }
-    
-    void hideMe(final boolean isOk){   
+
+    void hideMe(final boolean isOk){
         if(isOk){
             contentType = (String)jcb_content_type.getSelectedItem();
             charset = (String)jcb_charset.getSelectedItem();
@@ -184,11 +184,11 @@ public class BodyContentTypeDialog extends EscapableDialog {
         }
         setVisible(false);
     }
-    
+
     String getContentType(){
         return this.contentType;
     }
-    
+
     void setContentType(final String contentType){
         this.contentType = contentType;
         jcb_content_type.setSelectedItem(contentType);
@@ -196,22 +196,22 @@ public class BodyContentTypeDialog extends EscapableDialog {
             listener.changed(contentType, charset);
         }
     }
-    
+
     String getCharsetString(){
         return this.charset;
     }
-    
+
     Charset getCharset() {
         if(StringUtil.isEmpty(charset)) {
             return null;
         }
         return Charset.forName(charset);
     }
-    
+
     void setCharset(Charset c) {
         setCharset(c.name());
     }
-    
+
     void setCharset(final String charset){
         this.charset = charset;
         jcb_charset.setSelectedItem(charset);
@@ -219,9 +219,9 @@ public class BodyContentTypeDialog extends EscapableDialog {
             listener.changed(contentType, charset);
         }
     }
-    
+
     private List<ContentTypeCharsetChangeListener> listeners = new ArrayList<ContentTypeCharsetChangeListener>();
-    
+
     public void addContentTypeCharSetChangeListener(ContentTypeCharsetChangeListener listener){
         listeners.add(listener);
     }
