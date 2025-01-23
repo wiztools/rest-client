@@ -27,18 +27,18 @@ import org.wiztools.restclient.util.Util;
  * @author subwiz
  */
 public class ReqTestPanelImpl extends JPanel implements ReqTestPanel {
-    
+
     @Inject private RESTView view;
     @Inject private RESTUserInterface rest_ui;
-    
+
     @Inject private RunTestDialog jd_runTestDialog;
-    
+
     private final ScriptEditor se_test_script = ScriptEditorFactory.getGroovyScriptEditor();
     private final JButton jb_req_test_template = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_template.png"));
     private final JButton jb_req_test_open = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private final JButton jb_req_test_run = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "wand.png"));
+    private final JButton jb_req_test_run = new JButton(SVGLoad.loadScaledSVG(RCFileView.iconBasePath + "s_wand.svg", 8, 8));
     private final JButton jb_req_test_quick = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "quick_test.png"));
-    
+
     // Load templateTestScript:
     private static final String templateTestScript;
     static{
@@ -60,12 +60,12 @@ public class ReqTestPanelImpl extends JPanel implements ReqTestPanel {
         }
         templateTestScript = t;
     }
-    
+
     @PostConstruct
     protected void init() {
         // Test script panel
         setLayout(new BorderLayout());
-        
+
         JPanel jp_test_north = new JPanel();
         jp_test_north.setLayout(new FlowLayout(FlowLayout.LEFT));
         jb_req_test_template.setToolTipText("Insert Template");
@@ -127,10 +127,10 @@ public class ReqTestPanelImpl extends JPanel implements ReqTestPanel {
         });
         jp_test_north.add(jb_req_test_quick);
         add(jp_test_north, BorderLayout.NORTH);
-        
+
         JScrollPane jsp = new JScrollPane(se_test_script.getEditorView());
         add(jsp, BorderLayout.CENTER);
-        
+
         // DnD:
         FileDropTargetListener l = new FileDropTargetListener();
         l.addDndAction(new DndAction() {
@@ -142,7 +142,7 @@ public class ReqTestPanelImpl extends JPanel implements ReqTestPanel {
         new DropTarget(se_test_script.getEditorView(), l);
         new DropTarget(jb_req_test_open, l);
     }
-    
+
     private void loadFile() {
         String str = se_test_script.getText();
         if(!StringUtil.isEmpty(str)){
@@ -154,7 +154,7 @@ public class ReqTestPanelImpl extends JPanel implements ReqTestPanel {
         File f = rest_ui.getOpenFile(FileChooserType.OPEN_TEST_SCRIPT);
         loadFile(f);
     }
-    
+
     private void loadFile(File f) {
         if(f == null){ // Cancel pressed
             return;
@@ -174,7 +174,7 @@ public class ReqTestPanelImpl extends JPanel implements ReqTestPanel {
             view.showError(Util.getStackTrace(ex));
         }
     }
-    
+
     @Override
     public void runClonedRequestTest(Request request, Response response) {
         RequestBean t_request = (RequestBean)request.clone();
@@ -209,5 +209,5 @@ public class ReqTestPanelImpl extends JPanel implements ReqTestPanel {
         se_test_script.setText(script);
         se_test_script.setCaretPosition(0);
     }
-    
+
 }

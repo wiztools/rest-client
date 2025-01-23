@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="64" height="64" viewBox="0 0 64 64" version="1.1" id="svg8" sodipodi:docname="page_white_stack.svg" inkscape:version="1.0.2 (e86c870879, 2021-01-15)">
+  <defs id="defs2">
+    <linearGradient inkscape:collect="always" id="linearGradient3698">
+      <stop style="stop-color:#eaeaea;stop-opacity:1" offset="0" id="stop3694"/>
+      <stop style="stop-color:#ededed;stop-opacity:0;" offset="1" id="stop3696"/>
+    </linearGradient>
+    <inkscape:path-effect effect="mirror_symmetry" start_point="42,46" end_point="20,24" center_point="31,35" id="path-effect2085" is_visible="true" lpeversion="1" mode="free" discard_orig_path="false" fuse_paths="false" oposite_fuse="false" split_items="false"/>
+    <inkscape:path-effect effect="mirror_symmetry" start_point="58,6" end_point="58,60" center_point="58,33" id="path-effect870" is_visible="true" lpeversion="1" mode="vertical" discard_orig_path="false" fuse_paths="false" oposite_fuse="false" split_items="false"/>
+    <linearGradient inkscape:collect="always" id="linearGradient1228">
+      <stop style="stop-color:#faecce;stop-opacity:1" offset="0" id="stop1224"/>
+      <stop style="stop-color:#fed678;stop-opacity:1" offset="1" id="stop1226"/>
+    </linearGradient>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient1228" id="linearGradient1230" x1="32" y1="22" x2="44" y2="32" gradientUnits="userSpaceOnUse"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient3698" id="linearGradient3700" x1="56" y1="24" x2="36" y2="44" gradientUnits="userSpaceOnUse"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient3698" id="linearGradient3804" gradientUnits="userSpaceOnUse" x1="56" y1="24" x2="36" y2="44"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient3698" id="linearGradient3825" gradientUnits="userSpaceOnUse" x1="56" y1="24" x2="36" y2="44"/>
+  </defs>
+  <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="5.6" inkscape:cx="4.9558418" inkscape:cy="14.893223" inkscape:document-units="px" inkscape:current-layer="layer1" inkscape:document-rotation="0" showgrid="true" units="px" inkscape:snap-object-midpoints="true" inkscape:window-width="1920" inkscape:window-height="1016" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="1" inkscape:snap-grids="true" inkscape:snap-intersection-paths="true" inkscape:object-paths="false" inkscape:snap-bbox="false" inkscape:snap-smooth-nodes="true" inkscape:snap-global="true" inkscape:snap-page="true">
+    <inkscape:grid type="xygrid" id="grid833" empspacing="4"/>
+  </sodipodi:namedview>
+  <metadata id="metadata5">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g inkscape:label="Ebene 1" inkscape:groupmode="layer" id="layer1">
+    <g id="g3752-4" transform="translate(-24,-16)">
+      <path style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#555555;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.38;paint-order:markers stroke fill" d="M 28,20 V 60 H 60 V 30 L 50,20 Z" id="path3690-4"/>
+      <path style="opacity:1;fill:url(#linearGradient3825);fill-opacity:1;stroke:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.38;paint-order:markers stroke fill" d="M 32,56 H 56 V 32 H 48 V 24 H 32 Z" id="path3692-4"/>
+    </g>
+    <g id="g3752-1" transform="translate(-12,-8)">
+      <path style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#555555;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.38;paint-order:markers stroke fill" d="M 28,20 V 60 H 60 V 30 L 50,20 Z" id="path3690-0"/>
+      <path style="opacity:1;fill:url(#linearGradient3804);fill-opacity:1;stroke:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.38;paint-order:markers stroke fill" d="M 32,56 H 56 V 32 H 48 V 24 H 32 Z" id="path3692-3"/>
+    </g>
+    <g id="g3752">
+      <path style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#555555;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.38;paint-order:markers stroke fill" d="M 28,20 V 60 H 60 V 30 L 50,20 Z" id="path3690"/>
+      <path style="opacity:1;fill:url(#linearGradient3700);fill-opacity:1;stroke:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.38;paint-order:markers stroke fill" d="M 32,56 H 56 V 32 H 48 V 24 H 32 Z" id="path3692"/>
+    </g>
+  </g>
+</svg>

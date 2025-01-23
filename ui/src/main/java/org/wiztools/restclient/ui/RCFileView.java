@@ -14,18 +14,18 @@ public class RCFileView extends FileView {
     public String getTypeDescription(final File f) {
         return FileType.getNameFromExt(FileType.getType(f));
     }
-    
+
     public static final String iconBasePath = "org/wiztools/restclient/";
-    public static final Icon FOLDER_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_folder.png");
-    public static final Icon FILE_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_file.png");
-    public static final Icon REQUEST_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_request.png");
-    public static final Icon RESPONSE_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_response.png");
-    public static final Icon ARCHIVE_ICON = UIUtil.getIconFromClasspath(iconBasePath + "fv_archive.png");
-    
+    public static final Icon FOLDER_ICON = SVGLoad.loadScaledSVG(iconBasePath + "s_folder.svg", 8, 8);
+    public static final Icon FILE_ICON = SVGLoad.loadScaledSVG(iconBasePath + "s_file.svg", 8, 8);
+    public static final Icon REQUEST_ICON = SVGLoad.loadScaledSVG(iconBasePath + "s_request.svg", 8, 8);
+    public static final Icon RESPONSE_ICON = SVGLoad.loadScaledSVG(iconBasePath + "s_response.svg", 8, 8);
+    public static final Icon ARCHIVE_ICON = SVGLoad.loadScaledSVG(iconBasePath + "s_archive.svg", 8, 8);
+
     @Override
     public Icon getIcon(final File f){
         Icon icon;
-        
+
         String type = FileType.getType(f);
         if(f.isDirectory()){
             icon = FOLDER_ICON;

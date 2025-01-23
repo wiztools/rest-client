@@ -28,11 +28,11 @@ import org.wiztools.restclient.util.MultiEntryRes;
 public final class TwoColumnTablePanel extends JPanel {
 
     private RESTUserInterface rest_ui;
-    
+
     private TwoColumnTableModel model;
     private Dimension tableDimension;
     private KeyValMultiEntryDialog jd_multi;
-    
+
     private JMenuItem jmi_rm_selected = new JMenuItem("Remove Selected");
 
     private void initMultiEntryDialog(){
@@ -48,7 +48,7 @@ public final class TwoColumnTablePanel extends JPanel {
                     model.insertRow(key, value);
                     successCount++;
                 }
-                
+
                 StringBuilder sb = new StringBuilder();
                 sb.append("Added ").append(successCount).append(" key/value pairs.\n\n");
 
@@ -67,27 +67,27 @@ public final class TwoColumnTablePanel extends JPanel {
         };
         jd_multi = new KeyValMultiEntryDialog(rest_ui, callback);
     }
-    
+
     public MultiValueMap<String, String> getData() {
         Object[][] d = model.getData();
         if(d.length == 0) {
             return CollectionsUtil.EMPTY_MULTI_VALUE_MAP;
         }
-        
+
         MultiValueMap<String, String> out = new MultiValueMapLinkedHashSet<>();
         for (Object[] d1 : d) {
             String key = (String) d1[0];
             String value = (String) d1[1];
             out.put(key, value);
         }
-        
+
         return out;
     }
-    
+
     public void setData(MultiValueMap<String, String> data) {
         model.setData(data);
     }
-    
+
     public TwoColumnTablePanel(final String[] title, final RESTUserInterface ui) {
         this(title, Collections.EMPTY_LIST, ui);
     }
@@ -95,20 +95,20 @@ public final class TwoColumnTablePanel extends JPanel {
     public TwoColumnTablePanel(final String[] title, List<String> keys, final RESTUserInterface ui) {
 
         this.rest_ui = ui;
-        
+
         // Create JTable
         final JTable jt = new JTable();
-        
+
         // Set the size
         Dimension d = jt.getPreferredSize();
         d.height = d.height / 2;
         jt.setPreferredScrollableViewportSize(d);
         tableDimension = d;
-        
+
         // Create and set the table model
         model = new TwoColumnTableModel(title);
         jt.setModel(model);
-        
+
         // Create Popupmenu
         final JPopupMenu popupMenu = new JPopupMenu();
         {
@@ -127,7 +127,7 @@ public final class TwoColumnTablePanel extends JPanel {
             });
             popupMenu.add(jmi_rm_selected);
         }
-        
+
         {
             JMenuItem jmi_rm_all = new JMenuItem("Remove All");
             jmi_rm_all.addActionListener(new ActionListener() {
@@ -138,14 +138,14 @@ public final class TwoColumnTablePanel extends JPanel {
             });
             popupMenu.add(jmi_rm_all);
         }
-        
+
         // Attach popup menu
         jt.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 showPopup(e);
             }
-            
+
             @Override
             public void mouseReleased(MouseEvent e) {
                 showPopup(e);
@@ -166,7 +166,7 @@ public final class TwoColumnTablePanel extends JPanel {
         // Create the interface
         JPanel jp = this;
         jp.setLayout(new BorderLayout());
-        
+
         JPanel jp_north = new JPanel();
         jp_north.setLayout(new FlowLayout(FlowLayout.LEFT));
         JLabel jl_key = new JLabel("Key: ");
@@ -194,7 +194,7 @@ public final class TwoColumnTablePanel extends JPanel {
                     errors.add("Value is empty.");
                 }
                 Object[][] data = model.getData();
-                
+
                 if(errors != null){
                     StringBuilder sb = new StringBuilder();
                     sb.append("<html><ul>");
@@ -213,7 +213,7 @@ public final class TwoColumnTablePanel extends JPanel {
                 jtf_key.requestFocus();
             }
         });
-        JButton jb_multi_insert = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
+        JButton jb_multi_insert = new JButton(SVGLoad.loadScaledSVG(RCFileView.iconBasePath + "s_insert_parameters.svg", 8, 8));
         jb_multi_insert.setToolTipText("Multi-insert");
         jb_multi_insert.addActionListener(new ActionListener(){
             @Override
@@ -231,17 +231,17 @@ public final class TwoColumnTablePanel extends JPanel {
         jp_north.add(jb_add);
         jp_north.add(jb_multi_insert);
         jp.add(jp_north, BorderLayout.NORTH);
-        
+
         JPanel jp_center = new JPanel();
         jp_center.setLayout(new GridLayout(1, 1));
         JScrollPane jsp = new JScrollPane(jt);
         jp_center.add(jsp);
         jp.add(jp_center, BorderLayout.CENTER);
-        
+
     }
-    
+
     public Dimension getTableDimension(){
         return tableDimension;
     }
-    
+
 }

@@ -31,28 +31,28 @@ import org.wiztools.restclient.util.HttpUtil;
  * @author subwiz
  */
 class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor {
-    
+
     @Inject RESTView view;
     @Inject RESTUserInterface rest_ui;
-    
+
     @Inject private ContentTypeCharsetComponent jp_content_type_charset;
     @Inject private ParameterDialog jd_req_paramDialog;
-    
+
     private final ScriptEditor se_req_body = ScriptEditorFactory.getXMLScriptEditor();
-    
+
     private final JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    private final JButton jb_body_params = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "insert_parameters.png"));
-    
+    private final JButton jb_body_params = new JButton(SVGLoad.loadScaledSVG(RCFileView.iconBasePath + "s_insert_parameters.svg", 8, 8));
+
     @PostConstruct
     protected void init() {
         // Parameter dialog initialization
         jd_req_paramDialog.addParameterGenerationListener((String params) -> {
             se_req_body.setText(params);
         });
-        
+
         // Layout
         setLayout(new BorderLayout());
-        
+
         // North
         JPanel jp_north = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jp_north.add(jp_content_type_charset.getComponent());
@@ -61,7 +61,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
             loadFile();
         });
         jp_north.add(jb_body_file);
-        
+
         jb_body_params.setToolTipText("Insert parameters");
         jb_body_params.addActionListener((ActionEvent ae) -> {
             FormEnc openFrmEncDialg = openFrmEncDialg();
@@ -83,9 +83,9 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
             jd_req_paramDialog.setVisible(true);
         });
         jp_north.add(jb_body_params);
-        
+
         add(jp_north, BorderLayout.NORTH);
-        
+
         // Center
         // Popup menu for body content tab
         BodyPopupMenuListener listener = new BodyPopupMenuListener() {
@@ -107,7 +107,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         };
         final BodyPopupMenu bpm = new BodyPopupMenu(se_req_body, listener, false);
         se_req_body.setPopupMenu(bpm);
-        
+
         /*
          * Following code is written becuase of what seems to be a bug in
          * RSyntaxTextArea module: what happens is every time the popup
@@ -131,9 +131,9 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
                 eEnable();
             }
         });
-        
+
         add(se_req_body.getEditorView(), BorderLayout.CENTER);
-        
+
         // DnD:
         FileDropTargetListener l = new FileDropTargetListener();
         l.addDndAction((List<File> files) -> {
@@ -142,12 +142,12 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         new DropTarget(jb_body_file, l);
         new DropTarget(se_req_body.getEditorView(), l);
     }
-    
+
     private void loadFile() {
         File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
         loadFile(f);
     }
-    
+
     private void loadFile(File f) {
         if(f == null){ // Pressed cancel?
             return;
@@ -159,7 +159,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         // Get text from file and set
         try{
             String body = FileUtil.getContentAsString(f, Charsets.UTF_8);
@@ -175,7 +175,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
             // jd_body_content_type.setCharSet(oldCharset);
         }
     }
-    
+
     private enum FormEnc {
         ERASE, LOAD, OPEN_EMPTY, CANCEL
     }
@@ -197,7 +197,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
         }
         return FormEnc.CANCEL;
     }
-    
+
     private void checkAndSetParameterContentType(){
         if(!BodyContentTypeDialog.PARAM_CONTENT_TYPE.equals(jp_content_type_charset.getContentType())){
             int status = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
@@ -210,7 +210,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
                     "Parameter Content-type and Charset",
                     JOptionPane.YES_NO_OPTION);
             if(status == JOptionPane.YES_OPTION){
-                jp_content_type_charset.setContentTypeCharset(                        
+                jp_content_type_charset.setContentTypeCharset(
                             BodyContentTypeDialog.PARAM_CONTENT_TYPE);
             }
         }
@@ -236,7 +236,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     public void clear() {
         jp_content_type_charset.clear();
     }
-    
+
     @Override
     public void setEntity(ReqEntity entity) {
         if(entity instanceof ReqEntityString) {
@@ -259,7 +259,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     public void requestFocus() {
         se_req_body.getEditorComponent().requestFocus();
     }
-    
+
     @Override
     public void setEditorFont(Font font) {
         se_req_body.getEditorComponent().setFont(font);
@@ -269,7 +269,7 @@ class ReqBodyPanelString extends JPanel implements ReqBodyPanel, FontableEditor 
     public Font getEditorFont() {
         return se_req_body.getEditorComponent().getFont();
     }
-    
+
     @Override
     public Component getComponent() {
         return this;
