@@ -216,7 +216,7 @@ public class RESTMain implements RESTUserInterface {
         if(!Native.isMac) { // Shown only for non-Mac platform!
             jm_file.addSeparator();
 
-            JMenuItem jmi_exit = new JMenuItem("Exit", UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "fv_exit.png"));
+            JMenuItem jmi_exit = new JMenuItem("Exit", SVGLoad.scaledIcon(RCFileView.iconBasePath + "s_stop.svg"));
             jmi_exit.setMnemonic(KeyEvent.VK_X);
             jmi_exit.setAccelerator(KeyStroke.getKeyStroke(
                     KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));

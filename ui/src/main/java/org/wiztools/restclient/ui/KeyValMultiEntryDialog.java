@@ -28,7 +28,7 @@ import org.wiztools.restclient.util.Util;
  */
 class KeyValMultiEntryDialog extends EscapableDialog {
 
-    private final JButton jb_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+    private final JButton jb_file = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "load_from_file.svg"));
     private final JButton jb_help = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "s_help.svg"));
     private final JButton jb_add = new JButton("Add");
     private final JButton jb_cancel = new JButton("Cancel");

@@ -21,6 +21,7 @@ import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.ui.AuthHelper;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;
+import org.wiztools.restclient.ui.SVGLoad;
 import org.wiztools.restclient.ui.UIUtil;
 
 /**
@@ -30,11 +31,11 @@ import org.wiztools.restclient.ui.UIUtil;
 public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
     @Inject RESTView view;
     @Inject RESTUserInterface rest_ui;
-    
+
     // Authentication resources
     private final JComboBox<String> jcb_types = new JComboBox<String>(AuthHelper.getAll());
     private final JCheckBox jcb_preemptive = new JCheckBox();
-    
+
     private static final int auth_text_size = 20;
     private final JTextField jtf_host = new JTextField(auth_text_size);
     private final JTextField jtf_realm = new JTextField(auth_text_size);
@@ -72,10 +73,10 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
             out.setOAuth2BearerToken(jtf_bearer_token.getText());
             return out;
         }
-        
+
         return null;
     }
-    
+
     private void populateBasicDigestAuth(BasicDigestAuthBaseBean bean) {
         if(StringUtil.isNotEmpty(jtf_host.getText()))
             bean.setHost(jtf_host.getText());
@@ -85,7 +86,7 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
             bean.setUsername(jtf_username.getText());
         if(jpf_password.getPassword().length > 0)
             bean.setPassword(jpf_password.getPassword());
-        
+
         bean.setPreemptive(jcb_preemptive.isSelected());
     }
 
@@ -94,7 +95,7 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         if(auth instanceof BasicDigestAuth) {
             final String authType = auth instanceof BasicAuth? AuthHelper.BASIC: AuthHelper.DIGEST;
             jcb_types.setSelectedItem(authType);
-            
+
             BasicDigestAuth a = (BasicDigestAuth) auth;
             jtf_host.setText(a.getHost());
             jtf_realm.setText(a.getRealm());
@@ -105,7 +106,7 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         }
         else if(auth instanceof NtlmAuth) {
             jcb_types.setSelectedItem(AuthHelper.NTLM);
-            
+
             NtlmAuth a = (NtlmAuth) auth;
             jtf_domain.setText(a.getDomain());
             jtf_workstation.setText(a.getWorkstation());
@@ -119,13 +120,13 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
             jtf_bearer_token.setText(a.getOAuth2BearerToken());
         }
     }
-    
+
     @Override
     public void clear() {
         jcb_types.setSelectedItem(AuthHelper.NONE);
-        
+
         jcb_preemptive.setSelected(false);
-        
+
         jtf_host.setText("");
         jtf_realm.setText("");
         jtf_domain.setText("");
@@ -139,14 +140,14 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
 
     @Override
     public List<String> validateIfFilled() {
-        
+
         String method = (String) jcb_types.getSelectedItem();
         if(AuthHelper.isNone(method)) {
             return Collections.<String>emptyList();
         }
-        
+
         List<String> errors = new ArrayList<String>();
-        
+
         if(AuthHelper.isBasicOrDigest(method)) {
             if(StringUtil.isEmpty(jtf_username.getText())){
                 errors.add("Username is empty.");
@@ -171,10 +172,10 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
                 errors.add("OAuth2 Bearer Token is empty.");
             }
         }
-        
+
         return errors;
     }
-    
+
     @PostConstruct
     protected void init() {
         setLayout(new BorderLayout());
@@ -239,7 +240,7 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
         jp_ntlm_form.add(jtf_ntlm_username);
         jp_ntlm_form.add(jpf_ntlm_password);
 
-        JButton jb_workstation_name = new JButton(UIUtil.getIconFromClasspath("org/wiztools/restclient/computer.png"));
+        JButton jb_workstation_name = new JButton(SVGLoad.scaledIcon("org/wiztools/restclient/s_computer.svg"));
         jb_workstation_name.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {

@@ -16,7 +16,7 @@ import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.ContentType;
 import org.wiztools.restclient.bean.ContentTypeBean;
 import org.wiztools.restclient.ui.RCFileView;
-import org.wiztools.restclient.ui.UIUtil;
+import org.wiztools.restclient.ui.SVGLoad;
 import org.wiztools.restclient.util.HttpUtil;
 
 /**
@@ -25,18 +25,18 @@ import org.wiztools.restclient.util.HttpUtil;
  */
 public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTypeCharsetComponent {
     @Inject private BodyContentTypeDialog jd;
-    
+
     private static final String DEFAULT_CONTENT_CHARSET = HttpUtil.getFormattedContentType(
             BodyContentTypeDialog.DEFAULT_CONTENT_TYPE, BodyContentTypeDialog.DEFAULT_CHARSET);
-    
+
     private final JTextField jtf_content_type_charset = new JTextField(DEFAULT_CONTENT_CHARSET, TEXT_FIELD_LENGTH);
-    private final JButton jb_body_content_type = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "edit.png"));
-    
-    
+    private final JButton jb_body_content_type = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "edit.svg"));
+
+
     @PostConstruct
     protected void init() {
         setLayout(new FlowLayout(FlowLayout.LEFT));
-        
+
         jtf_content_type_charset.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -45,10 +45,10 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
                 }
             }
         });
-        
+
         jtf_content_type_charset.setEditable(false);
         add(jtf_content_type_charset);
-        
+
         jd.addContentTypeCharSetChangeListener(new ContentTypeCharsetChangeListener() {
             @Override
             public void changed(String contentType, String charset) {
@@ -56,7 +56,7 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
                 jtf_content_type_charset.setText(formatted);
             }
         });
-        
+
         jb_body_content_type.setToolTipText("Edit Content-type & Charset");
         jb_body_content_type.addActionListener(new ActionListener() {
             @Override
@@ -71,14 +71,14 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
     public void requestFocus() {
         jb_body_content_type.requestFocus();
     }
-    
+
     @Override
     public void setContentTypeCharset(ContentType contentType) {
         if(contentType != null) {
             setContentTypeCharset(contentType.getContentType(), contentType.getCharset());
         }
     }
-    
+
     @Override
     public ContentType getContentType() {
         if(StringUtil.isNotEmpty(jd.getContentType())) {
@@ -88,7 +88,7 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
             return null;
         }
     }
-    
+
     @Override
     public void setContentTypeCharset(String contentType, Charset charset) {
         jd.setContentType(contentType);
@@ -98,11 +98,11 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
         jtf_content_type_charset.setText(
                 HttpUtil.getFormattedContentType(contentType, charset));
     }
-    
+
     public void setContentType(ContentType contentType) {
         setContentTypeCharset(contentType.getContentType(), contentType.getCharset());
     }
-    
+
     @Override
     public void setContentType(String contentType) {
         jd.setContentType(contentType);
@@ -110,17 +110,17 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
         jtf_content_type_charset.setText(
                 HttpUtil.getFormattedContentType(contentType, charset));
     }
-    
+
     @Override
     public String getContentTypeCharsetString() {
         return jtf_content_type_charset.getText();
     }
-    
+
     @Override
     public String getContentTypeString() {
         return HttpUtil.getMimeFromContentType(jtf_content_type_charset.getText());
     }
-    
+
     @Override
     public void setCharset(Charset charset) {
         jd.setCharset(charset);
@@ -128,29 +128,29 @@ public class ContentTypeCharsetComponentImpl extends JPanel implements ContentTy
                 HttpUtil.getFormattedContentType(
                     jd.getContentType(), charset));
     }
-    
+
     @Override
     public Charset getCharset() {
         return jd.getCharset();
     }
-    
+
     @Override
     public String getCharsetString() {
         return jd.getCharsetString();
     }
-    
+
     @Override
     public void enableComponent() {
         jtf_content_type_charset.setEnabled(true);
         jb_body_content_type.setEnabled(true);
     }
-    
+
     @Override
     public void disableComponent() {
         jtf_content_type_charset.setEnabled(false);
         jb_body_content_type.setEnabled(false);
     }
-    
+
     @Override
     public void clear() {
         jtf_content_type_charset.setText(DEFAULT_CONTENT_CHARSET);

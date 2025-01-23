@@ -25,16 +25,16 @@ import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
  * @author subwiz
  */
 public class AddMultipartFileDialog extends AddMultipartBaseDialog {
-    
+
     @Inject
     private ContentTypeCharsetComponent jp_contentType;
-    
+
     private final JTextField jtf_name = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
     private final JTextField jtf_fileName = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
     private final JTextField jtf_file = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
-    
-    private final JButton jb_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    
+
+    private final JButton jb_file = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "load_from_file.svg"));
+
     private final JButton jb_add = new JButton("Add");
     private final JButton jb_addAndClose = new JButton("Add & close");
     private final JButton jb_cancel = new JButton("Cancel");
@@ -42,10 +42,10 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
     @Inject
     public AddMultipartFileDialog(RESTUserInterface rest_ui) {
         super(rest_ui);
-        
+
         setTitle("Add Multipart File");
     }
-    
+
     @PostConstruct
     protected void init() {
         // DnD:
@@ -58,7 +58,7 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
         });
         new DropTarget(jtf_file, l);
         new DropTarget(jb_file, l);
-        
+
         // Button listeners:
         jb_add.addActionListener(new ActionListener() {
             @Override
@@ -78,31 +78,31 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
                 cancel();
             }
         });
-        
+
         jb_file.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectFile();
             }
         });
-        
+
         // Default button:
         getRootPane().setDefaultButton(jb_add);
-        
+
         // Layout:
         Container c = getContentPane();
         c.setLayout(new BorderLayout());
-        
+
         { // Center
             JPanel jp = new JPanel(new BorderLayout());
-            
+
             JPanel jp_west = new JPanel(new GridLayout(4, 2));
             jp_west.add(new JLabel(" Content type: "));
             jp_west.add(new JLabel(" Name: "));
             jp_west.add(new JLabel(" File name: "));
             jp_west.add(new JLabel(" File: "));
             jp.add(jp_west, BorderLayout.WEST);
-            
+
             JPanel jp_center = new JPanel(new GridLayout(4, 2));
             jp_center.add(jp_contentType.getComponent());
             jp_center.add(UIUtil.getFlowLayoutPanelLeftAligned(jtf_name));
@@ -112,10 +112,10 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
             jp_file.add(jb_file);
             jp_center.add(jp_file);
             jp.add(jp_center, BorderLayout.CENTER);
-            
+
             c.add(jp, BorderLayout.CENTER);
         }
-        
+
         { // South
             JPanel jp = new JPanel();
             jp.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -124,17 +124,17 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
             jp.add(jb_addAndClose);
             c.add(jp, BorderLayout.SOUTH);
         }
-        
+
         pack();
     }
-    
+
     private void selectFile() {
         File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
         selectFile(f);
     }
-    
+
     private void selectFile(File f) {
-        
+
         if(f == null){ // Pressed cancel?
             return;
         }
@@ -145,19 +145,19 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         // Content type charset correction:
         ContentTypeSelectorOnFile.select(jp_contentType, f, this);
-        
+
         // Set filename:
         if(StringUtil.isEmpty(jtf_fileName.getText())) {
             jtf_fileName.setText(f.getName());
         }
-        
+
         // Set file:
         jtf_file.setText(f.getAbsolutePath());
     }
-    
+
     private boolean add() {
         // Validation:
         if(StringUtil.isEmpty(jtf_name.getText())) {
@@ -176,39 +176,39 @@ public class AddMultipartFileDialog extends AddMultipartBaseDialog {
             jtf_fileName.requestFocus();
             return false;
         }
-        
+
         // Read values:
         final String name = jtf_name.getText();
         final String fileName = jtf_fileName.getText();
         final ContentType ct = jp_contentType.getContentType();
         final File file = new File(jtf_file.getText());
         final ReqEntityFilePart part = new ReqEntityFilePartBean(name, fileName, ct, file);
-        
+
         // Trigger all listeners:
         for(AddMultipartPartListener l: listeners) {
             l.addPart(part);
         }
-        
+
         // Clear:
         clear();
-        
+
         // Focus:
         jb_file.requestFocus();
-        
+
         return true;
     }
-    
+
     private void addAndClose() {
         if(add()) {
             setVisible(false);
         }
     }
-    
+
     private void cancel() {
         clear();
         setVisible(false);
     }
-    
+
     @Override
     public void clear() {
         jp_contentType.clear();

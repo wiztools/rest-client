@@ -20,6 +20,7 @@ import org.wiztools.restclient.bean.ReqEntityFileBean;
 import org.wiztools.restclient.ui.FileChooserType;
 import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.RESTUserInterface;
+import org.wiztools.restclient.ui.SVGLoad;
 import org.wiztools.restclient.ui.UIUtil;
 import org.wiztools.restclient.ui.dnd.DndAction;
 import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
@@ -29,16 +30,16 @@ import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
  * @author subwiz
  */
 public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
-    
+
     @Inject
     private RESTUserInterface rest_ui;
-    
+
     @Inject
     private ContentTypeCharsetComponent jp_content_type_charset;
-    
-    private JButton jb_body_file = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+
+    private JButton jb_body_file = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "load_from_file.svg"));
     private JTextField jtf_file = new JTextField(ContentTypeCharsetComponent.TEXT_FIELD_LENGTH);
-    
+
     @PostConstruct
     public void init() {
         // DnD:
@@ -51,15 +52,15 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
         });
         new DropTarget(jtf_file, l);
         new DropTarget(jb_body_file, l);
-        
+
         setLayout(new BorderLayout());
-        
+
         // North
         JPanel jp_north = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jp_north.add(jp_content_type_charset.getComponent());
-        
+
         add(jp_north, BorderLayout.NORTH);
-        
+
         // Center
         jb_body_file.setToolTipText("Select file");
         jb_body_file.addActionListener(new ActionListener() {
@@ -71,15 +72,15 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
         JPanel jp_center = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jp_center.add(jtf_file);
         jp_center.add(jb_body_file);
-        
+
         add(UIUtil.getFlowLayoutPanelLeftAligned(jp_center), BorderLayout.CENTER);
     }
-    
+
     private void selectFile() {
         File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
         selectFile(f);
     }
-    
+
     private void selectFile(File f) {
         if(f == null){ // Pressed cancel?
             return;
@@ -94,21 +95,21 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
         ContentTypeSelectorOnFile.select(jp_content_type_charset, f, rest_ui.getFrame());
         jtf_file.setText(f.getAbsolutePath());
     }
-    
+
     @Override
     public void enableBody() {
         jp_content_type_charset.enableComponent();
         jtf_file.setEnabled(true);
         jb_body_file.setEnabled(true);
     }
-    
+
     @Override
     public void disableBody() {
         jp_content_type_charset.disableComponent();
         jtf_file.setEnabled(false);
         jb_body_file.setEnabled(false);
     }
-    
+
     @Override
     public void clear() {
         jp_content_type_charset.clear();
@@ -124,11 +125,11 @@ public class ReqBodyPanelFile extends JPanel implements ReqBodyPanel {
             jtf_file.setText(body.getAbsolutePath());
         }
     }
-    
+
     @Override
     public ReqEntity getEntity() {
         File file = new File(jtf_file.getText());
-        
+
         ReqEntityFileBean entity = new ReqEntityFileBean(file,
                 jp_content_type_charset.getContentType());
         return entity;

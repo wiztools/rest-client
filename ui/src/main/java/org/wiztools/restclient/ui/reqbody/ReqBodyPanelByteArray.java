@@ -21,6 +21,7 @@ import org.wiztools.restclient.bean.ReqEntityByteArrayBean;
 import org.wiztools.restclient.ui.FileChooserType;
 import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.RESTUserInterface;
+import org.wiztools.restclient.ui.SVGLoad;
 import org.wiztools.restclient.ui.UIUtil;
 import org.wiztools.restclient.ui.dnd.DndAction;
 import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
@@ -35,22 +36,22 @@ import org.wiztools.restclient.util.XMLUtil;
 public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
     @Inject private RESTUserInterface rest_ui;
     @Inject private ContentTypeCharsetComponent jp_content_type_charset;
-    
-    private final JButton jb_body = new JButton(UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
-    
+
+    private final JButton jb_body = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "load_from_file.svg"));
+
     private final JTextArea jta = new JTextArea();
-    
+
     private byte[] body;
-    
+
     private static final int FILE_SIZE_THRESHOLD_LIMIT_MB = 2;
-    
+
     @PostConstruct
     protected void init() {
         setLayout(new BorderLayout());
-        
+
         JPanel jp_north = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jp_north.add(jp_content_type_charset.getComponent());
-        
+
         jb_body.setToolTipText("Select file having body content");
         jb_body.addActionListener(new ActionListener() {
             @Override
@@ -59,14 +60,14 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
             }
         });
         jp_north.add(jb_body);
-        
+
         add(jp_north, BorderLayout.NORTH);
-        
+
         jta.setFont(UIUtil.FONT_MONO_PLAIN);
         jta.setEditable(false);
-        
+
         add(new JScrollPane(jta), BorderLayout.CENTER);
-        
+
         // DnD:
         FileDropTargetListener l = new FileDropTargetListener();
         l.addDndAction(new DndAction() {
@@ -78,12 +79,12 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
         new DropTarget(jta, l);
         new DropTarget(jb_body, l);
     }
-    
+
     private void fileOpen() {
         File f = rest_ui.getOpenFile(FileChooserType.OPEN_REQUEST_BODY);
         fileOpen(f);
     }
-    
+
     private void fileOpen(File f) {
         if(f == null){ // Pressed cancel?
             return;
@@ -108,7 +109,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
                 if(result == JOptionPane.YES_OPTION) {
                     // Set content type
                     jp_content_type_charset.setContentType(mime);
-                    
+
                     // Check if XML content type:
                     if(XMLUtil.XML_MIME.equals(mime)){
                         try{
@@ -133,7 +134,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
                 }
             }
         }
-        
+
         final long fileSizeMB = f.length() / (1024l*1024l);
         if(fileSizeMB > FILE_SIZE_THRESHOLD_LIMIT_MB) {
             final int yesNoOption = JOptionPane.showConfirmDialog(rest_ui.getFrame(),
@@ -146,7 +147,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
                 return;
             }
         }
-        
+
         try {
             byte[] data = FileUtil.getContentAsBytes(f);
             body = data;
@@ -176,10 +177,10 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
     public void setEntity(ReqEntity entity) {
         if(entity instanceof ReqEntityByteArray) {
             ReqEntityByteArray e = (ReqEntityByteArray) entity;
-            
+
             // content-type charset
             jp_content_type_charset.setContentTypeCharset(e.getContentType());
-            
+
             // Set body:
             body = e.getBody();
             jta.setText(HexDump.getHexDataDumpAsString(e.getBody()));
@@ -204,5 +205,5 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
         body = null;
         jta.setText("");
     }
-    
+
 }

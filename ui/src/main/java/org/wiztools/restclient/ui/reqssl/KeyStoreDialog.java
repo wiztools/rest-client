@@ -31,6 +31,7 @@ import org.wiztools.restclient.ui.FileChooserType;
 import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.RESTUserInterface;
 import org.wiztools.restclient.ui.RESTView;
+import org.wiztools.restclient.ui.SVGLoad;
 import org.wiztools.restclient.ui.UIUtil;
 import org.wiztools.restclient.ui.dnd.DndAction;
 import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
@@ -40,20 +41,20 @@ import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
  * @author subwiz
  */
 public class KeyStoreDialog extends EscapableDialog {
-    
+
     @Inject private RESTUserInterface rest_ui;
     @Inject private RESTView view;
-    
+
     private final List<KeyStoreListener> listeners = new ArrayList<>();
-    
+
     private static final int auth_text_size = 20;
-    
+
     private final StoreTypePanel jp_type = new StoreTypePanel();
     private final JTextField jtf_file = new JTextField(auth_text_size);
     private final JButton jb_browse = new JButton(
-            UIUtil.getIconFromClasspath(RCFileView.iconBasePath + "load_from_file.png"));
+            SVGLoad.scaledIcon(RCFileView.iconBasePath + "load_from_file.svg"));
     private final JPasswordField jpf_pwd = new JPasswordField(auth_text_size);
-    
+
     private final JButton jb_ok = new JButton("Ok");
     private final JButton jb_cancel = new JButton("Cancel");
 
@@ -63,7 +64,7 @@ public class KeyStoreDialog extends EscapableDialog {
         getRootPane().setDefaultButton(jb_ok);
         setLocationRelativeTo(rest_ui.getFrame());
     }
-    
+
     @PostConstruct
     protected void init() {
         // Init:
@@ -78,7 +79,7 @@ public class KeyStoreDialog extends EscapableDialog {
                 }
             }
         }, KeyStoreType.PEM);
-        
+
         // DnD:
         FileDropTargetListener dndListener = new FileDropTargetListener();
         dndListener.addDndAction(new DndAction() {
@@ -89,7 +90,7 @@ public class KeyStoreDialog extends EscapableDialog {
         });
         new DropTarget(jtf_file, dndListener);
         new DropTarget(jb_browse, dndListener);
-        
+
         jb_browse.setToolTipText("Open file");
         jb_browse.addActionListener(new ActionListener() {
             @Override
@@ -109,7 +110,7 @@ public class KeyStoreDialog extends EscapableDialog {
                 cancel();
             }
         });
-        
+
         // Layout:
         JPanel jp = new JPanel(new BorderLayout(RESTView.BORDER_WIDTH, 2));
 
@@ -119,47 +120,47 @@ public class KeyStoreDialog extends EscapableDialog {
         jp_label.add(new JLabel("Format: "));
         jp_label.add(new JLabel("File: "));
         jp_label.add(new JLabel("Password: "));
-        
+
         jp.add(jp_label, BorderLayout.WEST);
-        
+
         // Input column:
         JPanel jp_input = new JPanel(new GridLayout(3, 1));
-        
+
         // 1:
         jp_input.add(jp_type);
-        
+
         // 2:
         JPanel jp_file = UIUtil.getFlowLayoutPanelLeftAligned(jtf_file);
         jp_file.add(jb_browse);
         jp_input.add(jp_file);
-        
+
         // 3:
         jp_input.add(UIUtil.getFlowLayoutPanelLeftAligned(jpf_pwd));
-        
+
         jp.add(jp_input, BorderLayout.CENTER);
-        
+
         // Ok button:
         JPanel jp_okCancel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         jp_okCancel.add(jb_ok);
         jp_okCancel.add(jb_cancel);
-        
+
         jp.add(jp_okCancel, BorderLayout.SOUTH);
-        
+
         jp.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-        
+
         setContentPane(jp);
-        
+
         pack();
     }
-    
+
     private void loadFile() {
         File f = rest_ui.getOpenFile(FileChooserType.OPEN_GENERIC);
         loadFile(f);
     }
-    
+
     private static final String fmtChangeMsg = "Keystore seems to be in {0} format.\nWant to update the format to {0}?";
     private static final String fmtChangeDialogTitle = "Change `Format' to {0}?";
-    
+
     private void storeTypeUsingDetectedExtn(KeyStoreType detectedType) {
         if(jp_type.getSelectedKeyStoreType() != detectedType) {
             final int result = JOptionPane.showConfirmDialog(this,
@@ -171,7 +172,7 @@ public class KeyStoreDialog extends EscapableDialog {
             }
         }
     }
-    
+
     private void loadFile(File f) {
         if(f == null) {
             // do nothing--cancel pressed
@@ -188,7 +189,7 @@ public class KeyStoreDialog extends EscapableDialog {
             view.setStatusMessage("File cannot be read.");
         }
     }
-    
+
     public void setKeyStore(SSLKeyStore store) {
         if(store != null) {
             jp_type.setSelectedKeyStoreType(store.getType());
@@ -202,7 +203,7 @@ public class KeyStoreDialog extends EscapableDialog {
             clear();
         }
     }
-    
+
     public SSLKeyStore getKeyStore() {
         final String filePath = jtf_file.getText();
         if(StringUtil.isNotEmpty(filePath)) {
@@ -214,17 +215,17 @@ public class KeyStoreDialog extends EscapableDialog {
         }
         return null;
     }
-    
+
     public void clear() {
         jp_type.setSelectedKeyStoreType(KeyStoreType.JKS);
         jtf_file.setText("");
         jpf_pwd.setText("");
     }
-    
+
     public void addKeyStoreListener(KeyStoreListener listener) {
         listeners.add(listener);
     }
-    
+
     private void ok() {
         final SSLKeyStore store = getKeyStore();
         if(store == null) {
@@ -239,7 +240,7 @@ public class KeyStoreDialog extends EscapableDialog {
         }
         setVisible(false);
     }
-    
+
     private void cancel() {
         for(KeyStoreListener listener: listeners) {
             listener.onCancel();
