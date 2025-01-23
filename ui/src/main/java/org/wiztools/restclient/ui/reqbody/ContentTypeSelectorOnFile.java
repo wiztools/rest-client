@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import javax.swing.JOptionPane;
-import org.wiztools.commons.FileUtil;
 import org.wiztools.restclient.persistence.PersistenceException;
+import org.wiztools.restclient.ui.Mime;
 import org.wiztools.restclient.util.XMLUtil;
 
 /**
@@ -16,10 +16,10 @@ import org.wiztools.restclient.util.XMLUtil;
 final class ContentTypeSelectorOnFile {
 
     private ContentTypeSelectorOnFile() {}
-    
+
     static void select(ContentTypeCharsetComponent jp_content_type_charset,
             File file, Component parent) {
-        final String mime = FileUtil.getMimeType(file);
+        final String mime = Mime.get(file);
         if(!mime.equals("content/unknown")) {
             final String origContentType = jp_content_type_charset.getContentType().getContentType();
             if(!mime.equals(origContentType)) {
@@ -32,7 +32,7 @@ final class ContentTypeSelectorOnFile {
                 if(result == JOptionPane.YES_OPTION) {
                     // Set content type
                     jp_content_type_charset.setContentType(mime);
-                    
+
                     // Check if XML content type:
                     if(XMLUtil.XML_MIME.equals(mime)){
                         try {
