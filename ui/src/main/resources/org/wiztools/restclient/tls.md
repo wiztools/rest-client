@@ -61,3 +61,23 @@ Key aspects:
 5. Commonly used in internal networks, development environments, and testing scenarios
 
 When using self-signed certificates in RESTClient, remember to *Ignore cert errors* for the request to work.
+
+## Hostname Verification
+
+Hostname verification is a crucial security check in SSL/TLS that ensures the hostname (domain name) the client is trying to connect to matches the hostname specified in the server's certificate. This helps prevent man-in-the-middle attacks and server impersonation.
+
+Here's how it works:
+
+1. When a client initiates an SSL/TLS connection to a server (e.g., visiting https://example.com), the server presents its certificate.
+2. The certificate contains a field called Subject Alternative Name (SAN) and/or Common Name (CN) that lists the domain names the certificate is valid for.
+3. The client checks if the hostname it's connecting to matches any of the names listed in the certificate's SAN or CN fields. The match must be exact, though wildcards are sometimes permitted (e.g., *.example.com would match sub.example.com).
+
+Without hostname verification, an attacker could:
+
+1. Obtain a valid certificate for their own domain (attacker.com)
+2. Intercept traffic meant for the target domain (example.com)
+3. Present their valid certificate to the client
+
+The connection would still be encrypted, but the client would be talking to the wrong server. Hostname verification prevents this by ensuring the certificate is actually for the intended destination.
+
+RESTClient has option to *Disable hostname verification*.
