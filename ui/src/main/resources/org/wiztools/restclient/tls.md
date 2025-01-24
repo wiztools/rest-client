@@ -46,7 +46,7 @@ Key requirements:
 
 Primary advantage is stronger security. Main drawback is increased complexity in certificate management and deployment.
 
-In the RESTClient request interface, when both "Truststore" and "Keystore" configurations are given, it is treated as a mTLS request.
+RESTClient treats requests with both *Truststore* and *Keystore* configurations as mTLS.
 
 ## Self-signed Certificate
 
