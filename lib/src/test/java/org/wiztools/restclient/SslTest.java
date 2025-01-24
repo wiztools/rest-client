@@ -8,8 +8,8 @@ import org.wiztools.restclient.bean.HTTPMethod;
 import org.wiztools.restclient.bean.HTTPVersion;
 import org.wiztools.restclient.bean.Request;
 import org.wiztools.restclient.bean.RequestBean;
-import org.wiztools.restclient.bean.SSLHostnameVerifier;
-import org.wiztools.restclient.bean.SSLReqBean;
+import org.wiztools.restclient.bean.HostnameVerifier;
+import org.wiztools.restclient.bean.TLSReqBean;
 import org.wiztools.restclient.persistence.PersistenceRead;
 import org.wiztools.restclient.persistence.XmlPersistenceRead;
 
@@ -47,10 +47,10 @@ public class SslTest {
         expResult.setMethod(HTTPMethod.GET);
         expResult.setHttpVersion(HTTPVersion.HTTP_1_1);
         expResult.setFollowRedirect(true);
-        SSLReqBean ssl = new SSLReqBean();
+        TLSReqBean ssl = new TLSReqBean();
         ssl.setTrustAllCerts(true);
-        ssl.setHostNameVerifier(SSLHostnameVerifier.ALLOW_ALL);
-        expResult.setSslReq(ssl);
+        ssl.setHostNameVerifier(HostnameVerifier.ALLOW_ALL);
+        expResult.setTLSReq(ssl);
 
         Request actual = p.getRequestFromFile(new File("src/test/resources/reqSsl.rcq"));
 

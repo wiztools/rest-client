@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui.reqssl;
+package org.wiztools.restclient.ui.reqtls;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.wiztools.restclient.bean.KeyStoreType;
-import org.wiztools.restclient.bean.SSLKeyStore;
+import org.wiztools.restclient.bean.KeyStore;
 import org.wiztools.restclient.ui.RCFileView;
 import org.wiztools.restclient.ui.SVGLoad;
 import org.wiztools.restclient.ui.UIUtil;
@@ -32,7 +32,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     private final JButton jb_addEdit = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "pencil-add.svg"));
     private final JButton jb_clear = new JButton(SVGLoad.scaledIcon(RCFileView.iconBasePath + "s_delete.svg"));
 
-    private SSLKeyStore keyStore = null;
+    private KeyStore keyStore = null;
 
     private static final String tmpl = "type={0}; fileName={1}; password={2}";
 
@@ -87,7 +87,7 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
     }
 
     @Override
-    public void onOk(SSLKeyStore store) {
+    public void onOk(KeyStore store) {
         String pwdAvailable = store.getType() == KeyStoreType.PEM? "NA":
                 (store.getPassword()!=null && store.getPassword().length > 0)? "Yes": "No";
         String txt = MessageFormat.format(tmpl,
@@ -104,11 +104,11 @@ public class KeyStorePanel extends JPanel implements KeyStoreListener {
         jd.setKeyStore(keyStore);
     }
 
-    public SSLKeyStore getKeyStore() {
+    public KeyStore getKeyStore() {
         return keyStore;
     }
 
-    public void setKeyStore(SSLKeyStore store) {
+    public void setKeyStore(KeyStore store) {
         if(store != null) {
             jd.setKeyStore(store);
             onOk(store);

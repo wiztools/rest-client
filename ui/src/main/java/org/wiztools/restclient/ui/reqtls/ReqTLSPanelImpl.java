@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui.reqssl;
+package org.wiztools.restclient.ui.reqtls;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -15,10 +15,10 @@ import javax.swing.*;
 
 import com.github.rjeschke.txtmark.Processor;
 import org.wiztools.commons.StreamUtil;
-import org.wiztools.restclient.bean.SSLHostnameVerifier;
-import org.wiztools.restclient.bean.SSLKeyStore;
-import org.wiztools.restclient.bean.SSLReq;
-import org.wiztools.restclient.bean.SSLReqBean;
+import org.wiztools.restclient.bean.HostnameVerifier;
+import org.wiztools.restclient.bean.KeyStore;
+import org.wiztools.restclient.bean.TLSReq;
+import org.wiztools.restclient.bean.TLSReqBean;
 import org.wiztools.restclient.ui.*;
 
 /**
@@ -39,29 +39,29 @@ public class ReqTLSPanelImpl extends JPanel implements ReqTLSPanel {
     // SSL - key store
     @Inject private KeyStorePanel jp_keystore;
 
-    private SSLHostnameVerifier getSelectedHostnameVerifier() {
+    private HostnameVerifier getSelectedHostnameVerifier() {
         return jcb_disable_hostname_verifier.isSelected()?
-                SSLHostnameVerifier.ALLOW_ALL: SSLHostnameVerifier.STRICT;
+                HostnameVerifier.ALLOW_ALL: HostnameVerifier.STRICT;
     }
 
     @Override
-    public SSLReq getSslReq() {
-        SSLReqBean out = new SSLReqBean();
+    public TLSReq getSslReq() {
+        TLSReqBean out = new TLSReqBean();
 
         out.setHostNameVerifier(getSelectedHostnameVerifier());
         out.setTrustAllCerts(jcb_ssl_trust_self_signed_cert.isSelected());
 
-        SSLKeyStore trustStore = jp_truststore.getKeyStore();
+        KeyStore trustStore = jp_truststore.getKeyStore();
         out.setTrustStore(trustStore);
 
-        SSLKeyStore keyStore = jp_keystore.getKeyStore();
+        KeyStore keyStore = jp_keystore.getKeyStore();
         out.setKeyStore(keyStore);
 
         return out;
     }
 
     @Override
-    public void setSslReq(SSLReq sslReq) {
+    public void setSslReq(TLSReq sslReq) {
         // general tab:
         switch(sslReq.getHostNameVerifier()) {
             case ALLOW_ALL:

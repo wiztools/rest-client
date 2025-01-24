@@ -29,12 +29,12 @@ import org.wiztools.restclient.util.Url;
 import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 import org.wiztools.restclient.ui.history.HistoryManager;
 import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
-import org.wiztools.restclient.ui.reqssl.ReqTLSPanel;
 import org.wiztools.restclient.ui.reqbody.ReqBodyPanel;
 import org.wiztools.restclient.ui.reqetc.ReqEtcPanel;
 import org.wiztools.restclient.ui.reqgo.ReqUrlGoPanel;
 import org.wiztools.restclient.ui.reqmethod.ReqMethodPanel;
 import org.wiztools.restclient.ui.reqtest.ReqTestPanel;
+import org.wiztools.restclient.ui.reqtls.ReqTLSPanel;
 import org.wiztools.restclient.ui.resbody.ResBodyPanel;
 import org.wiztools.restclient.ui.resheader.ResHeaderPanel;
 import org.wiztools.restclient.ui.resstats.ResStatsPanel;
@@ -305,8 +305,8 @@ public class RESTViewImpl extends JPanel implements RESTView {
 
         // SSL specific
         if(jp_url_go.isSslUrl()) {
-            SSLReq sslReq = jp_req_ssl.getSslReq();
-            request.setSslReq(sslReq);
+            TLSReq sslReq = jp_req_ssl.getSslReq();
+            request.setTLSReq(sslReq);
         }
 
         // HTTP version
@@ -594,8 +594,8 @@ public class RESTViewImpl extends JPanel implements RESTView {
         }
 
         // SSL
-        if(req.getSslReq() != null) {
-            jp_req_ssl.setSslReq(req.getSslReq());
+        if(req.getTLSReq() != null) {
+            jp_req_ssl.setSslReq(req.getTLSReq());
         }
 
         // HTTP Version

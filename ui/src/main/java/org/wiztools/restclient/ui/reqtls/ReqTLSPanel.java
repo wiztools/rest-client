@@ -1,7 +1,7 @@
-package org.wiztools.restclient.ui.reqssl;
+package org.wiztools.restclient.ui.reqtls;
 
 import org.wiztools.restclient.ImplementedBy;
-import org.wiztools.restclient.bean.SSLReq;
+import org.wiztools.restclient.bean.TLSReq;
 import org.wiztools.restclient.ui.ViewPanel;
 
 /**
@@ -11,7 +11,7 @@ import org.wiztools.restclient.ui.ViewPanel;
 @ImplementedBy(ReqTLSPanelImpl.class)
 public interface ReqTLSPanel extends ViewPanel {
 
-    SSLReq getSslReq();
-    void setSslReq(SSLReq sslReq);
+    TLSReq getSslReq();
+    void setSslReq(TLSReq sslReq);
 
 }

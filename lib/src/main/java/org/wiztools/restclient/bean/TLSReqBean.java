@@ -6,44 +6,44 @@ import java.util.Objects;
  *
  * @author subwiz
  */
-public class SSLReqBean implements SSLReq {
-    
-    private SSLKeyStore trustStore;
-    private SSLKeyStore keyStore;
-    
+public class TLSReqBean implements TLSReq {
+
+    private KeyStore trustStore;
+    private KeyStore keyStore;
+
     // Default to strict!
-    private SSLHostnameVerifier hostNameVerifier = SSLHostnameVerifier.STRICT;
-    
+    private HostnameVerifier hostNameVerifier = HostnameVerifier.STRICT;
+
     private boolean trustAllCerts = false;
 
-    public void setHostNameVerifier(SSLHostnameVerifier sslHostNameVerifier) {
-        this.hostNameVerifier = sslHostNameVerifier;
-    }
-    
-    public void setTrustAllCerts(boolean sslTrustSelfSignedCert) {
-        this.trustAllCerts = sslTrustSelfSignedCert;
+    public void setHostNameVerifier(HostnameVerifier hnv) {
+        this.hostNameVerifier = hnv;
     }
 
-    public void setKeyStore(SSLKeyStore sslKeyStore) {
-        this.keyStore = sslKeyStore;
+    public void setTrustAllCerts(boolean trust) {
+        this.trustAllCerts = trust;
     }
 
-    public void setTrustStore(SSLKeyStore sslTrustStore) {
-        this.trustStore = sslTrustStore;
+    public void setKeyStore(KeyStore ks) {
+        this.keyStore = ks;
+    }
+
+    public void setTrustStore(KeyStore ts) {
+        this.trustStore = ts;
     }
 
     @Override
-    public SSLHostnameVerifier getHostNameVerifier() {
+    public HostnameVerifier getHostNameVerifier() {
         return hostNameVerifier;
     }
 
     @Override
-    public SSLKeyStore getKeyStore() {
+    public KeyStore getKeyStore() {
         return keyStore;
     }
 
     @Override
-    public SSLKeyStore getTrustStore() {
+    public KeyStore getTrustStore() {
         return trustStore;
     }
 
@@ -70,7 +70,7 @@ public class SSLReqBean implements SSLReq {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final SSLReqBean other = (SSLReqBean) obj;
+        final TLSReqBean other = (TLSReqBean) obj;
         if (!Objects.equals(this.trustStore, other.trustStore)) {
             return false;
         }

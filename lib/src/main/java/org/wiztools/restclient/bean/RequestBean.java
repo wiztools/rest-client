@@ -14,7 +14,7 @@ import org.wiztools.commons.MultiValueMapArrayList;
  * @author subwiz
  */
 public final class RequestBean implements Request {
-    
+
     private URL url;
     private HTTPMethod method;
     private Auth auth;
@@ -22,27 +22,27 @@ public final class RequestBean implements Request {
     private final List<HttpCookie> cookies = new ArrayList<>();
     private ReqEntity body;
     private String testScript;
-    private SSLReq sslReq;
+    private TLSReq sslReq;
     private HTTPVersion httpVersion = HTTPVersion.getDefault(); // Initialize to the default version
     private boolean isFollowRedirect;
     private boolean isIgnoreResponseBody = false;
-    
+
     public void setAuth(Auth auth) {
         this.auth = auth;
     }
-    
+
     @Override
     public Auth getAuth() {
         return auth;
     }
 
     @Override
-    public SSLReq getSslReq() {
+    public TLSReq getTLSReq() {
         return sslReq;
     }
 
-    public void setSslReq(SSLReq sslReq) {
-        this.sslReq = sslReq;
+    public void setTLSReq(TLSReq tlsReq) {
+        this.sslReq = tlsReq;
     }
 
     @Override
@@ -53,7 +53,7 @@ public final class RequestBean implements Request {
     public void setHttpVersion(HTTPVersion httpVersion) {
         this.httpVersion = httpVersion;
     }
-    
+
     @Override
     public String getTestScript() {
         return testScript;
@@ -67,7 +67,7 @@ public final class RequestBean implements Request {
     public ReqEntity getBody() {
         return body;
     }
-    
+
     public void setBody(final ReqEntity body){
         this.body = body;
     }
@@ -80,11 +80,11 @@ public final class RequestBean implements Request {
     public void addHeader(final String key, final String value){
         this.headers.put(key, value);
     }
-    
+
     public void addCookie(HttpCookie cookie) {
         this.cookies.add(cookie);
     }
-    
+
     @Override
     public List<HttpCookie> getCookies() {
         return Collections.unmodifiableList(this.cookies);
@@ -116,20 +116,20 @@ public final class RequestBean implements Request {
     public void setFollowRedirect(boolean isFollowRedirect) {
         this.isFollowRedirect = isFollowRedirect;
     }
-    
+
     public void setIgnoreResponseBody(boolean isIgnoreResponseBody) {
         this.isIgnoreResponseBody = isIgnoreResponseBody;
     }
-    
+
     @Override
     public boolean isIgnoreResponseBody() {
         return isIgnoreResponseBody;
     }
-    
+
     @Override
     public Object clone(){
         RequestBean cloned = new RequestBean();
-        cloned.setSslReq(sslReq);
+        cloned.setTLSReq(sslReq);
         cloned.setHttpVersion(httpVersion);
         if(body != null){
             cloned.setBody((ReqEntityStringBean)body.clone());

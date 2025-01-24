@@ -1,6 +1,6 @@
-package org.wiztools.restclient.ui.reqssl;
+package org.wiztools.restclient.ui.reqtls;
 
-import org.wiztools.restclient.bean.SSLKeyStore;
+import org.wiztools.restclient.bean.KeyStore;
 
 /**
  *
@@ -11,8 +11,8 @@ public interface KeyStoreListener {
      * Triggered when Ok button is pressed.
      * @param store Will always be NOT null.
      */
-    void onOk(SSLKeyStore store);
-    
+    void onOk(KeyStore store);
+
     /**
      * Triggered when Cancel button is clicked.
      */

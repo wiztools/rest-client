@@ -15,14 +15,14 @@ import org.wiztools.restclient.util.XMLUtil;
  * @author rsubramanian
  */
 public class XmlPersistenceWrite implements PersistenceWrite {
-    
+
     private Element getRootElement() {
         Element eRoot = new Element("rest-client");
         // set version attributes to rest-client root tag
         eRoot.addAttribute(new Attribute("version", Versions.CURRENT));
         return eRoot;
     }
-    
+
     protected Element getRequestElement(final Request bean) {
         Element reqElement = new Element("request");
 
@@ -62,9 +62,9 @@ public class XmlPersistenceWrite implements PersistenceWrite {
             }
         }
 
-        // Creating SSL elements
-        if(bean.getSslReq() != null) {
-            Element eSsl = XmlSslUtil.getSslReq(bean.getSslReq());
+        // Creating TLS elements
+        if(bean.getTLSReq() != null) {
+            Element eSsl = XmlTLSUtil.getTLSReq(bean.getTLSReq());
             reqElement.appendChild(eSsl);
         }
 
@@ -82,12 +82,12 @@ public class XmlPersistenceWrite implements PersistenceWrite {
             }
             reqElement.appendChild(e);
         }
-        
+
         // Cookies
         List<HttpCookie> cookies = bean.getCookies();
         if(!cookies.isEmpty()) {
             Element e = new Element("cookies");
-            
+
             for(HttpCookie cookie: cookies) {
                 Element ee = new Element("cookie");
                 ee.addAttribute(new Attribute("name", cookie.getName()));
@@ -126,7 +126,7 @@ public class XmlPersistenceWrite implements PersistenceWrite {
         Document xomDocument = new Document(reqRootElement);
         return xomDocument;
     }
-    
+
     protected Element getResponseElement(final Response bean) {
         Element respElement = new Element("response");
         Element respChildSubElement = null;
@@ -149,7 +149,7 @@ public class XmlPersistenceWrite implements PersistenceWrite {
         if (!headers.isEmpty()) {
             Attribute keyAttribute = null;
             Attribute valueAttribute = null;
-            // creating sub child-child element 
+            // creating sub child-child element
             respChildSubElement = new Element("headers");
             for (String key : headers.keySet()) {
                 for(String value: headers.get(key)) {
@@ -173,7 +173,7 @@ public class XmlPersistenceWrite implements PersistenceWrite {
             respChildSubElement.appendChild(base64encodedBody);
             respElement.appendChild(respChildSubElement);
         }
-        // test result 
+        // test result
         TestResult testResult = bean.getTestResult();
         if (testResult != null) {
             //creating the test-result child element
@@ -240,7 +240,7 @@ public class XmlPersistenceWrite implements PersistenceWrite {
 
         Document xomDocument = new Document(respRootElement);
         return xomDocument;
-    }    
+    }
 
     protected void writeXML(final Document doc, final File f)
             throws IOException, XMLException {

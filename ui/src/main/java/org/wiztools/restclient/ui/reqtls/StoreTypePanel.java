@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui.reqssl;
+package org.wiztools.restclient.ui.reqtls;
 
 import java.awt.FlowLayout;
 import java.awt.event.ItemListener;
@@ -12,27 +12,27 @@ import org.wiztools.restclient.bean.KeyStoreType;
  * @author subwiz
  */
 public class StoreTypePanel extends JPanel {
-    
+
     private final JRadioButton jrb_jks = new JRadioButton(KeyStoreType.JKS.name());
     private final JRadioButton jrb_pkcs12 = new JRadioButton(KeyStoreType.PKCS12.name());
     private final JRadioButton jrb_pem = new JRadioButton(KeyStoreType.PEM.name());
 
     public StoreTypePanel() {
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
-        
+
         ButtonGroup grp = new ButtonGroup();
         grp.add(jrb_jks);
         grp.add(jrb_pkcs12);
         grp.add(jrb_pem);
-        
+
         // JKS to be selected by default:
         jrb_jks.setSelected(true);
-        
+
         add(jrb_jks);
         add(jrb_pkcs12);
         add(jrb_pem);
     }
-    
+
     public KeyStoreType getSelectedKeyStoreType() {
         if(jrb_jks.isSelected()) {
             return KeyStoreType.JKS;
@@ -45,7 +45,7 @@ public class StoreTypePanel extends JPanel {
         }
         return KeyStoreType.PEM;
     }
-    
+
     public void setSelectedKeyStoreType(KeyStoreType type) {
         switch(type) {
             case JKS:
@@ -61,7 +61,7 @@ public class StoreTypePanel extends JPanel {
                 throw new IllegalArgumentException("Unknown keystore-type: " + type);
         }
     }
-    
+
     public void addItemListener(ItemListener listener, KeyStoreType ... types) {
         for(KeyStoreType type: types) {
             switch(type) {

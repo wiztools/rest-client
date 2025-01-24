@@ -100,7 +100,7 @@ public class XmlPersistenceRead implements PersistenceRead {
                 requestBean.setAuth(XmlAuthUtil.getAuth(tNode));
             }
             else if("ssl".equals(nodeName)) {
-                requestBean.setSslReq(XmlSslUtil.getSslReq(tNode));
+                requestBean.setTLSReq(XmlTLSUtil.getTLSReq(tNode));
             }
             else if ("headers".equals(nodeName)) {
                 Map<String, String> m = getHeadersFromHeaderNode(tNode);

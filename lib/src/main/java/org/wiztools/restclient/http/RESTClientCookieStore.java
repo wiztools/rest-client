@@ -1,5 +1,6 @@
 package org.wiztools.restclient.http;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -13,7 +14,7 @@ import org.apache.hc.client5.http.cookie.CookieStore;
  * @author subwiz
  */
 public class RESTClientCookieStore implements CookieStore {
-    
+
     private List<Cookie> cookies = new ArrayList<Cookie>();
 
     @Override
@@ -26,8 +27,14 @@ public class RESTClientCookieStore implements CookieStore {
         return Collections.unmodifiableList(cookies);
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
     public boolean clearExpired(Date date) {
+        // Do nothing
+        return true;
+    }
+
+    @Override
+    public boolean clearExpired(Instant date) {
         // Do nothing
         return true;
     }
@@ -36,5 +43,5 @@ public class RESTClientCookieStore implements CookieStore {
     public void clear() {
         cookies.clear();
     }
-    
+
 }

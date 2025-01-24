@@ -1,4 +1,4 @@
-package org.wiztools.restclient.ui.reqssl;
+package org.wiztools.restclient.ui.reqtls;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
@@ -24,8 +24,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import org.wiztools.commons.StringUtil;
 import org.wiztools.restclient.bean.KeyStoreType;
-import org.wiztools.restclient.bean.SSLKeyStore;
-import org.wiztools.restclient.bean.SSLKeyStoreBean;
+import org.wiztools.restclient.bean.KeyStore;
+import org.wiztools.restclient.bean.KeyStoreBean;
 import org.wiztools.restclient.ui.EscapableDialog;
 import org.wiztools.restclient.ui.FileChooserType;
 import org.wiztools.restclient.ui.RCFileView;
@@ -190,7 +190,7 @@ public class KeyStoreDialog extends EscapableDialog {
         }
     }
 
-    public void setKeyStore(SSLKeyStore store) {
+    public void setKeyStore(KeyStore store) {
         if(store != null) {
             jp_type.setSelectedKeyStoreType(store.getType());
             jtf_file.setText(store.getFile().getAbsolutePath());
@@ -204,10 +204,10 @@ public class KeyStoreDialog extends EscapableDialog {
         }
     }
 
-    public SSLKeyStore getKeyStore() {
+    public KeyStore getKeyStore() {
         final String filePath = jtf_file.getText();
         if(StringUtil.isNotEmpty(filePath)) {
-            SSLKeyStoreBean out = new SSLKeyStoreBean();
+            KeyStoreBean out = new KeyStoreBean();
             out.setType(jp_type.getSelectedKeyStoreType());
             out.setFile(new File(filePath));
             out.setPassword(jpf_pwd.getPassword());
@@ -227,7 +227,7 @@ public class KeyStoreDialog extends EscapableDialog {
     }
 
     private void ok() {
-        final SSLKeyStore store = getKeyStore();
+        final KeyStore store = getKeyStore();
         if(store == null) {
             JOptionPane.showMessageDialog(this,
                     "One or more required details not provided.",

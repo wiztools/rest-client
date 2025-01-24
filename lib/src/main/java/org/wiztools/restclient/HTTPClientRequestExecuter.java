@@ -324,12 +324,12 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 }
             }
 
-            // SSL
+            // TLS
 
             // Set the hostname verifier:
-            final SSLReq sslReq = request.getSslReq();
-            if(sslReq != null) {
-                SSLHostnameVerifier verifier = sslReq.getHostNameVerifier();
+            final TLSReq tlsReq = request.getTLSReq();
+            if(tlsReq != null) {
+                org.wiztools.restclient.bean.HostnameVerifier verifier = tlsReq.getHostNameVerifier();
                 final HostnameVerifier hcVerifier;
                 switch(verifier) {
                     case ALLOW_ALL:
@@ -342,18 +342,18 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
                 }
 
                 // Register the SSL Scheme:
-                final KeyStore trustStore  = sslReq.getTrustStore() == null?
+                final KeyStore trustStore  = tlsReq.getTrustStore() == null?
                         null:
-                        sslReq.getTrustStore().getKeyStore();
-                final KeyStore keyStore = sslReq.getKeyStore() == null?
+                        tlsReq.getTrustStore().getKeyStore();
+                final KeyStore keyStore = tlsReq.getKeyStore() == null?
                         null:
-                        sslReq.getKeyStore().getKeyStore();
+                        tlsReq.getKeyStore().getKeyStore();
 
-                final TrustStrategy trustStrategy = sslReq.isTrustAllCerts()
+                final TrustStrategy trustStrategy = tlsReq.isTrustAllCerts()
                         ? new TrustAllStrategy(): null;
 
                 SSLContext ctx = new SSLContextBuilder()
-                        .loadKeyMaterial(keyStore, sslReq.getKeyStore()!=null? sslReq.getKeyStore().getPassword(): null)
+                        .loadKeyMaterial(keyStore, tlsReq.getKeyStore()!=null? tlsReq.getKeyStore().getPassword(): null)
                         .loadTrustMaterial(trustStore, trustStrategy)
                         .setSecureRandom(null)
                         .setProtocol("TLS")

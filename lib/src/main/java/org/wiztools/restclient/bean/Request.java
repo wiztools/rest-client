@@ -17,21 +17,21 @@ public interface Request extends Cloneable, Serializable {
     ReqEntity getBody();
 
     MultiValueMap<String, String> getHeaders();
-    
+
     List<HttpCookie> getCookies();
-    
+
     HTTPVersion getHttpVersion();
 
     HTTPMethod getMethod();
-    
-    SSLReq getSslReq();
+
+    TLSReq getTLSReq();
 
     String getTestScript();
 
     URL getUrl();
 
     boolean isFollowRedirect();
-    
+
     boolean isIgnoreResponseBody();
 
     Object clone();
