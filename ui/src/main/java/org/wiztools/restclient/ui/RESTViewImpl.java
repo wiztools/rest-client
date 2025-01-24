@@ -29,7 +29,7 @@ import org.wiztools.restclient.util.Url;
 import org.wiztools.restclient.ui.dnd.FileDropTargetListener;
 import org.wiztools.restclient.ui.history.HistoryManager;
 import org.wiztools.restclient.ui.reqauth.ReqAuthPanel;
-import org.wiztools.restclient.ui.reqssl.ReqSSLPanel;
+import org.wiztools.restclient.ui.reqssl.ReqTLSPanel;
 import org.wiztools.restclient.ui.reqbody.ReqBodyPanel;
 import org.wiztools.restclient.ui.reqetc.ReqEtcPanel;
 import org.wiztools.restclient.ui.reqgo.ReqUrlGoPanel;
@@ -62,7 +62,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
     @Inject private ReqMethodPanel jp_req_method;
     @Inject private ReqBodyPanel jp_req_body;
     @Inject private ReqAuthPanel jp_req_auth;
-    @Inject private ReqSSLPanel jp_req_ssl;
+    @Inject private ReqTLSPanel jp_req_ssl;
     @Inject private ReqEtcPanel jp_req_etc;
     @Inject private ReqTestPanel jp_req_test;
 
@@ -110,7 +110,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         jtp.addTab("Auth", jp_req_auth.getComponent());
 
         // SSL Tab
-        jtp.addTab("SSL", jp_req_ssl.getComponent());
+        jtp.addTab("TLS", jp_req_ssl.getComponent());
 
         // Etc panel
         jtp.add("Etc.", jp_req_etc.getComponent());

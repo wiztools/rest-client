@@ -8,8 +8,8 @@ import org.wiztools.restclient.ui.ViewPanel;
  *
  * @author subwiz
  */
-@ImplementedBy(ReqSSLPanelImpl.class)
-public interface ReqSSLPanel extends ViewPanel {
+@ImplementedBy(ReqTLSPanelImpl.class)
+public interface ReqTLSPanel extends ViewPanel {
 
     SSLReq getSslReq();
     void setSslReq(SSLReq sslReq);
