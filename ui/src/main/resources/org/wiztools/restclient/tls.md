@@ -1,6 +1,6 @@
 ## SSL & TLS
 
-TLS is essentially an updated and improved version of SSL. The terms "SSL" and "TLS" are often used interchangeably. RESTClient till recent versions was using the terminology "SSL", but has been supporting TLS for long.
+TLS is essentially an updated and improved version of SSL. The terms "SSL" and "TLS" are often used interchangeably. RESTClient, until recent versions, used the terminology "SSL", although it has long supported TLS.
 
 ## Trust Store & Key Store
 
@@ -45,6 +45,8 @@ Key requirements:
 * Client must have its certificate and private key installed
 
 Primary advantage is stronger security. Main drawback is increased complexity in certificate management and deployment.
+
+In the RESTClient request interface, when both "Truststore" and "Keystore" configurations are given, it is treated as a mTLS request.
 
 ## Self-signed Certificate
 
