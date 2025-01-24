@@ -19,7 +19,7 @@ final class ContentTypeSelectorOnFile {
 
     static void select(ContentTypeCharsetComponent jp_content_type_charset,
             File file, Component parent) {
-        final String mime = Mime.get(file);
+        final String mime = Mime.forFile(file);
         if(!mime.equals("content/unknown")) {
             final String origContentType = jp_content_type_charset.getContentType().getContentType();
             if(!mime.equals(origContentType)) {

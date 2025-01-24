@@ -96,7 +96,7 @@ public class ReqBodyPanelByteArray extends JPanel implements ReqBodyPanel {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        final String mime = org.wiztools.restclient.ui.Mime.get(f);
+        final String mime = org.wiztools.restclient.ui.Mime.forFile(f);
         if(!mime.equals("content/unknown")) {
             final String origContentType = jp_content_type_charset.getContentType().getContentType();
             if(!mime.equals(origContentType)) {

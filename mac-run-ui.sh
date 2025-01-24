@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # read version:
 source ./gradle.properties
 

@@ -1,7 +1,7 @@
 package org.wiztools.restclient;
 
 import groovy.lang.GroovyClassLoader;
-import groovy.util.GroovyTestSuite;
+import groovy.test.GroovyTestSuite;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
@@ -27,9 +27,9 @@ import org.wiztools.restclient.util.ConfigUtil;
  * @author schandran
  */
 public class TestUtil {
-    
+
     private static final Logger LOG = Logger.getLogger(TestUtil.class.getName());
-    
+
     public static TestSuite getTestSuite(final Request request, final Response response)
             throws TestException{
         final String script = request.getTestScript();
@@ -82,7 +82,7 @@ public class TestUtil {
             throw new TestException("", ex);
         }
     }
-    
+
     private static final int getLineNumber(String str){
         Pattern p = Pattern.compile("\\(__GenRESTTestCase__:([0-9]+)\\)");
         Matcher m = p.matcher(str);
@@ -97,17 +97,17 @@ public class TestUtil {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         TestRunner runner = new TestRunner(new PrintStream(baos));
         TestResult result = runner.doRun(suite);
-        
+
         TestResultBean resultBean = new TestResultBean();
-        
+
         final int runCount = result.runCount();
         final int failureCount = result.failureCount();
         final int errorCount = result.errorCount();
-        
+
         resultBean.setRunCount(runCount);
         resultBean.setFailureCount(failureCount);
         resultBean.setErrorCount(errorCount);
-        
+
         if(failureCount > 0){
             List<TestExceptionResult> l = new ArrayList<TestExceptionResult>();
             Enumeration<TestFailure> failures = result.failures();
@@ -121,13 +121,13 @@ public class TestUtil {
             }
             resultBean.setFailures(l);
         }
-        
+
         if(errorCount > 0){
             List<TestExceptionResult> l = new ArrayList<TestExceptionResult>();
             Enumeration<TestFailure> errors = result.errors();
             while(errors.hasMoreElements()){
                 TestFailure error = errors.nextElement();
-                
+
                 TestExceptionResultBean t = new TestExceptionResultBean();
                 t.setExceptionMessage(error.exceptionMessage());
                 t.setLineNumber(getLineNumber(error.trace()));
