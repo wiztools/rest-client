@@ -1,6 +1,9 @@
 package org.wiztools.restclient.ui;
 
 import java.util.List;
+import java.awt.Taskbar;
+
+import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 import com.google.devtools.common.options.OptionsParser;
@@ -50,6 +53,17 @@ public class Main {
                         System.err.println("Unknown debug option: "+opt);
                         System.exit(1);
                 }
+            }
+        }
+
+        if (Taskbar.isTaskbarSupported()) {
+            try {
+                Taskbar taskbar = Taskbar.getTaskbar();
+                ImageIcon img = SVGLoad.scaledIcon("org/wiztools/restclient/icon.svg", 128, 128);
+                taskbar.setIconImage(img.getImage());
+            } catch (UnsupportedOperationException e) {
+                System.err.println("Icon setting failed");
+                e.printStackTrace(System.err);
             }
         }
 
