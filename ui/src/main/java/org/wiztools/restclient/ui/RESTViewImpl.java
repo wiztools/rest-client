@@ -499,6 +499,7 @@ public class RESTViewImpl extends JPanel implements RESTView {
         return errors;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void clearUIRequest() {
         // URL

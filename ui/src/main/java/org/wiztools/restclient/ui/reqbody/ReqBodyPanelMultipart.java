@@ -16,7 +16,6 @@ import javax.swing.table.AbstractTableModel;
 import org.wiztools.restclient.bean.*;
 import org.wiztools.restclient.ui.RESTView;
 import org.wiztools.restclient.ui.SVGLoad;
-import org.wiztools.restclient.ui.UIUtil;
 
 /**
  *
@@ -270,6 +269,7 @@ public class ReqBodyPanelMultipart extends JPanel implements ReqBodyPanel {
         MultipartSubtype type = jd_options.getSelectedSubtype();
         MultipartMode mode = jd_options.getSelectedMode();
 
+        @SuppressWarnings("unchecked")
         ReqEntity entity = new ReqEntityMultipartBean(
                 (LinkedList<ReqEntityPart>)model.list.clone(), mode, type);
         return entity;

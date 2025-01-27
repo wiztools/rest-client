@@ -68,6 +68,7 @@ public final class TwoColumnTablePanel extends JPanel {
         jd_multi = new KeyValMultiEntryDialog(rest_ui, callback);
     }
 
+    @SuppressWarnings("unchecked")
     public MultiValueMap<String, String> getData() {
         Object[][] d = model.getData();
         if(d.length == 0) {
@@ -88,6 +89,7 @@ public final class TwoColumnTablePanel extends JPanel {
         model.setData(data);
     }
 
+    @SuppressWarnings("unchecked")
     public TwoColumnTablePanel(final String[] title, final RESTUserInterface ui) {
         this(title, Collections.EMPTY_LIST, ui);
     }
@@ -131,6 +133,7 @@ public final class TwoColumnTablePanel extends JPanel {
         {
             JMenuItem jmi_rm_all = new JMenuItem("Remove All");
             jmi_rm_all.addActionListener(new ActionListener() {
+                @SuppressWarnings("unchecked")
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     model.setData(CollectionsUtil.EMPTY_MULTI_VALUE_MAP);

@@ -24,17 +24,17 @@ import org.wiztools.restclient.ui.UIUtil;
  * @author subwiz
  */
 public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
-    
+
     @Inject
     private RESTView view;
-    
+
     private JTable jt_res_headers = new JTable();
     private ResponseHeaderTableModel resHeaderTableModel = new ResponseHeaderTableModel();
-    
+
     @PostConstruct
     protected void init() {
         setLayout(new GridLayout());
-        
+
         // Header Tab: Other Headers
         JPanel jp_headers = new JPanel();
         jp_headers.setLayout(new GridLayout(1, 1));
@@ -94,9 +94,9 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
                         for(int i=0; i<totalRows; i++) {
                             final String key = (String) jt_res_headers.getValueAt(i, 0);
                             final String value = (String) jt_res_headers.getValueAt(i, 1);
-                            
+
                             final String headerLine = key + ": " + value;
-                            
+
                             // Verify if Cookie header:
                             if(headerLine.toLowerCase().startsWith("set-cookie")) {
                                 List<HttpCookie> cookies = HttpCookie.parse(headerLine);
@@ -105,7 +105,7 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
                                             .append(": ")
                                             .append(cookie.getValue())
                                             .append("\r\n");
-                                    
+
                                     // Increment count:
                                     cookieCount++;
                                 }
@@ -151,10 +151,11 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
         d.height = d.height / 2;
         jsp.setPreferredSize(d);
         jp_headers.add(jsp);
-        
+
         add(jp_headers);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public MultiValueMap<String, String> getHeaders() {
         final String[][] arr = ((ResponseHeaderTableModel)jt_res_headers.getModel()).getHeaders();
@@ -183,5 +184,5 @@ public class ResHeaderPanelImpl extends JPanel implements ResHeaderPanel {
         ResponseHeaderTableModel model = (ResponseHeaderTableModel)jt_res_headers.getModel();
         model.setHeaders(null);
     }
-    
+
 }

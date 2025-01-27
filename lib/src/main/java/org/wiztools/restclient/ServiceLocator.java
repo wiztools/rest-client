@@ -103,6 +103,7 @@ public class ServiceLocator {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T getInstance(Class<T> c) {
         String cName = c.getCanonicalName();
         if(traceLog) System.out.println("[getInstance()]"+cName);

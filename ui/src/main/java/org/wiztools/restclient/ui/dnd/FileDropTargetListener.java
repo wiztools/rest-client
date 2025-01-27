@@ -17,9 +17,9 @@ import java.util.logging.Logger;
 
 /**
  * Usage:
- * 
+ *
  * <pre>
- * {@code 
+ * {@code
  * FileDropTargetListener l = new FileDropTargetListener();
  * l.addDndAction(new DndAction() {
  *  void onDrop(List<File> files) {
@@ -29,15 +29,15 @@ import java.util.logging.Logger;
  * new java.awt.dnd.DropTarget(component, l);
  * }
  * </pre>
- * 
+ *
  * @author subwiz
  */
 public class FileDropTargetListener implements DropTargetListener {
-    
+
     private static final Logger LOG = Logger.getLogger(FileDropTargetListener.class.getName());
-    
+
     private final List<DndAction> actions = new ArrayList<>();
-    
+
     public void addDndAction(DndAction action) {
         actions.add(action);
     }
@@ -72,6 +72,7 @@ public class FileDropTargetListener implements DropTargetListener {
         try {
             Transferable data = evt.getTransferable();
             if (data.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                @SuppressWarnings("unchecked")
                 java.util.List<File> list = (java.util.List<File>) data.getTransferData(
                     DataFlavor.javaFileListFlavor);
                 for(DndAction a: actions) {
@@ -88,5 +89,5 @@ public class FileDropTargetListener implements DropTargetListener {
                     .setCursor(Cursor.getDefaultCursor());
         }
     }
-    
+
 }
