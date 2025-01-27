@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -50,6 +49,20 @@ public class ReqUrlGoPanelImpl extends JPanel implements ReqUrlGoPanel {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
                     jcb_url.requestFocus();
+                }
+            });
+        }
+
+        { // Keystroke for triggering request:
+            final KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_G,
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
+            final String actionName = "org.wiztools.restclient:GO_EXEC";
+            jcb_url.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                    .put(ks, actionName);
+            jcb_url.getActionMap().put(actionName, new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    jb_requestActionPerformed();
                 }
             });
         }

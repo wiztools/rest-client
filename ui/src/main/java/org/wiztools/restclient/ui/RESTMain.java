@@ -672,7 +672,8 @@ public class RESTMain implements RESTUserInterface {
                 dt.browse(new URI(url));
             }
             catch (URISyntaxException ex) {
-                assert true: "Will never come here!";
+                System.err.println("RESTMain:openUrl():can never come here:");
+                ex.printStackTrace(System.err);
             }
             catch(IOException ex) {
                 LOG.log(Level.WARNING, null, ex);
