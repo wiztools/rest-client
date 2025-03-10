@@ -44,8 +44,6 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
     private static final int auth_text_size = 20;
     private final JTextField jtf_host = new JTextField(auth_text_size);
     private final JTextField jtf_realm = new JTextField(auth_text_size);
-    private final JTextField jtf_domain = new JTextField(auth_text_size);
-    private final JTextField jtf_workstation = new JTextField(auth_text_size);
     private final JTextField jtf_username = new JTextField(auth_text_size);
     private final JPasswordField jpf_password = new JPasswordField(
         auth_text_size
@@ -120,8 +118,6 @@ public class ReqAuthPanelImpl extends JPanel implements ReqAuthPanel {
 
         jtf_host.setText("");
         jtf_realm.setText("");
-        jtf_domain.setText("");
-        jtf_workstation.setText("");
         jtf_username.setText("");
         jpf_password.setText("");
         jtf_bearer_token.setText("");
