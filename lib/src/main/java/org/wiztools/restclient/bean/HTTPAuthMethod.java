@@ -8,25 +8,27 @@ import java.util.logging.Logger;
  * @author subwiz
  */
 public enum HTTPAuthMethod {
-    BASIC, DIGEST, NTLM, OAUTH_20_BEARER;
+    BASIC,
+    DIGEST,
+    OAUTH_20_BEARER;
 
-    private static final Logger LOG = Logger.getLogger(HTTPAuthMethod.class.getName());
+    private static final Logger LOG = Logger.getLogger(
+        HTTPAuthMethod.class.getName()
+    );
 
-    public static HTTPAuthMethod get(final String name){
-        if("BASIC".equals(name)){
+    public static HTTPAuthMethod get(final String name) {
+        if ("BASIC".equals(name)) {
             return BASIC;
-        }
-        else if("DIGEST".equals(name)){
+        } else if ("DIGEST".equals(name)) {
             return DIGEST;
-        }
-        else if("NTLM".equals(name)) {
-            return NTLM;
-        }
-        else if("OAUTH_20_BEARER".equals(name)) {
+        } else if ("OAUTH_20_BEARER".equals(name)) {
             return OAUTH_20_BEARER;
-        }
-        else{
-            LOG.log(Level.WARNING, "HTTPAuthMethod string unrecognized: {0}", name);
+        } else {
+            LOG.log(
+                Level.WARNING,
+                "HTTPAuthMethod string unrecognized: {0}",
+                name
+            );
             LOG.log(Level.WARNING, "Sending default method: {0}", BASIC);
             return BASIC;
         }
