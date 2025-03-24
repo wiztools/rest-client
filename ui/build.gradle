@@ -1,7 +1,7 @@
 plugins {
   id 'java'
   id 'application'
-  id 'com.gradleup.shadow' version '9.0.0-beta4'
+  id 'com.gradleup.shadow' version '9.0.0-beta11'
   id 'project-report'
 }
 
@@ -10,6 +10,11 @@ application{
   mainClass = 'org.wiztools.restclient.ui.Main'
   applicationName = 'restclient-ui'
   applicationDefaultJvmArgs = ['-Xms128m', '-Xmx512m']
+}
+
+tasks.withType(Tar) {
+  compression = Compression.GZIP
+  archiveExtension = 'tgz' // set the extension to .tgz instead of .tar.gz
 }
 
 tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
@@ -28,6 +33,6 @@ dependencies {
     'com.formdev:flatlaf:3.5.4',
     'com.github.pcj:google-options:1.0.0',
     'com.github.rjeschke:txtmark:0.13',
-    'org.slf4j:slf4j-nop:2.0.16' // to suppress warning: https://www.slf4j.org/codes.html#noProviders
+    'org.slf4j:slf4j-simple:2.0.17' // for jetty logs
   testImplementation 'junit:junit:4.+'
 }
