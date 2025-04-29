@@ -113,8 +113,7 @@ public class HTTPClientRequestExecuter implements RequestExecuter {
             ? url.getDefaultPort()
             : url.getPort();
         final String urlProtocol = url.getProtocol();
-        final String urlStr = url.toString();
-        reqBuilder.setUri(urlStr);
+        reqBuilder.setUri(url.toExternalForm());
 
         // Set HTTP version:
         HTTPVersion httpVersion = request.getHttpVersion();

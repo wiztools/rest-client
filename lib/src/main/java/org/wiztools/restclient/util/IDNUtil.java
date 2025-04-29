@@ -13,11 +13,15 @@ import java.net.URL;
 public final class IDNUtil {
     public static URL getIDNizedURL(URL inUrl) throws IllegalArgumentException {
         try {
-            return new URI(inUrl.getProtocol(),
+            return new URI(
+                inUrl.getProtocol(),
                 null,
                 IDN.toASCII(inUrl.getHost()),
                 inUrl.getPort(),
-                inUrl.getFile(), inUrl.getQuery(), inUrl.getRef()).toURL();
+                inUrl.getPath(),
+                inUrl.getQuery(),
+                inUrl.getRef()
+            ).toURL();
         } catch(MalformedURLException | URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
         }
