@@ -1,7 +1,6 @@
 package org.wiztools.restclient;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import static org.junit.Assert.fail;
 import org.junit.*;
 import org.wiztools.commons.Charsets;
