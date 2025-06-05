@@ -6,6 +6,10 @@ allprojects {
       url = "https://jitpack.io"
     }
   }
+  tasks.withType(JavaCompile) {
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+  }
   gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
       // options.compilerArgs << "-Xlint:all"
